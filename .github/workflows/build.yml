@@ -74,10 +74,13 @@ jobs:
         run: |
           cd qt6
           mkdir build-qt && cd build-qt
+          # ../configure \
+          #   # -no-feature-qtwebengine-build \
+          #   # -developer-build
+          #   -prefix=${{ github.workspace }}/html
           ../configure \
-            # -no-feature-qtwebengine-build \
-            # -developer-build
-            -prefix=${{ github.workspace }}/html
+            -no-feature-qtwebengine-build \
+            -prefix ${{ github.workspace }}/html
 
       - name: Build Qt6 Documentation
         run: |
