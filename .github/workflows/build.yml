@@ -60,22 +60,22 @@ jobs:
           perl --version
           gperf --version
 
-      # - name: Prepare Qt6 Sources
-      #   run: |
-      #     curl -L https://download.qt.io/archive/qt/6.6/6.6.2/single/qt-everywhere-src-6.6.2.tar.xz -o qt-everywhere-src-6.6.2.tar.xz
-      #     tar -xf qt-everywhere-src-6.6.2.tar.xz
+      - name: Prepare Qt6 Sources
+        run: |
+          curl -L https://download.qt.io/archive/qt/6.6/6.6.2/single/qt-everywhere-src-6.6.2.tar.xz -o qt-everywhere-src-6.6.2.tar.xz
+          tar -xf qt-everywhere-src-6.6.2.tar.xz
 
-      # - name: Configure Qt6 Documentation
-      #   run: |
-      #     cd qt-everywhere-src-6.6.2
-      #     mkdir build-qt && cd build-qt
-      #     ../configure -developer-build
+      - name: Configure Qt6 Documentation
+        run: |
+          cd qt-everywhere-src-6.6.2
+          mkdir build-qt && cd build-qt
+          ../configure -developer-build
 
-      # - name: Build Qt6 Documentation
-      #   run: |
-      #     cd qt-everywhere-src-6.6.2
-      #     cd build-qt
-      #     cmake --build . --target docs
+      - name: Build Qt6 Documentation
+        run: |
+          cd qt-everywhere-src-6.6.2
+          cd build-qt
+          cmake --build . --target html_docs
 
       # - name: Deploy to 'gh-pages' branch
       #   uses: JamesIves/github-pages-deploy-action@v4
