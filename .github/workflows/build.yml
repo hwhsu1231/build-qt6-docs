@@ -82,11 +82,12 @@ jobs:
             -no-feature-qtwebengine-build \
             -prefix ${{ github.workspace }}/html
 
-      - name: Build Qt6 Documentation
+      - name: Build and Install Qt6 Documentation
         run: |
           cd qt6
           cd build-qt
           cmake --build . --target html_docs
+          cmake --install .
 
       - name: Deploy to 'gh-pages' branch
         uses: JamesIves/github-pages-deploy-action@v4
