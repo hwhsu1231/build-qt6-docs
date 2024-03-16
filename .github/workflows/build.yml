@@ -12,6 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      QT6_VERSION: '6.6.0'
     steps:
       - name: Check Contexts and Secrets
         run: |
@@ -63,9 +65,9 @@ jobs:
 
       - name: Prepare Qt6 Sources
         run: |
-          curl -L https://download.qt.io/archive/qt/6.6/6.6.2/single/qt-everywhere-src-6.6.2.tar.xz -o qt-everywhere-src-6.6.2.tar.xz
-          tar -xf qt-everywhere-src-6.6.2.tar.xz
-          mv qt-everywhere-src-6.6.2 qt6
+          curl -L https://download.qt.io/archive/qt/6.6/${{ env.QT6_VERSION }}/single/qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz -o qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
+          tar -xf qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
+          mv qt-everywhere-src-${{ env.QT6_VERSION }} qt6
 
       - name: Configure Qt6 Documentation
         run: |
