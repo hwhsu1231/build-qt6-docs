@@ -35,34 +35,52 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      # - name: Testing
-      #   run: |
-      #     # apt list pkg-config
-      #     # apt list libpango1.0-dev
-      #     # apt list libcogl-pango-dev
-      #     # apt list libjpeg-dev
-      #     apt list llvm-14
-      #     apt list clang-14
-      #     apt list libclang-14-dev
-
       # https://wiki.qt.io/Building_Qt_6_from_Git
       - name: Install the Prerequisites
         run: |
           sudo apt update
-          sudo apt install  \
-            cmake           \
-            python3         \
-            python3-pip     \
-            ninja-build     \
+          sudo apt install    \
+            gcc               \
+            build-essentials  \
+            cmake             \
+            python3           \
+            python3-pip       \
+            ninja-build       \
             perl
 
-      - name: Install the Prerequisites (for Linux OpenGL)
+      # https://wiki.qt.io/Building_Qt_6_from_Git
+      # https://doc.qt.io/qt-6/linux-requirements.html
+      - name: Install the Prerequisites (for Linux Requirements)
         run: |
-          sudo apt install      \
-            libgl-dev           \
-            libegl-dev          \
-            libfontconfig1-dev  \
-            libinput-dev
+          sudo apt install          \
+            libgl-dev               \
+            libegl-dev              \
+            libinput-dev            \
+            libfontconfig1-dev      \
+            libfreetype6-dev        \
+            libx11-dev              \
+            libx11-xcb-dev          \
+            libxext-dev             \
+            libxfixes-dev           \
+            libxi-dev               \
+            libxrender-dev          \
+            libxcb1-dev             \
+            libxcb-cursor-dev       \
+            libxcb-glx0-dev         \
+            libxcb-keysyms1-dev     \
+            libxcb-image0-dev       \
+            libxcb-shm0-dev         \
+            libxcb-icccm4-dev       \
+            libxcb-sync-dev         \
+            libxcb-xfixes0-dev      \
+            libxcb-shape0-dev       \
+            libxcb-randr0-dev       \
+            libxcb-render-util0-dev \
+            libxcb-util-dev         \
+            libxcb-xinerama0-dev    \
+            libxcb-xkb-dev          \
+            libxkbcommon-dev        \
+            libxkbcommon-x11-dev
 
       - name: Install the Prerequisites (for QDoc)
         run: |
