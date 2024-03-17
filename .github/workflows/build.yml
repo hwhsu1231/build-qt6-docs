@@ -38,85 +38,88 @@ jobs:
           apt list libcogl-pango-dev
           apt list libjpeg-dev
 
-      # # https://wiki.qt.io/Building_Qt_6_from_Git
-      # - name: Install the Prerequisites
-      #   run: |
-      #     sudo apt update
-      #     sudo apt install \
-      #       cmake \
-      #       python3 \
-      #       python3-pip \
-      #       ninja-build \
-      #       bison \
-      #       flex \
-      #       perl \
-      #       gperf \
-      #       libnss3-dev \
-      #       libdbus-1-dev \
-      #       libclang-dev \
-      #       libgl-dev \
-      #       libegl-dev \
-      #       libfontconfig1-dev \
-      #       libinput-dev
+      # https://wiki.qt.io/Building_Qt_6_from_Git
+      - name: Install the Prerequisites
+        run: |
+          sudo apt update
+          sudo apt install \
+            cmake \
+            python3 \
+            python3-pip \
+            ninja-build \
+            bison \
+            flex \
+            perl \
+            gperf \
+            libnss3-dev \
+            libdbus-1-dev \
+            libclang-dev \
+            libgl-dev \
+            libegl-dev \
+            libfontconfig1-dev \
+            libinput-dev
+          sudo apt install libpango1.0-dev
+          sudo apt install libcogl-pango-dev
+          sudo apt install libjpeg-dev
 
-      # - name: Install the Prerequisites (html5lib)
-      #   run: |
-      #     pip install html5lib
+      - name: Install the Prerequisites (html5lib)
+        run: |
+          pip install html5lib
 
-      # - name: Install the Prerequisites (NodeJS 14)
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 14
+      - name: Install the Prerequisites (NodeJS 14)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 14
 
-      # - name: Check the Installation
-      #   run: |
-      #     which cmake && cmake --version
-      #     echo "----------------------------------------"
-      #     which python3 && python3 --version
-      #     echo "----------------------------------------"
-      #     which ninja && ninja --version
-      #     echo "----------------------------------------"
-      #     which node && node --version
-      #     echo "----------------------------------------"
-      #     which bison && bison --version
-      #     echo "----------------------------------------"
-      #     which flex && flex --version
-      #     echo "----------------------------------------"
-      #     which perl && perl --version
-      #     echo "----------------------------------------"
-      #     which gperf && gperf --version
+      - name: Check the Installation
+        run: |
+          which cmake && cmake --version
+          echo "----------------------------------------"
+          which python3 && python3 --version
+          echo "----------------------------------------"
+          which ninja && ninja --version
+          echo "----------------------------------------"
+          which node && node --version
+          echo "----------------------------------------"
+          which bison && bison --version
+          echo "----------------------------------------"
+          which flex && flex --version
+          echo "----------------------------------------"
+          which perl && perl --version
+          echo "----------------------------------------"
+          which gperf && gperf --version
 
-      # - name: Prepare the Qt6 Sources
-      #   run: |
-      #     curl -L https://download.qt.io/archive/qt/6.6/${{ env.QT6_VERSION }}/single/qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz -o qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
-      #     tar -xf qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
-      #     mv qt-everywhere-src-${{ env.QT6_VERSION }} qt6
+      - name: Prepare the Qt6 Sources
+        run: |
+          curl -L https://download.qt.io/archive/qt/6.6/${{ env.QT6_VERSION }}/single/qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz -o qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
+          tar -xf qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
+          mv qt-everywhere-src-${{ env.QT6_VERSION }} qt6
 
-      # - name: Configure the Qt6 Project
-      #   run: |
-      #     cd qt6
-      #     mkdir build && cd build
-      #     ../configure \
-      #       -developer-build 
-      #       # -prefix ${{ github.workspace }}/html
+      - name: Configure the Qt6 Project
+        run: |
+          cd qt6
+          mkdir build && cd build
+          ../configure \
+            -developer-build 
+            # -prefix ${{ github.workspace }}/html
 
-      # - name: Build the Qt6 Project with the 'html_docs' Target
+      - name: Build the Qt6 Project with the 'html_docs' Target
+        run: |
+          cd qt6
+          cd build
+          cmake --build . --target html_docs
+
+      # - name: Install the Qt6 Project
       #   run: |
       #     cd qt6
       #     cd build
-      #     cmake --build . --target html_docs
+      #     cmake --install .
 
-      # # - name: Install the Qt6 Project
-      # #   run: |
-      # #     cd qt6
-      # #     cd build
-      # #     cmake --install .
-
-      # - name: Deploy to 'gh-pages' branch
-      #   uses: JamesIves/github-pages-deploy-action@v4
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     branch: gh-pages
-      #     folder: ./qt6/build/qtbase/qdoc
-      #     target-folder: .
-      #     clean: false
+      - name: Deploy to 'gh-pages' branch
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: ./qt6/build/qtbase/qdoc
+          target-folder: .
+          clean: false
