@@ -65,12 +65,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Quick)</td></tr>
 </ul>
 <h2 id="public-functions">Public Functions</h2>
 <div class="table"><table class="alignedsummary" translate="no">
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="qnativeinterface-qsgvulkantexture.html#nativeImage" translate="no">nativeImage</a></b>() const</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="qnativeinterface-qsgvulkantexture.html#nativeImageLayout" translate="no">nativeImageLayout</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> virtual VkImage </td><td class="memItemRight bottomAlign"><b><a href="qnativeinterface-qsgvulkantexture.html#nativeImage" translate="no">nativeImage</a></b>() const = 0</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> virtual VkImageLayout </td><td class="memItemRight bottomAlign"><b><a href="qnativeinterface-qsgvulkantexture.html#nativeImageLayout" translate="no">nativeImageLayout</a></b>() const = 0</td></tr>
 </table></div>
 <h2 id="static-public-members">Static Public Members</h2>
 <div class="table"><table class="alignedsummary" translate="no">
-<tr><td class="memItemLeft rightAlign topAlign"> QSGTexture *</td><td class="memItemRight bottomAlign"><b><a href="qnativeinterface-qsgvulkantexture.html#fromNative" translate="no">fromNative</a></b>(int <i>image</i>, int <i>layout</i>, QQuickWindow *<i>window</i>, const QSize &amp;<i>size</i>, QQuickWindow::CreateTextureOptions <i>options</i> = {})</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QSGTexture *</td><td class="memItemRight bottomAlign"><b><a href="qnativeinterface-qsgvulkantexture.html#fromNative" translate="no">fromNative</a></b>(VkImage <i>image</i>, VkImageLayout <i>layout</i>, QQuickWindow *<i>window</i>, const QSize &amp;<i>size</i>, QQuickWindow::CreateTextureOptions <i>options</i> = {})</td></tr>
 </table></div>
 <!-- $$$QSGVulkanTexture-description -->
 <div class="descr">
@@ -79,8 +79,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Quick)</td></tr>
 <!-- @@@QSGVulkanTexture -->
 <div class="func">
 <h2>Member Function Documentation</h2>
-<!-- $$$fromNative[overload1]$$$fromNativeintintQQuickWindow*constQSize&QQuickWindow::CreateTextureOptions -->
-<h3 class="fn" translate="no" id="fromNative"><code translate="no">[static, since 6.0] </code><span class="type"><a href="qsgtexture.html" translate="no">QSGTexture</a></span> *QSGVulkanTexture::<span class="name">fromNative</span>(<span class="type">int</span> <i>image</i>, <span class="type">int</span> <i>layout</i>, <span class="type"><a href="qquickwindow.html" translate="no">QQuickWindow</a></span> *<i>window</i>, const <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> &amp;<i>size</i>, <span class="type"><a href="qquickwindow.html#CreateTextureOption-enum" translate="no">QQuickWindow::CreateTextureOptions</a></span> <i>options</i> = {})</h3>
+<!-- $$$fromNative[overload1]$$$fromNativeVkImageVkImageLayoutQQuickWindow*constQSize&QQuickWindow::CreateTextureOptions -->
+<h3 class="fn" translate="no" id="fromNative"><code translate="no">[static, since 6.0] </code><span class="type"><a href="qsgtexture.html" translate="no">QSGTexture</a></span> *QSGVulkanTexture::<span class="name">fromNative</span>(<span class="type">VkImage</span> <i>image</i>, <span class="type">VkImageLayout</span> <i>layout</i>, <span class="type"><a href="qquickwindow.html" translate="no">QQuickWindow</a></span> *<i>window</i>, const <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> &amp;<i>size</i>, <span class="type"><a href="qquickwindow.html#CreateTextureOption-enum" translate="no">QQuickWindow::CreateTextureOptions</a></span> <i>options</i> = {})</h3>
 <p>Creates a new <a href="qsgtexture.html" translate="no">QSGTexture</a> wrapping an existing Vulkan <i translate="no">image</i> object for <i translate="no">window</i>.</p>
 <p>The native object is wrapped, but not owned, by the resulting <a href="qsgtexture.html" translate="no">QSGTexture</a>. The caller of the function is responsible for deleting the returned <a href="qsgtexture.html" translate="no">QSGTexture</a>, but that will not destroy the underlying native object.</p>
 <p>This function is currently suitable for 2D RGBA textures only.</p>
@@ -97,11 +97,11 @@ target_link_libraries(mytarget PRIVATE Qt6::Quick)</td></tr>
 <p><b>See also </b><a href="qquickwindow.html#sceneGraphInitialized" translate="no">QQuickWindow::sceneGraphInitialized</a>(), <a href="qsgtexture.html" translate="no">QSGTexture</a>, <a href="qtquick-scenegraph-metaltextureimport-example.html" translate="no">Scene Graph - Metal Texture Import</a>, and <a href="qtquick-scenegraph-vulkantextureimport-example.html" translate="no">Scene Graph - Vulkan Texture Import</a>.</p>
 <!-- @@@fromNative -->
 <!-- $$$nativeImage[overload1]$$$nativeImage -->
-<h3 class="fn" translate="no" id="nativeImage"><span class="type">int</span> QSGVulkanTexture::<span class="name">nativeImage</span>() const</h3>
+<h3 class="fn" translate="no" id="nativeImage"><code translate="no">[pure virtual] </code><span class="type">VkImage</span> QSGVulkanTexture::<span class="name">nativeImage</span>() const</h3>
 <p>Returns the VkImage handle.</p>
 <!-- @@@nativeImage -->
 <!-- $$$nativeImageLayout[overload1]$$$nativeImageLayout -->
-<h3 class="fn" translate="no" id="nativeImageLayout"><span class="type">int</span> QSGVulkanTexture::<span class="name">nativeImageLayout</span>() const</h3>
+<h3 class="fn" translate="no" id="nativeImageLayout"><code translate="no">[pure virtual] </code><span class="type">VkImageLayout</span> QSGVulkanTexture::<span class="name">nativeImageLayout</span>() const</h3>
 <p>Returns the image layout.</p>
 <!-- @@@nativeImageLayout -->
 </div>

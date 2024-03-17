@@ -42,6 +42,7 @@
 <h3 id="toc">Contents</h3>
 <ul>
 <li class="level1"><a href="#public-variables">Public Variables</a></li>
+<li class="level1"><a href="#static-public-members">Static Public Members</a></li>
 <li class="level1"><a href="#details">Detailed Description</a></li>
 <li class="level2"><a href="#working-with-existing-vulkan-devices">Working with existing Vulkan devices</a></li>
 </ul>
@@ -67,6 +68,11 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QByteArrayList </td><td class="memItemRight bottomAlign"><b><a href="qrhivulkaninitparams.html#deviceExtensions-var" translate="no">deviceExtensions</a></b></td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QVulkanInstance *</td><td class="memItemRight bottomAlign"><b><a href="qrhivulkaninitparams.html#inst-var" translate="no">inst</a></b></td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QWindow *</td><td class="memItemRight bottomAlign"><b><a href="qrhivulkaninitparams.html#window-var" translate="no">window</a></b></td></tr>
+</table></div>
+<h2 id="static-public-members">Static Public Members</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> QByteArrayList </td><td class="memItemRight bottomAlign"><b><a href="qrhivulkaninitparams.html#preferredExtensionsForImportedDevice" translate="no">preferredExtensionsForImportedDevice</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QByteArrayList </td><td class="memItemRight bottomAlign"><b><a href="qrhivulkaninitparams.html#preferredInstanceExtensions" translate="no">preferredInstanceExtensions</a></b>()</td></tr>
 </table></div>
 <!-- $$$QRhiVulkanInitParams-description -->
 <div class="descr">
@@ -103,7 +109,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p><b>Note: </b>Even when a window is specified, <a href="qrhiswapchain.html" translate="no">QRhiSwapChain</a> objects can be created for other windows as well, as long as they all have their <a href="qwindow.html#surfaceType" translate="no">QWindow::surfaceType</a>() set to <a href="qsurface.html#SurfaceType-enum" translate="no">QSurface::VulkanSurface</a>.</p>
 </div>
 <p>To request additional extensions to be enabled on the Vulkan device, list them in <a href="qrhivulkaninitparams.html#deviceExtensions-var" translate="no">deviceExtensions</a>. This can be relevant when integrating with native Vulkan rendering code.</p>
-<p>It is expected that the backend's desired list of instance extensions will be queried by calling the static function preferredInstanceExtensions() before initializing a <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a>. The returned list can be safely passed to <a href="qvulkaninstance.html#setExtensions" translate="no">QVulkanInstance::setExtensions</a>() as-is, because unsupported extensions are filtered out automatically. If this is not done, certain features, such as <a href="qrhi.html#Feature-enum" translate="no">QRhi::CustomInstanceStepRate</a> may be reported as unsupported even when the Vulkan implementation on the system has support for the relevant functionality.</p>
+<p>It is expected that the backend's desired list of instance extensions will be queried by calling the static function <a href="qrhivulkaninitparams.html#preferredInstanceExtensions" translate="no">preferredInstanceExtensions</a>() before initializing a <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a>. The returned list can be safely passed to <a href="qvulkaninstance.html#setExtensions" translate="no">QVulkanInstance::setExtensions</a>() as-is, because unsupported extensions are filtered out automatically. If this is not done, certain features, such as <a href="qrhi.html#Feature-enum" translate="no">QRhi::CustomInstanceStepRate</a> may be reported as unsupported even when the Vulkan implementation on the system has support for the relevant functionality.</p>
 <p>For full functionality the <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a> needs to have API 1.1 enabled, when available. This means calling <a href="qvulkaninstance.html#setApiVersion" translate="no">QVulkanInstance::setApiVersion</a>() with 1.1 or higher whenever <a href="qvulkaninstance.html#supportedApiVersion" translate="no">QVulkanInstance::supportedApiVersion</a>() reports that at least Vulkan 1.1 is supported. If this is not done, certain features, such as <a href="qrhi.html#Feature-enum" translate="no">QRhi::RenderTo3DTextureSlice</a> may be reported as unsupported even when the Vulkan implementation on the system supports Vulkan 1.1 or newer.</p>
 <h4 id="working-with-existing-vulkan-devices">Working with existing Vulkan devices</h4>
 <p>When interoperating with another graphics engine, it may be necessary to get a <a href="qrhi.html" translate="no">QRhi</a> instance that uses the same Vulkan device. This can be achieved by passing a pointer to a <a href="qrhivulkannativehandles.html" translate="no">QRhiVulkanNativeHandles</a> to <a href="qrhi.html#create" translate="no">QRhi::create</a>().</p>
@@ -111,9 +117,21 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p>To adopt an existing <code translate="no">VkDevice</code>, the device field must be set to a non-null value as well. In addition, the graphics queue family index is required. The queue index is optional, as the default of 0 is often suitable.</p>
 <p>Optionally, an existing command pool object can be specified as well. Also optionally, vmemAllocator can be used to share the same <a href="https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator" translate="no">Vulkan memory allocator</a> between two <a href="qrhi.html" translate="no">QRhi</a> instances.</p>
 <p>The <a href="qrhi.html" translate="no">QRhi</a> does not take ownership of any of the external objects.</p>
-<p>Applications are encouraged to query the list of desired device extensions by calling the static function preferredExtensionsForImportedDevice(), and enable them on the VkDevice. Otherwise certain <a href="qrhi.html" translate="no">QRhi</a> features may not be available.</p>
+<p>Applications are encouraged to query the list of desired device extensions by calling the static function <a href="qrhivulkaninitparams.html#preferredExtensionsForImportedDevice" translate="no">preferredExtensionsForImportedDevice</a>(), and enable them on the VkDevice. Otherwise certain <a href="qrhi.html" translate="no">QRhi</a> features may not be available.</p>
 </div>
 <!-- @@@QRhiVulkanInitParams -->
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$preferredExtensionsForImportedDevice[overload1]$$$preferredExtensionsForImportedDevice -->
+<h3 class="fn" translate="no" id="preferredExtensionsForImportedDevice"><code translate="no">[static] </code><span class="type"><a href="../qtcore/qbytearraylist.html" translate="no">QByteArrayList</a></span> QRhiVulkanInitParams::<span class="name">preferredExtensionsForImportedDevice</span>()</h3>
+<p>Returns the list of device extensions that are expected to be enabled on the <code translate="no">VkDevice</code> when creating a Vulkan-based <a href="qrhi.html" translate="no">QRhi</a> with an externally created <code translate="no">VkDevice</code> object.</p>
+<!-- @@@preferredExtensionsForImportedDevice -->
+<!-- $$$preferredInstanceExtensions[overload1]$$$preferredInstanceExtensions -->
+<h3 class="fn" translate="no" id="preferredInstanceExtensions"><code translate="no">[static] </code><span class="type"><a href="../qtcore/qbytearraylist.html" translate="no">QByteArrayList</a></span> QRhiVulkanInitParams::<span class="name">preferredInstanceExtensions</span>()</h3>
+<p>Returns the list of instance extensions that are expected to be enabled on the <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a> that is used for the Vulkan-based <a href="qrhi.html" translate="no">QRhi</a>.</p>
+<p>The returned list can be safely passed to <a href="qvulkaninstance.html#setExtensions" translate="no">QVulkanInstance::setExtensions</a>() as-is, because unsupported extensions are filtered out automatically.</p>
+<!-- @@@preferredInstanceExtensions -->
+</div>
 <div class="vars">
 <h2>Member Variable Documentation</h2>
 <!-- $$$deviceExtensions -->
