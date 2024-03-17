@@ -1,5 +1,8 @@
 # Build Qt6 Documentation
 
+Preview in GitHub Pages:
+
+https://hwhsu1231.github.io/build-qt6-docs/qtdoc/index.html
 
 ## Install the Prerequisites
 
