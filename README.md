@@ -3,9 +3,19 @@
 
 ## Install the Prerequisites
 
-```
+```bash
 sudo apt install gcc build-essential cmake python3 python3-pip ninja-build nodejs bison flex perl gperf libclang-dev libgl-dev libegl-dev libfontconfig1-dev libinput-dev
 pip install html5lib
+```
+
+```bash
+# WARNING: QtWebEngine won't be built. Build requires dbus.
+sudo apt install libdbus-1-dev
+```
+
+```bash
+# WARNING: QtWebEngine won't be built. Build requires nss >= 3.26.
+sudo apt install libnss3-dev
 ```
 
 ## Check the Prerequisites
