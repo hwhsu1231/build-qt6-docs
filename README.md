@@ -28,6 +28,16 @@ sudo apt install libnss3-dev
 ```
 
 ```bash
+# [QtWebEngine] Could NOT find Cups (missing: CUPS_LIBRARIES CUPS_INCLUDE_DIR) 
+sudo apt install libcups2-dev
+```
+
+```bash
+# [QtGrpc] Could NOT find Protobuf (missing: Protobuf_LIBRARIES Protobuf_INCLUDE_DIR) 
+sudo apt install libprotobuf-dev
+```
+
+```bash
 sudo snap install node --classic --channel=14
 ```
 
