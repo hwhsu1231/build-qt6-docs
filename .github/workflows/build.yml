@@ -49,48 +49,58 @@ jobs:
             libegl-dev \
             libfontconfig1-dev \
             libinput-dev
+
+      - name: Install the Prerequisites (html5lib)
+        run: |
           pip install html5lib
 
-      - name: Install NodeJS 14
+      - name: Install the Prerequisites (NodeJS 14)
         uses: actions/setup-node@v4
         with:
           node-version: 14
 
       - name: Check the Installation
         run: |
-          cmake --version
-          python3 --version
-          ninja --version
-          # nodejs --version
-          node --version
-          bison --version
-          flex --version
-          perl --version
-          gperf --version
+          which cmake && cmake --version
+          echo "----------------------------------------"
+          which python3 && python3 --version
+          echo "----------------------------------------"
+          which ninja && ninja --version
+          echo "----------------------------------------"
+          which nodejs && nodejs --version
+          echo "----------------------------------------"
+          which node && node --version
+          echo "----------------------------------------"
+          which bison && bison --version
+          echo "----------------------------------------"
+          which flex && flex --version
+          echo "----------------------------------------"
+          which perl && perl --version
+          echo "----------------------------------------"
+          which gperf && gperf --version
 
-      - name: Prepare Qt6 Sources
+      - name: Prepare the Qt6 Sources
         run: |
           curl -L https://download.qt.io/archive/qt/6.6/${{ env.QT6_VERSION }}/single/qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz -o qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
           tar -xf qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
           mv qt-everywhere-src-${{ env.QT6_VERSION }} qt6
 
-      - name: Configure Qt6 Documentation
+      - name: Configure the Qt6 Project
         run: |
           cd qt6
           mkdir build-qt && cd build-qt
-          # ../configure \
-          #   # -no-feature-qtwebengine-build \
-          #   # -developer-build
-          #   -prefix=${{ github.workspace }}/html
-          ../configure \
-            -no-feature-qtwebengine-build \
-            -prefix ${{ github.workspace }}/html
+          ../configure -prefix ${{ github.workspace }}/html
 
-      - name: Build and Install Qt6 Documentation
+      - name: Build the Qt6 Project with the 'html_docs' Target
         run: |
           cd qt6
           cd build-qt
           cmake --build . --target html_docs
+
+      - name: Install the Qt6 Project
+        run: |
+          cd qt6
+          cd build-qt
           cmake --install .
 
       - name: Deploy to 'gh-pages' branch
