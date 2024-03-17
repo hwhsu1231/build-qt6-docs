@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- simple-example.qdoc -->
+  <meta name="description" content="Simple example of how to set up an HTTP server.">
+  <title>Simple HTTP Server | Qt HTTP Server 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qthttpserver-index.html" translate="no">Qt HTTP Server</a></li>
+<li><a href="qthttpserver-examples.html" translate="no">Qt HTTP Server Examples</a></li>
+<li>Simple HTTP Server</li>
+<li id="buildversion"><a href="qthttpserver-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Simple HTTP Server</h1>
+<!-- $$$simple-brief -->
+<p>Simple example of how to set up an HTTP server.</p>
+<!-- @@@simple -->
+<!-- $$$simple-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/browserwindow.png" alt="" /></p><p>This example shows how to set up a server using the <a href="qhttpserver.html" translate="no">QHttpServer</a> class. The server is bound to an incoming port using the <code translate="no">listen()</code> function, and the <code translate="no">route()</code> function is used to add a handler for each of several different incoming URLs. For one of the URLs, &quot;/auth&quot;, <a href="https://datatracker.ietf.org/doc/html/rfc7617" translate="no">Basic HTTP Authentication</a> is used.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">const</span> <span class="keyword">auto</span> sslCertificateChain <span class="operator">=</span>
+         <span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span><span class="operator">::</span>fromPath(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;:/assets/certificate.crt&quot;</span>));
+ <span class="keyword">if</span> (sslCertificateChain<span class="operator">.</span>empty()) {
+     <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;QHttpServerExample&quot;</span><span class="operator">,</span>
+                                               <span class="string">&quot;Couldn't retrieve SSL certificate from file.&quot;</span>);
+     <span class="keyword">return</span> <span class="operator">-</span><span class="number">1</span>;
+ }
+ <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> privateKeyFile(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;:/assets/private.key&quot;</span>));
+ <span class="keyword">if</span> (<span class="operator">!</span>privateKeyFile<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly)) {
+     <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;QHttpServerExample&quot;</span><span class="operator">,</span>
+                                               <span class="string">&quot;Couldn't open file for reading: %1&quot;</span>)
+                   <span class="operator">.</span>arg(privateKeyFile<span class="operator">.</span>errorString());
+     <span class="keyword">return</span> <span class="operator">-</span><span class="number">1</span>;
+ }
+ httpServer<span class="operator">.</span>sslSetup(sslCertificateChain<span class="operator">.</span>front()<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qsslkey.html" translate="no">QSslKey</a></span>(<span class="operator">&amp;</span>privateKeyFile<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>Rsa));
+ privateKeyFile<span class="operator">.</span>close();
+
+ <span class="keyword">const</span> <span class="keyword">auto</span> sslPort <span class="operator">=</span> httpServer<span class="operator">.</span>listen(<span class="type"><a href="../qtnetwork/qhostaddress.html" translate="no">QHostAddress</a></span><span class="operator">::</span>Any);
+ <span class="keyword">if</span> (<span class="operator">!</span>sslPort) {
+     <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;QHttpServerExample&quot;</span><span class="operator">,</span>
+                                               <span class="string">&quot;Server failed to listen on a port.&quot;</span>);
+     <span class="keyword">return</span> <span class="operator">-</span><span class="number">1</span>;
+ }
+</pre>
+<p>In the above example <code translate="no">QSslConfiguration</code> is used to show how to create an SSL configuration for a <a href="qhttpserver.html" translate="no">QHttpServer</a> to serve HTTPS traffic.</p>
+<pre class="cpp" translate="no">
+ httpServer<span class="operator">.</span>afterRequest(<span class="operator">[</span><span class="operator">]</span>(<span class="type"><a href="qhttpserverresponse.html" translate="no">QHttpServerResponse</a></span> <span class="operator">&amp;</span><span class="operator">&amp;</span>resp) {
+     resp<span class="operator">.</span>setHeader(<span class="string">&quot;Server&quot;</span><span class="operator">,</span> <span class="string">&quot;Qt HTTP Server&quot;</span>);
+     <span class="keyword">return</span> std<span class="operator">::</span>move(resp);
+ });
+</pre>
+<p>The above example shows how to use the <code translate="no">afterRequest()</code> function of the <a href="qhttpserver.html" translate="no">QHttpServer</a> to change the <a href="qhttpserverresponse.html" translate="no">QHttpServerResponse</a> object after it has been handled by the <code translate="no">route()</code> function. It demonstrates how HTTP headers can be added to the response.</p>
+<p>Files:</p>
+<ul>
+<li><a href="qthttpserver-simple-cmakelists-txt.html" translate="no">simple/CMakeLists.txt</a></li>
+<li><a href="qthttpserver-simple-main-cpp.html" translate="no">simple/main.cpp</a></li>
+<li><a href="qthttpserver-simple-simple-pro.html" translate="no">simple/simple.pro</a></li>
+</ul>
+<p>Images:</p>
+<ul>
+<li><a href="images/used-in-examples/simple/assets/qt-logo.png" translate="no">simple/assets/qt-logo.png</a></li>
+</ul>
+</div>
+<!-- @@@simple -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

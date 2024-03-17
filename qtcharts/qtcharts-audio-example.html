@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- examples-audio.qdoc -->
+  <meta name="description" content="This example shows the drawing of microphone samples vs audio level.">
+  <title>Audio Samples vs Sound Level | Qt Charts 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtcharts-index.html" translate="no">Qt Charts</a></li>
+<li><a href="qtcharts-examples.html" translate="no">Qt Charts Examples</a></li>
+<li>Audio Samples vs Sound Level</li>
+<li id="buildversion"><a href="qtcharts-index.html" translate="no">Qt Charts | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#retrieving-the-audio-data">Retrieving the audio data</a></li>
+<li class="level1"><a href="#setting-up-the-chart">Setting up the chart</a></li>
+<li class="level2"><a href="#the-x-axis-samples">The x-axis &quot;Samples&quot;</a></li>
+<li class="level2"><a href="#the-y-axis-audio-level">The y-axis &quot;Audio Level&quot;</a></li>
+<li class="level2"><a href="#attaching-the-axes-and-setting-the-chart-title">Attaching the axes and setting the chart title</a></li>
+<li class="level2"><a href="#laying-out-the-chart">Laying out the chart</a></li>
+<li class="level1"><a href="#using-the-audio-input-data">Using the audio input data</a></li>
+<li class="level2"><a href="#xyseriesiodevice">XYSeriesIODevice</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Audio Samples vs Sound Level</h1>
+<!-- $$$audio-brief -->
+<p>This example shows the drawing of microphone samples vs audio level.</p>
+<!-- @@@audio -->
+<!-- $$$audio-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/examples_audio.png" alt="" /></p><p class="centerAlign"><img src="images/dynamicwavform.gif" alt="" /></p><p>This example's implementation is based on Widgets. See <a href="../qtwidgets/qtwidgets-tutorials-notepad-example.html" translate="no">Getting Started Programming with Qt Widgets</a> for information specific to that. The following sections cover how to use the Qt Charts API to display dynamic data on a samples vs sound level graph. For more information on sampling, see <a href="https://en.wikipedia.org/wiki/Sampling_(signal_processing)" translate="no">Sampling_(signal_processing)</a>.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="retrieving-the-audio-data">Retrieving the audio data</h4>
+<p>Thanks to the inclusion of the Qt Multimedia module in <code translate="no">main.cpp</code>, we create a new <a href="../qtmultimedia/qaudiodevice.html" translate="no">QAudioDevice</a> that represents the default audio device of the target platform. We also check that we have an audio input device and let the user know if there is no input audio device available.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">if</span> (inputDevice<span class="operator">.</span>isNull()) {
+         <span class="type"><a href="../qtwidgets/qmessagebox.html" translate="no">QMessageBox</a></span><span class="operator">::</span>warning(nullptr<span class="operator">,</span> <span class="string">&quot;audio&quot;</span><span class="operator">,</span>
+                              <span class="string">&quot;There is no audio input device available.&quot;</span>);
+         <span class="keyword">return</span> <span class="operator">-</span><span class="number">1</span>;
+     }
+</pre>
+<p>The audio device is then passed to Widget <code translate="no">w</code> using its constructor argument <code translate="no">w</code>. Then <code translate="no">w.show()</code> is called to display the widget.</p>
+<pre class="cpp" translate="no">
+     Widget w(inputDevice);
+     w<span class="operator">.</span>resize(<span class="number">800</span><span class="operator">,</span> <span class="number">600</span>);
+     w<span class="operator">.</span>show();
+</pre>
+<h4 id="setting-up-the-chart">Setting up the chart</h4>
+<p>This section covers setting up the chart and axes.</p>
+<p>In <code translate="no">widget.cpp</code>, the re-implemented Widget constructor does the heavy lifting when it comes to the application's logic. The <a href="qchart.html" translate="no">QChart</a>, <a href="qlineseries.html" translate="no">QLineSeries</a>, and <a href="qchartview.html" translate="no">QChartView</a> objects are declared as follows:</p>
+<pre class="cpp" translate="no">
+     : <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>(parent)
+     <span class="operator">,</span> m_chart(<span class="keyword">new</span> <span class="type"><a href="qchart.html" translate="no">QChart</a></span>)
+     <span class="operator">,</span> m_series(<span class="keyword">new</span> <span class="type"><a href="qlineseries.html" translate="no">QLineSeries</a></span>)
+ {
+     <span class="keyword">auto</span> chartView <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qchartview.html" translate="no">QChartView</a></span>(m_chart);
+     m_chart<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_series);
+</pre>
+<p>m_series is for <a href="qtcharts-audio-example.html#using-the-audio-input-data" translate="no">Using the audio input data</a>.</p>
+<h5 id="the-x-axis-samples">The x-axis &quot;Samples&quot;</h5>
+<p>We set the min to max range on the x-axis from 0 to the XYSeriesIODevice::sampleCount. (Declared in xyseriesiodevice.h as 2000). We then set its title text.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">auto</span> axisX <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qvalueaxis.html" translate="no">QValueAxis</a></span>;
+     axisX<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0</span><span class="operator">,</span> XYSeriesIODevice<span class="operator">::</span>sampleCount);
+     axisX<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%g&quot;</span>);
+     axisX<span class="operator">-</span><span class="operator">&gt;</span>setTitleText(<span class="string">&quot;Samples&quot;</span>);
+</pre>
+<h5 id="the-y-axis-audio-level">The y-axis &quot;Audio Level&quot;</h5>
+<p>We create the <a href="qvalueaxis.html" translate="no">QValueAxis</a> <code translate="no">axisY</code>, set its range and title text.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">auto</span> axisY <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qvalueaxis.html" translate="no">QValueAxis</a></span>;
+     axisY<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="number">1</span>);
+     axisY<span class="operator">-</span><span class="operator">&gt;</span>setTitleText(<span class="string">&quot;Audio level&quot;</span>);
+</pre>
+<h5 id="attaching-the-axes-and-setting-the-chart-title">Attaching the axes and setting the chart title</h5>
+<p>We attach the axes, hide the legend, and set the chart title to include the name of the microphone being used as an audio input.</p>
+<pre class="cpp" translate="no">
+     m_chart<span class="operator">-</span><span class="operator">&gt;</span>addAxis(axisX<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignBottom);
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>attachAxis(axisX);
+     m_chart<span class="operator">-</span><span class="operator">&gt;</span>addAxis(axisY<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignLeft);
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>attachAxis(axisY);
+     m_chart<span class="operator">-</span><span class="operator">&gt;</span>legend()<span class="operator">-</span><span class="operator">&gt;</span>hide();
+</pre>
+<h5 id="laying-out-the-chart">Laying out the chart</h5>
+<p>Here we use a <a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a> <code translate="no">mainLayout</code> and add a our QChartview <code translate="no">chartView</code> to the vertical layout.</p>
+<pre class="cpp" translate="no">
+     m_chart<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Data from the microphone (&quot;</span> <span class="operator">+</span> deviceInfo<span class="operator">.</span>description() <span class="operator">+</span> <span class="char">')'</span>);
+
+     <span class="keyword">auto</span> mainLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>(<span class="keyword">this</span>);
+</pre>
+<h4 id="using-the-audio-input-data">Using the audio input data</h4>
+<p>This section shows how the microphone data is passed to the <a href="qlineseries.html" translate="no">QLineSeries</a> <code translate="no">m_series</code>. As before this relies on the Qt Multimedia module.</p>
+<p>First we pass deviceInfo to a <a href="../qtmultimedia/qaudioinput.html" translate="no">QAudioInput</a> constructor.</p>
+<pre class="cpp" translate="no">
+     mainLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(chartView);
+
+     m_audioInput <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtmultimedia/qaudioinput.html" translate="no">QAudioInput</a></span>(deviceInfo<span class="operator">,</span> <span class="keyword">this</span>);
+
+     <span class="type"><a href="../qtmultimedia/qaudioformat.html" translate="no">QAudioFormat</a></span> formatAudio;
+</pre>
+<p>We then setup our <a href="../qtmultimedia/qaudioformat.html" translate="no">QAudioFormat</a> <code translate="no">formatAudio</code>, its channel count, sample rate, and sample format.</p>
+<pre class="cpp" translate="no">
+     formatAudio<span class="operator">.</span>setSampleRate(<span class="number">8000</span>);
+     formatAudio<span class="operator">.</span>setChannelCount(<span class="number">1</span>);
+</pre>
+<p>We can now create a <a href="../qtmultimedia/qaudiosource.html" translate="no">QAudioSource</a> and set its buffer size.</p>
+<pre class="cpp" translate="no">
+     formatAudio<span class="operator">.</span>setSampleFormat(<span class="type"><a href="../qtmultimedia/qaudioformat.html" translate="no">QAudioFormat</a></span><span class="operator">::</span>UInt8);
+
+     m_audioSource <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtmultimedia/qaudiosource.html" translate="no">QAudioSource</a></span>(deviceInfo<span class="operator">,</span> formatAudio);
+</pre>
+<p>Now its time to attach our data to the chart. To do this we have created a class XYSeriesIODevice. See <a href="qtcharts-audio-example.html#xyseriesiodevice" translate="no">XYSeriesIODevice</a> for how it is implemented.</p>
+<pre class="cpp" translate="no">
+     m_audioSource<span class="operator">-</span><span class="operator">&gt;</span>setBufferSize(<span class="number">200</span>);
+
+     m_device <span class="operator">=</span> <span class="keyword">new</span> XYSeriesIODevice(m_series<span class="operator">,</span> <span class="keyword">this</span>);
+     m_device<span class="operator">-</span><span class="operator">&gt;</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>WriteOnly);
+</pre>
+<h5 id="xyseriesiodevice">XYSeriesIODevice</h5>
+<p>Implemented in <code translate="no">xyseriesiodevice.cpp</code>, XYSeriesIODevice takes care of the signal sampling. The <code translate="no">writeData</code> function, with a fixed resolution of 4, sets the <a href="../qtcore/qlist.html" translate="no">QList</a> <code translate="no">m_buffer</code> size based on the sample count, and fills it with QPointFs with an incremental x value and the y value set to 0.</p>
+<pre class="cpp" translate="no">
+ {
+     <span class="keyword">static</span> <span class="keyword">const</span> <span class="type">int</span> resolution <span class="operator">=</span> <span class="number">4</span>;
+
+     <span class="keyword">if</span> (m_buffer<span class="operator">.</span>isEmpty()) {
+         m_buffer<span class="operator">.</span>reserve(sampleCount);
+         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> sampleCount; <span class="operator">+</span><span class="operator">+</span>i)
+             m_buffer<span class="operator">.</span>append(<span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(i<span class="operator">,</span> <span class="number">0</span>));
+     }
+
+     <span class="type">int</span> start <span class="operator">=</span> <span class="number">0</span>;
+</pre>
+<p>We then do some sampling.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">const</span> <span class="type">int</span> availableSamples <span class="operator">=</span> <span class="type">int</span>(maxSize) <span class="operator">/</span> resolution;
+     <span class="keyword">if</span> (availableSamples <span class="operator">&lt;</span> sampleCount) {
+         start <span class="operator">=</span> sampleCount <span class="operator">-</span> availableSamples;
+         <span class="keyword">for</span> (<span class="type">int</span> s <span class="operator">=</span> <span class="number">0</span>; s <span class="operator">&lt;</span> start; <span class="operator">+</span><span class="operator">+</span>s)
+             m_buffer<span class="operator">[</span>s<span class="operator">]</span><span class="operator">.</span>setY(m_buffer<span class="operator">.</span>at(s <span class="operator">+</span> availableSamples)<span class="operator">.</span>y());
+     }
+
+     <span class="keyword">for</span> (<span class="type">int</span> s <span class="operator">=</span> start; s <span class="operator">&lt;</span> sampleCount; <span class="operator">+</span><span class="operator">+</span>s<span class="operator">,</span> data <span class="operator">+</span><span class="operator">=</span> resolution)
+         m_buffer<span class="operator">[</span>s<span class="operator">]</span><span class="operator">.</span>setY(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(<span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span>(<span class="operator">*</span>data) <span class="operator">-</span><span class="number">128</span>) <span class="operator">/</span> <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(<span class="number">128</span>));
+
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>replace(m_buffer);
+     <span class="keyword">return</span> (sampleCount <span class="operator">-</span> start) <span class="operator">*</span> resolution;
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtcharts.git/tree/examples/charts/audio?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@audio -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

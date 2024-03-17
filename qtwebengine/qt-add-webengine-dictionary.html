@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qt_webengine_add_convert_dictionary.qdoc -->
+  <meta name="description" content="Converts the hunspell dictionary format into bdict binary format.">
+  <title>qt_add_webengine_dictionary | Qt WebEngine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtwebengine-index.html" translate="no">Qt WebEngine</a></li>
+<li>qt_add_webengine_dictionary</li>
+<li id="buildversion"><a href="qtwebengine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#synopsis">Synopsis</a></li>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#arguments">Arguments</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">qt_add_webengine_dictionary</h1>
+<!-- $$$qt-add-webengine-dictionary.html-description -->
+<div class="descr" id="details">
+<p>This command was introduced in Qt 6.3&#x2e;</p>
+<h2 id="synopsis">Synopsis</h2>
+<pre class="cpp plain" translate="no">
+ qt_add_webengine_dictionary(
+     [TARGET]
+     [SOURCE]
+     [OUTPUT_DIRECTORY]
+ )
+</pre>
+<p>If <a href="../qtcmake/cmake-qt5-and-qt6-compatibility.html#versionless-commands" translate="no">versionless commands</a> are disabled, use <code translate="no">qt6_webengine_add_dictionary()</code> instead. It supports the same set of arguments as this command.</p>
+<h2 id="description">Description</h2>
+<p>A spell checker in Qt Web Engine needs dictionaries in a specific binary format. This CMake command converts dictionaries from the <a href="https://sourceforge.net/projects/hunspell/" translate="no">Hunspell project</a>. into the <code translate="no">bdict</code> binary format. It creates a <code translate="no">qtwebengine_dictionaries</code> target, which your project can use as a dependency. This way your project can easily add dictionaries for the spell checker. Refer to the <a href="qtwebengine-webenginewidgets-spellchecker-example.html" translate="no">spell checker example</a> for more details.</p>
+<h2 id="arguments">Arguments</h2>
+<p><code translate="no">TARGET</code> is an optinal argument and specifies the name of the application target that should depend on <code translate="no">qtwebengine_dictionaries</code> target. In other words it is used to define a build dependency to create the binary format of dictionaries before building <code translate="no">TARGET</code>.</p>
+<p><code translate="no">SOURCE</code> is the absolute path to the <a href="https://sourceforge.net/projects/hunspell/" translate="no">Hunspell project</a> dictionary for which a corresponding binary format (<code translate="no">.bdict</code>) will be created.</p>
+<p><code translate="no">OUTPUT_DIRECTORY</code> is an optional argument and specifies the directory where the binary format of the dictionary will be created. If not specified, <code translate="no">CMAKE_CURRENT_BINARY_DIR</code> will be used as <code translate="no">OUTPUT_DIRECTORY</code>.</p>
+<div class="admonition note">
+<p><b>Note: </b>The <code translate="no">qtwebengine_dictionaries</code> directory or <code translate="no">&lt;CONFIG&gt;/qtwebengine_dictionaries</code> directories in the case of the multi-config generator is appended to OUTPUT_DIRECTORY. This helps to utilize dictionaries, as the <code translate="no">webengine_dictionaries</code> directory is the default search location.</p>
+</div>
+</div>
+<!-- @@@qt-add-webengine-dictionary.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

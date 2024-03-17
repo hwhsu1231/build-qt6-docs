@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;highlightseries.h&quot;</span>
+
+ <span class="keyword">const</span> <span class="type">float</span> darkRedPos <span class="operator">=</span> <span class="number">1.f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> redPos <span class="operator">=</span> <span class="number">0.8f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> yellowPos <span class="operator">=</span> <span class="number">0.6f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> greenPos <span class="operator">=</span> <span class="number">0.4f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> darkGreenPos <span class="operator">=</span> <span class="number">0.2f</span>;
+
+ HighlightSeries<span class="operator">::</span>HighlightSeries()
+ {
+     setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawSurface);
+     setFlatShadingEnabled(<span class="keyword">true</span>);
+     setVisible(<span class="keyword">false</span>);
+ }
+
+ HighlightSeries<span class="operator">::</span><span class="operator">~</span>HighlightSeries()
+ {
+ }
+
+ <span class="type">void</span> HighlightSeries<span class="operator">::</span>setTopographicSeries(TopographicSeries <span class="operator">*</span>series)
+ {
+     m_topographicSeries <span class="operator">=</span> series;
+     m_srcWidth <span class="operator">=</span> m_topographicSeries<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>array()<span class="operator">-</span><span class="operator">&gt;</span>at(<span class="number">0</span>)<span class="operator">-</span><span class="operator">&gt;</span>size();
+     m_srcHeight <span class="operator">=</span> m_topographicSeries<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>array()<span class="operator">-</span><span class="operator">&gt;</span>size();
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_topographicSeries<span class="operator">,</span> <span class="operator">&amp;</span>QSurface3DSeries<span class="operator">::</span>selectedPointChanged<span class="operator">,</span>
+                      <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>HighlightSeries<span class="operator">::</span>handlePositionChange);
+ }
+
+ <span class="type">void</span> HighlightSeries<span class="operator">::</span>handlePositionChange(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> <span class="operator">&amp;</span>position)
+ {
+     m_position <span class="operator">=</span> position;
+
+     <span class="keyword">if</span> (position <span class="operator">=</span><span class="operator">=</span> invalidSelectionPosition()) {
+         setVisible(<span class="keyword">false</span>);
+         <span class="keyword">return</span>;
+     }
+
+     <span class="type">int</span> halfWidth <span class="operator">=</span> m_width <span class="operator">/</span> <span class="number">2</span>;
+     <span class="type">int</span> halfHeight <span class="operator">=</span> m_height <span class="operator">/</span> <span class="number">2</span>;
+
+     <span class="type">int</span> startX <span class="operator">=</span> position<span class="operator">.</span>y() <span class="operator">-</span> halfWidth;
+     <span class="keyword">if</span> (startX <span class="operator">&lt;</span> <span class="number">0</span> )
+         startX <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> endX <span class="operator">=</span> position<span class="operator">.</span>y() <span class="operator">+</span> halfWidth;
+     <span class="keyword">if</span> (endX <span class="operator">&gt;</span> (m_srcWidth <span class="operator">-</span> <span class="number">1</span>))
+         endX <span class="operator">=</span> m_srcWidth <span class="operator">-</span> <span class="number">1</span>;
+     <span class="type">int</span> startZ <span class="operator">=</span> position<span class="operator">.</span>x() <span class="operator">-</span> halfHeight;
+     <span class="keyword">if</span> (startZ <span class="operator">&lt;</span> <span class="number">0</span> )
+         startZ <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> endZ <span class="operator">=</span> position<span class="operator">.</span>x() <span class="operator">+</span> halfHeight;
+     <span class="keyword">if</span> (endZ <span class="operator">&gt;</span> (m_srcHeight <span class="operator">-</span> <span class="number">1</span>))
+         endZ <span class="operator">=</span> m_srcHeight <span class="operator">-</span> <span class="number">1</span>;
+
+     <span class="type"><a href="qsurfacedataproxy.html" translate="no">QSurfaceDataProxy</a></span> <span class="operator">*</span>srcProxy <span class="operator">=</span> m_topographicSeries<span class="operator">-</span><span class="operator">&gt;</span>dataProxy();
+     <span class="keyword">const</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span> <span class="operator">&amp;</span>srcArray <span class="operator">=</span> <span class="operator">*</span>srcProxy<span class="operator">-</span><span class="operator">&gt;</span>array();
+
+     <span class="keyword">auto</span> <span class="operator">*</span>dataArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span>;
+     dataArray<span class="operator">-</span><span class="operator">&gt;</span>reserve(endZ <span class="operator">-</span> startZ);
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> startZ; i <span class="operator">&lt;</span> endZ; <span class="operator">+</span><span class="operator">+</span>i) {
+         <span class="keyword">auto</span> <span class="operator">*</span>newRow <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataRow-typedef" translate="no">QSurfaceDataRow</a></span>;
+         newRow<span class="operator">-</span><span class="operator">&gt;</span>reserve(endX <span class="operator">-</span> startX);
+         <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataRow-typedef" translate="no">QSurfaceDataRow</a></span> <span class="operator">*</span>srcRow <span class="operator">=</span> srcArray<span class="operator">.</span>at(i);
+         <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> startX; j <span class="operator">&lt;</span> endX; <span class="operator">+</span><span class="operator">+</span>j) {
+             QVector3D pos <span class="operator">=</span> srcRow<span class="operator">-</span><span class="operator">&gt;</span>at(j)<span class="operator">.</span>position();
+             pos<span class="operator">.</span>setY(pos<span class="operator">.</span>y() <span class="operator">+</span> m_heightAdjustment);
+             newRow<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="type"><a href="qsurfacedataitem.html" translate="no">QSurfaceDataItem</a></span>(pos));
+         }
+         dataArray<span class="operator">-</span><span class="operator">&gt;</span>append(newRow);
+     }
+
+     dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataArray);
+     setVisible(<span class="keyword">true</span>);
+ }
+
+ <span class="type">void</span> HighlightSeries<span class="operator">::</span>handleGradientChange(<span class="type">float</span> value)
+ {
+     <span class="type">float</span> ratio <span class="operator">=</span> m_minHeight <span class="operator">/</span> value;
+
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> gr;
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+     gr<span class="operator">.</span>setColorAt(darkGreenPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkGreen);
+     gr<span class="operator">.</span>setColorAt(greenPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>green);
+     gr<span class="operator">.</span>setColorAt(yellowPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>yellow);
+     gr<span class="operator">.</span>setColorAt(redPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+     gr<span class="operator">.</span>setColorAt(darkRedPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkRed);
+
+     setBaseGradient(gr);
+     setColorStyle(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ColorStyleRangeGradient);
+     handleZoomChange(ratio);
+ }
+
+ <span class="type">void</span> HighlightSeries<span class="operator">::</span>handleZoomChange(<span class="type">float</span> zoom)
+ {
+     m_heightAdjustment <span class="operator">=</span> (<span class="number">1.2f</span> <span class="operator">-</span> zoom) <span class="operator">*</span> <span class="number">10.f</span>;
+ }
+</pre>

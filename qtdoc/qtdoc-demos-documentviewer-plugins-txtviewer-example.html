@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- txtviewer.qdoc -->
+  <meta name="description" content="A widget example with menus, toolbars and a status bar.">
+  <title>Qt Widgets - Text Viewer Plugin Example | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Qt Widgets - Text Viewer Plugin Example</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#class-definition">Class Definition</a></li>
+<li class="level1"><a href="#txtviewer-class-implementation">TxtViewer Class Implementation</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt Widgets - Text Viewer Plugin Example</h1>
+<!-- $$$demos/documentviewer/plugins/txtviewer-brief -->
+<p>A widget example with menus, toolbars and a status bar.</p>
+<!-- @@@demos/documentviewer/plugins/txtviewer -->
+<!-- $$$demos/documentviewer/plugins/txtviewer-description -->
+<div class="descr" id="details">
+<p>The Text Viewer example is a text editor built around <a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a>, in the form of a plugin for a general-purpose <a href="qtdoc-demos-documentviewer-example.html" translate="no">Document Viewer</a>.</p>
+<p class="centerAlign"><img src="images/txtviewer_screenshot.png" alt="" /></p><p>All of the code for the Text Viewer example is in the <code translate="no">TxtViewer</code> class, which inherits <code translate="no">AbstractViewer</code>. <code translate="no">AbstractViewer</code> provides the framework for interaction between a viewer and the main window. The application provides <b translate="no">File</b>, <b translate="no">Edit</b>, and <b translate="no">Help</b> entries in the menu bar.</p>
+<p>The status bar at the bottom of the main window shows a message provided by the application to its user.</p>
+<p>Recently opened files are shown in the <b translate="no">File</b> menu. The example can only load one file at a time.</p>
+<h4 id="class-definition">Class Definition</h4>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> TxtViewer : <span class="keyword">public</span> ViewerInterface
+ {
+     Q_OBJECT
+     Q_PLUGIN_METADATA(IID <span class="string">&quot;org.qt-project.Qt.Examples.DocumentViewer.ViewerInterface&quot;</span> FILE <span class="string">&quot;txtviewer.json&quot;</span>)
+     Q_INTERFACES(ViewerInterface)
+</pre>
+<p>The class definition starts with the <code translate="no">Q_OBJECT</code> macro, which handles signals and slots. It is followed by the <code translate="no">Q_PLUGIN_METADATA</code> and <code translate="no">Q_INTERFACES</code> macros which are necessary to register the plugin.</p>
+<p>The class inherits from <code translate="no">ViewerInterface</code>, which inherits from <code translate="no">AbstractViewer</code>. The <code translate="no">ViewerInterface</code> class is used to provide an interface between the main window application and the plugin.</p>
+<p><code translate="no">QPluginLoader</code> also requires the file txtviewer.json, which has to contain the plugin's key:</p>
+<pre class="cpp" translate="no">
+ { <span class="string">&quot;Keys&quot;</span>: <span class="operator">[</span> <span class="string">&quot;txtviewer&quot;</span> <span class="operator">]</span> }
+ <span class="keyword">public</span>:
+     TxtViewer();
+     <span class="operator">~</span>TxtViewer() override;
+     <span class="type">void</span> init(<span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> <span class="operator">*</span>file<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a></span> <span class="operator">*</span>mainWindow) override;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> viewerName() <span class="keyword">const</span> override { <span class="keyword">return</span> QLatin1StringView(staticMetaObject<span class="operator">.</span>className()); };
+     <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> supportedMimeTypes() <span class="keyword">const</span> override;
+     <span class="type">bool</span> saveDocument() override { <span class="keyword">return</span> saveFile(m_file<span class="operator">.</span>get()); };
+     <span class="type">bool</span> saveDocumentAs() override;
+     <span class="type">bool</span> hasContent() <span class="keyword">const</span> override;
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> saveState() <span class="keyword">const</span> override { <span class="keyword">return</span> {}; }
+     <span class="type">bool</span> restoreState(<span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> <span class="operator">&amp;</span>) override { <span class="keyword">return</span> <span class="keyword">true</span>; }
+     <span class="type">bool</span> supportsOverview() <span class="keyword">const</span> override { <span class="keyword">return</span> <span class="keyword">false</span>; }
+
+ <span class="preprocessor">#ifdef QT_DOCUMENTVIEWER_PRINTSUPPORT</span>
+ <span class="keyword">protected</span>:
+     <span class="type">void</span> printDocument(<span class="type"><a href="../qtprintsupport/qprinter.html" translate="no">QPrinter</a></span> <span class="operator">*</span>printer) <span class="keyword">const</span> override;
+ <span class="preprocessor">#endif // QT_DOCUMENTVIEWER_PRINTSUPPORT</span>
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> setupTxtUi();
+
+ <span class="keyword">private</span>:
+     <span class="type">void</span> openFile();
+     <span class="type">bool</span> saveFile (<span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> <span class="operator">*</span>file);
+
+     <span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span> <span class="operator">*</span>m_textEdit;
+ };
+</pre>
+<p>The class defines no constructor, which means that only a standard constructor without arguments is available. All other functions, including the destructor, re-implement virtual functions of <code translate="no">ViewerInterface</code>. They are used to exchange data, information, and instructions with the main application.</p>
+<p>No functionality is implemented to save and restore settings. The <code translate="no">supportsOverview</code> function always returns <code translate="no">false</code>, which tells the main application that no window for thumbnail navigation has to be displayed.</p>
+<h4 id="txtviewer-class-implementation">TxtViewer Class Implementation</h4>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &quot;txtviewer.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QFileDialog&gt;</span>
+ <span class="preprocessor">#include &lt;QMainWindow&gt;</span>
+ <span class="preprocessor">#include &lt;QMenu&gt;</span>
+ <span class="preprocessor">#include &lt;QMenuBar&gt;</span>
+ <span class="preprocessor">#include &lt;QPlainTextEdit&gt;</span>
+ <span class="preprocessor">#include &lt;QScrollBar&gt;</span>
+ <span class="preprocessor">#include &lt;QToolBar&gt;</span>
+
+ <span class="preprocessor">#include &lt;QGuiApplication&gt;</span>
+ <span class="preprocessor">#include &lt;QPainter&gt;</span>
+ <span class="preprocessor">#include &lt;QTextDocument&gt;</span>
+
+ <span class="preprocessor">#include &lt;QDir&gt;</span>
+
+ <span class="preprocessor">#ifdef QT_DOCUMENTVIEWER_PRINTSUPPORT</span>
+ <span class="preprocessor">#include &lt;QPrinter&gt;</span>
+ <span class="preprocessor">#include &lt;QPrintDialog&gt;</span>
+ <span class="preprocessor">#endif</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
+
+ TxtViewer<span class="operator">::</span>TxtViewer()
+ {
+     connect(<span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>AbstractViewer<span class="operator">::</span>uiInitialized<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>TxtViewer<span class="operator">::</span>setupTxtUi);
+ }
+
+ TxtViewer<span class="operator">::</span><span class="operator">~</span>TxtViewer() <span class="operator">=</span> <span class="keyword">default</span>;
+
+ <span class="type">void</span> TxtViewer<span class="operator">::</span>init(<span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> <span class="operator">*</span>file<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a></span> <span class="operator">*</span>mainWindow)
+ {
+     AbstractViewer<span class="operator">::</span>init(file<span class="operator">,</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span>(parent)<span class="operator">,</span> mainWindow);
+     m_textEdit <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(widget());
+ }
+
+ <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> TxtViewer<span class="operator">::</span>supportedMimeTypes() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> {<span class="string">&quot;text/plain&quot;</span>_L1};
+ }
+
+ <span class="type">void</span> TxtViewer<span class="operator">::</span>setupTxtUi()
+ {
+     <span class="type"><a href="../qtwidgets/qmenu.html" translate="no">QMenu</a></span> <span class="operator">*</span>editMenu <span class="operator">=</span> addMenu(tr(<span class="string">&quot;&amp;Edit&quot;</span>));
+     <span class="type"><a href="../qtwidgets/qtoolbar.html" translate="no">QToolBar</a></span> <span class="operator">*</span>editToolBar <span class="operator">=</span> addToolBar(tr(<span class="string">&quot;Edit&quot;</span>));
+ <span class="preprocessor">#ifndef QT_NO_CLIPBOARD</span>
+     <span class="keyword">const</span> <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span> cutIcon <span class="operator">=</span> <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span><span class="operator">::</span>fromTheme(<span class="string">&quot;edit-cut&quot;</span>_L1<span class="operator">,</span>
+                                            <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span>(<span class="string">&quot;:/demos/documentviewer/images/cut.png&quot;</span>_L1));
+     <span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span> <span class="operator">*</span>cutAct <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span>(cutIcon<span class="operator">,</span> tr(<span class="string">&quot;Cu&amp;t&quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>);
+     cutAct<span class="operator">-</span><span class="operator">&gt;</span>setShortcuts(<span class="type"><a href="../qtgui/qkeysequence.html" translate="no">QKeySequence</a></span><span class="operator">::</span>Cut);
+     cutAct<span class="operator">-</span><span class="operator">&gt;</span>setStatusTip(tr(<span class="string">&quot;Cut the current selection's contents to the &quot;</span>
+                             <span class="string">&quot;clipboard&quot;</span>));
+     connect(cutAct<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span><span class="operator">::</span>triggered<span class="operator">,</span> m_textEdit<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span><span class="operator">::</span>cut);
+     editMenu<span class="operator">-</span><span class="operator">&gt;</span>addAction(cutAct);
+     editToolBar<span class="operator">-</span><span class="operator">&gt;</span>addAction(cutAct);
+
+     <span class="keyword">const</span> <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span> copyIcon <span class="operator">=</span> <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span><span class="operator">::</span>fromTheme(<span class="string">&quot;edit-copy&quot;</span>_L1<span class="operator">,</span>
+                                             <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span>(<span class="string">&quot;:/demos/documentviewer/images/copy.png&quot;</span>_L1));
+     <span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span> <span class="operator">*</span>copyAct <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span>(copyIcon<span class="operator">,</span> tr(<span class="string">&quot;&amp;Copy&quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>);
+     copyAct<span class="operator">-</span><span class="operator">&gt;</span>setShortcuts(<span class="type"><a href="../qtgui/qkeysequence.html" translate="no">QKeySequence</a></span><span class="operator">::</span>Copy);
+     copyAct<span class="operator">-</span><span class="operator">&gt;</span>setStatusTip(tr(<span class="string">&quot;Copy the current selection's contents to the &quot;</span>
+                              <span class="string">&quot;clipboard&quot;</span>));
+     connect(copyAct<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span><span class="operator">::</span>triggered<span class="operator">,</span> m_textEdit<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span><span class="operator">::</span>copy);
+     editMenu<span class="operator">-</span><span class="operator">&gt;</span>addAction(copyAct);
+     editToolBar<span class="operator">-</span><span class="operator">&gt;</span>addAction(copyAct);
+
+     <span class="keyword">const</span> <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span> pasteIcon <span class="operator">=</span> <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span><span class="operator">::</span>fromTheme(<span class="string">&quot;edit-paste&quot;</span>_L1<span class="operator">,</span>
+                                              <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span>(<span class="string">&quot;:/demos/documentviewer/images/paste.png&quot;</span>_L1));
+     <span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span> <span class="operator">*</span>pasteAct <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span>(pasteIcon<span class="operator">,</span> tr(<span class="string">&quot;&amp;Paste&quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>);
+     pasteAct<span class="operator">-</span><span class="operator">&gt;</span>setShortcuts(<span class="type"><a href="../qtgui/qkeysequence.html" translate="no">QKeySequence</a></span><span class="operator">::</span>Paste);
+     pasteAct<span class="operator">-</span><span class="operator">&gt;</span>setStatusTip(tr(<span class="string">&quot;Paste the clipboard's contents into the current &quot;</span>
+                               <span class="string">&quot;selection&quot;</span>));
+     connect(pasteAct<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span><span class="operator">::</span>triggered<span class="operator">,</span> m_textEdit<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span><span class="operator">::</span>paste);
+     editMenu<span class="operator">-</span><span class="operator">&gt;</span>addAction(pasteAct);
+     editToolBar<span class="operator">-</span><span class="operator">&gt;</span>addAction(pasteAct);
+
+     menuBar()<span class="operator">-</span><span class="operator">&gt;</span>addSeparator();
+
+     cutAct<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">false</span>);
+     copyAct<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">false</span>);
+     connect(m_textEdit<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span><span class="operator">::</span>copyAvailable<span class="operator">,</span> cutAct<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span><span class="operator">::</span>setEnabled);
+     connect(m_textEdit<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span><span class="operator">::</span>copyAvailable<span class="operator">,</span> copyAct<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span><span class="operator">::</span>setEnabled);
+ <span class="preprocessor">#endif // !QT_NO_CLIPBOARD</span>
+
+     openFile();
+
+     connect(m_textEdit<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span><span class="operator">::</span>textChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(){
+         maybeSetPrintingEnabled(hasContent());
+     });
+
+     connect(m_uiAssets<span class="operator">.</span>back<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span><span class="operator">::</span>triggered<span class="operator">,</span> m_textEdit<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(){
+         <span class="keyword">auto</span> <span class="operator">*</span>bar <span class="operator">=</span> m_textEdit<span class="operator">-</span><span class="operator">&gt;</span>verticalScrollBar();
+         <span class="keyword">if</span> (bar<span class="operator">-</span><span class="operator">&gt;</span>value() <span class="operator">&gt;</span> bar<span class="operator">-</span><span class="operator">&gt;</span>minimum())
+             bar<span class="operator">-</span><span class="operator">&gt;</span>setValue(bar<span class="operator">-</span><span class="operator">&gt;</span>value() <span class="operator">-</span> <span class="number">1</span>);
+     });
+
+     connect(m_uiAssets<span class="operator">.</span>forward<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span><span class="operator">::</span>triggered<span class="operator">,</span> m_textEdit<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(){
+         <span class="keyword">auto</span> <span class="operator">*</span>bar <span class="operator">=</span> m_textEdit<span class="operator">-</span><span class="operator">&gt;</span>verticalScrollBar();
+         <span class="keyword">if</span> (bar<span class="operator">-</span><span class="operator">&gt;</span>value() <span class="operator">&lt;</span> bar<span class="operator">-</span><span class="operator">&gt;</span>maximum())
+             bar<span class="operator">-</span><span class="operator">&gt;</span>setValue(bar<span class="operator">-</span><span class="operator">&gt;</span>value() <span class="operator">+</span> <span class="number">1</span>);
+     });
+ }
+</pre>
+<p>We start by including the header files necessary to access all classes used by <code translate="no">TxtViewer</code>. We also include <code translate="no">txtviewer.h</code>.</p>
+<p><code translate="no">QPrinter</code> and <code translate="no">QPrintDialog</code> are only included if print support is enabled on the compilation system.</p>
+<p>You might wonder why we don't include these headers in <code translate="no">mainwindow.h</code> and be done with it. The reason is that including multiple large headers from another header file can rapidly degrade performance. Here, it wouldn't do any harm, but it's still generally a good idea to include only the header files that are strictly necessary from another header file.</p>
+<p>The implementation starts with an empty destructor. It could be completely omitted. It's good practice to implement it empty in order to point out to code readers that nothing needs to be done in the destructor.</p>
+<p>The destructor is followed by an initialization function, taking three arguments:</p>
+<ul>
+<li><code translate="no">file</code>, the pointer to the file to be opened and displayed.</li>
+<li><code translate="no">parent</code>, pointing to the <code translate="no">QWidget</code> inside which the editor shall be placed.</li>
+<li><code translate="no">mainWindow</code>, pointing to the application's main window, where menus and menu bars are handled.</li>
+</ul>
+<p>The function calls the base init function of <code translate="no">AbstractViwer</code>. A new <a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a> widget is created, which will display the file's contents. Then, <code translate="no">TxtViewer</code>'s setup function is connected to the base class' uiInitialized signal.</p>
+<p>The next function returns the list of mime types, which the text viewer supports. Only plain text is supported.</p>
+<p>The last initialization function adds viewer specific UI components like menus, icons, buttons, and tooltips. It uses functionality provided by <code translate="no">AbstractViewer</code> to make sure that these components are removed from the application's main window, once another file is displayed with another viewer plugin.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> TxtViewer<span class="operator">::</span>openFile()
+ {
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> type <span class="operator">=</span> tr(<span class="string">&quot;open&quot;</span>);
+     <span class="keyword">if</span> (<span class="operator">!</span>m_file<span class="operator">-</span><span class="operator">&gt;</span>open(<span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span><span class="operator">::</span>ReadOnly <span class="operator">|</span> <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span><span class="operator">::</span>Text)) {
+         statusMessage(tr(<span class="string">&quot;Cannot read file %1:\n%2.&quot;</span>)
+                       <span class="operator">.</span>arg(<span class="type"><a href="../qtcore/qdir.html" translate="no">QDir</a></span><span class="operator">::</span>toNativeSeparators(m_file<span class="operator">-</span><span class="operator">&gt;</span>fileName())<span class="operator">,</span>
+                            m_file<span class="operator">-</span><span class="operator">&gt;</span>errorString())<span class="operator">,</span> type);
+         <span class="keyword">return</span>;
+     }
+
+     <span class="type"><a href="../qtcore/qtextstream.html" translate="no">QTextStream</a></span> in(m_file<span class="operator">.</span>get());
+ <span class="preprocessor">#ifndef QT_NO_CURSOR</span>
+     <span class="type"><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a></span><span class="operator">::</span>setOverrideCursor(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>WaitCursor);
+ <span class="preprocessor">#endif</span>
+     <span class="keyword">if</span> (<span class="operator">!</span>m_textEdit<span class="operator">-</span><span class="operator">&gt;</span>toPlainText()<span class="operator">.</span>isEmpty()) {
+         m_textEdit<span class="operator">-</span><span class="operator">&gt;</span>clear();
+         disablePrinting();
+     }
+     m_textEdit<span class="operator">-</span><span class="operator">&gt;</span>setPlainText(in<span class="operator">.</span>readAll());
+ <span class="preprocessor">#ifndef QT_NO_CURSOR</span>
+     <span class="type"><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a></span><span class="operator">::</span>restoreOverrideCursor();
+ <span class="preprocessor">#endif</span>
+
+     statusMessage(tr(<span class="string">&quot;File %1 loaded.&quot;</span>)
+                   <span class="operator">.</span>arg(<span class="type"><a href="../qtcore/qdir.html" translate="no">QDir</a></span><span class="operator">::</span>toNativeSeparators(m_file<span class="operator">-</span><span class="operator">&gt;</span>fileName()))<span class="operator">,</span> type);
+     maybeEnablePrinting();
+ }
+</pre>
+<p><code translate="no">openFile</code> opens a file, transfers its contents into the <a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a>, and prints a status message for the user, depending on whether or not the opening was successful.</p>
+<pre class="cpp" translate="no">
+ <span class="type">bool</span> TxtViewer<span class="operator">::</span>hasContent() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> (<span class="operator">!</span>m_textEdit<span class="operator">-</span><span class="operator">&gt;</span>toPlainText()<span class="operator">.</span>isEmpty());
+ }
+
+ <span class="preprocessor">#ifdef QT_DOCUMENTVIEWER_PRINTSUPPORT</span>
+ <span class="type">void</span> TxtViewer<span class="operator">::</span>printDocument(<span class="type"><a href="../qtprintsupport/qprinter.html" translate="no">QPrinter</a></span> <span class="operator">*</span>printer) <span class="keyword">const</span>
+ {
+     <span class="keyword">if</span> (<span class="operator">!</span>hasContent())
+         <span class="keyword">return</span>;
+
+     m_textEdit<span class="operator">-</span><span class="operator">&gt;</span>print(printer);
+ }
+ <span class="preprocessor">#endif // QT_DOCUMENTVIEWER_PRINTSUPPORT</span>
+
+ <span class="type">bool</span> TxtViewer<span class="operator">::</span>saveFile(<span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> <span class="operator">*</span>file)
+ {
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> errorMessage;
+
+     <span class="type"><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a></span><span class="operator">::</span>setOverrideCursor(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>WaitCursor);
+     <span class="keyword">if</span> (file<span class="operator">-</span><span class="operator">&gt;</span>open(<span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span><span class="operator">::</span>WriteOnly <span class="operator">|</span> <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span><span class="operator">::</span>Text)) {
+         <span class="type"><a href="../qtcore/qtextstream.html" translate="no">QTextStream</a></span> out(file);
+         out <span class="operator">&lt;</span><span class="operator">&lt;</span> m_textEdit<span class="operator">-</span><span class="operator">&gt;</span>toPlainText();
+     } <span class="keyword">else</span> {
+         errorMessage <span class="operator">=</span> tr(<span class="string">&quot;Cannot open file %1 for writing:\n%2.&quot;</span>)
+                        <span class="operator">.</span>arg(<span class="type"><a href="../qtcore/qdir.html" translate="no">QDir</a></span><span class="operator">::</span>toNativeSeparators(file<span class="operator">-</span><span class="operator">&gt;</span>fileName()))<span class="operator">,</span>
+                             file<span class="operator">-</span><span class="operator">&gt;</span>errorString();
+     }
+     <span class="type"><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a></span><span class="operator">::</span>restoreOverrideCursor();
+
+     <span class="keyword">if</span> (<span class="operator">!</span>errorMessage<span class="operator">.</span>isEmpty()) {
+         statusMessage(errorMessage);
+         <span class="keyword">return</span> <span class="keyword">false</span>;
+     }
+
+     statusMessage(tr(<span class="string">&quot;File %1 saved&quot;</span>)
+                   <span class="operator">.</span>arg(<span class="type"><a href="../qtcore/qdir.html" translate="no">QDir</a></span><span class="operator">::</span>toNativeSeparators(file<span class="operator">-</span><span class="operator">&gt;</span>fileName())));
+     <span class="keyword">return</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">bool</span> TxtViewer<span class="operator">::</span>saveDocumentAs()
+ {
+     <span class="type"><a href="../qtwidgets/qfiledialog.html" translate="no">QFileDialog</a></span> dialog(mainWindow());
+     dialog<span class="operator">.</span>setWindowModality(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>WindowModal);
+     dialog<span class="operator">.</span>setAcceptMode(<span class="type"><a href="../qtwidgets/qfiledialog.html" translate="no">QFileDialog</a></span><span class="operator">::</span>AcceptSave);
+     <span class="keyword">if</span> (dialog<span class="operator">.</span>exec() <span class="operator">!</span><span class="operator">=</span> <span class="type"><a href="../qtwidgets/qdialog.html" translate="no">QDialog</a></span><span class="operator">::</span>Accepted)
+         <span class="keyword">return</span> <span class="keyword">false</span>;
+
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>files <span class="operator">=</span> dialog<span class="operator">.</span>selectedFiles();
+     <span class="keyword">if</span> (files<span class="operator">.</span>isEmpty())
+         <span class="keyword">return</span> <span class="keyword">false</span>;
+
+     <span class="comment">//newFile();</span>
+     m_file<span class="operator">-</span><span class="operator">&gt;</span>setFileName(files<span class="operator">.</span>first());
+     <span class="keyword">return</span> saveDocument();
+ }
+</pre>
+<p>The next re-implemented function tells the main application whether or not the viewer plugin is actually displaying content.</p>
+<p>If printing is supported on the compiling system, the next section implements it.</p>
+<p>The last two re-implementations provide functionality to save the current file or to save it under a new name.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtdoc.git/tree/examples/demos/documentviewer/plugins/txtviewer?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@demos/documentviewer/plugins/txtviewer -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

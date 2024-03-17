@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- cmake-macros.qdoc -->
+  <meta name="description" content="Add targets to update and transform Qt Linguist .ts files into .qm files.">
+  <title>qt_add_translations | Qt Linguist Manual</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtlinguist-index.html" translate="no">Qt Linguist Manual</a></li>
+<li><a href="cmake-commands-qtlinguisttools.html" translate="no">CMake Commands in Qt6 LinguistTools</a></li>
+<li>qt_add_translations</li>
+<li id="buildversion"><a href="qtlinguist-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#synopsis">Synopsis</a></li>
+<li class="level1"><a href="#description">Description</a></li>
+<li class="level1"><a href="#sources-and-include-directories">Sources and Include Directories</a></li>
+<li class="level1"><a href="#options">Options</a></li>
+<li class="level1"><a href="#embedding-generated-qm-files-in-resources">Embedding Generated .qm Files in Resources</a></li>
+<li class="level1"><a href="#examples">Examples</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">qt_add_translations</h1>
+<!-- $$$qtlinguist-cmake-qt-add-translations.html-description -->
+<div class="descr" id="details">
+<span id="qt6-add-translations"></span><p>Add targets to update and transform Qt Linguist .ts files into .qm files.</p>
+<p>The command is defined in the <code translate="no">LinguistTools</code> component of the <code translate="no">Qt6</code> package. Load the package with:</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS LinguistTools)
+</pre>
+<p>This command was introduced in Qt 6.2&#x2e;</p>
+<h2 id="synopsis">Synopsis</h2>
+<pre class="cpp plain" translate="no">
+ qt_add_translations(target TS_FILES file1.ts [file2.ts ..&#x2e;]
+                     [RESOURCE_PREFIX prefix]
+                     [OUTPUT_TARGETS variable-name]
+                     [QM_FILES_OUTPUT_VARIABLE variable-name]
+                     [SOURCES source1.cpp [sources2.cpp ..&#x2e;]]
+                     [INCLUDE_DIRECTORIES directory1 [directory2 ..&#x2e;]]
+                     [LUPDATE_OPTIONS ..&#x2e;]
+                     [LRELEASE_OPTIONS ..&#x2e;])
+</pre>
+<p>If <a href="../qtcmake/cmake-qt5-and-qt6-compatibility.html#versionless-commands" translate="no">versionless commands</a> are disabled, use <code translate="no">qt6_add_translations()</code> instead. It supports the same set of arguments as this command.</p>
+<div class="admonition note">
+<p><b>Note: </b>This command is in technology preview and may change in future releases.</p>
+</div>
+<div class="admonition warning">
+<p><b>Warning: </b>Calling <code translate="no">qt_add_translations</code> in a directory scope different than the target directory scope requires at least CMake version 3.18.</p>
+</div>
+<h2 id="description">Description</h2>
+<p>Creates targets for updating Qt Linguist <code translate="no">.ts</code> files and for transforming them into <code translate="no">.qm</code> files. This function is a convenience wrapper around <a href="qtlinguist-cmake-qt-add-lupdate.html#qt6-add-lupdate" translate="no">qt_add_lupdate</a> and <a href="qtlinguist-cmake-qt-add-lrelease.html#qt6-add-lrelease" translate="no">qt_add_lrelease</a> and aims to offer the most common usage of both functions with one call.</p>
+<p>The parameter <code translate="no">target</code> is an existing executable or library target that contains sources with translatable strings. This function will create the targets <code translate="no">${target}_lupdate</code>, <code translate="no">${target}_lrelease</code>, <code translate="no">update_translations</code> and <code translate="no">release_translations</code>. The latter targets are umbrella targets that build all <code translate="no">${target}_lupdate</code> and <code translate="no">${target}</code>_lrelease targets.</p>
+<p><code translate="no">${target}_lrelease</code> is built automatically whenever <code translate="no">${target}</code> needs to be built.</p>
+<p>The <code translate="no">.ts</code> files must be specified with the argument <code translate="no">TS_FILES</code>.</p>
+<h2 id="sources-and-include-directories">Sources and Include Directories</h2>
+<p>By default, <code translate="no">qt_add_lupdate</code> extracts the source files and include directories from the given target and passes them to <code translate="no">lupdate</code>.</p>
+<p>With <code translate="no">SOURCES</code> you can explicitly specify source files that contain translatable strings. This turns off the automatic extraction of source files from the target.</p>
+<p>You can use <code translate="no">INCLUDE_DIRECTORIES</code> to explicitly specify include directories. This turns off the automatic extraction of include directories from the target.</p>
+<h2 id="options">Options</h2>
+<p>You can set additional options for <a href="linguist-lupdate.html#lupdate" translate="no">lupdate</a> and <a href="linguist-lrelease.html#lrelease" translate="no">lrelease</a> with <code translate="no">LUPDATE_OPTIONS</code> and <code translate="no">LRELEASE_OPTIONS</code>. You can find possible options in the <a href="linguist-lupdate.html#lupdate-options" translate="no">lupdate options</a> and <a href="linguist-lrelease.html#lrelease-options" translate="no">lrelease options</a>.</p>
+<p>By default, the <code translate="no">.qm</code> files will be placed in the current build directory (<code translate="no">CMAKE_CURRENT_BINARY_DIR</code>). To change this, you can set <code translate="no">OUTPUT_LOCATION</code> as a property of the source <code translate="no">.ts</code> file.</p>
+<p>For example, with the following code, the <code translate="no">.qm</code> files are generated in a <code translate="no">translations</code> directory below the current build directory.</p>
+<pre class="cpp" translate="no">
+ set_source_files_properties(app_en.ts app_de.ts
+     PROPERTIES OUTPUT_LOCATION &quot;${CMAKE_CURRENT_BINARY_DIR}/translations&quot;)
+</pre>
+<h2 id="embedding-generated-qm-files-in-resources">Embedding Generated .qm Files in Resources</h2>
+<p>By default, the generated <code translate="no">.qm</code> files are embedded in a Qt resource that will be linked into <code translate="no">${target}</code>. The files in the resource are accessible under the resource prefix <code translate="no">&quot;/i18n&quot;</code>.</p>
+<p>You can set the resource prefix with <code translate="no">RESOURCE_PREFIX</code>.</p>
+<p>In a static Qt build, when a resource target is created, additional targets can be created. You can instruct <code translate="no">qt_add_translations</code> to store these targets in a variable, by passing <code translate="no">OUTPUT_TARGETS &lt;variable-name&gt;</code>.</p>
+<p>The automatic resource embedding can be turned off by giving the <code translate="no">QM_FILES_OUTPUT_VARIABLE</code> option, followed by the name of a variable in which the command should store the list of generated <code translate="no">.qm</code> files.</p>
+<h2 id="examples">Examples</h2>
+<p>Add a German translation to a target <code translate="no">super_calc</code> using <code translate="no">qt_add_translations</code>:</p>
+<pre class="cpp" translate="no">
+ qt_add_translations(super_calc TS_FILES super_calc_de.ts)
+</pre>
+<p>This is roughly equivalent to the following:</p>
+<pre class="cpp" translate="no">
+ qt_add_lupdate(super_calc TS_FILES super_calc_de.ts)
+ qt_add_lrelease(super_calc
+     TS_FILES super_calc_de.ts
+     QM_FILES_OUTPUT_VARIABLE qm_files)
+ qt_add_resources(super_calc &quot;translations&quot;
+     PREFIX &quot;/i18n&quot;
+     BASE &quot;${CMAKE_CURRENT_BINARY_DIR}&quot;
+     FILES &quot;${qm_files}&quot;)
+</pre>
+<p>Add a Norwegian translation to <code translate="no">frogger_game</code> with a custom resource prefix:</p>
+<pre class="cpp" translate="no">
+ qt_add_translations(frogger_game
+     TS_FILES frogger_game_no.ts
+     RESOURCE_PREFIX &quot;/translations&quot;)
+</pre>
+<p>Add a Finnish translation to <code translate="no">business_logic</code>, and install the generated <code translate="no">.qm</code> files:</p>
+<pre class="cpp" translate="no">
+ qt_add_translations(business_logic
+     TS_FILES myapp_fi.ts
+     QM_FILES_OUTPUT_VARIABLE qm_files)
+ install(FILES ${qm_files} DESTINATION &quot;translations&quot;)
+</pre>
+</div>
+<!-- @@@qtlinguist-cmake-qt-add-translations.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

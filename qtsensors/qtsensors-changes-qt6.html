@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qt6-changes.qdoc -->
+  <meta name="description" content="Migrate Qt Sensors to Qt 6.">
+  <title>Changes to Qt Sensors | Qt Sensors 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtsensors-index.html" translate="no">Qt Sensors</a></li>
+<li>Changes to Qt Sensors</li>
+<li id="buildversion"><a href="qtsensors-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#sensor-gesture-support">Sensor Gesture support</a></li>
+<li class="level1"><a href="#platform-notes">Platform notes</a></li>
+<li class="level2"><a href="#windows">Windows</a></li>
+<li class="level2"><a href="#sensorfw">sensorfw</a></li>
+<li class="level2"><a href="#ti-sensor-tag">TI Sensor Tag</a></li>
+<li class="level2"><a href="#removed-sensors">Removed sensors</a></li>
+<li class="level2"><a href="#linux">Linux</a></li>
+<li class="level1"><a href="#api-changes">API changes</a></li>
+<li class="level2"><a href="#deleted-typedef-for-qtimestamp">Deleted typedef for qtimestamp</a></li>
+<li class="level2"><a href="#renamed-sensor-type-string-to-sensortype">Renamed <code translate="no">sensor</code> type string to <code translate="no">sensorType</code></a></li>
+<li class="level2"><a href="#renamed-lidreading-backlidchanged-property-to-backlidclosed">Renamed LidReading::backLidChanged property to <code translate="no">backLidClosed</code></a></li>
+<li class="level2"><a href="#added-parameter-to-qsensorbackend-sensorbusy-to-be-able-to-also-clear">Added parameter to QSensorBackend::sensorBusy() to be able to also clear</a></li>
+<li class="level2"><a href="#sensor-type-and-and-qsensor-type-properties-marked-as-constant">Sensor::type and and QSensor::type properties marked as constant</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Changes to Qt Sensors</h1>
+<!-- $$$qtsensors-changes-qt6.html-description -->
+<div class="descr" id="details">
+<p>Qt 6 is a result of the conscious effort to make the framework more efficient and easy to use.</p>
+<p>We try to maintain binary and source compatibility for all the public APIs in each release. But some changes were inevitable in an effort to make Qt a better framework.</p>
+<p>In this topic we summarize those changes in Qt Sensors, and provide guidance to handle them.</p>
+<h2 id="sensor-gesture-support">Sensor Gesture support</h2>
+<p>The Gesture support has been removed. In its current shape the gestures needs rethinking to be of more use for the developers. To track this please see <a href="https://bugreports.qt.io/browse/QTBUG-95649" translate="no">QTBUG-95649</a>.</p>
+<h2 id="platform-notes">Platform notes</h2>
+<h3 id="windows">Windows</h3>
+<p>On Windows, sensors are supported in Qt installations that were built with MSVC.</p>
+<h3 id="sensorfw">sensorfw</h3>
+<p>The <a href="https://git.sailfishos.org/mer-core/sensorfw" translate="no">sensorfw</a> does not yet have a Qt 6 port and is therefore not yet supported by sensors in Qt 6.</p>
+<h3 id="ti-sensor-tag">TI Sensor Tag</h3>
+<p>Support for TI Sensor Tag has been removed.</p>
+<h3 id="removed-sensors">Removed sensors</h3>
+<p>QAltimeter, QDistanceSensor, QHolsterSensor and their QML counterparts did no longer have a backend implementation and have been removed.</p>
+<p>QIRProximitySensor, QLidSensor, and QTapSensor have only sensorfw backend, and as such they are not currently listed as supported sensor types.</p>
+<h3 id="linux">Linux</h3>
+<p>The Linux sysfs accelerometer support has been removed. The backend is undocumented and has been without any real activity for almost 10 years.</p>
+<h2 id="api-changes">API changes</h2>
+<h3 id="deleted-typedef-for-qtimestamp">Deleted typedef for qtimestamp</h3>
+<p>The typedef for the historical, QtMobility-era, <code translate="no">qtimestamp</code> has been removed. Use the actual type <code translate="no">quint64</code> directly.</p>
+<h3 id="renamed-sensor-type-string-to-sensortype">Renamed <code translate="no">sensor</code> type string to <code translate="no">sensorType</code></h3>
+<p>The subclasses of <a href="qsensor.html" translate="no">QSensor</a> implement a <code translate="no">char const*</code> string which defines the string that identifies the base sensor. This static <code translate="no">type</code> field shadowed the baseclass <a href="qsensor.html#type-prop" translate="no">QSensor::type</a>() method, leading to unnecessary compilation errors and consequent workarounds. The <code translate="no">type</code> string has been now renamed as <code translate="no">sensorType</code>.</p>
+<h3 id="renamed-lidreading-backlidchanged-property-to-backlidclosed">Renamed LidReading::backLidChanged property to <code translate="no">backLidClosed</code></h3>
+<p>The property name is now aligned with the <code translate="no">frontLidClosed</code> property of the same QML type.</p>
+<h3 id="added-parameter-to-qsensorbackend-sensorbusy-to-be-able-to-also-clear">Added parameter to QSensorBackend::sensorBusy() to be able to also clear</h3>
+<p>the busy state</p>
+<p>The <code translate="no">QSensor::busy</code> property and its accessor, <code translate="no">QSensor::isBusy()</code>, can be used to check if the sensor is busy or not. To allow this property to better reflect the sensor backend's state, <a href="qsensorbackend.html#sensorBusy" translate="no">QSensorBackend::sensorBusy</a>() now accepts a boolean parameter. This <code translate="no">busy</code> parameter is used to set/unset the backend busy state and notify the <a href="qsensor.html" translate="no">QSensor</a> interface attached to it.</p>
+<p>The default value for the <a href="qsensorbackend.html#sensorBusy" translate="no">QSensorBackend::sensorBusy</a>() parameter is <i>true</i> which results in the original behavior (except the added signal emission). This means that in most if not all cases the changes are not mandatory. Instead it is up to the individual sensor backend implementations to decide if the changes are useful.</p>
+<h3 id="sensor-type-and-and-qsensor-type-properties-marked-as-constant">Sensor::type and and QSensor::type properties marked as constant</h3>
+<p>The <code translate="no">type</code> property cannot change after instantiation and is marked as constant in both C++ and QML.</p>
+</div>
+<!-- @@@qtsensors-changes-qt6.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

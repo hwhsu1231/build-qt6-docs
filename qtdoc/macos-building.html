@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- macos.qdoc -->
+  <meta name="description" content="How to install Qt on macOS.">
+  <title>Qt for macOS - Building from Source | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Qt for macOS - Building from Source</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#requirements">Requirements</a></li>
+<li class="level2"><a href="#qdoc-dependencies">QDoc Dependencies</a></li>
+<li class="level1"><a href="#steps-for-building">Steps for Building</a></li>
+<li class="level2"><a href="#step-1-unpack-the-archive">Step 1: Unpack the Archive</a></li>
+<li class="level2"><a href="#step-2-build-the-qt-library">Step 2: Build the Qt Library</a></li>
+<li class="level2"><a href="#step-3-set-the-environment-variables">Step 3: Set the Environment Variables</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt for macOS - Building from Source</h1>
+<!-- $$$macos-building.html-description -->
+<div class="descr" id="details">
+<h2 id="requirements">Requirements</h2>
+<p>Building Qt requires a macOS platform SDK and corresponding toolchain to be installed on the system. You can get this by installing the Xcode, as described in <a href="macos.html#build-environment" translate="no">Qt for macOS#Build Environment</a>.</p>
+<p>You should always use the exact same Xcode and SDK version as listed in the <a href="macos.html#supported-versions" translate="no">Qt for macOS#Supported Versions</a>, to ensure that Qt has been tested in the configuration you're building.</p>
+<p>In addition to Xcode, you will need to make sure you have the following dependencies in your path <code translate="no">PATH</code>.</p>
+<ul>
+<li>CMake (&gt;=3.16, &gt;= 3.18.4 for Ninja Multi-Config, &gt;= 3.21.1 for static Qt builds or building for Apple platforms)</li>
+<li><a href="https://ninja-build.org" translate="no">Ninja</a></li>
+</ul>
+<p>If you want to build <a href="../qtwebengine/qtwebengine-index.html" translate="no">Qt WebEngine</a> or <a href="../qtpdf/qtpdf-index.html" translate="no">Qt PDF</a>, you will need the following additional dependencies:</p>
+<ul>
+<li>Python html5lib</li>
+<li>Bison, Flex</li>
+<li>Gperf</li>
+<li>Node.js version 8 or later (version 12 recommended)</li>
+</ul>
+<h3 id="qdoc-dependencies">QDoc Dependencies</h3>
+<p><a href="../qdoc/qdoc-index.html" translate="no">QDoc</a> uses Clang to parse C++ code. If you wish to build QDoc manually, refer to <a href="../qdoc/qdoc-guide-clang.html" translate="no">Installing Clang for QDoc</a> for specific build requirements.</p>
+<h2 id="steps-for-building">Steps for Building</h2>
+<p>The following instructions describe how to build Qt from the source package. You can download the Qt sources from the <a href="http://qt.io/download" translate="no">Downloads</a> page. For more information, visit the <a href="gettingstarted.html" translate="no">Getting Started with Qt</a> page.</p>
+<h3 id="step-1-unpack-the-archive">Step 1: Unpack the Archive</h3>
+<p>Unpack the archive if you have not done so already. For example, if you have the <code translate="no">qt-everywhere-src-6.6&#x2e;0&#x2e;tar.xz</code> package, type the following commands at a command line prompt:</p>
+<pre class="cpp plain" translate="no">
+ cd /tmp
+ tar xf ~/Downloads/qt-everywhere-src-6.6&#x2e;0&#x2e;tar.xz
+</pre>
+<p>This creates the directory <code translate="no">/tmp/qt-everywhere-src-6.6&#x2e;0</code> containing the files from the archive.</p>
+<h3 id="step-2-build-the-qt-library">Step 2: Build the Qt Library</h3>
+<p>To configure the Qt library for your machine type, create a build directory and change to it. Run the <code translate="no">./configure</code> script in this directory.</p>
+<pre class="cpp plain" translate="no">
+ mkdir -p ~/dev/qt-build
+ cd ~/dev/qt-build
+ /tmp/qt-everywhere-src-6.6&#x2e;0/configure
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>configure always uses the <b>Ninja</b> generator and build tool if a <code translate="no">ninja</code> executable is available. Ninja is cross-platform, feature-rich, performant, and recommended on all platforms. The use of other generators might work but is not officially supported.</p>
+</div>
+<p>By default, Qt is configured for installation in the <code translate="no">/usr/local/6.6&#x2e;0</code> directory, but this can be changed by using the <code translate="no">-prefix</code> option.</p>
+<p>By default, Qt is built as a framework, but you can built it as a set of dynamic libraries (dylibs) by specifying the <code translate="no">-no-framework</code> option.</p>
+<p>As described in <a href="macos.html#architectures" translate="no">Qt for macOS#Architectures</a>, Qt will build for the architecture of your development machine by default. To configure a universal build of Qt with support for both Intel and Apple Silicon Macs, add the following argument:</p>
+<pre class="cpp" translate="no">
+ <span class="operator">.</span><span class="operator">/</span>configure <span class="operator">-</span><span class="operator">-</span> <span class="operator">-</span>DCMAKE_OSX_ARCHITECTURES<span class="operator">=</span><span class="string">&quot;x86_64;arm64&quot;</span>
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>A universal build always needs to include the architecture of your development machine, as the process relies on tools that are built and run on your machine as part of the overall build.</p>
+</div>
+<p>Be careful to specify the Intel architecture (&quot;x86_64&quot;) first, otherwise Qt may not enable all the x86 functionality.</p>
+<p>Qt can also be configured to be built with debugging symbols. This process is described in detail in the <a href="debug.html" translate="no">Debugging Techniques</a> document.</p>
+<p>The <a href="configure-options.html" translate="no">Configure Options</a> page contains more information about the configure options.</p>
+<p>To create the library and compile all the examples and tools, type:</p>
+<pre class="cpp" translate="no">
+ cmake <span class="operator">-</span><span class="operator">-</span>build <span class="operator">.</span> <span class="operator">-</span><span class="operator">-</span>parallel
+</pre>
+<p>If <code translate="no">-prefix</code> is outside the build directory, you need to install the library, examples, and tools in the appropriate place. To do this, type:</p>
+<pre class="cpp" translate="no">
+ cmake <span class="operator">-</span><span class="operator">-</span>install <span class="operator">.</span>
+</pre>
+<p>This command requires that you have administrator access on your machine.</p>
+<h3 id="step-3-set-the-environment-variables">Step 3: Set the Environment Variables</h3>
+<p>In order to use Qt, some environment variables need to be extended.</p>
+<pre class="cpp" translate="no">
+ PATH               <span class="operator">-</span> to locate qmake<span class="operator">,</span> moc <span class="keyword">and</span> other <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span> tools
+</pre>
+<p>This is done like this:</p>
+<p>In <code translate="no">.profile</code> (if your shell is bash), or <code translate="no">.zshenv</code> (for zsh) add the following lines:</p>
+<pre class="cpp" translate="no">
+ PATH<span class="operator">=</span><span class="operator">/</span>usr<span class="operator">/</span>local<span class="operator">/</span><span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">-</span><span class="operator">%</span>VERSION<span class="operator">%</span><span class="operator">/</span>bin:$PATH
+ <span class="keyword">export</span> PATH
+</pre>
+<p>In <code translate="no">.login</code> (in case your shell is csh or tcsh), add the following line:</p>
+<pre class="cpp" translate="no">
+ setenv PATH <span class="operator">/</span>usr<span class="operator">/</span>local<span class="operator">/</span><span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">-</span><span class="operator">%</span>VERSION<span class="operator">%</span><span class="operator">/</span>bin:$PATH
+</pre>
+<p>If you use a different shell, please modify your environment variables accordingly.</p>
+<p><b>Qt is now installed.</b></p>
+</div>
+<!-- @@@macos-building.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- bars.qdoc -->
+  <meta name="description" content="Using Bars3D in a QML application.">
+  <title>Simple Bar Graph | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Simple Bar Graph</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Simple Bar Graph</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQml.Models
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     property <span class="type">alias</span> <span class="name">model</span>: <span class="name">dataModel</span>
+
+     property <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span> <span class="name">modelAsJsArray</span>: {
+         var arr = [];
+         <span class="keyword">for</span> (var i = 0; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">dataModel</span>.<span class="name">count</span>; i++) {
+             var row = <span class="name">dataModel</span>.<span class="name">get</span>(<span class="name">i</span>);
+             <span class="name">arr</span>.<span class="name">push</span>({
+                          timestamp: <span class="name">row</span>.<span class="name">timestamp</span>,
+                          expenses: <span class="name">row</span>.<span class="name">expenses</span>,
+                          income: <span class="name">row</span>.<span class="name">income</span>
+                      });
+         }
+         <span class="keyword">return</span> <span class="name">arr</span>;
+     }
+
+     <span class="type">ListModel</span> {
+         <span class="name">id</span>: <span class="name">dataModel</span>
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-01&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;5&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-02&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;6&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-03&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-7&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;4&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-04&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-3&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;2&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-05&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;1&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-06&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-2&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;2&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-07&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-1&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;3&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-08&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;1&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-09&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-2&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;3&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-10&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;2&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-11&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-8&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;5&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2016-12&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-3&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;3&quot;</span> }
+
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-01&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-3&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;1&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-02&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;2&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-03&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-12&quot;</span>; <span class="name">income</span>: <span class="string">&quot;4&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-04&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-13&quot;</span>; <span class="name">income</span>: <span class="string">&quot;6&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-05&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-14&quot;</span>; <span class="name">income</span>: <span class="string">&quot;11&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-06&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-7&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;7&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-07&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-6&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;4&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-08&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;15&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-09&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-2&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;18&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-10&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-29&quot;</span>; <span class="name">income</span>: <span class="string">&quot;25&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-11&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-23&quot;</span>; <span class="name">income</span>: <span class="string">&quot;29&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2017-12&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;9&quot;</span> }
+
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-01&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-3&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;8&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-02&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-8&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;14&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-03&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-10&quot;</span>; <span class="name">income</span>: <span class="string">&quot;20&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-04&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-12&quot;</span>; <span class="name">income</span>: <span class="string">&quot;24&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-05&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-10&quot;</span>; <span class="name">income</span>: <span class="string">&quot;19&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-06&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;8&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-07&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-1&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;4&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-08&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-7&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;12&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-09&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;16&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-10&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-22&quot;</span>; <span class="name">income</span>: <span class="string">&quot;33&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-11&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-16&quot;</span>; <span class="name">income</span>: <span class="string">&quot;25&quot;</span> }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2018-12&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-2&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;7&quot;</span> }
+
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-01&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;5&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-02&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;7&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-03&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-11&quot;</span>; <span class="name">income</span>: <span class="string">&quot;14&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-04&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-16&quot;</span>; <span class="name">income</span>: <span class="string">&quot;22&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-05&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-3&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;5&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-06&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;8&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-07&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-7&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;9&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-08&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-9&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;13&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-09&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-1&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;6&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-10&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-14&quot;</span>; <span class="name">income</span>: <span class="string">&quot;25&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-11&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-19&quot;</span>; <span class="name">income</span>: <span class="string">&quot;29&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2019-12&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;7&quot;</span>  }
+
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-01&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-14&quot;</span>; <span class="name">income</span>: <span class="string">&quot;22&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-02&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;7&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-03&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-1&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;9&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-04&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-1&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;12&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-05&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;9&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-06&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;8&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-07&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-3&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;7&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-08&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-1&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;5&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-09&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-2&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;4&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-10&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-10&quot;</span>; <span class="name">income</span>: <span class="string">&quot;13&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-11&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-12&quot;</span>; <span class="name">income</span>: <span class="string">&quot;17&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2020-12&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-6&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;9&quot;</span>  }
+
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-01&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-2&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;6&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-02&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;8&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-03&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-7&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;12&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-04&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-9&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;15&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-05&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-7&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;19&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-06&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-9&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;18&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-07&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-13&quot;</span>; <span class="name">income</span>: <span class="string">&quot;17&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-08&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;9&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-09&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-3&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;8&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-10&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-13&quot;</span>; <span class="name">income</span>: <span class="string">&quot;15&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-11&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-8&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;17&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2021-12&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-7&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;10&quot;</span>  }
+
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-01&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-12&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;16&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-02&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-24&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;28&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-03&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-27&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;22&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-04&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-29&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;25&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-05&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-27&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;29&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-06&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-19&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;18&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-07&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-13&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;17&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-08&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-15&quot;</span>;  <span class="name">income</span>: <span class="string">&quot;19&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-09&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-3&quot;</span>;   <span class="name">income</span>: <span class="string">&quot;8&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-10&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-3&quot;</span>;   <span class="name">income</span>: <span class="string">&quot;6&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-11&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-4&quot;</span>;   <span class="name">income</span>: <span class="string">&quot;8&quot;</span>  }
+         <span class="type">ListElement</span>{ <span class="name">timestamp</span>: <span class="string">&quot;2022-12&quot;</span>; <span class="name">expenses</span>: <span class="string">&quot;-5&quot;</span>;   <span class="name">income</span>: <span class="string">&quot;9&quot;</span>  }
+     }
+ }
+</pre>

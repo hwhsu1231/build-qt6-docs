@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- coffee.qdoc -->
+  <meta name="description" content="A Qt Quick application with a state-based custom user interface.">
+  <title>Coffee Machine | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Coffee Machine</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Coffee Machine</h1>
+<!-- $$$demos/coffee-brief -->
+<p>A Qt Quick application with a state-based custom user interface.</p>
+<!-- @@@demos/coffee -->
+<!-- $$$demos/coffee-description -->
+<div class="descr" id="details">
+<div class="border"><p class="centerAlign"><img src="images/coffee_machine_overview.png" alt="" /></p></div><p>The coffee machine application lets you choose a type of coffee on the left side of the main screen. After selection, the app displays what the coffee blend will contain (ratio coffee/hot milk/milk foam). This can be modified with two sliders. When the brew has been started, the app shows an animated display of the brewing process, then returns to the start screen.</p>
+<p>First the start screen <code translate="no">Animationflowform</code> is displayed, showing a sidebar with several types of coffee, and an empty cup on the right screen.</p>
+<p>Selecting a coffee type - for example, cappuccino - triggers <code translate="no">animation1</code> and <code translate="no">animation2</code> in CoffeeButton.qml. On the right side, you will see the coffee blend you selected.</p>
+<pre class="qml" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">onClicked</span>: <span class="name">root</span>.<span class="name">clicked</span>()
+         <span class="name">onPressed</span>: {
+             <span class="name">glow</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
+             <span class="name">animation1</span>.<span class="name">start</span>()
+             <span class="name">animation2</span>.<span class="name">start</span>()
+         }
+     }
+</pre>
+<p>It also triggers cappuccinoButton.onClicked(), which sets the default mix for the coffee type selected:</p>
+<pre class="qml" translate="no">
+     <span class="name">cappuccinoButton</span>.onClicked: {
+         <span class="name">sideBar</span>.<span class="name">currentCoffee</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;Cappucino&quot;</span>)
+         <span class="name">sideBar</span>.<span class="name">currentMilk</span> <span class="operator">=</span> <span class="number">7</span>
+         <span class="name">sideBar</span>.<span class="name">currentCoffeeAmount</span> <span class="operator">=</span> <span class="number">3.5</span>
+         <span class="name">sideBar</span>.<span class="name">coffeeSelected</span>()
+     }
+</pre>
+<div class="border"><p class="centerAlign"><img src="images/coffee_machine_selection.png" alt="" /></p></div><p class="figCaption">Coffee blend cappuccino</p>
+<p><code translate="no">sideBar.coffeeSelected()</code> <code translate="no">sets</code> applicationFlow.state to &quot;selection&quot;</p>
+<p>If you click &quot;Brew me a cup&quot;, choosingCoffee.brewButtonSelection.onClicked is triggered:</p>
+<pre class="qml" translate="no">
+     <span class="name">choosingCoffee</span>.brewButtonSelection.onClicked: {
+         <span class="name">applicationFlow</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;settings&quot;</span>
+         <span class="name">applicationFlow</span>.<span class="name">choosingCoffee</span>.<span class="name">milkSlider</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">applicationFlow</span>.<span class="name">choosingCoffee</span>.<span class="name">sideBar</span>.<span class="name">currentMilk</span>
+         <span class="name">applicationFlow</span>.<span class="name">choosingCoffee</span>.<span class="name">sugarSlider</span>.<span class="name">value</span> <span class="operator">=</span> <span class="number">2</span>
+     }
+</pre>
+<p>On the right side of the screen, you will see two sliders, one for the amount of milk, and one for sugar. They will have default values, but can be modified by the user.</p>
+<div class="border"><p class="centerAlign"><img src="images/coffee_machine_modify.png" alt="" /></p></div><p>If you click on <code translate="no">Brew</code>, <code translate="no">choosingCoffee.brewButton.onClicked()</code> is triggered, which displays a screen with the message &quot;Please insert cup into tray&quot;.</p>
+<pre class="qml" translate="no">
+     <span class="name">choosingCoffee</span>.brewButton.onClicked: {
+         <span class="name">applicationFlow</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;empty cup&quot;</span>
+     }
+</pre>
+<div class="border"><p class="centerAlign"><img src="images/coffee_machine_emptycup.png" alt="" /></p></div><p>Clicking on <code translate="no">Continue</code> starts the brewing of the coffee type you selected.</p>
+<pre class="qml" translate="no">
+     <span class="name">emptyCup</span>.continueButton.onClicked: {
+         <span class="name">applicationFlow</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;brewing&quot;</span>
+         <span class="name">brewing</span>.<span class="name">coffeeName</span> <span class="operator">=</span> <span class="name">choosingCoffee</span>.<span class="name">sideBar</span>.<span class="name">currentCoffee</span>
+         <span class="name">brewing</span>.<span class="name">start</span>()
+     }
+</pre>
+<p>The brewing process is defined as follows in <code translate="no">Brewing.qml</code>:</p>
+<pre class="qml" translate="no">
+ <span class="type">BrewingForm</span> {
+     <span class="name">id</span>: <span class="name">root</span>
+     <span class="keyword">function </span><span class="name">start</span>() {
+         <span class="name">animation</span>.<span class="name">start</span>()
+     }
+
+     signal <span class="type">finished</span>()
+
+     <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+         <span class="name">id</span>: <span class="name">animation</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> {
+             <span class="name">duration</span>: <span class="number">1500</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-propertyaction.html" translate="no">PropertyAction</a></span> {
+             <span class="name">target</span>: <span class="name">root</span>
+             <span class="name">property</span>: <span class="string">&quot;state&quot;</span>
+             <span class="name">value</span>: <span class="string">&quot;coffee&quot;</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> {
+             <span class="name">duration</span>: <span class="number">1500</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-propertyaction.html" translate="no">PropertyAction</a></span> {
+             <span class="name">target</span>: <span class="name">root</span>
+             <span class="name">property</span>: <span class="string">&quot;state&quot;</span>
+             <span class="name">value</span>: <span class="string">&quot;milk&quot;</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> {
+             <span class="name">duration</span>: <span class="number">1500</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-scriptaction.html" translate="no">ScriptAction</a></span> {
+             <span class="name">script</span>: <span class="name">root</span>.<span class="name">finished</span>()
+         }
+     }
+
+     Behavior on <span class="name">cup</span>.coffeeAmount {
+         <span class="type"><a href="../qtquick/qml-qtquick-propertyanimation.html" translate="no">PropertyAnimation</a></span> {
+
+         }
+     }
+
+     Behavior on <span class="name">cup</span>.milkAmount {
+         <span class="type"><a href="../qtquick/qml-qtquick-propertyanimation.html" translate="no">PropertyAnimation</a></span> {
+         }
+     }
+ }
+</pre>
+<p>After completion, the application returns to the start screen.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtdoc.git/tree/examples/demos/coffee?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@demos/coffee -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

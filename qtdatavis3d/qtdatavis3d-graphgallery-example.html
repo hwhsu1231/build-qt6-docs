@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- graphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Data Visualization 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtdatavisualization-index.html" translate="no">Qt Data Visualization</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtdatavisualization-index.html" translate="no">Qt Data Visualization | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#bar-graph">Bar Graph</a></li>
+<li class="level2"><a href="#creating-the-application">Creating the Application</a></li>
+<li class="level2"><a href="#setting-up-the-bar-graph">Setting up the Bar Graph</a></li>
+<li class="level2"><a href="#adding-data-to-the-graph">Adding Data to the Graph</a></li>
+<li class="level2"><a href="#using-widgets-to-control-the-graph">Using Widgets to Control the Graph</a></li>
+<li class="level2"><a href="#selecting-a-row-or-column-by-clicking-an-axis-label">Selecting a Row or Column by Clicking an Axis Label</a></li>
+<li class="level2"><a href="#zooming-to-selection">Zooming to Selection</a></li>
+<li class="level2"><a href="#custom-proxy-for-data">Custom Proxy for Data</a></li>
+<li class="level1"><a href="#scatter-graph">Scatter Graph</a></li>
+<li class="level2"><a href="#setting-up-the-scatter-graph">Setting up the Scatter Graph</a></li>
+<li class="level2"><a href="#adding-scatter-data">Adding Scatter Data</a></li>
+<li class="level2"><a href="#replacing-default-input-handling">Replacing Default Input Handling</a></li>
+<li class="level2"><a href="#extending-mouse-event-handling">Extending Mouse Event Handling</a></li>
+<li class="level2"><a href="#implementing-axis-dragging">Implementing Axis Dragging</a></li>
+<li class="level1"><a href="#surface-graph">Surface Graph</a></li>
+<li class="level2"><a href="#simple-surface-with-generated-data">Simple Surface with Generated Data</a></li>
+<li class="level2"><a href="#multiseries-height-map-data">Multiseries Height Map Data</a></li>
+<li class="level2"><a href="#topographic-map-data">Topographic Map Data</a></li>
+<li class="level2"><a href="#selecting-the-data-set">Selecting the Data Set</a></li>
+<li class="level2"><a href="#selection-modes">Selection Modes</a></li>
+<li class="level2"><a href="#axis-ranges-for-studying-the-graph">Axis Ranges for Studying the Graph</a></li>
+<li class="level2"><a href="#custom-surface-gradients">Custom Surface Gradients</a></li>
+<li class="level2"><a href="#adding-custom-meshes-to-the-application">Adding Custom Meshes to the Application</a></li>
+<li class="level2"><a href="#adding-custom-item-to-a-graph">Adding Custom Item to a Graph</a></li>
+<li class="level2"><a href="#adding-custom-label-to-a-graph">Adding Custom Label to a Graph</a></li>
+<li class="level2"><a href="#removing-custom-item-from-a-graph">Removing Custom Item from a Graph</a></li>
+<li class="level2"><a href="#texture-to-a-surface-series">Texture to a Surface Series</a></li>
+<li class="level2"><a href="#use-custom-input-handler-to-enable-zooming-and-panning">Use Custom Input Handler to Enable Zooming and Panning</a></li>
+<li class="level2"><a href="#highlight-an-area-of-the-surface">Highlight an Area of the Surface</a></li>
+<li class="level2"><a href="#a-gradient-to-the-highlight-series">A Gradient to the Highlight Series</a></li>
+<li class="level1"><a href="#example-contents">Example Contents</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Graph Gallery</h1>
+<!-- $$$graphgallery-brief -->
+<p>Gallery of Bar, Scatter, and Surface graphs.</p>
+<!-- @@@graphgallery -->
+<!-- $$$graphgallery-description -->
+<div class="descr" id="details">
+<p><i>Graph Gallery</i> demonstrates all three graph types and some of their special features. The graphs have their own tabs in the application.</p>
+<p class="centerAlign"><img src="images/graphgallery-example.png" alt="" /></p><h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="bar-graph">Bar Graph</h4>
+<p>In the <b translate="no">Bar Graph</b> tab, create a 3D bar graph using <a href="q3dbars.html" translate="no">Q3DBars</a> and combine the use of widgets to adjust various bar graph qualities. The example shows how to:</p>
+<ul>
+<li>Create an application with <a href="q3dbars.html" translate="no">Q3DBars</a> and some widgets</li>
+<li>Use <a href="qbar3dseries.html" translate="no">QBar3DSeries</a> and <a href="qbardataproxy.html" translate="no">QBarDataProxy</a> to set data to the graph</li>
+<li>Adjust some graph and series properties using widget controls</li>
+<li>Select a row or a column by clicking an axis label</li>
+<li>Create a custom proxy to use with <a href="q3dbars.html" translate="no">Q3DBars</a></li>
+</ul>
+<p>For information about interacting with the graph, see <a href="qtdatavisualization-interacting-with-data.html" translate="no">this page</a>.</p>
+<h5 id="creating-the-application">Creating the Application</h5>
+<p>First, in <code translate="no">bargraph.cpp</code>, instantiate <a href="q3dbars.html" translate="no">Q3DBars</a>:</p>
+<pre class="cpp" translate="no">
+ m_barsGraph <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="q3dbars.html" translate="no">Q3DBars</a></span>();
+</pre>
+<p>Then, create the widget, and horizontal and vertical layouts.</p>
+<p>The graph is embedded in a window container using <a href="../qtwidgets/qwidget.html#createWindowContainer" translate="no">QWidget::createWindowContainer</a>(). This is required because all data visualization graph classes (<a href="q3dbars.html" translate="no">Q3DBars</a>, <a href="q3dscatter.html" translate="no">Q3DScatter</a>, <a href="q3dsurface.html" translate="no">Q3DSurface</a>) inherit <a href="../qtgui/qwindow.html" translate="no">QWindow</a>. This is the only way to use a class inheriting <a href="../qtgui/qwindow.html" translate="no">QWindow</a> as a widget.</p>
+<p>Add the graph and the vertical layout to the horizontal one:</p>
+<pre class="cpp" translate="no">
+ m_barsWidget <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>;
+ <span class="keyword">auto</span> <span class="operator">*</span>hLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qhboxlayout.html" translate="no">QHBoxLayout</a></span>(m_barsWidget);
+ m_container <span class="operator">=</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span><span class="operator">::</span>createWindowContainer(m_barsGraph<span class="operator">,</span> m_barsWidget);
+ m_barsGraph<span class="operator">-</span><span class="operator">&gt;</span>resize(minimumGraphSize);
+ m_container<span class="operator">-</span><span class="operator">&gt;</span>setMinimumSize(minimumGraphSize);
+ m_container<span class="operator">-</span><span class="operator">&gt;</span>setMaximumSize(maximumGraphSize);
+ m_container<span class="operator">-</span><span class="operator">&gt;</span>setSizePolicy(<span class="type"><a href="../qtwidgets/qsizepolicy.html" translate="no">QSizePolicy</a></span><span class="operator">::</span>Expanding<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qsizepolicy.html" translate="no">QSizePolicy</a></span><span class="operator">::</span>Expanding);
+ m_container<span class="operator">-</span><span class="operator">&gt;</span>setFocusPolicy(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StrongFocus);
+ hLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(m_container<span class="operator">,</span> <span class="number">1</span>);
+
+ <span class="keyword">auto</span> <span class="operator">*</span>vLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>();
+ hLayout<span class="operator">-</span><span class="operator">&gt;</span>addLayout(vLayout);
+</pre>
+<p>Next, create another class to handle the data addition and other interaction with the graph:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> <span class="operator">*</span>modifier <span class="operator">=</span> <span class="keyword">new</span> GraphModifier(m_barsGraph<span class="operator">,</span> <span class="keyword">this</span>);
+</pre>
+<h5 id="setting-up-the-bar-graph">Setting up the Bar Graph</h5>
+<p>Set up the graph in the constructor of the <code translate="no">GraphModifier</code> class:</p>
+<pre class="cpp" translate="no">
+ GraphModifier<span class="operator">::</span>GraphModifier(<span class="type"><a href="q3dbars.html" translate="no">Q3DBars</a></span> <span class="operator">*</span>bargraph<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent) :
+       <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>(parent)<span class="operator">,</span>
+       m_graph(bargraph)<span class="operator">,</span>
+</pre>
+<p>First, create the axes and the series into member variables to support changing them easily:</p>
+<pre class="cpp" translate="no">
+ m_temperatureAxis(<span class="keyword">new</span> QValue3DAxis)<span class="operator">,</span>
+ m_yearAxis(<span class="keyword">new</span> QCategory3DAxis)<span class="operator">,</span>
+ m_monthAxis(<span class="keyword">new</span> QCategory3DAxis)<span class="operator">,</span>
+ m_primarySeries(<span class="keyword">new</span> QBar3DSeries)<span class="operator">,</span>
+ m_secondarySeries(<span class="keyword">new</span> QBar3DSeries)<span class="operator">,</span>
+ m_celsiusString(u<span class="string">&quot;°C&quot;</span>_s)
+</pre>
+<p>Then, set some visual qualities for the graph:</p>
+<pre class="cpp" translate="no">
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>setShadowQuality(QAbstract3DGraph<span class="operator">::</span>ShadowQualitySoftMedium);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>activeTheme()<span class="operator">-</span><span class="operator">&gt;</span>setBackgroundEnabled(<span class="keyword">false</span>);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>activeTheme()<span class="operator">-</span><span class="operator">&gt;</span>setFont(<span class="type"><a href="../qtgui/qfont.html" translate="no">QFont</a></span>(<span class="string">&quot;Times New Roman&quot;</span><span class="operator">,</span> m_fontSize));
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>activeTheme()<span class="operator">-</span><span class="operator">&gt;</span>setLabelBackgroundEnabled(<span class="keyword">true</span>);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>setMultiSeriesUniform(<span class="keyword">true</span>);
+</pre>
+<p>Set up the axes and make them the active axes of the graph:</p>
+<pre class="cpp" translate="no">
+ m_temperatureAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Average temperature&quot;</span>);
+ m_temperatureAxis<span class="operator">-</span><span class="operator">&gt;</span>setSegmentCount(m_segments);
+ m_temperatureAxis<span class="operator">-</span><span class="operator">&gt;</span>setSubSegmentCount(m_subSegments);
+ m_temperatureAxis<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_minval<span class="operator">,</span> m_maxval);
+ m_temperatureAxis<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(u<span class="string">&quot;%.1f &quot;</span>_s <span class="operator">+</span> m_celsiusString);
+ m_temperatureAxis<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">30.0f</span>);
+ m_temperatureAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+
+ m_yearAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Year&quot;</span>);
+ m_yearAxis<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">30.0f</span>);
+ m_yearAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+ m_monthAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Month&quot;</span>);
+ m_monthAxis<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">30.0f</span>);
+ m_monthAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>setValueAxis(m_temperatureAxis);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>setRowAxis(m_yearAxis);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>setColumnAxis(m_monthAxis);
+</pre>
+<p>Give axis labels a small autorotation angle with setLabelAutoRotation() to make them orient slightly toward the camera. This improves axis label readability at extreme camera angles.</p>
+<p>Next, initialize the visual properties of the series. Note that the second series is initially not visible:</p>
+<pre class="cpp" translate="no">
+ m_primarySeries<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;Oulu - @colLabel @rowLabel: @valueLabel&quot;</span>_s);
+ m_primarySeries<span class="operator">-</span><span class="operator">&gt;</span>setMesh(QAbstract3DSeries<span class="operator">::</span>MeshBevelBar);
+ m_primarySeries<span class="operator">-</span><span class="operator">&gt;</span>setMeshSmooth(<span class="keyword">false</span>);
+
+ m_secondarySeries<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;Helsinki - @colLabel @rowLabel: @valueLabel&quot;</span>_s);
+ m_secondarySeries<span class="operator">-</span><span class="operator">&gt;</span>setMesh(QAbstract3DSeries<span class="operator">::</span>MeshBevelBar);
+ m_secondarySeries<span class="operator">-</span><span class="operator">&gt;</span>setMeshSmooth(<span class="keyword">false</span>);
+ m_secondarySeries<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+</pre>
+<p>Add the series to the graph:</p>
+<pre class="cpp" translate="no">
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_primarySeries);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_secondarySeries);
+</pre>
+<p>Finally, set the camera angle by calling the same method the camera angle change button in the UI uses to cycle through various camera angles:</p>
+<pre class="cpp" translate="no">
+ changePresetCamera();
+</pre>
+<p>The camera is controlled via the scene object of the graph:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">static</span> <span class="type">int</span> preset <span class="operator">=</span> <span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPresetFront;
+
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>setCameraPreset((<span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPreset)preset);
+
+ <span class="keyword">if</span> (<span class="operator">+</span><span class="operator">+</span>preset <span class="operator">&gt;</span> <span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPresetDirectlyBelow)
+     preset <span class="operator">=</span> <span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPresetFrontLow;
+</pre>
+<p>For more information about using scene and cameras, see <a href="q3dscene.html" translate="no">Q3DScene</a> and <a href="q3dcamera.html" translate="no">Q3DCamera</a>.</p>
+<h5 id="adding-data-to-the-graph">Adding Data to the Graph</h5>
+<p>At the end of the constructor, call a method that sets up the data:</p>
+<pre class="cpp" translate="no">
+ resetTemperatureData();
+</pre>
+<p>This method adds data to the proxies of the two series:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Set up data</span>
+ <span class="keyword">static</span> <span class="keyword">const</span> <span class="type">float</span> tempOulu<span class="operator">[</span><span class="number">8</span><span class="operator">]</span><span class="operator">[</span><span class="number">12</span><span class="operator">]</span> <span class="operator">=</span> {
+     {<span class="operator">-</span><span class="number">7.4f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">2.4f</span><span class="operator">,</span> <span class="number">0.0f</span><span class="operator">,</span> <span class="number">3.0f</span><span class="operator">,</span> <span class="number">8.2f</span><span class="operator">,</span> <span class="number">11.6f</span><span class="operator">,</span> <span class="number">14.7f</span><span class="operator">,</span> <span class="number">15.4f</span><span class="operator">,</span> <span class="number">11.4f</span><span class="operator">,</span> <span class="number">4.2f</span><span class="operator">,</span> <span class="number">2.1f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">2.3f</span>}<span class="operator">,</span>       <span class="comment">// 2015</span>
+     {<span class="operator">-</span><span class="number">13.4f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">3.9f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">1.8f</span><span class="operator">,</span> <span class="number">3.1f</span><span class="operator">,</span> <span class="number">10.6f</span><span class="operator">,</span> <span class="number">13.7f</span><span class="operator">,</span> <span class="number">17.8f</span><span class="operator">,</span> <span class="number">13.6f</span><span class="operator">,</span> <span class="number">10.7f</span><span class="operator">,</span> <span class="number">3.5f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">3.1f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">4.2f</span>}<span class="operator">,</span>   <span class="comment">// 2016</span>
+ ...
+ <span class="keyword">auto</span> <span class="operator">*</span>dataSet <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataArray-typedef" translate="no">QBarDataArray</a></span>;
+ <span class="keyword">auto</span> <span class="operator">*</span>dataSet2 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataArray-typedef" translate="no">QBarDataArray</a></span>;
+
+ dataSet<span class="operator">-</span><span class="operator">&gt;</span>reserve(m_years<span class="operator">.</span>size());
+ <span class="keyword">for</span> (qsizetype year <span class="operator">=</span> <span class="number">0</span>; year <span class="operator">&lt;</span> m_years<span class="operator">.</span>size(); <span class="operator">+</span><span class="operator">+</span>year) {
+     <span class="comment">// Create a data row</span>
+     <span class="keyword">auto</span> <span class="operator">*</span>dataRow <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataRow-typedef" translate="no">QBarDataRow</a></span>(m_months<span class="operator">.</span>size());
+     <span class="keyword">auto</span> <span class="operator">*</span>dataRow2 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataRow-typedef" translate="no">QBarDataRow</a></span>(m_months<span class="operator">.</span>size());
+     <span class="keyword">for</span> (qsizetype month <span class="operator">=</span> <span class="number">0</span>; month <span class="operator">&lt;</span> m_months<span class="operator">.</span>size(); <span class="operator">+</span><span class="operator">+</span>month) {
+         <span class="comment">// Add data to the row</span>
+         (<span class="operator">*</span>dataRow)<span class="operator">[</span>month<span class="operator">]</span><span class="operator">.</span>setValue(tempOulu<span class="operator">[</span>year<span class="operator">]</span><span class="operator">[</span>month<span class="operator">]</span>);
+         (<span class="operator">*</span>dataRow2)<span class="operator">[</span>month<span class="operator">]</span><span class="operator">.</span>setValue(tempHelsinki<span class="operator">[</span>year<span class="operator">]</span><span class="operator">[</span>month<span class="operator">]</span>);
+     }
+     <span class="comment">// Add the row to the set</span>
+     dataSet<span class="operator">-</span><span class="operator">&gt;</span>append(dataRow);
+     dataSet2<span class="operator">-</span><span class="operator">&gt;</span>append(dataRow2);
+ }
+
+ <span class="comment">// Add data to the data proxy (the data proxy assumes ownership of it)</span>
+ m_primarySeries<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataSet<span class="operator">,</span> m_years<span class="operator">,</span> m_months);
+ m_secondarySeries<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataSet2<span class="operator">,</span> m_years<span class="operator">,</span> m_months);
+</pre>
+<h5 id="using-widgets-to-control-the-graph">Using Widgets to Control the Graph</h5>
+<p>Continue by adding some widgets in <code translate="no">bargraph.cpp</code>. Add a slider:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> <span class="operator">*</span>rotationSliderX <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal<span class="operator">,</span> m_barsWidget);
+ rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setTickInterval(<span class="number">30</span>);
+ rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setTickPosition(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>TicksBelow);
+ rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="operator">-</span><span class="number">180</span>);
+ rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+ rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(<span class="number">180</span>);
+</pre>
+<p>Use the slider to rotate the graph instead of just using a mouse or touch. Add it to the vertical layout:</p>
+<pre class="cpp" translate="no">
+ vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Rotate horizontally&quot;</span>_s));
+ vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(rotationSliderX<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+</pre>
+<p>Then, connect it to a method in <code translate="no">GraphModifier</code>:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(rotationSliderX<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span> modifier<span class="operator">,</span> <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>rotateX);
+</pre>
+<p>Create a slot in <code translate="no">GraphModifier</code> for the signal connection. The camera is controlled via the scene object. This time, specify the actual camera position along the orbit around the center point, instead of specifying a preset camera angle:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> GraphModifier<span class="operator">::</span>rotateX(<span class="type">int</span> rotation)
+ {
+     m_xRotation <span class="operator">=</span> rotation;
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>setCameraPosition(m_xRotation<span class="operator">,</span> m_yRotation);
+ }
+</pre>
+<p>You can now use the slider to rotate the graph.</p>
+<p>Add more widgets to the vertical layout to control:</p>
+<ul>
+<li>Graph rotation</li>
+<li>Label style</li>
+<li>Camera preset</li>
+<li>Background visibility</li>
+<li>Grid visibility</li>
+<li>Bar shading smoothness</li>
+<li>Visibility of the second bar series</li>
+<li>Value axis direction</li>
+<li>Axis title visibility and rotation</li>
+<li>Data range to be shown</li>
+<li>Bar style</li>
+<li>Selection mode</li>
+<li>Theme</li>
+<li>Shadow quality</li>
+<li>Font</li>
+<li>Font size</li>
+<li>Axis label rotation</li>
+<li>Data mode</li>
+</ul>
+<p>Some widget controls are intentionally disabled when in the <b translate="no">Custom Proxy Data</b> data mode.</p>
+<h5 id="selecting-a-row-or-column-by-clicking-an-axis-label">Selecting a Row or Column by Clicking an Axis Label</h5>
+<p>Selection by axis label is default functionality for bar graphs. As an example, you can select rows by clicking an axis label in the following way:</p>
+<ol class="1" type="1"><li>Change selection mode to <code translate="no">SelectionRow</code></li>
+<li>Click a year label</li>
+<li>The row with the clicked year is selected</li>
+</ol>
+<p>The same method works with <code translate="no">SelectionSlice</code> and <code translate="no">SelectionItem</code> flags, as long as either <code translate="no">SelectionRow</code> or <code translate="no">SelectionColumn</code> is set as well.</p>
+<h5 id="zooming-to-selection">Zooming to Selection</h5>
+<p>As an example of adjusting the camera target, implement an animation of zooming to selection via a button press. Animation initializations are done in the constructor:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span> <span class="operator">*</span>camera <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera();
+ m_defaultAngleX <span class="operator">=</span> camera<span class="operator">-</span><span class="operator">&gt;</span>xRotation();
+ m_defaultAngleY <span class="operator">=</span> camera<span class="operator">-</span><span class="operator">&gt;</span>yRotation();
+ m_defaultZoom <span class="operator">=</span> camera<span class="operator">-</span><span class="operator">&gt;</span>zoomLevel();
+ m_defaultTarget <span class="operator">=</span> camera<span class="operator">-</span><span class="operator">&gt;</span>target();
+
+ m_animationCameraX<span class="operator">.</span>setTargetObject(camera);
+ m_animationCameraY<span class="operator">.</span>setTargetObject(camera);
+ m_animationCameraZoom<span class="operator">.</span>setTargetObject(camera);
+ m_animationCameraTarget<span class="operator">.</span>setTargetObject(camera);
+
+ m_animationCameraX<span class="operator">.</span>setPropertyName(<span class="string">&quot;xRotation&quot;</span>);
+ m_animationCameraY<span class="operator">.</span>setPropertyName(<span class="string">&quot;yRotation&quot;</span>);
+ m_animationCameraZoom<span class="operator">.</span>setPropertyName(<span class="string">&quot;zoomLevel&quot;</span>);
+ m_animationCameraTarget<span class="operator">.</span>setPropertyName(<span class="string">&quot;target&quot;</span>);
+
+ <span class="type">int</span> duration <span class="operator">=</span> <span class="number">1700</span>;
+ m_animationCameraX<span class="operator">.</span>setDuration(duration);
+ m_animationCameraY<span class="operator">.</span>setDuration(duration);
+ m_animationCameraZoom<span class="operator">.</span>setDuration(duration);
+ m_animationCameraTarget<span class="operator">.</span>setDuration(duration);
+
+ <span class="comment">// The zoom always first zooms out above the graph and then zooms in</span>
+ <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> zoomOutFraction <span class="operator">=</span> <span class="number">0.3</span>;
+ m_animationCameraX<span class="operator">.</span>setKeyValueAt(zoomOutFraction<span class="operator">,</span> <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(<span class="number">0.0f</span>));
+ m_animationCameraY<span class="operator">.</span>setKeyValueAt(zoomOutFraction<span class="operator">,</span> <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(<span class="number">90.0f</span>));
+ m_animationCameraZoom<span class="operator">.</span>setKeyValueAt(zoomOutFraction<span class="operator">,</span> <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(<span class="number">50.0f</span>));
+ m_animationCameraTarget<span class="operator">.</span>setKeyValueAt(zoomOutFraction<span class="operator">,</span>
+                                       <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(QVector3D(<span class="number">0.0f</span><span class="operator">,</span> <span class="number">0.0f</span><span class="operator">,</span> <span class="number">0.0f</span>)));
+</pre>
+<p>Function <code translate="no">GraphModifier::zoomToSelectedBar()</code> contains the zooming functionality. <a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a> <code translate="no">m_animationCameraTarget</code> targets <a href="q3dcamera.html#target-prop" translate="no">Q3DCamera::target</a> property, which takes a value normalized to the range (-1, 1).</p>
+<p>Figure out where the selected bar is relative to axes, and use that as the end value for <code translate="no">m_animationCameraTarget</code>:</p>
+<pre class="cpp" translate="no">
+ QVector3D endTarget;
+ <span class="type">float</span> xMin <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>columnAxis()<span class="operator">-</span><span class="operator">&gt;</span>min();
+ <span class="type">float</span> xRange <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>columnAxis()<span class="operator">-</span><span class="operator">&gt;</span>max() <span class="operator">-</span> xMin;
+ <span class="type">float</span> zMin <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>rowAxis()<span class="operator">-</span><span class="operator">&gt;</span>min();
+ <span class="type">float</span> zRange <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>rowAxis()<span class="operator">-</span><span class="operator">&gt;</span>max() <span class="operator">-</span> zMin;
+ endTarget<span class="operator">.</span>setX((selectedBar<span class="operator">.</span>y() <span class="operator">-</span> xMin) <span class="operator">/</span> xRange <span class="operator">*</span> <span class="number">2.0f</span> <span class="operator">-</span> <span class="number">1.0f</span>);
+ endTarget<span class="operator">.</span>setZ((selectedBar<span class="operator">.</span>x() <span class="operator">-</span> zMin) <span class="operator">/</span> zRange <span class="operator">*</span> <span class="number">2.0f</span> <span class="operator">-</span> <span class="number">1.0f</span>);
+ ...
+ m_animationCameraTarget<span class="operator">.</span>setEndValue(<span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(endTarget));
+</pre>
+<p>Then, rotate the camera so that it always points approximately to the center of the graph at the end of the animation:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> endAngleX <span class="operator">=</span> <span class="number">90.0</span> <span class="operator">-</span> <a href="../qtcore/qtmath.html#qRadiansToDegrees-2" translate="no">qRadiansToDegrees</a>(<a href="../qtcore/qtmath.html#qAtan" translate="no">qAtan</a>(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(endTarget<span class="operator">.</span>z() <span class="operator">/</span> endTarget<span class="operator">.</span>x())));
+ <span class="keyword">if</span> (endTarget<span class="operator">.</span>x() <span class="operator">&gt;</span> <span class="number">0.0f</span>)
+     endAngleX <span class="operator">-</span><span class="operator">=</span> <span class="number">180.0f</span>;
+ <span class="type">float</span> barValue <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>selectedSeries()<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>itemAt(selectedBar<span class="operator">.</span>x()<span class="operator">,</span>
+                                                                 selectedBar<span class="operator">.</span>y())<span class="operator">-</span><span class="operator">&gt;</span>value();
+ <span class="type">float</span> endAngleY <span class="operator">=</span> barValue <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0.0f</span> <span class="operator">?</span> <span class="number">30.0f</span> : <span class="operator">-</span><span class="number">30.0f</span>;
+ <span class="keyword">if</span> (m_graph<span class="operator">-</span><span class="operator">&gt;</span>valueAxis()<span class="operator">-</span><span class="operator">&gt;</span>reversed())
+     endAngleY <span class="operator">*</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1.0f</span>;
+</pre>
+<h5 id="custom-proxy-for-data">Custom Proxy for Data</h5>
+<p>By toggling <b translate="no">Custom Proxy Data</b> data mode on, a custom dataset and the corresponding proxy are taken into use.</p>
+<p>Define a simple flexible data set, <code translate="no">VariantDataSet</code>, where each data item is a variant list. Each item can have multiple values, identified by their index in the list. In this case, the data set is storing monthly rainfall data, where the value in index zero is the year, the value in index one is the month, and the value in index two is the amount of rainfall in that month.</p>
+<p>The custom proxy is similar to itemmodel-based proxies provided by Qt Data Visualization, and it requires mapping to interpret the data.</p>
+<h6 id="variantdataset">VariantDataSet</h6>
+<p>Define the data items as <a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a> objects. Add functionality for clearing the data set and querying for a reference to the data contained in the set. Also, add signals to be emitted when data is added or the set is cleared:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">using</span> VariantDataItem <span class="operator">=</span> <span class="type"><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a></span>;
+ <span class="keyword">using</span> VariantDataItemList <span class="operator">=</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>VariantDataItem <span class="operator">*</span><span class="operator">&gt;</span>;
+ ...
+
+ <span class="type">void</span> clear();
+
+ <span class="type">int</span> addItem(VariantDataItem <span class="operator">*</span>item);
+ <span class="type">int</span> addItems(VariantDataItemList <span class="operator">*</span>itemList);
+
+ <span class="keyword">const</span> VariantDataItemList <span class="operator">&amp;</span>itemList() <span class="keyword">const</span>;
+
+ Q_SIGNALS:
+ <span class="type">void</span> itemsAdded(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> count);
+ <span class="type">void</span> dataCleared();
+</pre>
+<h6 id="variantbardataproxy">VariantBarDataProxy</h6>
+<p>Subclass <code translate="no">VariantBarDataProxy</code> from <a href="qbardataproxy.html" translate="no">QBarDataProxy</a> and provide a simple API of getters and setters for the data set and the mapping:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> VariantBarDataProxy : <span class="keyword">public</span> <span class="type"><a href="qbardataproxy.html" translate="no">QBarDataProxy</a></span>
+ ...
+
+ <span class="comment">// Doesn't gain ownership of the dataset, but does connect to it to listen for data changes.</span>
+ <span class="type">void</span> setDataSet(VariantDataSet <span class="operator">*</span>newSet);
+ VariantDataSet <span class="operator">*</span>dataSet();
+
+ <span class="comment">// Map key (row, column, value) to value index in data item (VariantItem).</span>
+ <span class="comment">// Doesn't gain ownership of mapping, but does connect to it to listen for mapping changes.</span>
+ <span class="comment">// Modifying mapping that is set to proxy will trigger dataset re-resolving.</span>
+ <span class="type">void</span> setMapping(VariantBarDataMapping <span class="operator">*</span>mapping);
+ VariantBarDataMapping <span class="operator">*</span>mapping();
+</pre>
+<p>The proxy listens for the changes in the data set and the mapping, and resolves the data set if any changes are detected. This is not a particularly efficient implementation, as any change will cause re-resolving of the entire data set, but that is not an issue for this example.</p>
+<p>In <code translate="no">resolveDataSet()</code> method, sort the variant data values into rows and columns based on the mapping. This is very similar to how <a href="qitemmodelbardataproxy.html" translate="no">QItemModelBarDataProxy</a> handles mapping, except you use list indexes instead of item model roles here. Once the values are sorted, generate <code translate="no">QBarDataArray</code> out of them, and call the <code translate="no">resetArray()</code> method in the parent class:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> VariantBarDataProxy<span class="operator">::</span>resolveDataSet()
+ {
+     <span class="comment">// If we have no data or mapping, or the categories are not defined, simply clear the array</span>
+     <span class="keyword">if</span> (m_dataSet<span class="operator">.</span>isNull() <span class="operator">|</span><span class="operator">|</span> m_mapping<span class="operator">.</span>isNull() <span class="operator">|</span><span class="operator">|</span> <span class="operator">!</span>m_mapping<span class="operator">-</span><span class="operator">&gt;</span>rowCategories()<span class="operator">.</span>size()
+             <span class="operator">|</span><span class="operator">|</span> <span class="operator">!</span>m_mapping<span class="operator">-</span><span class="operator">&gt;</span>columnCategories()<span class="operator">.</span>size()) {
+         resetArray(nullptr);
+         <span class="keyword">return</span>;
+     }
+     <span class="keyword">const</span> VariantDataItemList <span class="operator">&amp;</span>itemList <span class="operator">=</span> m_dataSet<span class="operator">-</span><span class="operator">&gt;</span>itemList();
+
+     <span class="type">int</span> rowIndex <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>rowIndex();
+     <span class="type">int</span> columnIndex <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>columnIndex();
+     <span class="type">int</span> valueIndex <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>valueIndex();
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>rowList <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>rowCategories();
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>columnList <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>columnCategories();
+
+     <span class="comment">// Sort values into rows and columns</span>
+     <span class="keyword">using</span> ColumnValueMap <span class="operator">=</span> <span class="type"><a href="../qtcore/qhash.html" translate="no">QHash</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">,</span> <span class="type">float</span><span class="operator">&gt;</span>;
+     <span class="type"><a href="../qtcore/qhash.html" translate="no">QHash</a></span> <span class="operator">&lt;</span><span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">,</span> ColumnValueMap<span class="operator">&gt;</span> itemValueMap;
+     <span class="keyword">for</span> (<span class="keyword">const</span> VariantDataItem <span class="operator">*</span>item : itemList) {
+         itemValueMap<span class="operator">[</span>item<span class="operator">-</span><span class="operator">&gt;</span>at(rowIndex)<span class="operator">.</span>toString()<span class="operator">]</span><span class="operator">[</span>item<span class="operator">-</span><span class="operator">&gt;</span>at(columnIndex)<span class="operator">.</span>toString()<span class="operator">]</span>
+                 <span class="operator">=</span> item<span class="operator">-</span><span class="operator">&gt;</span>at(valueIndex)<span class="operator">.</span>toReal();
+     }
+
+     <span class="comment">// Create a new data array in format the parent class understands</span>
+     <span class="keyword">auto</span> <span class="operator">*</span>newProxyArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataArray-typedef" translate="no">QBarDataArray</a></span>;
+     <span class="keyword">for</span> (<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>rowKey : rowList) {
+         <span class="keyword">auto</span> <span class="operator">*</span>newProxyRow <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataRow-typedef" translate="no">QBarDataRow</a></span>(columnList<span class="operator">.</span>size());
+         <span class="keyword">for</span> (qsizetype i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> columnList<span class="operator">.</span>size(); <span class="operator">+</span><span class="operator">+</span>i)
+             (<span class="operator">*</span>newProxyRow)<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>setValue(itemValueMap<span class="operator">[</span>rowKey<span class="operator">]</span><span class="operator">[</span>columnList<span class="operator">.</span>at(i)<span class="operator">]</span>);
+         newProxyArray<span class="operator">-</span><span class="operator">&gt;</span>append(newProxyRow);
+     }
+
+     <span class="comment">// Finally, reset the data array in the parent class</span>
+     resetArray(newProxyArray);
+ }
+</pre>
+<h6 id="variantbardatamapping">VariantBarDataMapping</h6>
+<p>Store the mapping information between <code translate="no">VariantDataSet</code> data item indexes and rows, columns, and values of <code translate="no">QBarDataArray</code> in <code translate="no">VariantBarDataMapping</code>. It contains the lists of rows and columns to be included in the resolved data:</p>
+<pre class="cpp" translate="no">
+ Q_PROPERTY(<span class="type">int</span> rowIndex READ rowIndex WRITE setRowIndex NOTIFY rowIndexChanged)
+ Q_PROPERTY(<span class="type">int</span> columnIndex READ columnIndex WRITE setColumnIndex NOTIFY columnIndexChanged)
+ Q_PROPERTY(<span class="type">int</span> valueIndex READ valueIndex WRITE setValueIndex NOTIFY valueIndexChanged)
+ Q_PROPERTY(<span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> rowCategories READ rowCategories WRITE setRowCategories NOTIFY rowCategoriesChanged)
+ Q_PROPERTY(<span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> columnCategories READ columnCategories WRITE setColumnCategories NOTIFY columnCategoriesChanged)
+ ...
+
+ <span class="keyword">explicit</span> VariantBarDataMapping(<span class="type">int</span> rowIndex<span class="operator">,</span> <span class="type">int</span> columnIndex<span class="operator">,</span> <span class="type">int</span> valueIndex<span class="operator">,</span>
+                                <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>rowCategories<span class="operator">,</span>
+                                <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>columnCategories);
+ ...
+
+ <span class="type">void</span> remap(<span class="type">int</span> rowIndex<span class="operator">,</span> <span class="type">int</span> columnIndex<span class="operator">,</span> <span class="type">int</span> valueIndex<span class="operator">,</span>
+            <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>rowCategories<span class="operator">,</span>
+            <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>columnCategories);
+ ...
+
+ <span class="type">void</span> mappingChanged();
+</pre>
+<p>The primary way to use a <code translate="no">VariantBarDataMapping</code> object is to give the mappings in the constructor, though you can use the <code translate="no">remap()</code> method to set them later, either individually or all together. Emit a signal if mapping changes. The outcome is a simplified version of the mapping functionality of <a href="qitemmodelbardataproxy.html" translate="no">QItemModelBarDataProxy</a>, adapted to work with variant lists instead of item models.</p>
+<h6 id="rainfalldata">RainfallData</h6>
+<p>Handle the setup of <a href="qbar3dseries.html" translate="no">QBar3DSeries</a> with the custom proxy in the <code translate="no">RainfallData</code> class:</p>
+<pre class="cpp" translate="no">
+ m_proxy <span class="operator">=</span> <span class="keyword">new</span> VariantBarDataProxy;
+ m_series <span class="operator">=</span> <span class="keyword">new</span> QBar3DSeries(m_proxy);
+</pre>
+<p>Populate the variant data set in the <code translate="no">addDataSet()</code> method:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> RainfallData<span class="operator">::</span>addDataSet()
+ {
+     <span class="comment">// Create a new variant data set and data item list</span>
+     m_dataSet <span class="operator">=</span>  <span class="keyword">new</span> VariantDataSet;
+     <span class="keyword">auto</span> <span class="operator">*</span>itemList <span class="operator">=</span> <span class="keyword">new</span> VariantDataItemList;
+
+     <span class="comment">// Read data from a data file into the data item list</span>
+     <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> dataFile(<span class="string">&quot;:/data/raindata.txt&quot;</span>);
+     <span class="keyword">if</span> (dataFile<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly <span class="operator">|</span> <span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>Text)) {
+         <span class="type"><a href="../qtcore/qtextstream.html" translate="no">QTextStream</a></span> stream(<span class="operator">&amp;</span>dataFile);
+         <span class="keyword">while</span> (<span class="operator">!</span>stream<span class="operator">.</span>atEnd()) {
+             <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> line <span class="operator">=</span> stream<span class="operator">.</span>readLine();
+             <span class="keyword">if</span> (line<span class="operator">.</span>startsWith(<span class="char">'#'</span>)) <span class="comment">// Ignore comments</span>
+                 <span class="keyword">continue</span>;
+             <span class="keyword">const</span> <span class="keyword">auto</span> strList <span class="operator">=</span> <span class="type"><a href="../qtcore/qstringview.html" translate="no">QStringView</a></span>{line}<span class="operator">.</span>split(<span class="char">','</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>SkipEmptyParts);
+             <span class="comment">// Each line has three data items: Year, month, and rainfall value</span>
+             <span class="keyword">if</span> (strList<span class="operator">.</span>size() <span class="operator">&lt;</span> <span class="number">3</span>) {
+                 <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Invalid row read from data:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> line;
+                 <span class="keyword">continue</span>;
+             }
+             <span class="comment">// Store year and month as strings, and rainfall value as double</span>
+             <span class="comment">// into a variant data item and add the item to the item list.</span>
+             <span class="keyword">auto</span> <span class="operator">*</span>newItem <span class="operator">=</span> <span class="keyword">new</span> VariantDataItem;
+             <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">2</span>; <span class="operator">+</span><span class="operator">+</span>i)
+                 newItem<span class="operator">-</span><span class="operator">&gt;</span>append(strList<span class="operator">.</span>at(i)<span class="operator">.</span>trimmed()<span class="operator">.</span>toString());
+             newItem<span class="operator">-</span><span class="operator">&gt;</span>append(strList<span class="operator">.</span>at(<span class="number">2</span>)<span class="operator">.</span>trimmed()<span class="operator">.</span>toDouble());
+             itemList<span class="operator">-</span><span class="operator">&gt;</span>append(newItem);
+         }
+     } <span class="keyword">else</span> {
+         <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Unable to open data file:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> dataFile<span class="operator">.</span>fileName();
+     }
+     ...
+</pre>
+<p>Add the data set to the custom proxy and set the mapping:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Add items to the data set and set it to the proxy</span>
+ m_dataSet<span class="operator">-</span><span class="operator">&gt;</span>addItems(itemList);
+ m_proxy<span class="operator">-</span><span class="operator">&gt;</span>setDataSet(m_dataSet);
+
+ <span class="comment">// Create new mapping for the data and set it to the proxy</span>
+ m_mapping <span class="operator">=</span> <span class="keyword">new</span> VariantBarDataMapping(<span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> m_years<span class="operator">,</span> m_numericMonths);
+ m_proxy<span class="operator">-</span><span class="operator">&gt;</span>setMapping(m_mapping);
+</pre>
+<p>Finally, add a function for getting the created series for displaying:</p>
+<pre class="cpp" translate="no">
+ QBar3DSeries <span class="operator">*</span>customSeries() { <span class="keyword">return</span> m_series; }
+</pre>
+<h4 id="scatter-graph">Scatter Graph</h4>
+<p>In the <b translate="no">Scatter Graph</b> tab, create a 3D scatter graph using <a href="q3dscatter.html" translate="no">Q3DScatter</a>. The example shows how to:</p>
+<ul>
+<li>Set up <a href="q3dscatter.html" translate="no">Q3DScatter</a> graph</li>
+<li>Use <a href="qscatterdataproxy.html" translate="no">QScatterDataProxy</a> to set data to the graph</li>
+<li>Create a custom input handler by extending <a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></li>
+</ul>
+<p>For basic application creation, see <a href="qtdatavis3d-graphgallery-example.html#bar-graph" translate="no">Bar Graph</a>.</p>
+<h5 id="setting-up-the-scatter-graph">Setting up the Scatter Graph</h5>
+<p>First, set up some visual qualities for the graph in the constructor of the <code translate="no">ScatterDataModifier</code>:</p>
+<pre class="cpp" translate="no">
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>activeTheme()<span class="operator">-</span><span class="operator">&gt;</span>setType(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ThemeStoneMoss);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>setShadowQuality(QAbstract3DGraph<span class="operator">::</span>ShadowQualitySoftHigh);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>setCameraPreset(<span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPresetFront);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>setZoomLevel(<span class="number">80.f</span>);
+</pre>
+<p>None of these are mandatory, but are used to override graph defaults. You can try how it looks with the preset defaults by commenting out the block above.</p>
+<p>Next, create a <a href="qscatterdataproxy.html" translate="no">QScatterDataProxy</a> and the associated <a href="qscatter3dseries.html" translate="no">QScatter3DSeries</a>. Set a custom label format and mesh smoothing for the series and add it to the graph:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> <span class="operator">*</span>proxy <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qscatterdataproxy.html" translate="no">QScatterDataProxy</a></span>;
+ <span class="keyword">auto</span> <span class="operator">*</span>series <span class="operator">=</span> <span class="keyword">new</span> QScatter3DSeries(proxy);
+ series<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;@xTitle: @xLabel @yTitle: @yLabel @zTitle: @zLabel&quot;</span>_s);
+ series<span class="operator">-</span><span class="operator">&gt;</span>setMeshSmooth(m_smooth);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(series);
+</pre>
+<h5 id="adding-scatter-data">Adding Scatter Data</h5>
+<p>The last thing to do in the <code translate="no">ScatterDataModifier</code> constructor is to add data to the graph:</p>
+<pre class="cpp" translate="no">
+ addData();
+</pre>
+<p>The actual data addition is done in <code translate="no">addData()</code> method. First, configure the axes:</p>
+<pre class="cpp" translate="no">
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;X&quot;</span>);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Y&quot;</span>);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Z&quot;</span>);
+</pre>
+<p>You could do this also in the constructor of <code translate="no">ScatterDataModifier</code>. Doing it here keeps the constructor simpler and the axes' configuration near the data.</p>
+<p>Next, create a data array and populate it:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> <span class="operator">*</span>dataArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qscatterdataproxy.html#QScatterDataArray-typedef" translate="no">QScatterDataArray</a></span>;
+ dataArray<span class="operator">-</span><span class="operator">&gt;</span>reserve(m_itemCount);
+     ...
+ <span class="keyword">const</span> <span class="type">float</span> limit <span class="operator">=</span> qSqrt(m_itemCount) <span class="operator">/</span> <span class="number">2.0f</span>;
+ <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="operator">-</span>limit; i <span class="operator">&lt;</span> limit; <span class="operator">+</span><span class="operator">+</span>i) {
+     <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="operator">-</span>limit; j <span class="operator">&lt;</span> limit; <span class="operator">+</span><span class="operator">+</span>j) {
+         <span class="keyword">const</span> <span class="type">float</span> x <span class="operator">=</span> <span class="type">float</span>(i) <span class="operator">+</span> <span class="number">0.5f</span>;
+         <span class="keyword">const</span> <span class="type">float</span> y <span class="operator">=</span> <a href="../qtcore/qtmath.html#qCos" translate="no">qCos</a>(qDegreesToRadians(<span class="type">float</span>(i <span class="operator">*</span> j) <span class="operator">/</span> m_curveDivider));
+         <span class="keyword">const</span> <span class="type">float</span> z <span class="operator">=</span> <span class="type">float</span>(j) <span class="operator">+</span> <span class="number">0.5f</span>;
+         dataArray<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="type"><a href="qscatterdataitem.html" translate="no">QScatterDataItem</a></span>({x<span class="operator">,</span> y<span class="operator">,</span> z}));
+     }
+ }
+</pre>
+<p>Finally, tell the proxy to start using the data we gave it:</p>
+<pre class="cpp" translate="no">
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataArray);
+</pre>
+<p>Now, the graph has the data and is ready for use. For information about adding widgets to control the graph, see <a href="qtdatavis3d-graphgallery-example.html#using-widgets-to-control-the-graph" translate="no">Using Widgets to Control the Graph</a>.</p>
+<h5 id="replacing-default-input-handling">Replacing Default Input Handling</h5>
+<p>Initialize <code translate="no">m_inputHandler</code> in the constructor with a pointer to the scatter graph instance:</p>
+<pre class="cpp" translate="no">
+ m_inputHandler(<span class="keyword">new</span> AxesInputHandler(scatter))
+</pre>
+<p>Replace the default input handling mechanism by setting the active input handler of <a href="q3dscatter.html" translate="no">Q3DScatter</a> to <code translate="no">AxesInputHandler</code>, which implements the custom behavior:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Give ownership of the handler to the graph and make it the active handler</span>
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>setActiveInputHandler(m_inputHandler);
+</pre>
+<p>The input handler needs access to the axes of the graph, so pass them to it:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Give our axes to the input handler</span>
+ m_inputHandler<span class="operator">-</span><span class="operator">&gt;</span>setAxes(m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">,</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">,</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY());
+</pre>
+<h5 id="extending-mouse-event-handling">Extending Mouse Event Handling</h5>
+<p>First, inherit the custom input handler from <a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a> instead of <a href="qabstract3dinputhandler.html" translate="no">QAbstract3DInputHandler</a> to keep all the functionality of the default input handling, and to add the custom functionality on top of it:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> AxesInputHandler : <span class="keyword">public</span> <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span>
+</pre>
+<p>Start extending the default functionality by re-implementing some of the mouse events. First, extend <code translate="no">mousePressEvent</code>. Add a <code translate="no">m_mousePressed</code> flag for the left mouse button to it, and keep the rest of the default functionality:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> AxesInputHandler<span class="operator">::</span>mousePressEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> <span class="operator">&amp;</span>mousePos)
+ {
+     <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span><span class="operator">::</span>mousePressEvent(event<span class="operator">,</span> mousePos);
+     <span class="keyword">if</span> (<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>LeftButton <span class="operator">=</span><span class="operator">=</span> event<span class="operator">-</span><span class="operator">&gt;</span>button())
+         m_mousePressed <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+</pre>
+<p>Next, modify <code translate="no">mouseReleaseEvent</code> to clear the flag, and reset the internal state:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> AxesInputHandler<span class="operator">::</span>mouseReleaseEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> <span class="operator">&amp;</span>mousePos)
+ {
+     <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span><span class="operator">::</span>mouseReleaseEvent(event<span class="operator">,</span> mousePos);
+     m_mousePressed <span class="operator">=</span> <span class="keyword">false</span>;
+     m_state <span class="operator">=</span> StateNormal;
+ }
+</pre>
+<p>Then, modify <code translate="no">mouseMoveEvent</code>. Check if <code translate="no">m_mousePressed</code> flag is <code translate="no">true</code> and the internal state is something other than <code translate="no">StateNormal</code>. If so, set the input positions for mouse movement distance calculations, and call the axis dragging function (see <a href="qtdatavis3d-graphgallery-example.html#implementing-axis-dragging" translate="no">Implementing Axis Dragging</a> for details):</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> AxesInputHandler<span class="operator">::</span>mouseMoveEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> <span class="operator">&amp;</span>mousePos)
+ {
+     <span class="comment">// Check if we're trying to drag axis label</span>
+     <span class="keyword">if</span> (m_mousePressed <span class="operator">&amp;</span><span class="operator">&amp;</span> m_state <span class="operator">!</span><span class="operator">=</span> StateNormal) {
+         setPreviousInputPos(inputPosition());
+         setInputPosition(mousePos);
+         handleAxisDragging();
+     } <span class="keyword">else</span> {
+         <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span><span class="operator">::</span>mouseMoveEvent(event<span class="operator">,</span> mousePos);
+     }
+ }
+</pre>
+<h5 id="implementing-axis-dragging">Implementing Axis Dragging</h5>
+<p>First, start listening to the selection signal from the graph. Do that in the constructor, and connect it to the <code translate="no">handleElementSelected</code> method:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Connect to the item selection signal from graph</span>
+ connect(graph<span class="operator">,</span> <span class="operator">&amp;</span>QAbstract3DGraph<span class="operator">::</span>selectedElementChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+         <span class="operator">&amp;</span>AxesInputHandler<span class="operator">::</span>handleElementSelected);
+</pre>
+<p>In <code translate="no">handleElementSelected</code>, check the type of the selection, and set the internal state based on it:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">switch</span> (type) {
+ <span class="keyword">case</span> QAbstract3DGraph<span class="operator">::</span>ElementAxisXLabel:
+     m_state <span class="operator">=</span> StateDraggingX;
+     <span class="keyword">break</span>;
+ <span class="keyword">case</span> QAbstract3DGraph<span class="operator">::</span>ElementAxisYLabel:
+     m_state <span class="operator">=</span> StateDraggingY;
+     <span class="keyword">break</span>;
+ <span class="keyword">case</span> QAbstract3DGraph<span class="operator">::</span>ElementAxisZLabel:
+     m_state <span class="operator">=</span> StateDraggingZ;
+     <span class="keyword">break</span>;
+ <span class="keyword">default</span>:
+     m_state <span class="operator">=</span> StateNormal;
+     <span class="keyword">break</span>;
+ }
+</pre>
+<p>The actual dragging logic is implemented in the <code translate="no">handleAxisDragging</code> method, which is called from <code translate="no">mouseMoveEvent</code>, if the required conditions are met:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Check if we're trying to drag axis label</span>
+ <span class="keyword">if</span> (m_mousePressed <span class="operator">&amp;</span><span class="operator">&amp;</span> m_state <span class="operator">!</span><span class="operator">=</span> StateNormal) {
+</pre>
+<p>In <code translate="no">handleAxisDragging</code>, first get the scene orientation from the active camera:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Get scene orientation from active camera</span>
+ <span class="type">float</span> xRotation <span class="operator">=</span> scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>xRotation();
+ <span class="type">float</span> yRotation <span class="operator">=</span> scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>yRotation();
+</pre>
+<p>Then, calculate the modifiers for mouse movement direction based on the orientation:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Calculate directional drag multipliers based on rotation</span>
+ <span class="type">float</span> xMulX <span class="operator">=</span> <a href="../qtcore/qtmath.html#qCos" translate="no">qCos</a>(qDegreesToRadians(xRotation));
+ <span class="type">float</span> xMulY <span class="operator">=</span> <a href="../qtcore/qtmath.html#qSin" translate="no">qSin</a>(qDegreesToRadians(xRotation));
+ <span class="type">float</span> zMulX <span class="operator">=</span> <a href="../qtcore/qtmath.html#qSin" translate="no">qSin</a>(qDegreesToRadians(xRotation));
+ <span class="type">float</span> zMulY <span class="operator">=</span> <a href="../qtcore/qtmath.html#qCos" translate="no">qCos</a>(qDegreesToRadians(xRotation));
+</pre>
+<p>After that, calculate the mouse movement, and modify it based on the y rotation of the camera:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Get the drag amount</span>
+ <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> move <span class="operator">=</span> inputPosition() <span class="operator">-</span> previousInputPos();
+
+ <span class="comment">// Flip the effect of y movement if we're viewing from below</span>
+ <span class="type">float</span> yMove <span class="operator">=</span> (yRotation <span class="operator">&lt;</span> <span class="number">0</span>) <span class="operator">?</span> <span class="operator">-</span>move<span class="operator">.</span>y() : move<span class="operator">.</span>y();
+</pre>
+<p>Then, apply the moved distance to the correct axis:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Adjust axes</span>
+ <span class="keyword">switch</span> (m_state) {
+ <span class="keyword">case</span> StateDraggingX:
+     distance <span class="operator">=</span> (move<span class="operator">.</span>x() <span class="operator">*</span> xMulX <span class="operator">-</span> yMove <span class="operator">*</span> xMulY) <span class="operator">/</span> m_speedModifier;
+     m_axisX<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisX<span class="operator">-</span><span class="operator">&gt;</span>min() <span class="operator">-</span> distance<span class="operator">,</span> m_axisX<span class="operator">-</span><span class="operator">&gt;</span>max() <span class="operator">-</span> distance);
+     <span class="keyword">break</span>;
+ <span class="keyword">case</span> StateDraggingZ:
+     distance <span class="operator">=</span> (move<span class="operator">.</span>x() <span class="operator">*</span> zMulX <span class="operator">+</span> yMove <span class="operator">*</span> zMulY) <span class="operator">/</span> m_speedModifier;
+     m_axisZ<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisZ<span class="operator">-</span><span class="operator">&gt;</span>min() <span class="operator">+</span> distance<span class="operator">,</span> m_axisZ<span class="operator">-</span><span class="operator">&gt;</span>max() <span class="operator">+</span> distance);
+     <span class="keyword">break</span>;
+ <span class="keyword">case</span> StateDraggingY:
+     distance <span class="operator">=</span> move<span class="operator">.</span>y() <span class="operator">/</span> m_speedModifier; <span class="comment">// No need to use adjusted y move here</span>
+     m_axisY<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisY<span class="operator">-</span><span class="operator">&gt;</span>min() <span class="operator">+</span> distance<span class="operator">,</span> m_axisY<span class="operator">-</span><span class="operator">&gt;</span>max() <span class="operator">+</span> distance);
+     <span class="keyword">break</span>;
+ <span class="keyword">default</span>:
+     <span class="keyword">break</span>;
+ }
+</pre>
+<p>Finally, add a function for setting the dragging speed:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">inline</span> <span class="type">void</span> setDragSpeedModifier(<span class="type">float</span> modifier) { m_speedModifier <span class="operator">=</span> modifier; }
+</pre>
+<p>This is needed, as the mouse movement distance is absolute in screen coordinates, and you need to adjust it to the axis range. The larger the value, the slower the dragging will be. Note that in this example, the scene zoom level is not taken into account when determining the drag speed, so you'll notice changes in the range adjustment as you change the zoom level.</p>
+<p>You could also adjust the modifier automatically based on the axis range and camera zoom level.</p>
+<h4 id="surface-graph">Surface Graph</h4>
+<p>In the <b translate="no">Surface Graph</b> tab, create a 3D surface graph using <a href="q3dsurface.html" translate="no">Q3DSurface</a>. The example shows how to:</p>
+<ul>
+<li>Set up a basic <a href="qsurfacedataproxy.html" translate="no">QSurfaceDataProxy</a> and set data for it.</li>
+<li>Use <a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a> for showing 3D height maps.</li>
+<li>Use topographic data to create 3D height maps.</li>
+<li>Use three different selection modes for studying the graph.</li>
+<li>Use axis ranges to display selected portions of the graph.</li>
+<li>Set a custom surface gradient.</li>
+<li>Add custom items and labels with <a href="qcustom3ditem.html" translate="no">QCustom3DItem</a> and <a href="qcustom3dlabel.html" translate="no">QCustom3DLabel</a>.</li>
+<li>Use custom input handler to enable zooming and panning.</li>
+<li>Highlight an area of the surface.</li>
+</ul>
+<p>For basic application creation, see <a href="qtdatavis3d-graphgallery-example.html#bar-graph" translate="no">Bar Graph</a>.</p>
+<h5 id="simple-surface-with-generated-data">Simple Surface with Generated Data</h5>
+<p>First, instantiate a new <a href="qsurfacedataproxy.html" translate="no">QSurfaceDataProxy</a> and attach it to a new <a href="qsurface3dseries.html" translate="no">QSurface3DSeries</a>:</p>
+<pre class="cpp" translate="no">
+ m_sqrtSinProxy <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html" translate="no">QSurfaceDataProxy</a></span>();
+ m_sqrtSinSeries <span class="operator">=</span> <span class="keyword">new</span> QSurface3DSeries(m_sqrtSinProxy);
+</pre>
+<p>Then, fill the proxy with a simple square root and sine wave data. Create a new <code translate="no">QSurfaceDataArray</code> instance, and add <code translate="no">QSurfaceDataRow</code> elements to it. Set the created <code translate="no">QSurfaceDataArray</code> as the data array for the <a href="qsurfacedataproxy.html" translate="no">QSurfaceDataProxy</a> by calling <code translate="no">resetArray()</code>.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> <span class="operator">*</span>dataArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span>;
+ dataArray<span class="operator">-</span><span class="operator">&gt;</span>reserve(sampleCountZ);
+ <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span> ; i <span class="operator">&lt;</span> sampleCountZ ; <span class="operator">+</span><span class="operator">+</span>i) {
+     <span class="keyword">auto</span> <span class="operator">*</span>newRow <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataRow-typedef" translate="no">QSurfaceDataRow</a></span>;
+     newRow<span class="operator">-</span><span class="operator">&gt;</span>reserve(sampleCountX);
+     <span class="comment">// Keep values within range bounds, since just adding step can cause minor drift due</span>
+     <span class="comment">// to the rounding errors.</span>
+     <span class="type">float</span> z <span class="operator">=</span> qMin(sampleMax<span class="operator">,</span> (i <span class="operator">*</span> stepZ <span class="operator">+</span> sampleMin));
+     <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="number">0</span>; j <span class="operator">&lt;</span> sampleCountX; <span class="operator">+</span><span class="operator">+</span>j) {
+         <span class="type">float</span> x <span class="operator">=</span> qMin(sampleMax<span class="operator">,</span> (j <span class="operator">*</span> stepX <span class="operator">+</span> sampleMin));
+         <span class="type">float</span> R <span class="operator">=</span> qSqrt(z <span class="operator">*</span> z <span class="operator">+</span> x <span class="operator">*</span> x) <span class="operator">+</span> <span class="number">0.01f</span>;
+         <span class="type">float</span> y <span class="operator">=</span> (<a href="../qtcore/qtmath.html#qSin" translate="no">qSin</a>(R) <span class="operator">/</span> R <span class="operator">+</span> <span class="number">0.24f</span>) <span class="operator">*</span> <span class="number">1.61f</span>;
+         newRow<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="type"><a href="qsurfacedataitem.html" translate="no">QSurfaceDataItem</a></span>({x<span class="operator">,</span> y<span class="operator">,</span> z}));
+     }
+     dataArray<span class="operator">-</span><span class="operator">&gt;</span>append(newRow);
+ }
+
+ m_sqrtSinProxy<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataArray);
+</pre>
+<h5 id="multiseries-height-map-data">Multiseries Height Map Data</h5>
+<p>Create the height map by instantiating a <a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a> with a <a href="../qtgui/qimage.html" translate="no">QImage</a> containing the height data. Use <a href="qheightmapsurfacedataproxy.html#setValueRanges" translate="no">QHeightMapSurfaceDataProxy::setValueRanges</a>() to define the value range of the map. In the example, the map is from an imaginary position of 34.0° N - 40.0° N and 18.0° E - 24.0° E. These values are used to position the map on the axes.</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Create the first surface layer</span>
+ <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> heightMapImageOne(<span class="string">&quot;:/data/layer_1.png&quot;</span>);
+ m_heightMapProxyOne <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a></span>(heightMapImageOne);
+ m_heightMapSeriesOne <span class="operator">=</span> <span class="keyword">new</span> QSurface3DSeries(m_heightMapProxyOne);
+ m_heightMapSeriesOne<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;(@xLabel, @zLabel): @yLabel&quot;</span>_s);
+ m_heightMapProxyOne<span class="operator">-</span><span class="operator">&gt;</span>setValueRanges(<span class="number">34.f</span><span class="operator">,</span> <span class="number">40.f</span><span class="operator">,</span> <span class="number">18.f</span><span class="operator">,</span> <span class="number">24.f</span>);
+</pre>
+<p>Add the other surface layers the same way, by creating a proxy and a series for them using height map images.</p>
+<h5 id="topographic-map-data">Topographic Map Data</h5>
+<p>The topographic data is obtained from the National Land Survey of Finland. It provides a product called <code translate="no">Elevation Model 2 m</code>, which is suitable for this example. The topography data is from Levi fell. The accuracy of the data is well beyond the need, and therefore it is compressed and encoded into a PNG file. The height value of the original ASCII data is encoded into RGB format using a multiplier, which you will see later in a code extract. The multiplier is calculated by dividing the largest 24-bit value with the highest point in Finland.</p>
+<p><a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a> converts only one-byte values. To utilize the higher accuracy of the data from the National Land Survey of Finland, read the data from the PNG file and decode it into <a href="qsurface3dseries.html" translate="no">QSurface3DSeries</a>.</p>
+<p>First, define the encoding multiplier:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Value used to encode height data as RGB value on PNG file</span>
+ <span class="keyword">const</span> <span class="type">float</span> packingFactor <span class="operator">=</span> <span class="number">11983.f</span>;
+</pre>
+<p>Then, perform the actual decoding:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> heightMapImage(file);
+ <span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span> <span class="operator">*</span>bits <span class="operator">=</span> heightMapImage<span class="operator">.</span>bits();
+ <span class="type">int</span> imageHeight <span class="operator">=</span> heightMapImage<span class="operator">.</span>height();
+ <span class="type">int</span> imageWidth <span class="operator">=</span> heightMapImage<span class="operator">.</span>width();
+ <span class="type">int</span> widthBits <span class="operator">=</span> imageWidth <span class="operator">*</span> <span class="number">4</span>;
+ <span class="type">float</span> stepX <span class="operator">=</span> width <span class="operator">/</span> <span class="type">float</span>(imageWidth);
+ <span class="type">float</span> stepZ <span class="operator">=</span> height <span class="operator">/</span> <span class="type">float</span>(imageHeight);
+
+ <span class="keyword">auto</span> <span class="operator">*</span>dataArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span>;
+ dataArray<span class="operator">-</span><span class="operator">&gt;</span>reserve(imageHeight);
+ <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> imageHeight; <span class="operator">+</span><span class="operator">+</span>i) {
+     <span class="type">int</span> p <span class="operator">=</span> i <span class="operator">*</span> widthBits;
+     <span class="type">float</span> z <span class="operator">=</span> height <span class="operator">-</span> <span class="type">float</span>(i) <span class="operator">*</span> stepZ;
+     <span class="keyword">auto</span> <span class="operator">*</span>newRow <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataRow-typedef" translate="no">QSurfaceDataRow</a></span>;
+     newRow<span class="operator">-</span><span class="operator">&gt;</span>reserve(imageWidth);
+     <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="number">0</span>; j <span class="operator">&lt;</span> imageWidth; <span class="operator">+</span><span class="operator">+</span>j) {
+         <span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span> aa <span class="operator">=</span> bits<span class="operator">[</span>p <span class="operator">+</span> <span class="number">0</span><span class="operator">]</span>;
+         <span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span> rr <span class="operator">=</span> bits<span class="operator">[</span>p <span class="operator">+</span> <span class="number">1</span><span class="operator">]</span>;
+         <span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span> gg <span class="operator">=</span> bits<span class="operator">[</span>p <span class="operator">+</span> <span class="number">2</span><span class="operator">]</span>;
+         <span class="type"><a href="../qtcore/qttypes.html#uint-typedef" translate="no">uint</a></span> color <span class="operator">=</span> <span class="type"><a href="../qtcore/qttypes.html#uint-typedef" translate="no">uint</a></span>((gg <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">16</span>) <span class="operator">+</span> (rr <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">8</span>) <span class="operator">+</span> aa);
+         <span class="type">float</span> y <span class="operator">=</span> <span class="type">float</span>(color) <span class="operator">/</span> packingFactor;
+         newRow<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="type"><a href="qsurfacedataitem.html" translate="no">QSurfaceDataItem</a></span>({<span class="type">float</span>(j) <span class="operator">*</span> stepX<span class="operator">,</span> y<span class="operator">,</span> z}));
+         p <span class="operator">+</span><span class="operator">=</span> <span class="number">4</span>;
+     }
+     dataArray<span class="operator">-</span><span class="operator">&gt;</span>append(newRow);
+ }
+
+ dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataArray);
+</pre>
+<p>Now, the data is usable by the proxy.</p>
+<h5 id="selecting-the-data-set">Selecting the Data Set</h5>
+<p>To demonstrate different proxies, <b translate="no">Surface Graph</b> has three radio buttons to switch between the series.</p>
+<p>With <b translate="no">Sqrt &amp; Sin</b>, the simple generated series is activated. First, set the decorative features, such as enabling the grid for the surface, and selecting the flat shading mode. Next, define the axis label format and value ranges. Set automatic label rotation to improve label readability at low camera angles. Finally, make sure the correct series is added to the graph and the others are not:</p>
+<pre class="cpp" translate="no">
+ m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawSurfaceAndWireframe);
+ m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setFlatShadingEnabled(<span class="keyword">true</span>);
+
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%.2f&quot;</span>);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%.2f&quot;</span>);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setRange(sampleMin<span class="operator">,</span> sampleMax);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0.f</span><span class="operator">,</span> <span class="number">2.f</span>);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setRange(sampleMin<span class="operator">,</span> sampleMax);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">30.f</span>);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">90.f</span>);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">30.f</span>);
+
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_heightMapSeriesOne);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_heightMapSeriesTwo);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_heightMapSeriesThree);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_topography);
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_highlight);
+
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_sqrtSinSeries);
+</pre>
+<p>With <b translate="no">Multiseries Height Map</b>, the height map series are activated and others disabled. Auto-adjusting Y-axis range works well for the height map surface, so ensure it is set.</p>
+<pre class="cpp" translate="no">
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setAutoAdjustRange(<span class="keyword">true</span>);
+</pre>
+<p>With <b translate="no">Textured Topography</b>, the topographic series is activated and others disabled. Activate a custom input handler for this series, to be able to highlight areas on it:</p>
+<pre class="cpp" translate="no">
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>setActiveInputHandler(m_customInputHandler);
+</pre>
+<p>See <a href="qtdatavis3d-graphgallery-example.html#use-custom-input-handler-to-enable-zooming-and-panning" translate="no">Use Custom Input Handler to Enable Zooming and Panning</a> for information about the custom input handler for this data set.</p>
+<h5 id="selection-modes">Selection Modes</h5>
+<p>The three selection modes supported by <a href="q3dsurface.html" translate="no">Q3DSurface</a> can be used with radio buttons. To activate the selected mode or to clear it, add the following inline methods:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> toggleModeNone() { m_graph<span class="operator">-</span><span class="operator">&gt;</span>setSelectionMode(QAbstract3DGraph<span class="operator">::</span>SelectionNone); }
+ <span class="type">void</span> toggleModeItem() { m_graph<span class="operator">-</span><span class="operator">&gt;</span>setSelectionMode(QAbstract3DGraph<span class="operator">::</span>SelectionItem); }
+ <span class="type">void</span> toggleModeSliceRow() { m_graph<span class="operator">-</span><span class="operator">&gt;</span>setSelectionMode(QAbstract3DGraph<span class="operator">::</span>SelectionItemAndRow
+                                                       <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionSlice
+                                                       <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionMultiSeries); }
+ <span class="type">void</span> toggleModeSliceColumn() { m_graph<span class="operator">-</span><span class="operator">&gt;</span>setSelectionMode(QAbstract3DGraph<span class="operator">::</span>SelectionItemAndColumn
+                                                          <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionSlice
+                                                          <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionMultiSeries); }
+</pre>
+<p>Add <code translate="no">QAbstract3DGraph::SelectionSlice</code> and <code translate="no">QAbstract3DGraph::SelectionMultiSeries</code> flags for the row and column selection modes to support doing a slice selection to all visible series in the graph simultaneously.</p>
+<h5 id="axis-ranges-for-studying-the-graph">Axis Ranges for Studying the Graph</h5>
+<p>The example has four slider controls for adjusting the min and max values for X and Z axes. When selecting the proxy, these sliders are adjusted to match the axis ranges of the current data set:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Reset range sliders for Sqrt &amp; Sin</span>
+ m_rangeMinX <span class="operator">=</span> sampleMin;
+ m_rangeMinZ <span class="operator">=</span> sampleMin;
+ m_stepX <span class="operator">=</span> (sampleMax <span class="operator">-</span> sampleMin) <span class="operator">/</span> <span class="type">float</span>(sampleCountX <span class="operator">-</span> <span class="number">1</span>);
+ m_stepZ <span class="operator">=</span> (sampleMax <span class="operator">-</span> sampleMin) <span class="operator">/</span> <span class="type">float</span>(sampleCountZ <span class="operator">-</span> <span class="number">1</span>);
+ m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+ m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(sampleCountX <span class="operator">-</span> <span class="number">2</span>);
+ m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+ m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+ m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(sampleCountX <span class="operator">-</span> <span class="number">1</span>);
+ m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(sampleCountX <span class="operator">-</span> <span class="number">1</span>);
+ m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+ m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(sampleCountZ <span class="operator">-</span> <span class="number">2</span>);
+ m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+ m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+ m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(sampleCountZ <span class="operator">-</span> <span class="number">1</span>);
+ m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(sampleCountZ <span class="operator">-</span> <span class="number">1</span>);
+</pre>
+<p>Add support for setting the X range from the widget controls to the graph:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>setAxisXRange(<span class="type">float</span> min<span class="operator">,</span> <span class="type">float</span> max)
+ {
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setRange(min<span class="operator">,</span> max);
+ }
+</pre>
+<p>Add the support for Z range the same way.</p>
+<h5 id="custom-surface-gradients">Custom Surface Gradients</h5>
+<p>With the <b translate="no">Sqrt &amp; Sin</b> data set, custom surface gradients can be taken into use with two push buttons. Define the gradient with <a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a>, where the desired colors are set. Also, change the color style to <a href="q3dtheme.html#ColorStyle-enum" translate="no">Q3DTheme::ColorStyleRangeGradient</a> to use the gradient.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> gr;
+ gr<span class="operator">.</span>setColorAt(<span class="number">0.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+ gr<span class="operator">.</span>setColorAt(<span class="number">0.33f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>blue);
+ gr<span class="operator">.</span>setColorAt(<span class="number">0.67f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+ gr<span class="operator">.</span>setColorAt(<span class="number">1.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>yellow);
+
+ m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setBaseGradient(gr);
+ m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setColorStyle(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ColorStyleRangeGradient);
+</pre>
+<h5 id="adding-custom-meshes-to-the-application">Adding Custom Meshes to the Application</h5>
+<p>Add the mesh files to <code translate="no">CMakeLists.txt</code> for cmake build:</p>
+<pre class="cpp plain" translate="no">
+ set(graphgallery_resource_files
+     ..&#x2e;
+     &quot;data/oilrig.obj&quot;
+     &quot;data/pipe.obj&quot;
+     &quot;data/refinery.obj&quot;
+     ..&#x2e;
+ )
+
+ qt6_add_resources(graphgallery &quot;graphgallery&quot;
+     PREFIX
+         &quot;/&quot;
+     FILES
+         ${graphgallery_resource_files}
+ )
+</pre>
+<p>Also, add them in the qrc resource file for use with qmake:</p>
+<pre class="cpp plain" translate="no">
+ &lt;RCC&gt;
+     &lt;qresource prefix=&quot;/&quot;&gt;
+         ..&#x2e;
+         &lt;file&gt;data/refinery.obj&lt;/file&gt;
+         &lt;file&gt;data/oilrig.obj&lt;/file&gt;
+         &lt;file&gt;data/pipe.obj&lt;/file&gt;
+         ..&#x2e;
+     &lt;/qresource&gt;
+ &lt;/RCC&gt;
+</pre>
+<h5 id="adding-custom-item-to-a-graph">Adding Custom Item to a Graph</h5>
+<p>With the <b translate="no">Multiseries Height Map</b> data set, custom items are inserted into the graph and can be toggled on or off using checkboxes. Other visual qualities can also be controlled with another set of checkboxes, including see-through for the two top layers, and a highlight for the bottom layer.</p>
+<p>Begin by creating a small <a href="../qtgui/qimage.html" translate="no">QImage</a>. Fill it with a single color to use as the color for the custom object:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> color <span class="operator">=</span> <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span>(<span class="number">2</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span><span class="operator">::</span>Format_RGB32);
+ color<span class="operator">.</span>fill(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+</pre>
+<p>Then, specify the position of the item in a variable. The position can then be used for removing the correct item from the graph:</p>
+<pre class="cpp" translate="no">
+ QVector3D positionOne <span class="operator">=</span> QVector3D(<span class="number">39.f</span><span class="operator">,</span> <span class="number">77.f</span><span class="operator">,</span> <span class="number">19.2f</span>);
+</pre>
+<p>Then, create a new <a href="qcustom3ditem.html" translate="no">QCustom3DItem</a> with all the parameters:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> <span class="operator">*</span>item <span class="operator">=</span> <span class="keyword">new</span> QCustom3DItem(<span class="string">&quot;:/data/oilrig.obj&quot;</span><span class="operator">,</span> positionOne<span class="operator">,</span>
+                                QVector3D(<span class="number">0.025f</span><span class="operator">,</span> <span class="number">0.025f</span><span class="operator">,</span> <span class="number">0.025f</span>)<span class="operator">,</span>
+                                <span class="type"><a href="../qtgui/qquaternion.html" translate="no">QQuaternion</a></span><span class="operator">::</span>fromAxisAndAngle(<span class="number">0.f</span><span class="operator">,</span> <span class="number">1.f</span><span class="operator">,</span> <span class="number">0.f</span><span class="operator">,</span> <span class="number">45.f</span>)<span class="operator">,</span>
+                                color);
+</pre>
+<p>Finally, add the item to the graph:</p>
+<pre class="cpp" translate="no">
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(item);
+</pre>
+<h5 id="adding-custom-label-to-a-graph">Adding Custom Label to a Graph</h5>
+<p>Adding a custom label is very similar to adding a custom item. For the label, a custom mesh is not needed, but just a <a href="qcustom3dlabel.html" translate="no">QCustom3DLabel</a> instance:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> <span class="operator">*</span>label <span class="operator">=</span> <span class="keyword">new</span> QCustom3DLabel();
+ label<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="string">&quot;Oil Rig One&quot;</span>);
+ label<span class="operator">-</span><span class="operator">&gt;</span>setPosition(positionOneLabel);
+ label<span class="operator">-</span><span class="operator">&gt;</span>setScaling(QVector3D(<span class="number">1.f</span><span class="operator">,</span> <span class="number">1.f</span><span class="operator">,</span> <span class="number">1.f</span>));
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(label);
+</pre>
+<h5 id="removing-custom-item-from-a-graph">Removing Custom Item from a Graph</h5>
+<p>To remove a specific item from the graph, call <code translate="no">removeCustomItemAt()</code> with the position of the item:</p>
+<pre class="cpp" translate="no">
+ m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeCustomItemAt(positionOne);
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Removing a custom item from the graph also deletes the object. If you want to preserve the item, use the <code translate="no">releaseCustomItem()</code> method instead.</p>
+</div>
+<h5 id="texture-to-a-surface-series">Texture to a Surface Series</h5>
+<p>With the <b translate="no">Textured Topography</b> data set, create a map texture to be used with the topographic height map.</p>
+<p>Set an image to be used as the texture on a surface with <a href="qsurface3dseries.html#textureFile-prop" translate="no">QSurface3DSeries::setTextureFile</a>(). Add a check box to control if the texture is set or not, and a handler to react to the checkbox state:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>toggleSurfaceTexture(<span class="type">bool</span> enable)
+ {
+     <span class="keyword">if</span> (enable)
+         m_topography<span class="operator">-</span><span class="operator">&gt;</span>setTextureFile(<span class="string">&quot;:/data/maptexture.jpg&quot;</span>);
+     <span class="keyword">else</span>
+         m_topography<span class="operator">-</span><span class="operator">&gt;</span>setTextureFile(<span class="string">&quot;&quot;</span>);
+ }
+</pre>
+<p>The image in this example is read from a JPG file. Setting an empty file with the method clears the texture, and the surface uses the gradients or colors from the theme.</p>
+<h5 id="use-custom-input-handler-to-enable-zooming-and-panning">Use Custom Input Handler to Enable Zooming and Panning</h5>
+<p>With the <b translate="no">Textured Topography</b> data set, create a custom input handler to highlight the selection on the graph and allow panning the graph.</p>
+<p>The panning implementation is similar to the one shown in <a href="qtdatavis3d-graphgallery-example.html#implementing-axis-dragging" translate="no">Implementing Axis Dragging</a>. The difference is that, in this example, you follow only the X and Z axes and don't allow dragging the surface outside the graph. To limit the dragging, follow the limits of the axes and do nothing if going outside the graph:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">case</span> StateDraggingX:
+     distance <span class="operator">=</span> (move<span class="operator">.</span>x() <span class="operator">*</span> xMulX <span class="operator">-</span> move<span class="operator">.</span>y() <span class="operator">*</span> xMulY) <span class="operator">*</span> m_speedModifier;
+     m_axisXMinValue <span class="operator">-</span><span class="operator">=</span> distance;
+     m_axisXMaxValue <span class="operator">-</span><span class="operator">=</span> distance;
+     <span class="keyword">if</span> (m_axisXMinValue <span class="operator">&lt;</span> m_areaMinValue) {
+         <span class="type">float</span> dist <span class="operator">=</span> m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue;
+         m_axisXMinValue <span class="operator">=</span> m_areaMinValue;
+         m_axisXMaxValue <span class="operator">=</span> m_axisXMinValue <span class="operator">+</span> dist;
+     }
+     <span class="keyword">if</span> (m_axisXMaxValue <span class="operator">&gt;</span> m_areaMaxValue) {
+         <span class="type">float</span> dist <span class="operator">=</span> m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue;
+         m_axisXMaxValue <span class="operator">=</span> m_areaMaxValue;
+         m_axisXMinValue <span class="operator">=</span> m_axisXMaxValue <span class="operator">-</span> dist;
+     }
+     m_axisX<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisXMinValue<span class="operator">,</span> m_axisXMaxValue);
+     <span class="keyword">break</span>;
+</pre>
+<p>For zooming, catch the <code translate="no">wheelEvent</code> and adjust the X and Y axis ranges according to the delta value on <a href="../qtgui/qwheelevent.html" translate="no">QWheelEvent</a>. Adjust the Y axis so that the aspect ratio between the Y axis and the XZ plane stays the same. This prevents getting a graph in which the height is exaggerated:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> CustomInputHandler<span class="operator">::</span>wheelEvent(<span class="type"><a href="../qtgui/qwheelevent.html" translate="no">QWheelEvent</a></span> <span class="operator">*</span>event)
+ {
+     <span class="type">float</span> delta <span class="operator">=</span> <span class="type">float</span>(event<span class="operator">-</span><span class="operator">&gt;</span>angleDelta()<span class="operator">.</span>y());
+
+     m_axisXMinValue <span class="operator">+</span><span class="operator">=</span> delta;
+     m_axisXMaxValue <span class="operator">-</span><span class="operator">=</span> delta;
+     m_axisZMinValue <span class="operator">+</span><span class="operator">=</span> delta;
+     m_axisZMaxValue <span class="operator">-</span><span class="operator">=</span> delta;
+     checkConstraints();
+
+     <span class="type">float</span> y <span class="operator">=</span> (m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue) <span class="operator">*</span> m_aspectRatio;
+
+     m_axisX<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisXMinValue<span class="operator">,</span> m_axisXMaxValue);
+     m_axisY<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">100.f</span><span class="operator">,</span> y);
+     m_axisZ<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisZMinValue<span class="operator">,</span> m_axisZMaxValue);
+ }
+</pre>
+<p>Next, add some limits to the zoom level, so that it won't get too near to or far from the surface. For instance, if the value for the X axis gets below the allowed limit, i.e&#x2e; zooming gets too far, the value is set to the minimum allowed value. If the range is going to below the range minimum, both ends of the axis are adjusted so that the range stays at the limit:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">if</span> (m_axisXMinValue <span class="operator">&lt;</span> m_areaMinValue)
+     m_axisXMinValue <span class="operator">=</span> m_areaMinValue;
+ <span class="keyword">if</span> (m_axisXMaxValue <span class="operator">&gt;</span> m_areaMaxValue)
+     m_axisXMaxValue <span class="operator">=</span> m_areaMaxValue;
+ <span class="comment">// Don't allow too much zoom in</span>
+ <span class="keyword">if</span> ((m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue) <span class="operator">&lt;</span> m_axisXMinRange) {
+     <span class="type">float</span> adjust <span class="operator">=</span> (m_axisXMinRange <span class="operator">-</span> (m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue)) <span class="operator">/</span> <span class="number">2.f</span>;
+     m_axisXMinValue <span class="operator">-</span><span class="operator">=</span> adjust;
+     m_axisXMaxValue <span class="operator">+</span><span class="operator">=</span> adjust;
+ }
+</pre>
+<h5 id="highlight-an-area-of-the-surface">Highlight an Area of the Surface</h5>
+<p>To implement a highlight to be displayed on the surface, create a copy of the series and add some offset to the y value. In this example, the class <code translate="no">HighlightSeries</code> implements the creation of the copy in its <code translate="no">handlePositionChange</code> method.</p>
+<p>First, give <code translate="no">HighlightSeries</code> the pointer to the original series, and then start listening to the <a href="qsurface3dseries.html#selectedPoint-prop" translate="no">QSurface3DSeries::selectedPointChanged</a> signal:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> HighlightSeries<span class="operator">::</span>setTopographicSeries(TopographicSeries <span class="operator">*</span>series)
+ {
+     m_topographicSeries <span class="operator">=</span> series;
+     m_srcWidth <span class="operator">=</span> m_topographicSeries<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>array()<span class="operator">-</span><span class="operator">&gt;</span>at(<span class="number">0</span>)<span class="operator">-</span><span class="operator">&gt;</span>size();
+     m_srcHeight <span class="operator">=</span> m_topographicSeries<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>array()<span class="operator">-</span><span class="operator">&gt;</span>size();
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_topographicSeries<span class="operator">,</span> <span class="operator">&amp;</span>QSurface3DSeries<span class="operator">::</span>selectedPointChanged<span class="operator">,</span>
+                      <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>HighlightSeries<span class="operator">::</span>handlePositionChange);
+ }
+</pre>
+<p>When the signal triggers, check that the position is valid. Then, calculate the ranges for the copied area, and check that they stay within the bounds. Finally, fill the data array of the highlight series with the range from the data array of the topography series:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> HighlightSeries<span class="operator">::</span>handlePositionChange(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> <span class="operator">&amp;</span>position)
+ {
+     m_position <span class="operator">=</span> position;
+
+     <span class="keyword">if</span> (position <span class="operator">=</span><span class="operator">=</span> invalidSelectionPosition()) {
+         setVisible(<span class="keyword">false</span>);
+         <span class="keyword">return</span>;
+     }
+
+     <span class="type">int</span> halfWidth <span class="operator">=</span> m_width <span class="operator">/</span> <span class="number">2</span>;
+     <span class="type">int</span> halfHeight <span class="operator">=</span> m_height <span class="operator">/</span> <span class="number">2</span>;
+
+     <span class="type">int</span> startX <span class="operator">=</span> position<span class="operator">.</span>y() <span class="operator">-</span> halfWidth;
+     <span class="keyword">if</span> (startX <span class="operator">&lt;</span> <span class="number">0</span> )
+         startX <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> endX <span class="operator">=</span> position<span class="operator">.</span>y() <span class="operator">+</span> halfWidth;
+     <span class="keyword">if</span> (endX <span class="operator">&gt;</span> (m_srcWidth <span class="operator">-</span> <span class="number">1</span>))
+         endX <span class="operator">=</span> m_srcWidth <span class="operator">-</span> <span class="number">1</span>;
+     <span class="type">int</span> startZ <span class="operator">=</span> position<span class="operator">.</span>x() <span class="operator">-</span> halfHeight;
+     <span class="keyword">if</span> (startZ <span class="operator">&lt;</span> <span class="number">0</span> )
+         startZ <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> endZ <span class="operator">=</span> position<span class="operator">.</span>x() <span class="operator">+</span> halfHeight;
+     <span class="keyword">if</span> (endZ <span class="operator">&gt;</span> (m_srcHeight <span class="operator">-</span> <span class="number">1</span>))
+         endZ <span class="operator">=</span> m_srcHeight <span class="operator">-</span> <span class="number">1</span>;
+
+     <span class="type"><a href="qsurfacedataproxy.html" translate="no">QSurfaceDataProxy</a></span> <span class="operator">*</span>srcProxy <span class="operator">=</span> m_topographicSeries<span class="operator">-</span><span class="operator">&gt;</span>dataProxy();
+     <span class="keyword">const</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span> <span class="operator">&amp;</span>srcArray <span class="operator">=</span> <span class="operator">*</span>srcProxy<span class="operator">-</span><span class="operator">&gt;</span>array();
+
+     <span class="keyword">auto</span> <span class="operator">*</span>dataArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span>;
+     dataArray<span class="operator">-</span><span class="operator">&gt;</span>reserve(endZ <span class="operator">-</span> startZ);
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> startZ; i <span class="operator">&lt;</span> endZ; <span class="operator">+</span><span class="operator">+</span>i) {
+         <span class="keyword">auto</span> <span class="operator">*</span>newRow <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataRow-typedef" translate="no">QSurfaceDataRow</a></span>;
+         newRow<span class="operator">-</span><span class="operator">&gt;</span>reserve(endX <span class="operator">-</span> startX);
+         <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataRow-typedef" translate="no">QSurfaceDataRow</a></span> <span class="operator">*</span>srcRow <span class="operator">=</span> srcArray<span class="operator">.</span>at(i);
+         <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> startX; j <span class="operator">&lt;</span> endX; <span class="operator">+</span><span class="operator">+</span>j) {
+             QVector3D pos <span class="operator">=</span> srcRow<span class="operator">-</span><span class="operator">&gt;</span>at(j)<span class="operator">.</span>position();
+             pos<span class="operator">.</span>setY(pos<span class="operator">.</span>y() <span class="operator">+</span> <span class="number">0.1f</span>);
+             newRow<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="type"><a href="qsurfacedataitem.html" translate="no">QSurfaceDataItem</a></span>(pos));
+         }
+         dataArray<span class="operator">-</span><span class="operator">&gt;</span>append(newRow);
+     }
+
+     dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataArray);
+     setVisible(<span class="keyword">true</span>);
+ }
+</pre>
+<h5 id="a-gradient-to-the-highlight-series">A Gradient to the Highlight Series</h5>
+<p>Since the <code translate="no">HighlightSeries</code> is <a href="qsurface3dseries.html" translate="no">QSurface3DSeries</a>, all the decoration methods a series can have are available. In this example, add a gradient to emphasize the elevation. Because the suitable gradient style depends on the range of the Y axis and we change the range when zooming, the gradient color positions need to be adjusted as the range changes. Do this by defining proportional values for the gradient color positions:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">const</span> <span class="type">float</span> darkRedPos <span class="operator">=</span> <span class="number">1.f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> redPos <span class="operator">=</span> <span class="number">0.8f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> yellowPos <span class="operator">=</span> <span class="number">0.6f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> greenPos <span class="operator">=</span> <span class="number">0.4f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> darkGreenPos <span class="operator">=</span> <span class="number">0.2f</span>;
+</pre>
+<p>The gradient modification is done in the <code translate="no">handleGradientChange</code> method, so connect it to react to changes on the Y axis:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">,</span> <span class="operator">&amp;</span>QValue3DAxis<span class="operator">::</span>maxChanged<span class="operator">,</span>
+                  m_highlight<span class="operator">,</span> <span class="operator">&amp;</span>HighlightSeries<span class="operator">::</span>handleGradientChange);
+</pre>
+<p>When a change in the Y axis max value happens, calculate the new gradient color positions:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> HighlightSeries<span class="operator">::</span>handleGradientChange(<span class="type">float</span> value)
+ {
+     <span class="type">float</span> ratio <span class="operator">=</span> m_minHeight <span class="operator">/</span> value;
+
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> gr;
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+     gr<span class="operator">.</span>setColorAt(darkGreenPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkGreen);
+     gr<span class="operator">.</span>setColorAt(greenPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>green);
+     gr<span class="operator">.</span>setColorAt(yellowPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>yellow);
+     gr<span class="operator">.</span>setColorAt(redPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+     gr<span class="operator">.</span>setColorAt(darkRedPos <span class="operator">*</span> ratio<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkRed);
+
+     setBaseGradient(gr);
+     setColorStyle(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ColorStyleRangeGradient);
+ }
+</pre>
+<h4 id="example-contents">Example Contents</h4>
+<p><a href="https://code.qt.io/cgit/qt/qtdatavis3d.git/tree/examples/datavisualization/graphgallery?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@graphgallery -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

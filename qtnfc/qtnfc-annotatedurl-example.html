@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- annotatedurl.qdoc -->
+  <meta name="description" content="The example shows reading from formatted NFC Data Exchange Format (NDEF) messages.">
+  <title>Annotated URL | Qt NFC 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtnfc-index.html" translate="no">Qt NFC</a></li>
+<li>Annotated URL</li>
+<li id="buildversion"><a href="qtnfc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#annotatedurl-class-definition">AnnotatedUrl Class Definition</a></li>
+<li class="level1"><a href="#message-filtering">Message Filtering</a></li>
+<li class="level1"><a href="#annotatedurl-handler-implementation">AnnotatedUrl Handler Implementation</a></li>
+<li class="level1"><a href="#adapter-state-handling">Adapter State Handling</a></li>
+<li class="level1"><a href="#automatic-application-startup">Automatic Application Startup</a></li>
+<li class="level2"><a href="#building-with-qmake">Building with qmake</a></li>
+<li class="level2"><a href="#building-with-cmake">Building with CMake</a></li>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Annotated URL</h1>
+<!-- $$$annotatedurl-brief -->
+<p>The example shows reading from formatted NFC Data Exchange Format (NDEF) messages.</p>
+<!-- @@@annotatedurl -->
+<!-- $$$annotatedurl-description -->
+<div class="descr" id="details">
+<p>The Annotated URL example displays the contents of specifically formatted NFC Data Exchange Format (NDEF) messages read from an NFC Tag. The NDEF message should contain a URI record, an optional <code translate="no">image/*</code> MIME record, and one or more localized Text records.</p>
+<p>This is the initial state of the example:</p>
+<p class="centerAlign"><img src="images/annotatedurl.png" alt="" /></p><p>In this example the NFC Tag used contains a text record and an URI record. The UI gets updated accordingly to:</p>
+<p class="centerAlign"><img src="images/annotatedurl2.png" alt="" /></p><p>When the screen is tapped, the URL will be opened in the browser.</p>
+<h4 id="annotatedurl-class-definition">AnnotatedUrl Class Definition</h4>
+<p>The <code translate="no">AnnotatedUrl</code> class wraps <a href="qnearfieldmanager.html" translate="no">QNearFieldManager</a>, the class providing the NFC Tag detection functionality. NDEF messages are read by <a href="qnearfieldmanager.html" translate="no">QNearFieldManager</a> and forwarded to a handler contained in the <code translate="no">AnnotatedUrl</code> class. After parsing the NDEF message the class emits the <code translate="no">annotatedUrl()</code> signal. The UI reacts to the signal displaying the contents of the NDEF message.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> AnnotatedUrl : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> AnnotatedUrl(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+     <span class="operator">~</span>AnnotatedUrl();
+
+     <span class="type">void</span> startDetection();
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> annotatedUrl(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> <span class="operator">&amp;</span>url<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>title<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QPixmap</span> <span class="operator">&amp;</span>pixmap);
+     <span class="type">void</span> nfcStateChanged(<span class="type">bool</span> enabled);
+     <span class="type">void</span> tagError(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>error);
+
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> targetDetected(<span class="type"><a href="qnearfieldtarget.html" translate="no">QNearFieldTarget</a></span> <span class="operator">*</span>target);
+     <span class="type">void</span> targetLost(<span class="type"><a href="qnearfieldtarget.html" translate="no">QNearFieldTarget</a></span> <span class="operator">*</span>target);
+     <span class="type">void</span> handleMessage(<span class="keyword">const</span> <span class="type"><a href="qndefmessage.html" translate="no">QNdefMessage</a></span> <span class="operator">&amp;</span>message<span class="operator">,</span> <span class="type"><a href="qnearfieldtarget.html" translate="no">QNearFieldTarget</a></span> <span class="operator">*</span>target);
+     <span class="type">void</span> handlePolledNdefMessage(<span class="type"><a href="qndefmessage.html" translate="no">QNdefMessage</a></span> message);
+     <span class="type">void</span> handleAdapterStateChange(<span class="type"><a href="qnearfieldmanager.html" translate="no">QNearFieldManager</a></span><span class="operator">::</span>AdapterState state);
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="qnearfieldmanager.html" translate="no">QNearFieldManager</a></span> <span class="operator">*</span>manager;
+     <span class="type"><a href="qndeffilter.html" translate="no">QNdefFilter</a></span> messageFilter;
+ };
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>The <code translate="no">startDetection()</code> method is used to defer the actual tag detection until all the connections between the UI and NFC-related logic are established. This is important when the application is automatically started once an NFC tag is touched. Such usecase is currently supported on Android.</p>
+</div>
+<pre class="cpp" translate="no">
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
+ {
+     <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span> a(argc<span class="operator">,</span> argv);
+     MainWindow mainWindow;
+     AnnotatedUrl annotatedUrl;
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(<span class="operator">&amp;</span>annotatedUrl<span class="operator">,</span> <span class="operator">&amp;</span>AnnotatedUrl<span class="operator">::</span>annotatedUrl<span class="operator">,</span>
+                      <span class="operator">&amp;</span>mainWindow<span class="operator">,</span> <span class="operator">&amp;</span>MainWindow<span class="operator">::</span>displayAnnotatedUrl);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(<span class="operator">&amp;</span>annotatedUrl<span class="operator">,</span> <span class="operator">&amp;</span>AnnotatedUrl<span class="operator">::</span>nfcStateChanged<span class="operator">,</span>
+                      <span class="operator">&amp;</span>mainWindow<span class="operator">,</span> <span class="operator">&amp;</span>MainWindow<span class="operator">::</span>nfcStateChanged);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(<span class="operator">&amp;</span>annotatedUrl<span class="operator">,</span> <span class="operator">&amp;</span>AnnotatedUrl<span class="operator">::</span>tagError<span class="operator">,</span>
+                      <span class="operator">&amp;</span>mainWindow<span class="operator">,</span> <span class="operator">&amp;</span>MainWindow<span class="operator">::</span>showTagError);
+
+     annotatedUrl<span class="operator">.</span>startDetection();
+     mainWindow<span class="operator">.</span>show();
+
+     <span class="keyword">return</span> a<span class="operator">.</span>exec();
+ }
+</pre>
+<h4 id="message-filtering">Message Filtering</h4>
+<p>As it is mentioned above, the application supports the NDEF messages of a specific format. A correct message should contain the following fields:</p>
+<ul>
+<li><i>At least one</i> NDEF Text record, which will be used as a header.</li>
+<li><i>Exactly one</i> NDEF URI record.</li>
+<li><i>An optional</i> MIME record with an icon.</li>
+</ul>
+<p>The order of the records is not strictly specified.</p>
+<p>An instance of <a href="qndeffilter.html" translate="no">QNdefFilter</a> is used to validate the NDEF message. The filter is populated as follows:</p>
+<pre class="cpp" translate="no">
+     messageFilter<span class="operator">.</span>setOrderMatch(<span class="keyword">false</span>);
+     messageFilter<span class="operator">.</span>appendRecord<span class="operator">&lt;</span><span class="type"><a href="qndefnfctextrecord.html" translate="no">QNdefNfcTextRecord</a></span><span class="operator">&gt;</span>(<span class="number">1</span><span class="operator">,</span> <span class="number">100</span>);
+     messageFilter<span class="operator">.</span>appendRecord<span class="operator">&lt;</span><span class="type"><a href="qndefnfcurirecord.html" translate="no">QNdefNfcUriRecord</a></span><span class="operator">&gt;</span>(<span class="number">1</span><span class="operator">,</span> <span class="number">1</span>);
+     messageFilter<span class="operator">.</span>appendRecord(<span class="type"><a href="qndefrecord.html" translate="no">QNdefRecord</a></span><span class="operator">::</span>Mime<span class="operator">,</span> <span class="string">&quot;&quot;</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span>);
+</pre>
+<p>If the incoming message does not match the filter, an error message is shown:</p>
+<p class="centerAlign"><img src="images/annotatedurl3.png" alt="" /></p><div class="admonition note">
+<p><b>Note: </b>The <a href="qtnfc-attribution-ndefeditor.html#ndefeditor" translate="no">NDEF Editor</a> example application can be used to create the tags with correct or incorrect message structure.</p>
+</div>
+<h4 id="annotatedurl-handler-implementation">AnnotatedUrl Handler Implementation</h4>
+<p>NFC messages read by the <a href="qnearfieldmanager.html" translate="no">QNearFieldManager</a> are forwarded to <code translate="no">AnnotatedUrl::handleMessage</code>.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> AnnotatedUrl<span class="operator">::</span>handleMessage(<span class="keyword">const</span> <span class="type"><a href="qndefmessage.html" translate="no">QNdefMessage</a></span> <span class="operator">&amp;</span>message<span class="operator">,</span> <span class="type"><a href="qnearfieldtarget.html" translate="no">QNearFieldTarget</a></span> <span class="operator">*</span>target)
+ {
+</pre>
+<p>At first the messages are validated using the <a href="qndeffilter.html#match" translate="no">QNdefFilter::match</a>() method:</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">if</span> (<span class="operator">!</span>messageFilter<span class="operator">.</span>match(message)) {
+         <span class="keyword">emit</span> tagError(<span class="string">&quot;Invalid message format&quot;</span>);
+         <span class="keyword">return</span>;
+     }
+</pre>
+<p>If the messages have the correct format, the parsing continues.</p>
+<p>Because NFC messages are composed of several NDEF records, looping through all of the records allows the extraction of the 3 parameters to be displayed in the UI: the Uri, the Title and the Pixmap:</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">for</span> (<span class="keyword">const</span> <span class="type"><a href="qndefrecord.html" translate="no">QNdefRecord</a></span> <span class="operator">&amp;</span>record : message) {
+         <span class="keyword">if</span> (record<span class="operator">.</span>isRecordType<span class="operator">&lt;</span><span class="type"><a href="qndefnfctextrecord.html" translate="no">QNdefNfcTextRecord</a></span><span class="operator">&gt;</span>()) {
+             <span class="type"><a href="qndefnfctextrecord.html" translate="no">QNdefNfcTextRecord</a></span> textRecord(record);
+
+             title <span class="operator">=</span> textRecord<span class="operator">.</span>text();
+             <span class="type"><a href="../qtcore/qlocale.html" translate="no">QLocale</a></span> locale(textRecord<span class="operator">.</span>locale());
+         } <span class="keyword">else</span> <span class="keyword">if</span> (record<span class="operator">.</span>isRecordType<span class="operator">&lt;</span><span class="type"><a href="qndefnfcurirecord.html" translate="no">QNdefNfcUriRecord</a></span><span class="operator">&gt;</span>()) {
+             <span class="type"><a href="qndefnfcurirecord.html" translate="no">QNdefNfcUriRecord</a></span> uriRecord(record);
+
+             url <span class="operator">=</span> uriRecord<span class="operator">.</span>uri();
+         } <span class="keyword">else</span> <span class="keyword">if</span> (record<span class="operator">.</span>typeNameFormat() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="qndefrecord.html" translate="no">QNdefRecord</a></span><span class="operator">::</span>Mime <span class="operator">&amp;</span><span class="operator">&amp;</span>
+                    record<span class="operator">.</span>type()<span class="operator">.</span>startsWith(<span class="string">&quot;image/&quot;</span>)) {
+             pixmap <span class="operator">=</span> <span class="type">QPixmap</span><span class="operator">::</span>fromImage(<span class="type">QImage</span><span class="operator">::</span>fromData(record<span class="operator">.</span>payload()));
+         }
+</pre>
+<p>Finally after having extracted the parameters of the NFC message the corresponding signal is emitted so that the UI can handle it.</p>
+<pre class="cpp" translate="no">
+     }
+
+     <span class="keyword">emit</span> annotatedUrl(url<span class="operator">,</span> title<span class="operator">,</span> pixmap);
+ }
+</pre>
+<h4 id="adapter-state-handling">Adapter State Handling</h4>
+<p>On Android the adapter state changes can be detected by connecting to the <a href="qnearfieldmanager.html#adapterStateChanged" translate="no">QNearFieldManager::adapterStateChanged</a>() signal. This allows stopping the detection when the NFC adapter is disabled, and restarting it when the adapter is enabled again. This approach is implemented in the <code translate="no">AnnotatedUrl::handleAdapterStateChange</code> slot.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> AnnotatedUrl<span class="operator">::</span>handleAdapterStateChange(<span class="type"><a href="qnearfieldmanager.html" translate="no">QNearFieldManager</a></span><span class="operator">::</span>AdapterState state)
+ {
+     <span class="keyword">if</span> (state <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="qnearfieldmanager.html" translate="no">QNearFieldManager</a></span><span class="operator">::</span>AdapterState<span class="operator">::</span>Online) {
+         startDetection();
+     } <span class="keyword">else</span> <span class="keyword">if</span> (state <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="qnearfieldmanager.html" translate="no">QNearFieldManager</a></span><span class="operator">::</span>AdapterState<span class="operator">::</span>Offline) {
+         manager<span class="operator">-</span><span class="operator">&gt;</span>stopTargetDetection();
+         <span class="keyword">emit</span> nfcStateChanged(<span class="keyword">false</span>);
+     }
+ }
+</pre>
+<h4 id="automatic-application-startup">Automatic Application Startup</h4>
+<p>Android supports automatic application startup when the NDEF tag is touched. See <a href="nfc-android.html" translate="no">Qt NFC on Android</a> for the required changes to the Android manifest file.</p>
+<p>Introduction of a custom AndroidManifest.xml requires special steps on the build system side.</p>
+<h5 id="building-with-qmake">Building with qmake</h5>
+<p>When using qmake, the following needs to be added to the <code translate="no">.pro</code> file:</p>
+<pre class="cpp" translate="no">
+ android {
+     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+     DISTFILES += \
+         android/AndroidManifest.xml
+ }
+</pre>
+<h5 id="building-with-cmake">Building with CMake</h5>
+<p>When using CMake, the following needs to be added to the <code translate="no">CMakeLists.txt</code>:</p>
+<pre class="cpp" translate="no">
+ if(ANDROID)
+     set_property(TARGET annotatedurl
+         APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+         ${CMAKE_CURRENT_SOURCE_DIR}/android
+     )
+ endif()
+</pre>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtconnectivity.git/tree/examples/nfc/annotatedurl?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<p><b>See also </b><a href="qtnfc-index.html" translate="no">Qt NFC</a>.</p>
+<!-- @@@annotatedurl -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

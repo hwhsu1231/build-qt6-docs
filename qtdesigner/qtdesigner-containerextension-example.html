@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- containerextension.qdoc -->
+  <meta name="description" content="Creating a custom multi-page plugin for Qt Designer.">
+  <title>Container Extension Example | Qt Designer Manual</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtdesigner-manual.html" translate="no">Qt Designer Manual</a></li>
+<li><a href="examples-designer.html" translate="no">Qt Designer Examples</a></li>
+<li>Container Extension Example</li>
+<li id="buildversion"><a href="qtdesigner-manual.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#project-files">Project files</a></li>
+<li class="level2"><a href="#cmake">CMake</a></li>
+<li class="level2"><a href="#qmake">qmake</a></li>
+<li class="level1"><a href="#multipagewidgetplugin-class-definition">MultiPageWidgetPlugin Class Definition</a></li>
+<li class="level1"><a href="#multipagewidgetplugin-class-implementation">MultiPageWidgetPlugin Class Implementation</a></li>
+<li class="level1"><a href="#multipagewidgetextensionfactory-class-definition">MultiPageWidgetExtensionFactory Class Definition</a></li>
+<li class="level1"><a href="#multipagewidgetextensionfactory-class-implementation">MultiPageWidgetExtensionFactory Class Implementation</a></li>
+<li class="level1"><a href="#multipagewidgetcontainerextension-class-definition">MultiPageWidgetContainerExtension Class Definition</a></li>
+<li class="level1"><a href="#multipagewidgetcontainerextension-class-implementation">MultiPageWidgetContainerExtension Class Implementation</a></li>
+<li class="level1"><a href="#multipagewidget-class-definition">MultiPageWidget Class Definition</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Container Extension Example</h1>
+<!-- $$$containerextension-brief -->
+<p>Creating a custom multi-page plugin for <i>Qt Designer</i>.</p>
+<!-- @@@containerextension -->
+<!-- $$$containerextension-description -->
+<div class="descr" id="details">
+<p>The Container Extension example shows how to create a custom multi-page plugin for <i>Qt Designer</i> using the <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> class.</p>
+<p class="centerAlign"><img src="images/containerextension-example.webp" alt="" /></p><p>To provide a custom widget that can be used with <i>Qt Designer</i>, we need to supply a self-contained implementation. In this example we use a custom multi-page widget designed to show the container extension feature.</p>
+<p>An extension is an object which modifies the behavior of <i>Qt Designer</i>. The <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> enables <i>Qt Designer</i> to manage and manipulate a custom multi-page widget, i.e&#x2e; adding and deleting pages to the widget.</p>
+<p>There are four available types of extensions in <i>Qt Designer</i>:</p>
+<ul>
+<li><a href="qdesignermembersheetextension.html" translate="no">QDesignerMemberSheetExtension</a> provides an extension that allows you to manipulate a widget's member functions which is displayed when configuring connections using Qt Designer's mode for editing signals and slots.</li>
+<li><a href="qdesignerpropertysheetextension.html" translate="no">QDesignerPropertySheetExtension</a> provides an extension that allows you to manipulate a widget's properties which is displayed in Qt Designer's property editor.</li>
+<li><a href="qdesignertaskmenuextension.html" translate="no">QDesignerTaskMenuExtension</a> provides an extension that allows you to add custom menu entries to <i>Qt Designer</i>'s task menu.</li>
+<li><a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> provides an extension that allows you to add (and delete) pages to a multi-page container plugin in <i>Qt Designer</i>.</li>
+</ul>
+<p>You can use all the extensions following the same pattern as in this example, only replacing the respective extension base class. For more information, see <a href="qtdesigner-module.html" translate="no">Qt Designer C++ Classes</a>.</p>
+<p>The Container Extension example consists of four classes:</p>
+<ul>
+<li><code translate="no">MultiPageWidget</code> is a custom container widget that lets the user manipulate and populate its pages, and navigate among these using a combobox.</li>
+<li><code translate="no">MultiPageWidgetPlugin</code> exposes the <code translate="no">MultiPageWidget</code> class to <i>Qt Designer</i>.</li>
+<li><code translate="no">MultiPageWidgetExtensionFactory</code> creates a <code translate="no">MultiPageWidgetContainerExtension</code> object.</li>
+<li><code translate="no">MultiPageWidgetContainerExtension</code> provides the container extension.</li>
+</ul>
+<p>Project files for custom widget plugins need some additional information to ensure that they will work within <i>Qt Designer</i>. For example, custom widget plugins rely on components supplied with <i>Qt Designer</i>, and this must be specified in the project files that we use. We will first take a look at the plugin's project files.</p>
+<p>Then we will continue by reviewing the <code translate="no">MultiPageWidgetPlugin</code> class, and take a look at the <code translate="no">MultiPageWidgetExtensionFactory</code> and <code translate="no">MultiPageWidgetContainerExtension</code> classes. Finally, we will take a quick look at the <code translate="no">MultiPageWidget</code> class definition.</p>
+<h4 id="project-files">Project files</h4>
+<h5 id="cmake">CMake</h5>
+<p>The project files need to state that a plugin linking to the <i>Qt Designer</i> libraries is to be built:</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS Core Designer Gui Widgets)
+
+ qt_add_plugin(containerextension)
+
+ target_link_libraries(containerextension PUBLIC
+     Qt::Core
+     Qt::Designer
+     Qt::Gui
+     Qt::Widgets
+ )
+</pre>
+<p>The following example shows how to add the header and source files of the widget:</p>
+<pre class="cpp" translate="no">
+ target_sources(containerextension PRIVATE
+     multipagewidget.cpp multipagewidget.h
+     multipagewidgetcontainerextension.cpp multipagewidgetcontainerextension.h
+     multipagewidgetextensionfactory.cpp multipagewidgetextensionfactory.h
+     multipagewidgetplugin.cpp multipagewidgetplugin.h
+ )
+</pre>
+<p>We provide an implementation of the plugin interface so that <i>Qt Designer</i> can use the custom widget. In this particular example we also provide implementations of the container extension interface and the extension factory.</p>
+<p>It is important to ensure that the plugin is installed in a location that is searched by <i>Qt Designer</i>. We do this by specifying a target path for the project and adding it to the list of items to install:</p>
+<pre class="cpp" translate="no">
+    set(INSTALL_EXAMPLEDIR &quot;${QT6_INSTALL_PREFIX}/${QT6_INSTALL_PLUGINS}/designer&quot;)
+ install(TARGETS containerextension
+     RUNTIME DESTINATION &quot;${INSTALL_EXAMPLEDIR}&quot;
+     BUNDLE DESTINATION &quot;${INSTALL_EXAMPLEDIR}&quot;
+     LIBRARY DESTINATION &quot;${INSTALL_EXAMPLEDIR}&quot;
+ )
+</pre>
+<p>The container extension is created as a library. It will be installed alongside the other <i>Qt Designer</i> plugins when the project is installed (using <code translate="no">ninja install</code> or an equivalent installation procedure).</p>
+<p>For more information about plugins, see the <a href="../qtdoc/plugins-howto.html" translate="no">How to Create Qt Plugins</a> documentation.</p>
+<h5 id="qmake">qmake</h5>
+<p>The following example shows how to link a plugin to the <i>Qt Designer</i> libraries:</p>
+<pre class="cpp" translate="no">
+ TEMPLATE = lib
+ CONFIG  += plugin
+
+ QT      += widgets designer
+</pre>
+<p>The following example shows how to add the header and source files of the widget:</p>
+<pre class="cpp" translate="no">
+ HEADERS += multipagewidget.h \
+            multipagewidgetplugin.h \
+            multipagewidgetcontainerextension.h \
+            multipagewidgetextensionfactory.h
+
+ SOURCES += multipagewidget.cpp \
+            multipagewidgetplugin.cpp \
+            multipagewidgetcontainerextension.cpp \
+            multipagewidgetextensionfactory.cpp
+
+ OTHER_FILES += multipagewidget.json
+</pre>
+<p>The following example shows how to install a plugin to the <i>Qt Designer</i>'s plugin path:</p>
+<pre class="cpp" translate="no">
+ target.path = $$[QT_INSTALL_PLUGINS]/designer
+ INSTALLS += target
+</pre>
+<h4 id="multipagewidgetplugin-class-definition">MultiPageWidgetPlugin Class Definition</h4>
+<p>The <code translate="no">MultiPageWidgetPlugin</code> class exposes the <code translate="no">MultiPageWidget</code> class to <i>Qt Designer</i>. Its definition is similar to the <a href="qtdesigner-customwidgetplugin-example.html" translate="no">Custom Widget Plugin</a> example's plugin class which is explained in detail. The parts of the class definition that is specific to this particular custom widget is the class name and a couple of private slots:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#ifndef MULTIPAGEWIDGETPLUGIN_H</span>
+ <span class="preprocessor">#define MULTIPAGEWIDGETPLUGIN_H</span>
+
+ <span class="preprocessor">#include &lt;QtUiPlugin/QDesignerCustomWidgetInterface&gt;</span>
+
+ <span class="keyword">class</span> <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span>;
+ <span class="keyword">class</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>;
+
+ <span class="keyword">class</span> MultiPageWidgetPlugin: <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">,</span> <span class="keyword">public</span> <span class="type"><a href="qdesignercustomwidgetinterface.html" translate="no">QDesignerCustomWidgetInterface</a></span>
+ {
+     Q_OBJECT
+     Q_PLUGIN_METADATA(IID <span class="string">&quot;org.qt-project.Qt.QDesignerCustomWidget&quot;</span>)
+     Q_INTERFACES(<span class="type"><a href="qdesignercustomwidgetinterface.html" translate="no">QDesignerCustomWidgetInterface</a></span>)
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> MultiPageWidgetPlugin(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> name() <span class="keyword">const</span> override;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> group() <span class="keyword">const</span> override;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> toolTip() <span class="keyword">const</span> override;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> whatsThis() <span class="keyword">const</span> override;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> includeFile() <span class="keyword">const</span> override;
+     <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span> icon() <span class="keyword">const</span> override;
+     <span class="type">bool</span> isContainer() <span class="keyword">const</span> override;
+     <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>createWidget(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent) override;
+     <span class="type">bool</span> isInitialized() <span class="keyword">const</span> override;
+     <span class="type">void</span> initialize(<span class="type"><a href="qdesignerformeditorinterface.html" translate="no">QDesignerFormEditorInterface</a></span> <span class="operator">*</span>formEditor) override;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> domXml() <span class="keyword">const</span> override;
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> currentIndexChanged(<span class="type">int</span> index);
+     <span class="type">void</span> pageTitleChanged(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>title);
+
+ <span class="keyword">private</span>:
+     <span class="type">bool</span> initialized <span class="operator">=</span> <span class="keyword">false</span>;
+ };
+
+ <span class="preprocessor">#endif</span>
+</pre>
+<p>The plugin class provides <i>Qt Designer</i> with basic information about our plugin, such as its class name and its include file. Furthermore it knows how to create instances of the <code translate="no">MultiPageWidget</code> widget. <code translate="no">MultiPageWidgetPlugin</code> also defines the <a href="qdesignercustomwidgetinterface.html#initialize" translate="no">initialize</a>() function which is called after the plugin is loaded into <i>Qt Designer</i>. The function's <a href="qdesignerformeditorinterface.html" translate="no">QDesignerFormEditorInterface</a> parameter provides the plugin with a gateway to all of <i>Qt Designer</i>'s API's.</p>
+<p>In the case of a multipage widget such as ours, we must also implement two private slots, currentIndexChanged() and pageTitleChanged(), to be able to update <i>Qt Designer</i>'s property editor whenever the user views another page or changes one of the page titles. To be able to give each page their own title, we have chosen to use the <a href="../qtwidgets/qwidget.html#windowTitle-prop" translate="no">QWidget::windowTitle</a> property to store the page title (for more information see the MultiPageWidget class implementation in <i>containerextension/multipagewidget.cpp</i>. Note that currently there is no way of adding a custom property (for example, a page title) to the pages without using a predefined property as placeholder.</p>
+<p>The <code translate="no">MultiPageWidgetPlugin</code> class inherits from both <a href="../qtcore/qobject.html" translate="no">QObject</a> and <a href="qdesignercustomwidgetinterface.html" translate="no">QDesignerCustomWidgetInterface</a>. It is important to remember, when using multiple inheritance, to ensure that all the interfaces (i.e&#x2e; the classes that doesn't inherit <a href="../qtcore/qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a>) are made known to the meta object system using the <a href="../qtcore/qobject.html#Q_INTERFACES" translate="no">Q_INTERFACES</a>() macro. This enables <i>Qt Designer</i> to use <a href="../qtcore/qobject.html#qobject_cast-1" translate="no">qobject_cast</a>() to query for supported interfaces using nothing but a <a href="../qtcore/qobject.html" translate="no">QObject</a> pointer.</p>
+<p>To ensure that Qt recognizes the widget as a plugin, export relevant information about the widget by adding the <code translate="no">Q_PLUGIN_METADATA()</code> macro:</p>
+<pre class="cpp" translate="no">
+     Q_PLUGIN_METADATA(IID <span class="string">&quot;org.qt-project.Qt.QDesignerCustomWidget&quot;</span>)
+</pre>
+<p>With this macro, <i>Qt Designer</i> can access and construct the custom widget. Without this macro, there is no way for <i>Qt Designer</i> to use the widget.</p>
+<h4 id="multipagewidgetplugin-class-implementation">MultiPageWidgetPlugin Class Implementation</h4>
+<p>The MultiPageWidgetPlugin class implementation is in most parts equivalent to the <a href="qtdesigner-customwidgetplugin-example.html" translate="no">Custom Widget Plugin</a> example's plugin class:</p>
+<pre class="cpp" translate="no">
+ MultiPageWidgetPlugin<span class="operator">::</span>MultiPageWidgetPlugin(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent)
+     : <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>(parent)
+ {
+ }
+
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> MultiPageWidgetPlugin<span class="operator">::</span>name() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> u<span class="string">&quot;MultiPageWidget&quot;</span>_s;
+ }
+
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> MultiPageWidgetPlugin<span class="operator">::</span>group() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> u<span class="string">&quot;Display Widgets [Examples]&quot;</span>_s;
+ }
+
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> MultiPageWidgetPlugin<span class="operator">::</span>toolTip() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> {};
+ }
+
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> MultiPageWidgetPlugin<span class="operator">::</span>whatsThis() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> {};
+ }
+
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> MultiPageWidgetPlugin<span class="operator">::</span>includeFile() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> u<span class="string">&quot;multipagewidget.h&quot;</span>_s;
+ }
+
+ <span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span> MultiPageWidgetPlugin<span class="operator">::</span>icon() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> {};
+ }
+
+ <span class="type">bool</span> MultiPageWidgetPlugin<span class="operator">::</span>isInitialized() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> initialized;
+ }
+</pre>
+<p>One of the functions that differ is the isContainer() function which returns true in this example since our custom widget is intended to be used as a container.</p>
+<pre class="cpp" translate="no">
+ <span class="type">bool</span> MultiPageWidgetPlugin<span class="operator">::</span>isContainer() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> <span class="keyword">true</span>;
+ }
+</pre>
+<p>Another function that differ is the function creating our custom widget:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>MultiPageWidgetPlugin<span class="operator">::</span>createWidget(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent)
+ {
+     <span class="keyword">auto</span> <span class="operator">*</span>widget <span class="operator">=</span> <span class="keyword">new</span> MultiPageWidget(parent);
+     connect(widget<span class="operator">,</span> <span class="operator">&amp;</span>MultiPageWidget<span class="operator">::</span>currentIndexChanged<span class="operator">,</span>
+             <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>MultiPageWidgetPlugin<span class="operator">::</span>currentIndexChanged);
+     connect(widget<span class="operator">,</span> <span class="operator">&amp;</span>MultiPageWidget<span class="operator">::</span>pageTitleChanged<span class="operator">,</span>
+             <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>MultiPageWidgetPlugin<span class="operator">::</span>pageTitleChanged);
+     <span class="keyword">return</span> widget;
+ }
+</pre>
+<p>In addition to create and return the widget, we connect our custom container widget's currentIndexChanged() signal to the plugin's currentIndexChanged() slot to ensure that <i>Qt Designer</i>'s property editor is updated whenever the user views another page. We also connect the widget's pageTitleChanged() signal to the plugin's pageTitleChanged() slot.</p>
+<p>The currentIndexChanged() slot is called whenever our custom widget's currentIndexChanged() <i>signal</i> is emitted, i.e&#x2e; whenever the user views another page:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> MultiPageWidgetPlugin<span class="operator">::</span>currentIndexChanged(<span class="type">int</span> index)
+ {
+     Q_UNUSED(index);
+     <span class="keyword">auto</span> <span class="operator">*</span>widget <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>MultiPageWidget<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+</pre>
+<p>First, we retrieve the object emitting the signal using the <a href="../qtcore/qobject.html#sender" translate="no">QObject::sender</a>() and <a href="../qtcore/qobject.html#qobject_cast-1" translate="no">qobject_cast</a>() functions. If it's called in a slot activated by a signal, <a href="../qtcore/qobject.html#sender" translate="no">QObject::sender</a>() returns a pointer to the object that sent the signal; otherwise it returns 0.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">if</span> (widget) {
+         <span class="keyword">auto</span> <span class="operator">*</span>form <span class="operator">=</span> <span class="type"><a href="qdesignerformwindowinterface.html" translate="no">QDesignerFormWindowInterface</a></span><span class="operator">::</span>findFormWindow(widget);
+         <span class="keyword">if</span> (form)
+             form<span class="operator">-</span><span class="operator">&gt;</span>emitSelectionChanged();
+     }
+ }
+</pre>
+<p>Once we have the widget we can update the property editor. <i>Qt Designer</i> uses the <a href="qdesignerpropertysheetextension.html" translate="no">QDesignerPropertySheetExtension</a> class to feed its property editor, and whenever a widget is selected in its workspace, Qt Designer will query for the widget's property sheet extension and update the property editor.</p>
+<p>So what we want to achieve is to notify <i>Qt Designer</i> that our widget's <i>internal</i> selection has changed: First we use the static <a href="qdesignerformwindowinterface.html#findFormWindow" translate="no">QDesignerFormWindowInterface::findFormWindow</a>() function to retrieve the <a href="qdesignerformwindowinterface.html" translate="no">QDesignerFormWindowInterface</a> object containing the widget. The <a href="qdesignerformwindowinterface.html" translate="no">QDesignerFormWindowInterface</a> class allows you to query and manipulate form windows appearing in Qt Designer's workspace. Then, all we have to do is to emit its <a href="qdesignerformwindowinterface.html#emitSelectionChanged" translate="no">emitSelectionChanged</a>() signal, forcing an update of the property editor.</p>
+<p>When changing a page title a generic refresh of the property editor is not enough because it is actually the page's property extension that needs to be updated. For that reason we need to access the <a href="qdesignerpropertysheetextension.html" translate="no">QDesignerPropertySheetExtension</a> object for the page which title we want to change. The <a href="qdesignerpropertysheetextension.html" translate="no">QDesignerPropertySheetExtension</a> class also allows you to manipulate a widget's properties, but to get hold of the extension we must first retrieve access to <i>Qt Designer</i>'s extension manager:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> MultiPageWidgetPlugin<span class="operator">::</span>pageTitleChanged(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>title)
+ {
+     Q_UNUSED(title);
+     <span class="keyword">auto</span> <span class="operator">*</span>widget <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>MultiPageWidget<span class="operator">*</span><span class="operator">&gt;</span>(sender());
+     <span class="keyword">if</span> (widget) {
+         <span class="keyword">auto</span> <span class="operator">*</span>page <span class="operator">=</span> widget<span class="operator">-</span><span class="operator">&gt;</span>widget(widget<span class="operator">-</span><span class="operator">&gt;</span>currentIndex());
+         <span class="keyword">auto</span> <span class="operator">*</span>form <span class="operator">=</span> <span class="type"><a href="qdesignerformwindowinterface.html" translate="no">QDesignerFormWindowInterface</a></span><span class="operator">::</span>findFormWindow(widget);
+</pre>
+<p>Again we first retrieve the widget emitting the signal, using the <a href="../qtcore/qobject.html#sender" translate="no">QObject::sender</a>() and <a href="../qtcore/qobject.html#qobject_cast-1" translate="no">qobject_cast</a>() functions. Then we retrieve the current page from the widget that emitted the signal, and we use the static <a href="qdesignerformwindowinterface.html#findFormWindow" translate="no">QDesignerFormWindowInterface::findFormWindow</a>() function to retrieve the form containing our widget.</p>
+<pre class="cpp" translate="no">
+             <span class="keyword">auto</span> <span class="operator">*</span>editor <span class="operator">=</span> form<span class="operator">-</span><span class="operator">&gt;</span>core();
+             <span class="keyword">auto</span> <span class="operator">*</span>manager <span class="operator">=</span> editor<span class="operator">-</span><span class="operator">&gt;</span>extensionManager();
+</pre>
+<p>Now that we have the form window, the <a href="qdesignerformwindowinterface.html" translate="no">QDesignerFormWindowInterface</a> class provides the <a href="qdesignerformwindowinterface.html#core" translate="no">core</a>() function which returns the current <a href="qdesignerformeditorinterface.html" translate="no">QDesignerFormEditorInterface</a> object. The <a href="qdesignerformeditorinterface.html" translate="no">QDesignerFormEditorInterface</a> class allows you to access Qt Designer's various components. In particular, the <a href="qdesignerformeditorinterface.html#extensionManager" translate="no">QDesignerFormEditorInterface::extensionManager</a>() function returns a reference to the current extension manager.</p>
+<pre class="cpp" translate="no">
+             <span class="keyword">auto</span> <span class="operator">*</span>sheet <span class="operator">=</span> qt_extension<span class="operator">&lt;</span><span class="type"><a href="qdesignerpropertysheetextension.html" translate="no">QDesignerPropertySheetExtension</a></span><span class="operator">*</span><span class="operator">&gt;</span>(manager<span class="operator">,</span> page);
+             <span class="keyword">const</span> <span class="type">int</span> propertyIndex <span class="operator">=</span> sheet<span class="operator">-</span><span class="operator">&gt;</span>indexOf(QLatin1String(<span class="string">&quot;windowTitle&quot;</span>));
+             sheet<span class="operator">-</span><span class="operator">&gt;</span>setChanged(propertyIndex<span class="operator">,</span> <span class="keyword">true</span>);
+         }
+     }
+ }
+</pre>
+<p>Once we have the extension manager we can update the extension sheet: First we retrieve the property extension for the page which title we want to change, using the <a href="qextensionmanager.html#qt_extension" translate="no">qt_extension</a>() function. Then we retrieve the index for the page title using the <a href="qdesignerpropertysheetextension.html#indexOf" translate="no">QDesignerPropertySheetExtension::indexOf</a>() function. As previously mentioned, we have chosen to use the <a href="../qtwidgets/qwidget.html#windowTitle-prop" translate="no">QWidget::windowTitle</a> property to store the page title (for more information see the MultiPageWidget class implementation in <i>containerextension/multipagewidget.cpp</i>. Finally, we implicitly force an update of the page's property sheet by calling the <a href="qdesignerpropertysheetextension.html#setChanged" translate="no">QDesignerPropertySheetExtension::setChanged</a>() function.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> MultiPageWidgetPlugin<span class="operator">::</span>initialize(<span class="type"><a href="qdesignerformeditorinterface.html" translate="no">QDesignerFormEditorInterface</a></span> <span class="operator">*</span>formEditor)
+ {
+     <span class="keyword">if</span> (initialized)
+         <span class="keyword">return</span>;
+</pre>
+<p>Note also the initialize() function: The <code translate="no">initialize()</code> function takes a <a href="qdesignerformeditorinterface.html" translate="no">QDesignerFormEditorInterface</a> object as argument.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">auto</span> <span class="operator">*</span>manager <span class="operator">=</span> formEditor<span class="operator">-</span><span class="operator">&gt;</span>extensionManager();
+</pre>
+<p>When creating extensions associated with custom widget plugins, we need to access <i>Qt Designer</i>'s current extension manager which we retrieve from the <a href="qdesignerformeditorinterface.html" translate="no">QDesignerFormEditorInterface</a> parameter.</p>
+<p>In addition to allowing you to manipulate a widget's properties, the <a href="qextensionmanager.html" translate="no">QExtensionManager</a> class provides extension management facilities for <i>Qt Designer</i>. Using <i>Qt Designer</i>'s current extension manager you can retrieve the extension for a given object. You can also register and unregister an extension for a given object. Remember that an extension is an object which modifies the behavior of <i>Qt Designer</i>.</p>
+<p>When registrering an extension, it is actually the associated extension factory that is registered. In <i>Qt Designer</i>, extension factories are used to look up and create named extensions as they are required. So, in this example, the container extension itself is not created until <i>Qt Designer</i> must know whether the associated widget is a container, or not.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">auto</span> <span class="operator">*</span>factory <span class="operator">=</span> <span class="keyword">new</span> MultiPageWidgetExtensionFactory(manager);
+
+     Q_ASSERT(manager <span class="operator">!</span><span class="operator">=</span> nullptr);
+     manager<span class="operator">-</span><span class="operator">&gt;</span>registerExtensions(factory<span class="operator">,</span> Q_TYPEID(<span class="type"><a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a></span>));
+
+     initialized <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+</pre>
+<p>We create a <code translate="no">MultiPageWidgetExtensionFactory</code> object that we register using <i>Qt Designer</i>'s current <a href="qextensionmanager.html" translate="no">extension manager</a> retrieved from the <a href="qdesignerformeditorinterface.html" translate="no">QDesignerFormEditorInterface</a> parameter. The first argument is the newly created factory and the second argument is an extension identifier which is a string. The <code translate="no">Q_TYPEID()</code> macro simply convert the string into a <a href="../qtcore/qlatin1string.html" translate="no">QLatin1String</a>.</p>
+<p>The <code translate="no">MultiPageWidgetExtensionFactory</code> class is a subclass of <a href="qextensionfactory.html" translate="no">QExtensionFactory</a>. When <i>Qt Designer</i> must know whether a widget is a container, or not, <i>Qt Designer</i>'s extension manager will run through all its registered factories invoking the first one which is able to create a container extension for that widget. This factory will in turn create a <code translate="no">MultiPageWidgetExtension</code> object.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> MultiPageWidgetPlugin<span class="operator">::</span>domXml() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> uR<span class="string">&quot;(
+ &lt;ui language=&quot;</span>c<span class="operator">+</span><span class="operator">+</span><span class="string">&quot;&gt;
+     &lt;widget class=&quot;</span>MultiPageWidget<span class="string">&quot; name=&quot;</span>multipagewidget<span class="string">&quot;&gt;
+         &lt;widget class=&quot;</span><span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span><span class="string">&quot; name=&quot;</span>page<span class="string">&quot;/&gt;
+     &lt;/widget&gt;
+     &lt;customwidgets&gt;
+         &lt;customwidget&gt;
+             &lt;class&gt;MultiPageWidget&lt;/class&gt;
+             &lt;extends&gt;QWidget&lt;/extends&gt;
+             &lt;addpagemethod&gt;addPage&lt;/addpagemethod&gt;
+         &lt;/customwidget&gt;
+     &lt;/customwidgets&gt;
+ &lt;/ui&gt;)&quot;</span>_s;
+ }
+</pre>
+<p>Finally, take a look at the <code translate="no">domXml()</code> function. This function includes default settings for the widget in the standard XML format used by <i>Qt Designer</i>. In this case, we specify the container's first page; any inital pages of a multi-page widget must be specified within this function.</p>
+<h4 id="multipagewidgetextensionfactory-class-definition">MultiPageWidgetExtensionFactory Class Definition</h4>
+<p>The <code translate="no">MultiPageWidgetExtensionFactory</code> class inherits <a href="qextensionfactory.html" translate="no">QExtensionFactory</a> which provides a standard extension factory for <i>Qt Designer</i>.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> MultiPageWidgetExtensionFactory: <span class="keyword">public</span> <span class="type"><a href="qextensionfactory.html" translate="no">QExtensionFactory</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> MultiPageWidgetExtensionFactory(<span class="type"><a href="qextensionmanager.html" translate="no">QExtensionManager</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+
+ <span class="keyword">protected</span>:
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>createExtension(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>object<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>iid<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent) <span class="keyword">const</span> override;
+ };
+</pre>
+<p>The subclass's purpose is to reimplement the <a href="qextensionfactory.html#createExtension" translate="no">QExtensionFactory::createExtension</a>() function, making it able to create a <code translate="no">MultiPageWidget</code> container extension.</p>
+<h4 id="multipagewidgetextensionfactory-class-implementation">MultiPageWidgetExtensionFactory Class Implementation</h4>
+<p>The class constructor simply calls the <a href="qextensionfactory.html" translate="no">QExtensionFactory</a> base class constructor:</p>
+<pre class="cpp" translate="no">
+ MultiPageWidgetExtensionFactory<span class="operator">::</span>MultiPageWidgetExtensionFactory(<span class="type"><a href="qextensionmanager.html" translate="no">QExtensionManager</a></span> <span class="operator">*</span>parent)
+     : <span class="type"><a href="qextensionfactory.html" translate="no">QExtensionFactory</a></span>(parent)
+ {}
+</pre>
+<p>As described above, the factory is invoked when <i>Qt Designer</i> must know whether the associated widget is a container, or not.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>MultiPageWidgetExtensionFactory<span class="operator">::</span>createExtension(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>object<span class="operator">,</span>
+                                                           <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>iid<span class="operator">,</span>
+                                                           <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent) <span class="keyword">const</span>
+ {
+     <span class="keyword">auto</span> <span class="operator">*</span>widget <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>MultiPageWidget<span class="operator">*</span><span class="operator">&gt;</span>(object);
+
+     <span class="keyword">if</span> (widget <span class="operator">&amp;</span><span class="operator">&amp;</span> (iid <span class="operator">=</span><span class="operator">=</span> Q_TYPEID(<span class="type"><a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a></span>)))
+         <span class="keyword">return</span> <span class="keyword">new</span> MultiPageWidgetContainerExtension(widget<span class="operator">,</span> parent);
+     <span class="keyword">return</span> nullptr;
+ }
+</pre>
+<p><i>Qt Designer</i>'s behavior is the same whether the requested extension is associated with a container, a member sheet, a property sheet or a task menu: Its extension manager runs through all its registered extension factories calling <code translate="no">createExtension()</code> for each until one responds by creating the requested extension.</p>
+<p>So the first thing we do in <code translate="no">MultiPageWidgetExtensionFactory::createExtension()</code> is to check if the <a href="../qtcore/qobject.html" translate="no">QObject</a>, for which the extension is requested, is in fact a <code translate="no">MultiPageWidget</code> object. Then we check if the requested extension is a container extension.</p>
+<p>If the object is a MultiPageWidget requesting a container extension, we create and return a <code translate="no">MultiPageWidgetExtension</code> object. Otherwise, we simply return a null pointer, allowing <i>Qt Designer</i>'s extension manager to continue its search through the registered factories.</p>
+<h4 id="multipagewidgetcontainerextension-class-definition">MultiPageWidgetContainerExtension Class Definition</h4>
+<p>The <code translate="no">MultiPageWidgetContainerExtension</code> class inherits <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> which allows you to add (and delete) pages to a multi-page container plugin in <i>Qt Designer</i>.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> MultiPageWidgetContainerExtension: <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">,</span>
+                                          <span class="keyword">public</span> <span class="type"><a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a></span>
+ {
+     Q_OBJECT
+     Q_INTERFACES(<span class="type"><a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a></span>)
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> MultiPageWidgetContainerExtension(MultiPageWidget <span class="operator">*</span>widget<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent);
+
+     <span class="type">bool</span> canAddWidget() <span class="keyword">const</span> override;
+     <span class="type">void</span> addWidget(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>widget) override;
+     <span class="type">int</span> count() <span class="keyword">const</span> override;
+     <span class="type">int</span> currentIndex() <span class="keyword">const</span> override;
+     <span class="type">void</span> insertWidget(<span class="type">int</span> index<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>widget) override;
+     <span class="type">bool</span> canRemove(<span class="type">int</span> index) <span class="keyword">const</span> override;
+     <span class="type">void</span> remove(<span class="type">int</span> index) override;
+     <span class="type">void</span> setCurrentIndex(<span class="type">int</span> index) override;
+     <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>widget(<span class="type">int</span> index) <span class="keyword">const</span> override;
+
+ <span class="keyword">private</span>:
+     MultiPageWidget <span class="operator">*</span>myWidget;
+ };
+</pre>
+<p>It is important to recognize that the <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> class only is intended to provide <i>Qt Designer</i> access to your custom multi-page widget's functionality; your custom multi-page widget must implement functionality corresponding to the extension's functions.</p>
+<p>Note also that we implement a constructor that takes <i>two</i> arguments: the parent widget, and the <code translate="no">MultiPageWidget</code> object for which the task menu is requested.</p>
+<p><a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> provides a couple of menu entries in <i>Qt Designer</i>'s task menu by default, enabling the user to add or delete pages to the associated custom multi-page widget in <i>Qt Designer</i>'s workspace.</p>
+<h4 id="multipagewidgetcontainerextension-class-implementation">MultiPageWidgetContainerExtension Class Implementation</h4>
+<p>In the constructor we save the reference to the <code translate="no">MultiPageWidget</code> object sent as parameter, i.e the widget associated with the extension. We will need this later to access the custom multi-page widget performing the requested actions.</p>
+<pre class="cpp" translate="no">
+ MultiPageWidgetContainerExtension<span class="operator">::</span>MultiPageWidgetContainerExtension(MultiPageWidget <span class="operator">*</span>widget<span class="operator">,</span>
+                                                                      <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent)
+     : <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>(parent)
+     <span class="operator">,</span> myWidget(widget)
+ {
+ }
+</pre>
+<p>To fully enable <i>Qt Designer</i> to manage and manipulate your custom multi-page widget, you must reimplement all the functions of <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="type">bool</span> MultiPageWidgetContainerExtension<span class="operator">::</span>canAddWidget() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">void</span> MultiPageWidgetContainerExtension<span class="operator">::</span>addWidget(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>widget)
+ {
+     myWidget<span class="operator">-</span><span class="operator">&gt;</span>addPage(widget);
+ }
+
+ <span class="type">int</span> MultiPageWidgetContainerExtension<span class="operator">::</span>count() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> myWidget<span class="operator">-</span><span class="operator">&gt;</span>count();
+ }
+
+ <span class="type">int</span> MultiPageWidgetContainerExtension<span class="operator">::</span>currentIndex() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> myWidget<span class="operator">-</span><span class="operator">&gt;</span>currentIndex();
+ }
+</pre>
+<p>You must reimplement <a href="qdesignercontainerextension.html#canAddWidget" translate="no">canAddWidget</a>() and <a href="qdesignercontainerextension.html#addWidget" translate="no">addWidget</a>() adding a given page to the container, <a href="qdesignercontainerextension.html#count" translate="no">count</a>() returning the number of pages in the container, and <a href="qdesignercontainerextension.html#currentIndex" translate="no">currentIndex</a>() returning the index of the currently selected page.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> MultiPageWidgetContainerExtension<span class="operator">::</span>insertWidget(<span class="type">int</span> index<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>widget)
+ {
+     myWidget<span class="operator">-</span><span class="operator">&gt;</span>insertPage(index<span class="operator">,</span> widget);
+ }
+
+ <span class="type">bool</span> MultiPageWidgetContainerExtension<span class="operator">::</span>canRemove(<span class="type">int</span> index) <span class="keyword">const</span>
+ {
+     Q_UNUSED(index);
+     <span class="keyword">return</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">void</span> MultiPageWidgetContainerExtension<span class="operator">::</span>remove(<span class="type">int</span> index)
+ {
+     myWidget<span class="operator">-</span><span class="operator">&gt;</span>removePage(index);
+ }
+
+ <span class="type">void</span> MultiPageWidgetContainerExtension<span class="operator">::</span>setCurrentIndex(<span class="type">int</span> index)
+ {
+     myWidget<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(index);
+ }
+
+ <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span><span class="operator">*</span> MultiPageWidgetContainerExtension<span class="operator">::</span>widget(<span class="type">int</span> index) <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> myWidget<span class="operator">-</span><span class="operator">&gt;</span>widget(index);
+ }
+</pre>
+<p>You must reimplement <a href="qdesignercontainerextension.html#insertWidget" translate="no">insertWidget</a>() adding a given page to the container at a given index, <a href="qdesignercontainerextension.html#canRemove" translate="no">canRemove</a>() and <a href="qdesignercontainerextension.html#remove" translate="no">remove</a>() deleting the page at a given index, <a href="qdesignercontainerextension.html#setCurrentIndex" translate="no">setCurrentIndex</a>() setting the index of the currently selected page, and finally <a href="qdesignercontainerextension.html#widget" translate="no">widget</a>() returning the page at a given index.</p>
+<h4 id="multipagewidget-class-definition">MultiPageWidget Class Definition</h4>
+<p>The MultiPageWidget class is a custom container widget that lets the user manipulate and populate its pages, and navigate among these using a combobox.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> MultiPageWidget : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>
+ {
+     Q_OBJECT
+     Q_PROPERTY(<span class="type">int</span> currentIndex READ currentIndex WRITE setCurrentIndex)
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> pageTitle READ pageTitle WRITE setPageTitle STORED <span class="keyword">false</span>)
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> MultiPageWidget(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+
+     <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> sizeHint() <span class="keyword">const</span> override;
+
+     <span class="type">int</span> count() <span class="keyword">const</span>;
+     <span class="type">int</span> currentIndex() <span class="keyword">const</span>;
+     <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>widget(<span class="type">int</span> index);
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> pageTitle() <span class="keyword">const</span>;
+
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> addPage(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>page);
+     <span class="type">void</span> insertPage(<span class="type">int</span> index<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>page);
+     <span class="type">void</span> removePage(<span class="type">int</span> index);
+     <span class="type">void</span> setPageTitle(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>newTitle);
+     <span class="type">void</span> setCurrentIndex(<span class="type">int</span> index);
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> pageWindowTitleChanged();
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> currentIndexChanged(<span class="type">int</span> index);
+     <span class="type">void</span> pageTitleChanged(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>title);
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="../qtwidgets/qstackedwidget.html" translate="no">QStackedWidget</a></span> <span class="operator">*</span>stackWidget;
+     <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span> <span class="operator">*</span>comboBox;
+ };
+</pre>
+<p>The main detail to observe is that your custom multi-page widget must implement functionality corresponding to the <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a>'s member functions since the <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> class only is intended to provide Qt Designer access to your custom multi-page widget's functionality.</p>
+<p>In addition, we declare the <code translate="no">currentIndex</code> and <code translate="no">pageTitle</code> properties, and their associated set and get functions. By declaring these attributes as properties, we allow <i>Qt Designer</i> to manage them in the same way it manages the properties the MultiPageWidget widget inherits from <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> and <a href="../qtcore/qobject.html" translate="no">QObject</a>, for example featuring the property editor.</p>
+<p>Note the <code translate="no">STORED</code> attribute in the declaration of the <code translate="no">pageTitle</code> property: The <code translate="no">STORED</code> attribute indicates persistence, i.e&#x2e; it declares whether the property's value must be remembered when storing an object's state. As mentioned above, we have chosen to store the page title using the <a href="../qtwidgets/qwidget.html#windowTitle-prop" translate="no">QWidget::windowTitle</a> property to be able to give each page their own title. For that reason the <code translate="no">pageTitle</code> property is a &quot;fake&quot; property, provided for editing purposes, and doesn't need to be stored.</p>
+<p>We must also implement and emit the currentIndexChanged() and pageTitleChanged() signals to ensure that <i>Qt Designer</i>'s property editor is updated whenever the user views another page or changes one of the page titles.</p>
+<p>See the MultiPageWidget class implementation in <i>containerextension/multipagewidget.cpp</i> for more details.</p>
+<p><a href="https://code.qt.io/cgit/qt/qttools.git/tree/examples/designer/containerextension?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@containerextension -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- porting.qdoc -->
+  <meta name="description" content="Guide for porting Qt 5 applications to Qt 6.">
+  <title>Porting to Qt 6 | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Porting to Qt 6</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#disable-use-of-c-api-deprecated-in-qt-5-15">Disable use of C++ API deprecated in Qt 5.15</a></li>
+<li class="level1"><a href="#check-the-changes-to-the-modules">Check the Changes to the Modules</a></li>
+<li class="level1"><a href="#test-for-graphical-regressions">Test for Graphical Regressions</a></li>
+<li class="level2"><a href="#high-dpi">High-DPI</a></li>
+<li class="level1"><a href="#use-the-platform-integration-apis">Use the Platform Integration APIs</a></li>
+<li class="level1"><a href="#use-porting-tool">Use Porting Tool</a></li>
+<li class="level1"><a href="#further-reading">Further Reading</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Porting to Qt 6</h1>
+<!-- $$$portingguide.html-description -->
+<div class="descr" id="details">
+<p>There are many changes to Qt from the previous version, Qt 5, to Qt 6. Before upgrading to Qt 6, make sure that your Qt 5 application is updated to Qt 5.15. The latest Qt 5 version has the least amount of changes when porting to Qt 6. However, APIs marked as deprecated or obsolete in Qt 5.15 may have been removed in Qt 6.</p>
+<p>Here are things you should check if you are porting your Qt 5 applications into Qt 6.</p>
+<h2 id="disable-use-of-c-api-deprecated-in-qt-5-15">Disable use of C++ API deprecated in Qt 5.15</h2>
+<p>Usage of API deprecated in Qt will typically show up in the form of a compiler warning. You can also make the use an error by defining the <a href="../qtcore/qtdeprecationmarkers.html#QT_DISABLE_DEPRECATED_UP_TO" translate="no">QT_DISABLE_DEPRECATED_UP_TO</a> C++ macro in your build system. To disable any API deprecated in 5.15 or older Qt versions, define the macro to <code translate="no">0x050F00</code>, which is '5.15.0' encoded as a hexadecimal number.</p>
+<p>For example, in a qmake project file, define the macro with:</p>
+<pre class="cpp" translate="no">
+ DEFINES <span class="operator">+</span><span class="operator">=</span> QT_DISABLE_DEPRECATED_UP_TO<span class="operator">=</span><span class="number">0x050F00</span>
+</pre>
+<p>In CMake, you can use add_compile_definitions:</p>
+<pre class="cpp" translate="no">
+ add_compile_definitions(QT_DISABLE_DEPRECATED_UP_TO<span class="operator">=</span><span class="number">0x050F00</span>)
+</pre>
+<ul>
+<li><a href="https://doc.qt.io/qt-5/obsoleteclasses.html" translate="no">Qt 5.15 Obsolete C++ Classes</a></li>
+<li><a href="https://doc.qt.io/qt-5/obsoleteqmltypes.html" translate="no">Qt 5.15 Obsolete QML Types</a></li>
+<li><a href="obsoleteclasses.html" translate="no">Qt 6 Obsolete C++ Classes</a></li>
+<li><a href="obsoleteqmltypes.html" translate="no">Qt 6 Obsolete QML Types</a></li>
+</ul>
+<h2 id="check-the-changes-to-the-modules">Check the Changes to the Modules</h2>
+<p>A goal for the Qt 6 release is to maintain a streamlined framework which means the removal of some Qt 5 modules in Qt 6. In some cases, APIs from a deprecated module are available in another module. In future Qt 6 releases, new or previous modules may be added.</p>
+<ul>
+<li><a href="whatsnew60.html#removed-modules-in-qt-6-0" translate="no">Removed Modules in Qt 6.0</a></li>
+<li><a href="whatsnew60.html#new-modules-in-qt-6-0" translate="no">New Modules in Qt 6.0</a></li>
+<li><a href="whatsnew61.html#new-and-restored-modules-in-qt-6-1" translate="no">New and Restored Modules in Qt 6.1</a></li>
+<li><a href="whatsnew62.html#new-and-restored-modules-in-qt-6-2" translate="no">New and Restored Modules in Qt 6.2</a></li>
+<li><a href="modulechanges.html" translate="no">Changes to Qt Modules in Qt 6</a> - list of changes per Qt module</li>
+</ul>
+<h2 id="test-for-graphical-regressions">Test for Graphical Regressions</h2>
+<p>QML applications have a new graphical backend, which you should test for regressions. OpenGL is no longer guaranteed as default on target platforms and you should check that your graphics code is still creating the same effects you want.</p>
+<p>It is still possible to use OpenGL calls in Qt applications, but the OpenGL APIs are moved to the <a href="../qtopengl/qtopengl-index.html" translate="no">Qt OpenGL</a> module. The graphical backend for Qt Widgets applications are unchanged from Qt 5.</p>
+<ul>
+<li><a href="topics-graphics.html" translate="no">Graphics</a></li>
+<li><a href="../qtquick/quick-changes-qt6.html" translate="no">Changes to Qt Quick</a> - changes to Qt Quick graphics that may affect Qt 5 applications</li>
+</ul>
+<h3 id="high-dpi">High-DPI</h3>
+<p>Qt 6 supports high-DPI displays on all platforms, and will automatically account for the display resolution when using higher level APIs such as Qt Widgets or Qt Quick. Applications only need to provide high-resolution assets, such as images and icons. The feature is always enabled.</p>
+<p>Qt 6 changes the default scale factor rounding policy from <a href="../qtcore/qt.html#HighDpiScaleFactorRoundingPolicy-enum" translate="no">Qt::HighDpiScaleFactorRoundingPolicy::Round</a> to <a href="../qtcore/qt.html#HighDpiScaleFactorRoundingPolicy-enum" translate="no">Qt::HighDpiScaleFactorRoundingPolicy::PassThrough</a> in order to track operating system DPI settings accurately. Applications that use Qt Widgets may encounter graphical glitches at non-integer scale factors, for example on Windows with a display configured for 175%. In that case, set the rounding policy to <a href="../qtcore/qt.html#HighDpiScaleFactorRoundingPolicy-enum" translate="no">Round</a> to restore Qt 5 behavior.</p>
+<p>See <a href="highdpi.html" translate="no">High DPI</a> for more details.</p>
+<h2 id="use-the-platform-integration-apis">Use the Platform Integration APIs</h2>
+<p>There is better integration with the native APIs on target platforms in Qt 6. You can use platform integration APIs to implement native behavior that is not provided by Qt. For Qt 6, check for any updates to your application's target platform.</p>
+<ul>
+<li><a href="../qtplatformintegration/platform-integration.html" translate="no">Platform Integration</a></li>
+<li><a href="../qtplatformintegration/qpa.html" translate="no">Qt Platform Abstraction</a></li>
+<li><a href="supported-platforms.html" translate="no">Supported Platforms</a></li>
+</ul>
+<h2 id="use-porting-tool">Use Porting Tool</h2>
+<p>A Clazy-based tool is available to facilitate porting from Qt 5 to Qt 6: <a href="porting-to-qt6-using-clazy.html" translate="no">Porting C++ Applications to Qt 6 using Clazy checks</a>.</p>
+<h2 id="further-reading">Further Reading</h2>
+<ul>
+<li><a href="whatsnewqt6.html" translate="no">What's new in Qt 6</a> - changes in Qt 6 minor versions</li>
+<li><a href="qt6-buildsystem.html" translate="no">Build System Changes in Qt 6</a> - for building Qt 6 from source</li>
+<li><a href="../qtcmake/cmake-qt5-and-qt6-compatibility.html" translate="no">CMake: Qt 5 and Qt 6 compatibility</a> - how to support both Qt 5 and Qt 6 in CMake</li>
+</ul>
+</div>
+<!-- @@@portingguide.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

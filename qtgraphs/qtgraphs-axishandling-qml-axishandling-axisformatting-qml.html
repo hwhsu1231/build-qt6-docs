@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- axishandling.qdoc -->
+  <meta name="description" content="Implementing axis dragging with a custom input handler in QML, and creating a custom axis formatter.">
+  <title>Axis Handling | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Axis Handling</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Axis Handling</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtGraphs
+ import AxisHandling
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">axisFormattingView</span>
+
+     required property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">portraitMode</span>
+
+     <span class="type">Data</span> {
+         <span class="name">id</span>: <span class="name">seriesData</span>
+     }
+
+     <span class="type"><a href="qml-qtgraphs-theme3d.html" translate="no">Theme3D</a></span> {
+         <span class="name">id</span>: <span class="name">themePrimaryColors</span>
+         <span class="name">type</span>: <span class="name">Theme3D</span>.<span class="name">ThemePrimaryColors</span>
+         <span class="name">font</span>.family: <span class="string">&quot;Lucida Handwriting&quot;</span>
+         <span class="name">font</span>.pointSize: <span class="number">40</span>
+     }
+
+     <span class="type"><a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a></span> {
+         <span class="name">id</span>: <span class="name">dateAxis</span>
+         <span class="name">formatter</span>: <span class="name">CustomFormatter</span> {
+             <span class="name">originDate</span>: <span class="string">&quot;2023-01-01&quot;</span>
+             <span class="name">selectionFormat</span>: <span class="string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>
+         }
+         <span class="name">subSegmentCount</span>: <span class="number">2</span>
+         <span class="name">labelFormat</span>: <span class="string">&quot;yyyy-MM-dd&quot;</span>
+         <span class="name">min</span>: <span class="number">0</span>
+         <span class="name">max</span>: <span class="number">14</span>
+     }
+
+     <span class="type"><a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a></span> {
+         <span class="name">id</span>: <span class="name">logAxis</span>
+         <span class="name">formatter</span>: <span class="name">LogValueAxis3DFormatter</span> {
+             <span class="name">id</span>: <span class="name">logAxisFormatter</span>
+             <span class="name">base</span>: <span class="number">10</span>
+             <span class="name">autoSubGrid</span>: <span class="number">true</span>
+             <span class="name">showEdgeLabels</span>: <span class="number">true</span>
+         }
+         <span class="name">labelFormat</span>: <span class="string">&quot;%.2f&quot;</span>
+     }
+
+     <span class="type"><a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a></span> {
+         <span class="name">id</span>: <span class="name">linearAxis</span>
+         <span class="name">labelFormat</span>: <span class="string">&quot;%.2f&quot;</span>
+         <span class="name">min</span>: <span class="number">0</span>
+         <span class="name">max</span>: <span class="number">500</span>
+     }
+
+     <span class="type"><a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a></span> {
+         <span class="name">id</span>: <span class="name">valueAxis</span>
+         <span class="name">segmentCount</span>: <span class="number">5</span>
+         <span class="name">subSegmentCount</span>: <span class="number">2</span>
+         <span class="name">labelFormat</span>: <span class="string">&quot;%.2f&quot;</span>
+         <span class="name">min</span>: <span class="number">0</span>
+         <span class="name">max</span>: <span class="number">10</span>
+     }
+
+     <span class="type"><a href="qml-qtgraphs-scatter3d.html" translate="no">Scatter3D</a></span> {
+         <span class="name">id</span>: <span class="name">scatterGraph</span>
+         <span class="name">anchors</span>.top: <span class="name">exitButton</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+         <span class="name">theme</span>: <span class="name">themePrimaryColors</span>
+         <span class="name">shadowQuality</span>: <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualitySoftMedium</span>
+         <span class="name">scene</span>.activeCamera.cameraPreset: <span class="name">Camera3D</span>.<span class="name">CameraPresetIsometricRight</span>
+         <span class="name">axisZ</span>: <span class="name">valueAxis</span>
+         <span class="name">axisY</span>: <span class="name">logAxis</span>
+         <span class="name">axisX</span>: <span class="name">dateAxis</span>
+
+         <span class="type"><a href="qml-qtgraphs-scatter3dseries.html" translate="no">Scatter3DSeries</a></span> {
+             <span class="name">id</span>: <span class="name">scatterSeries</span>
+             <span class="name">itemLabelFormat</span>: <span class="string">&quot;@xLabel - (@yLabel, @zLabel)&quot;</span>
+             <span class="name">meshSmooth</span>: <span class="number">true</span>
+             <span class="type"><a href="qml-qtgraphs-itemmodelscatterdataproxy.html" translate="no">ItemModelScatterDataProxy</a></span> {
+                 <span class="name">itemModel</span>: <span class="name">seriesData</span>.<span class="name">model</span>
+                 <span class="name">xPosRole</span>: <span class="string">&quot;xPos&quot;</span>
+                 <span class="name">yPosRole</span>: <span class="string">&quot;yPos&quot;</span>
+                 <span class="name">zPosRole</span>: <span class="string">&quot;zPos&quot;</span>
+             }
+         }
+     }
+
+     <span class="type">Button</span> {
+         <span class="name">id</span>: <span class="name">yAxisBaseChange</span>
+         <span class="name">width</span>: <span class="name">axisFormattingView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">width</span> : <span class="name">parent</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">3</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">state</span>: <span class="string">&quot;enabled&quot;</span>
+         <span class="name">onClicked</span>: {
+             <span class="keyword">if</span> (<span class="name">logAxisFormatter</span>.<span class="name">base</span> <span class="operator">===</span> <span class="number">10</span>)
+                 <span class="name">logAxisFormatter</span>.<span class="name">base</span> <span class="operator">=</span> <span class="number">0</span>;
+             <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">logAxisFormatter</span>.<span class="name">base</span> <span class="operator">===</span> <span class="number">2</span>)
+                 <span class="name">logAxisFormatter</span>.<span class="name">base</span> <span class="operator">=</span> <span class="number">10</span>;
+             <span class="keyword">else</span>
+                 <span class="name">logAxisFormatter</span>.<span class="name">base</span> <span class="operator">=</span> <span class="number">2</span>;
+         }
+         <span class="name">states</span>: [
+             <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+                 <span class="name">name</span>: <span class="string">&quot;enabled&quot;</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                     <span class="name">target</span>: <span class="name">yAxisBaseChange</span>
+                     <span class="name">text</span>: <span class="string">&quot;Y-axis log base: &quot;</span> <span class="operator">+</span> <span class="name">logAxisFormatter</span>.<span class="name">base</span>
+                     <span class="name">enabled</span>: <span class="number">true</span>
+                 }
+             },
+             <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+                 <span class="name">name</span>: <span class="string">&quot;disabled&quot;</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                     <span class="name">target</span>: <span class="name">yAxisBaseChange</span>
+                     <span class="name">text</span>: <span class="string">&quot;Y-axis linear&quot;</span>
+                     <span class="name">enabled</span>: <span class="number">false</span>
+                 }
+             }
+         ]
+     }
+
+     <span class="type">Button</span> {
+         <span class="name">id</span>: <span class="name">yAxisToggle</span>
+         <span class="name">width</span>: <span class="name">axisFormattingView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">width</span> : <span class="name">parent</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">3</span>
+         <span class="name">anchors</span>.left: <span class="name">axisFormattingView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">yAxisBaseChange</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.top: <span class="name">axisFormattingView</span>.<span class="name">portraitMode</span> ? <span class="name">yAxisBaseChange</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">text</span>: <span class="string">&quot;Toggle Y-axis&quot;</span>
+         <span class="name">onClicked</span>: {
+             <span class="keyword">if</span> (<span class="name">scatterGraph</span>.<span class="name">axisY</span> <span class="operator">==</span> <span class="name">linearAxis</span>) {
+                 <span class="name">scatterGraph</span>.<span class="name">axisY</span> <span class="operator">=</span> <span class="name">logAxis</span>;
+                 <span class="name">yAxisBaseChange</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;enabled&quot;</span>;
+             } <span class="keyword">else</span> {
+                 <span class="name">scatterGraph</span>.<span class="name">axisY</span> <span class="operator">=</span> <span class="name">linearAxis</span>;
+                 <span class="name">yAxisBaseChange</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;disabled&quot;</span>;
+             }
+         }
+     }
+
+     <span class="type">Button</span> {
+         <span class="name">id</span>: <span class="name">exitButton</span>
+         <span class="name">width</span>: <span class="name">axisFormattingView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">width</span> : <span class="name">parent</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">3</span>
+         <span class="name">anchors</span>.left: <span class="name">axisFormattingView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">yAxisToggle</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.top: <span class="name">axisFormattingView</span>.<span class="name">portraitMode</span> ? <span class="name">yAxisToggle</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">text</span>: <span class="string">&quot;Quit&quot;</span>
+         <span class="name">onClicked</span>: <span class="name">Qt</span>.<span class="name">quit</span>();
+     }
+ }
+</pre>

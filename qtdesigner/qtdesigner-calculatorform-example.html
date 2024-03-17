@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- calculatorform.qdoc -->
+  <meta name="description" content="Using a form created with Qt Designer in an application.">
+  <title>Calculator Form | Qt Designer Manual</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtdesigner-manual.html" translate="no">Qt Designer Manual</a></li>
+<li><a href="examples-designer.html" translate="no">Qt Designer Examples</a></li>
+<li>Calculator Form</li>
+<li id="buildversion"><a href="qtdesigner-manual.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#preparation">Preparation</a></li>
+<li class="level1"><a href="#calculatorform-class-definition">CalculatorForm Class Definition</a></li>
+<li class="level1"><a href="#calculatorform-class-implementation">CalculatorForm Class Implementation</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Calculator Form</h1>
+<!-- $$$calculatorform-brief -->
+<p>Using a form created with <i>Qt Designer</i> in an application.</p>
+<!-- @@@calculatorform -->
+<!-- $$$calculatorform-description -->
+<div class="descr" id="details">
+<p>The Calculator Form Example shows how to use a form created with <i>Qt Designer</i> in an application by using the user interface information from a <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> subclass.</p>
+<p class="centerAlign"><img src="images/calculatorform-example.webp" alt="Screenshot of the Calculator Form example" /></p><p>The example presents two spin boxes that are used to input integer values and a label that shows their sum. Whenever either of the spin boxes are updated, the signal-slot connections between the widgets and the form ensure that the label is also updated.</p>
+<h4 id="preparation">Preparation</h4>
+<p>The user interface for this example is designed completely using <i>Qt Designer</i>. The result is a UI file describing the form, the widgets used, any signal-slot connections between them, and other standard user interface properties.</p>
+<p>To ensure that the example can use this file, we enable the <code translate="no">CMAKE_AUTOUIC</code> feature and list the UI file in the source files:</p>
+<pre class="cpp" translate="no">
+ set(CMAKE_AUTOUIC ON)
+
+ qt_add_executable(calculatorform
+     calculatorform.cpp calculatorform.h calculatorform.ui
+     main.cpp
+ )
+</pre>
+<p>For <code translate="no">qmake</code>, we need to include a <code translate="no">FORMS</code> declaration in the example's project file:</p>
+<pre class="cpp" translate="no">
+ FORMS       = calculatorform.ui
+</pre>
+<p>When the project is built, <code translate="no">uic</code> will create a header file that lets us construct the form.</p>
+<h4 id="calculatorform-class-definition">CalculatorForm Class Definition</h4>
+<p>The <code translate="no">CalculatorForm</code> class uses the user interface described in the <code translate="no">calculatorform.ui</code> file. To access the form and its contents, we need to include the <code translate="no">ui_calculatorform.h</code> header file created by <code translate="no">uic</code> during the build process:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &quot;ui_calculatorform.h&quot;</span>
+</pre>
+<p>We define the <code translate="no">CalculatorForm</code> class by subclassing <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> because the form itself is based on <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> CalculatorForm : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> CalculatorForm(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> updateResult();
+
+ <span class="keyword">private</span>:
+     Ui<span class="operator">::</span>CalculatorForm ui;
+ };
+</pre>
+<p>Apart from the constructor, the class contains a private slot <code translate="no">updateResult()</code> that performs the calculation and updates the output widget accordingly. The private <code translate="no">ui</code> member variable refers to the form, and is used to access the contents of the user interface.</p>
+<h4 id="calculatorform-class-implementation">CalculatorForm Class Implementation</h4>
+<p>The constructor simply calls the base class's constructor, sets up the form's user interface and connects the signals <a href="../qtwidgets/qspinbox.html#valueChanged" translate="no">QSpinBox::valueChanged</a>() to the slot <code translate="no">updateResult()</code>.</p>
+<pre class="cpp" translate="no">
+ CalculatorForm<span class="operator">::</span>CalculatorForm(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent)
+     : <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>(parent)
+ {
+     ui<span class="operator">.</span>setupUi(<span class="keyword">this</span>);
+     connect(ui<span class="operator">.</span>inputSpinBox1<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qspinbox.html" translate="no">QSpinBox</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>CalculatorForm<span class="operator">::</span>updateResult);
+     connect(ui<span class="operator">.</span>inputSpinBox2<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qspinbox.html" translate="no">QSpinBox</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>CalculatorForm<span class="operator">::</span>updateResult);
+ }
+</pre>
+<p>The user interface is set up with the <code translate="no">setupUI()</code> function. We pass <code translate="no">this</code> as the argument to this function to use the <code translate="no">CalculatorForm</code> widget itself as the container for the user interface.</p>
+<p>Slot <code translate="no">updateResult()</code> adds the values and sets the result on the output widget:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> CalculatorForm<span class="operator">::</span>updateResult()
+ {
+     <span class="keyword">const</span> <span class="type">int</span> sum <span class="operator">=</span> ui<span class="operator">.</span>inputSpinBox1<span class="operator">-</span><span class="operator">&gt;</span>value() <span class="operator">+</span> ui<span class="operator">.</span>inputSpinBox2<span class="operator">-</span><span class="operator">&gt;</span>value();
+     ui<span class="operator">.</span>outputWidget<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(sum));
+ }
+</pre>
+<p>It is called whenever the value of one of the spin boxes changes.</p>
+<p><a href="https://code.qt.io/cgit/qt/qttools.git/tree/examples/designer/calculatorform?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@calculatorform -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

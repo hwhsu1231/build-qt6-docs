@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-particles3d.qdoc -->
+  <meta name="description" content="Demonstrates how to use the Qt Quick 3D Particles3D module.">
+  <title>Qt Quick 3D - Particles 3D Testbed Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Particles 3D Testbed Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Particles 3D Testbed Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">rootItem</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">showState</span>: <span class="name">AppSettings</span>.<span class="name">showSettingsView</span> ? <span class="number">1.0</span> : <span class="number">0.0</span>
+
+     default property <span class="type">alias</span> <span class="name">content</span>: <span class="name">settingsArea</span>.<span class="name">children</span>
+
+     <span class="name">width</span>: <span class="name">settingsDrawer</span>.<span class="name">width</span>
+     <span class="name">height</span>: <span class="name">settingsDrawer</span>.<span class="name">height</span>
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+         <span class="name">x</span>: (<span class="name">settingsDrawer</span>.<span class="name">visible</span>) ? <span class="name">settingsDrawer</span>.<span class="name">x</span> <span class="operator">-</span> <span class="name">width</span> : <span class="name">Window</span>.<span class="name">window</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">width</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">width</span>: <span class="name">AppSettings</span>.<span class="name">iconSize</span>
+         <span class="name">height</span>: <span class="name">width</span>
+         <span class="name">opacity</span>: <span class="name">rootItem</span>.<span class="name">showState</span> <span class="operator">*</span> <span class="number">0.6</span> <span class="operator">+</span> <span class="number">0.4</span>
+         <span class="name">visible</span>: <span class="name">opacity</span>
+         <span class="name">icon</span>.width: <span class="name">width</span> <span class="operator">*</span> <span class="number">0.3</span>
+         <span class="name">icon</span>.height: <span class="name">height</span> <span class="operator">*</span> <span class="number">0.3</span>
+         <span class="name">icon</span>.source: <span class="string">&quot;qrc:/images/icon_settings.png&quot;</span>
+         <span class="name">icon</span>.color: <span class="string">&quot;transparent&quot;</span>
+         <span class="name">background</span>: <span class="name">Rectangle</span> {
+             <span class="name">color</span>: <span class="string">&quot;transparent&quot;</span>
+         }
+         <span class="name">onClicked</span>: {
+             <span class="name">AppSettings</span>.<span class="name">showSettingsView</span> <span class="operator">=</span> !<span class="name">AppSettings</span>.<span class="name">showSettingsView</span>;
+         }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-drawer.html" translate="no">Drawer</a></span> {
+         <span class="name">id</span>: <span class="name">settingsDrawer</span>
+         <span class="name">modal</span>: <span class="number">false</span>
+         <span class="name">edge</span>: <span class="name">Qt</span>.<span class="name">RightEdge</span>
+         <span class="name">interactive</span>: <span class="number">false</span>
+         <span class="name">leftInset</span>: -<span class="number">10</span>
+         <span class="name">topInset</span>: -<span class="number">20</span>
+         <span class="name">bottomInset</span>: -<span class="number">20</span>
+         <span class="name">topMargin</span>: <span class="number">10</span>
+         <span class="name">visible</span>: <span class="name">AppSettings</span>.<span class="name">showSettingsView</span>
+
+         <span class="name">background</span>: <span class="name">Rectangle</span> {
+             <span class="name">color</span>: <span class="string">&quot;#80404040&quot;</span>
+             <span class="name">border</span>.color: <span class="string">&quot;#000000&quot;</span>
+             <span class="name">border</span>.width: <span class="number">1</span>
+             <span class="name">opacity</span>: <span class="number">0.8</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-column.html" translate="no">Column</a></span> {
+             <span class="name">id</span>: <span class="name">settingsArea</span>
+         }
+         <span class="name">enter</span>: <span class="name">Transition</span> {
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">to</span>: <span class="number">1.0</span>
+                 <span class="name">duration</span>: <span class="number">800</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         }
+
+         <span class="name">exit</span>: <span class="name">Transition</span> {
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">to</span>: <span class="number">0.0</span>
+                 <span class="name">duration</span>: <span class="number">800</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         }
+     }
+ }
+</pre>

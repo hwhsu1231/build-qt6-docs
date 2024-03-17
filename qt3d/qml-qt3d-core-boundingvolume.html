@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qboundingvolume.cpp -->
+  <meta name="description" content="can be used to override an entity's bounding volume.">
+  <title>BoundingVolume QML Type | Qt 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qt3d-index.html" translate="no">Qt 3D</a></li>
+<li><a href="qt3d-qml.html" translate="no">QML Types</a></li>
+<li><a href="qt3d-core-qmlmodule.html" translate="no">Qt3D.Core</a></li>
+<li>BoundingVolume</li>
+<li id="buildversion"><a href="qt3d-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#methods">Methods</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">BoundingVolume QML Type</h1>
+<!-- $$$BoundingVolume-brief -->
+<p>can be used to override an entity's bounding volume. <a href="#details">More...</a></p>
+<!-- @@@BoundingVolume -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import Qt3D.Core 2.6</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Instantiates:</td><td class="memItemRight bottomAlign"> <a href="qt3dcore-qboundingvolume.html" translate="no">QBoundingVolume</a></td></tr><tr><td class="memItemLeft rightAlign topAlign"> Inherited By:</td><td class="memItemRight bottomAlign"> <p><a href="qml-qt3d-render-geometryrenderer.html" translate="no">GeometryRenderer</a></p>
+</td></tr></table></div><ul>
+<li><a href="qml-qt3d-core-boundingvolume-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qt3d-core-boundingvolume.html#implicitMaxPoint-prop" translate="no">implicitMaxPoint</a></b> : vector3d</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-core-boundingvolume.html#implicitMinPoint-prop" translate="no">implicitMinPoint</a></b> : vector3d</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-core-boundingvolume.html#implicitPointsValid-prop" translate="no">implicitPointsValid</a></b> : bool</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-core-boundingvolume.html#maxPoint-prop" translate="no">maxPoint</a></b> : vector3d</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-core-boundingvolume.html#minPoint-prop" translate="no">minPoint</a></b> : vector3d</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-core-boundingvolume.html#view-prop" translate="no">view</a></b> : GeometryView</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li class="fn" translate="no">bool <b><a href="qml-qt3d-core-boundingvolume.html#updateImplicitBounds-method" translate="no">updateImplicitBounds</a></b>()</li>
+</ul>
+<!-- $$$BoundingVolume-description -->
+<h2 id="details">Detailed Description</h2>
+<p>An entity's bounding volume is used for many operations such as picking or view frustum culling. It is normally computed by traversing the rendered geometry.</p>
+<p>BoundingVolume can be used when the extent of the geometry is known to the application so that Qt 3D does not have to compute it.</p>
+<p>A bounding volume can be provided either as minimum and maximum extent coordinates, or a separate, usually simpler, geometry that approximates the rendered mesh.</p>
+<p>When using minimum and maximum extents, these are considered to be the opposite corners of an axis aligned bounding box, in the geometry's local coordinate system.</p>
+<p>BoundingVolume can also be used to query the computed bounding volume of a <a href="qml-qt3d-core-geometryview.html" translate="no">GeometryView</a>. The <a href="qml-qt3d-core-boundingvolume.html#implicitMinPoint-prop" translate="no">implicitMinPoint</a> and <a href="qml-qt3d-core-boundingvolume.html#implicitMaxPoint-prop" translate="no">implicitMaxPoint</a> properties will be updated if the geometry changes. Note that this is done asynchronously on a background thread so you should check the value of <a href="qml-qt3d-core-boundingvolume.html#implicitPointsValid-prop" translate="no">implicitPointsValid</a> before reading them.</p>
+<p>You can force the implicit extents to be updated by calling <a href="qml-qt3d-core-boundingvolume.html#updateImplicitBounds-method" translate="no">updateImplicitBounds</a>. This will block on the calling thread until the results are available.</p>
+<div class="admonition note">
+<p><b>Note: </b><a href="qml-qt3d-render-geometryrenderer.html" translate="no">GeometryRenderer</a> inherits BoundingVolume and thus supports reading implicit bounds or setting explicit bounds also.</p>
+</div>
+<!-- @@@BoundingVolume -->
+<h2>Property Documentation</h2>
+<!-- $$$implicitMaxPoint -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="implicitMaxPoint-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">implicitMaxPoint</span> : <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>* * * Holds maximum extent of the bounding volume computed from the specified view.</p>
+</div></div><!-- @@@implicitMaxPoint -->
+<br/>
+<!-- $$$implicitMinPoint -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="implicitMinPoint-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">implicitMinPoint</span> : <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>* * * Holds minimum extent of the bounding volume computed from the specified view.</p>
+</div></div><!-- @@@implicitMinPoint -->
+<br/>
+<!-- $$$implicitPointsValid -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="implicitPointsValid-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">implicitPointsValid</span> : <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>* * * True if a view has been assigned and the implicit extent properties are up to date. * *</p>
+<p><b>See also </b><a href="qml-qt3d-core-boundingvolume.html#updateImplicitBounds-method" translate="no">updateImplicitBounds</a>.</p>
+</div></div><!-- @@@implicitPointsValid -->
+<br/>
+<!-- $$$maxPoint -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="maxPoint-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">maxPoint</span> : <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>* * * User specified maximum extent of the bounding volume. When set (along with minimum * extent), this will be used internally to avoid computing the volume from the * geometry.</p>
+</div></div><!-- @@@maxPoint -->
+<br/>
+<!-- $$$minPoint -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="minPoint-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">minPoint</span> : <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>* * * User specified minimum extent of the bounding volume. When set (along with maximum * extent), this will be used internally to avoid computing the volume from the * geometry.</p>
+</div></div><!-- @@@minPoint -->
+<br/>
+<!-- $$$view -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="view-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">view</span> : <span class="type"><a href="qml-qt3d-core-geometryview.html" translate="no">GeometryView</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>* * * Holds a pointer to the instance of QGeometryView which will be used, if set, * to compute the bounding volume.</p>
+</div></div><!-- @@@view -->
+<br/>
+<h2>Method Documentation</h2>
+<!-- $$$updateImplicitBounds[overload1]$$$updateImplicitBounds -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="updateImplicitBounds-method">
+<td class="tblQmlFuncNode"><p>
+<span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">updateImplicitBounds</span>()</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>* * * Updates the implicit bounds of the specified view. Returns * <code translate="no">true</code> if the computation succeeded and false otherwise. * *</p>
+<div class="admonition note">
+<p><b>Note: </b>The calculations are done in the call thread, this * could take significant time for large meshes.</p>
+</div>
+</div></div><!-- @@@updateImplicitBounds -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

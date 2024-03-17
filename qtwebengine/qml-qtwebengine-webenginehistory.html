@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- navigation_history.qdoc -->
+  <meta name="description" content="Provides data models that represent the history of a web engine page.">
+  <title>WebEngineHistory QML Type | Qt WebEngine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtwebengine-index.html" translate="no">Qt WebEngine</a></li>
+<li><a href="qtwebengine-qmlmodule.html" translate="no">QML Types</a></li>
+<li>WebEngineHistory</li>
+<li id="buildversion"><a href="qtwebengine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#methods">Methods</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">WebEngineHistory QML Type</h1>
+<!-- $$$WebEngineHistory-brief -->
+<p>Provides data models that represent the history of a web engine page. <a href="#details">More...</a></p>
+<!-- @@@WebEngineHistory -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtWebEngine</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> QtWebEngine 1.1</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Instantiates:</td><td class="memItemRight bottomAlign"> <a href="qwebenginehistory.html" translate="no">QWebEngineHistory</a></td></tr></table></div><ul>
+<li><a href="qml-qtwebengine-webenginehistory-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-webenginehistory.html#backItems-prop" translate="no">backItems</a></b> : WebEngineHistoryModel</li>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-webenginehistory.html#forwardItems-prop" translate="no">forwardItems</a></b> : WebEngineHistoryModel</li>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-webenginehistory.html#items-prop" translate="no">items</a></b> : WebEngineHistoryModel</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li class="fn" translate="no">void <b><a href="qml-qtwebengine-webenginehistory.html#clear-method" translate="no">clear</a></b>()</li>
+</ul>
+<!-- $$$WebEngineHistory-description -->
+<h2 id="details">Detailed Description</h2>
+<p>The WebEngineHistory type can be accessed by using the <a href="qml-qtwebengine-webengineview.html#history-prop" translate="no">WebEngineView.history</a> property.</p>
+<p>The WebEngineHistory type provides the following <a href="qml-qtwebengine-webenginehistorymodel.html" translate="no">WebEngineHistoryModel</a> data model objects:</p>
+<ul>
+<li><code translate="no">backItems</code>, which contains the URLs of visited pages.</li>
+<li><code translate="no">forwardItems</code>, which contains the URLs of the pages that were visited after visiting the current page.</li>
+<li><code translate="no">items</code>, which contains the URLs of the back and forward items, as well as the URL of the current page.</li>
+</ul>
+<p>The easiest way to use these models is to use them in a <a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a> as illustrated by the following code snippet:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a></span> {
+     <span class="name">id</span>: <span class="name">historyItemsList</span>
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+     <span class="name">model</span>: <span class="name">webEngineView</span>.<span class="name">history</span>.<span class="name">items</span>
+     <span class="name">delegate</span>:
+         <span class="name">Text</span> {
+             <span class="name">color</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">text</span>: <span class="name">model</span>.<span class="name">title</span> <span class="operator">+</span> <span class="string">&quot; - &quot;</span> <span class="operator">+</span> <span class="name">model</span>.<span class="name">url</span> <span class="operator">+</span> <span class="string">&quot; (&quot;</span> <span class="operator">+</span> <span class="name">model</span>.<span class="name">offset</span> <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+         }
+ }
+</pre>
+<p>The <a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a> shows the content of the corresponding model. The delegate is responsible for the format of the list items. The appearance of each item of the list in the delegate can be defined separately (it is not web engine specific).</p>
+<p>The model roles <i>title</i>, <i>url</i>, and <i>icon</i> specify the title, URL, and favicon of the visited page. The <i>offset</i> role specifies the position of the page in respect to the current page (0). A positive number indicates that the page was visited after the current page, whereas a negative number indicates that the page was visited before the current page.</p>
+<p>The data models can also be used to create a menu, as illustrated by the following code snippet:</p>
+<pre class="cpp" translate="no">
+     <span class="name">menuBar</span>: <span class="name">ToolBar</span> {
+         <span class="name">id</span>: <span class="name">navigationBar</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-toolbutton.html" translate="no">ToolButton</a></span> {
+                 <span class="name">enabled</span>: <span class="name">currentWebView</span> <span class="operator">&amp;&amp;</span> (<span class="name">currentWebView</span>.<span class="name">canGoBack</span> <span class="operator">||</span> <span class="name">currentWebView</span>.<span class="name">canGoForward</span>)
+                 <span class="name">onClicked</span>: <span class="name">historyMenu</span>.<span class="name">open</span>()
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;▼&quot;</span>)
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-menu.html" translate="no">Menu</a></span> {
+                     <span class="name">id</span>: <span class="name">historyMenu</span>
+                     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-instantiator.html" translate="no">Instantiator</a></span> {
+                         <span class="name">model</span>: <span class="name">currentWebView</span> <span class="operator">&amp;&amp;</span> <span class="name">currentWebView</span>.<span class="name">history</span>.<span class="name">items</span>
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-menuitem.html" translate="no">MenuItem</a></span> {
+                             <span class="name">text</span>: <span class="name">model</span>.<span class="name">title</span>
+                             <span class="name">onTriggered</span>: <span class="name">currentWebView</span>.<span class="name">goBackOrForward</span>(<span class="name">model</span>.<span class="name">offset</span>)
+                             <span class="name">checkable</span>: !<span class="name">enabled</span>
+                             <span class="name">checked</span>: !<span class="name">enabled</span>
+                             <span class="name">enabled</span>: <span class="name">model</span>.<span class="name">offset</span>
+                         }
+
+                         <span class="name">onObjectAdded</span>: <span class="keyword">function</span>(index, object) {
+                             <span class="name">historyMenu</span>.<span class="name">insertItem</span>(<span class="name">index</span>, <span class="name">object</span>)
+                         }
+                         <span class="name">onObjectRemoved</span>: <span class="keyword">function</span>(index, object) {
+                             <span class="name">historyMenu</span>.<span class="name">removeItem</span>(<span class="name">object</span>)
+                         }
+                     }
+                 }
+</pre>
+<p>For the complete example, see <a href="qtwebengine-webenginequick-quicknanobrowser-example.html" translate="no">WebEngine Quick Nano Browser</a>.</p>
+<p><b>See also </b><a href="qml-qtwebengine-webenginehistorymodel.html" translate="no">WebEngineHistoryModel</a>.</p>
+<!-- @@@WebEngineHistory -->
+<h2>Property Documentation</h2>
+<!-- $$$backItems -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="backItems-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">backItems</span> : <span class="type"><a href="qml-qtwebengine-webenginehistorymodel.html" translate="no">WebEngineHistoryModel</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>URLs of visited pages.</p>
+</div></div><!-- @@@backItems -->
+<br/>
+<!-- $$$forwardItems -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="forwardItems-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">forwardItems</span> : <span class="type"><a href="qml-qtwebengine-webenginehistorymodel.html" translate="no">WebEngineHistoryModel</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>URLs of the pages that were visited after visiting the current page.</p>
+</div></div><!-- @@@forwardItems -->
+<br/>
+<!-- $$$items -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="items-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">items</span> : <span class="type"><a href="qml-qtwebengine-webenginehistorymodel.html" translate="no">WebEngineHistoryModel</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>URLs of back items, forward items, and the current item in the history.</p>
+</div></div><!-- @@@items -->
+<br/>
+<h2>Method Documentation</h2>
+<!-- $$$clear[overload1]$$$clear -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="clear-method">
+<td class="tblQmlFuncNode"><p>
+<code translate="no">[since QtWebEngine 1.11] </code><span class="type">void</span> <span class="name">clear</span>()</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Clears the history.</p>
+<p>This method was introduced in QtWebEngine 1.11.</p>
+</div></div><!-- @@@clear -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

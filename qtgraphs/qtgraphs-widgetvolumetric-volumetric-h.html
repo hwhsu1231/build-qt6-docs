@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetvolumetric.qdoc -->
+  <meta name="description" content="Rendering volumetric objects.">
+  <title>Volumetric Rendering | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Volumetric Rendering</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Volumetric Rendering</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef VOLUMETRICMODIFIER_H</span>
+ <span class="preprocessor">#define VOLUMETRICMODIFIER_H</span>
+
+ <span class="preprocessor">#include &lt;QtGraphs/q3dscatter.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qcustom3dvolume.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/qtimer.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGui/qrgb.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qlabel.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qslider.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qradiobutton.h&gt;</span>
+
+ <span class="keyword">class</span> VolumetricModifier : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> VolumetricModifier(<span class="type"><a href="q3dscatter.html" translate="no">Q3DScatter</a></span> <span class="operator">*</span>scatter);
+     <span class="operator">~</span>VolumetricModifier();
+
+     <span class="type">void</span> setFpsLabel(<span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>fpsLabel);
+     <span class="type">void</span> setMediumDetailRB(<span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span> <span class="operator">*</span>button);
+     <span class="type">void</span> setHighDetailRB(<span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span> <span class="operator">*</span>button);
+     <span class="type">void</span> setSliceLabels(<span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>xLabel<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>yLabel<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>zLabel);
+     <span class="type">void</span> setAlphaMultiplierLabel(<span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>label);
+
+ <span class="keyword">public</span> Q_SLOTS:
+     <span class="type">void</span> sliceX(<span class="type">int</span> enabled);
+     <span class="type">void</span> sliceY(<span class="type">int</span> enabled);
+     <span class="type">void</span> sliceZ(<span class="type">int</span> enabled);
+     <span class="type">void</span> adjustSliceX(<span class="type">int</span> value);
+     <span class="type">void</span> adjustSliceY(<span class="type">int</span> value);
+     <span class="type">void</span> adjustSliceZ(<span class="type">int</span> value);
+     <span class="type">void</span> handleFpsChange(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> fps);
+     <span class="type">void</span> handleTimeout();
+     <span class="type">void</span> toggleLowDetail(<span class="type">bool</span> enabled);
+     <span class="type">void</span> toggleMediumDetail(<span class="type">bool</span> enabled);
+     <span class="type">void</span> toggleHighDetail(<span class="type">bool</span> enabled);
+     <span class="type">void</span> setFpsMeasurement(<span class="type">bool</span> enabled);
+     <span class="type">void</span> setSliceSliders(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>sliderX<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>sliderY<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>sliderZ);
+     <span class="type">void</span> changeColorTable(<span class="type">int</span> enabled);
+     <span class="type">void</span> setPreserveOpacity(<span class="type">bool</span> enabled);
+     <span class="type">void</span> setTransparentGround(<span class="type">bool</span> enabled);
+     <span class="type">void</span> setUseHighDefShader(<span class="type">bool</span> enabled);
+     <span class="type">void</span> setUsePerspectiveCamera(<span class="type">bool</span> enabled);
+     <span class="type">void</span> adjustAlphaMultiplier(<span class="type">int</span> value);
+     <span class="type">void</span> toggleAreaAll(<span class="type">bool</span> enabled);
+     <span class="type">void</span> toggleAreaMine(<span class="type">bool</span> enabled);
+     <span class="type">void</span> toggleAreaMountain(<span class="type">bool</span> enabled);
+     <span class="type">void</span> setDrawSliceFrames(<span class="type">int</span> enabled);
+
+ <span class="keyword">private</span>:
+     <span class="type">void</span> initHeightMap(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> fileName<span class="operator">,</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> <span class="operator">&amp;</span>layerData);
+     <span class="type">void</span> initMineShaftArray();
+     <span class="type">int</span> createVolume(<span class="type">int</span> textureSize<span class="operator">,</span> <span class="type">int</span> startIndex<span class="operator">,</span> <span class="type">int</span> count<span class="operator">,</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> <span class="operator">*</span>textureData);
+     <span class="type">int</span> excavateMineShaft(<span class="type">int</span> textureSize<span class="operator">,</span> <span class="type">int</span> startIndex<span class="operator">,</span> <span class="type">int</span> count<span class="operator">,</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> <span class="operator">*</span>textureData);
+     <span class="type">void</span> excavateMineBlock(<span class="type">int</span> textureSize<span class="operator">,</span> <span class="type">int</span> dataIndex<span class="operator">,</span> <span class="type">int</span> size<span class="operator">,</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> <span class="operator">*</span>textureData);
+     <span class="type">void</span> handleSlicingChanges();
+
+     <span class="type"><a href="q3dscatter.html" translate="no">Q3DScatter</a></span> <span class="operator">*</span>m_graph <span class="operator">=</span> nullptr;
+     QCustom3DVolume <span class="operator">*</span>m_volumeItem <span class="operator">=</span> nullptr;
+     <span class="type">int</span> m_sliceIndexX <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> m_sliceIndexY <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> m_sliceIndexZ <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">bool</span> m_slicingX <span class="operator">=</span> <span class="keyword">false</span>;
+     <span class="type">bool</span> m_slicingY <span class="operator">=</span> <span class="keyword">false</span>;
+     <span class="type">bool</span> m_slicingZ <span class="operator">=</span> <span class="keyword">false</span>;
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>m_fpsLabel <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span> <span class="operator">*</span>m_mediumDetailRB <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span> <span class="operator">*</span>m_highDetailRB <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> <span class="operator">*</span>m_lowDetailData <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> <span class="operator">*</span>m_mediumDetailData <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> <span class="operator">*</span>m_highDetailData <span class="operator">=</span> nullptr;
+     <span class="type">int</span> m_mediumDetailIndex <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> m_highDetailIndex <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> m_mediumDetailShaftIndex <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> m_highDetailShaftIndex <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>m_sliceSliderX <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>m_sliceSliderY <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>m_sliceSliderZ <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtgui/qcolor.html#QRgb-typedef" translate="no">QRgb</a></span><span class="operator">&gt;</span> m_colorTable1 <span class="operator">=</span> {};
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtgui/qcolor.html#QRgb-typedef" translate="no">QRgb</a></span><span class="operator">&gt;</span> m_colorTable2 <span class="operator">=</span> {};
+     <span class="type">bool</span> m_usingPrimaryTable <span class="operator">=</span> <span class="keyword">true</span>;
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>m_sliceLabelX <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>m_sliceLabelY <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>m_sliceLabelZ <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>m_alphaMultiplierLabel <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> m_magmaLayer <span class="operator">=</span> {};
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> m_waterLayer <span class="operator">=</span> {};
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span><span class="operator">&gt;</span> m_groundLayer <span class="operator">=</span> {};
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qpair-proxy.html" translate="no">QPair</a></span><span class="operator">&lt;</span>QVector3D<span class="operator">,</span> QVector3D<span class="operator">&gt;</span><span class="operator">&gt;</span> m_mineShaftArray <span class="operator">=</span> {};
+     <span class="type"><a href="../qtcore/qtimer.html" translate="no">QTimer</a></span> m_timer;
+ };
+
+ <span class="preprocessor">#endif</span>
+</pre>

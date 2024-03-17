@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- btchat.qdoc -->
+  <meta name="description" content="Shows communication through Bluetooth using RFCOMM protocol.">
+  <title>Bluetooth Chat | Qt Bluetooth 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtbluetooth-index.html" translate="no">Qt Bluetooth</a></li>
+<li>Bluetooth Chat</li>
+<li id="buildversion"><a href="qtbluetooth-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#chat-server">Chat Server</a></li>
+<li class="level1"><a href="#service-discovery">Service Discovery</a></li>
+<li class="level1"><a href="#chat-client">Chat Client</a></li>
+<li class="level1"><a href="#chat-dialog">Chat Dialog</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Bluetooth Chat</h1>
+<!-- $$$btchat-brief -->
+<p>Shows communication through Bluetooth using RFCOMM protocol.</p>
+<!-- @@@btchat -->
+<!-- $$$btchat-description -->
+<div class="descr" id="details">
+<p>The Bluetooth Chat example shows how to use the <a href="qtbluetooth-index.html" translate="no">Qt Bluetooth</a> API to communicate with another application on a remote device using Bluetooth RFCOMM protocol.</p>
+<p class="centerAlign"><img src="images/btchat-example.png" alt="" /></p><p>The Bluetooth Chat example implements a simple chat program between multiple parties. The application always acts as both a server and a client eliminating the need to determine who should connect to whom.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="chat-server">Chat Server</h4>
+<p>The chat server is implemented by the <code translate="no">ChatServer</code> class. The <code translate="no">ChatServer</code> class is declared as:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> ChatServer : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> ChatServer(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+     <span class="operator">~</span>ChatServer();
+
+     <span class="type">void</span> startServer(<span class="keyword">const</span> <span class="type"><a href="qbluetoothaddress.html" translate="no">QBluetoothAddress</a></span> <span class="operator">&amp;</span>localAdapter <span class="operator">=</span> <span class="type"><a href="qbluetoothaddress.html" translate="no">QBluetoothAddress</a></span>());
+     <span class="type">void</span> stopServer();
+
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> sendMessage(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>message);
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> messageReceived(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>sender<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>message);
+     <span class="type">void</span> clientConnected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name);
+     <span class="type">void</span> clientDisconnected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name);
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> clientConnected();
+     <span class="type">void</span> clientDisconnected();
+     <span class="type">void</span> readSocket();
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="qbluetoothserver.html" translate="no">QBluetoothServer</a></span> <span class="operator">*</span>rfcommServer <span class="operator">=</span> nullptr;
+     <span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span> serviceInfo;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span> <span class="operator">*</span><span class="operator">&gt;</span> clientSockets;
+     <span class="type"><a href="../qtcore/qmap.html" translate="no">QMap</a></span><span class="operator">&lt;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span> <span class="operator">*</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">&gt;</span> clientNames;
+ };
+</pre>
+<p>The first thing the chat server needs to do is create an instance of <a href="qbluetoothserver.html" translate="no">QBluetoothServer</a> to listen for incoming Bluetooth connections. The <code translate="no">clientConnected()</code> slot will be called whenever a new connection is created.</p>
+<pre class="cpp" translate="no">
+ rfcommServer <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbluetoothserver.html" translate="no">QBluetoothServer</a></span>(<span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>RfcommProtocol<span class="operator">,</span> <span class="keyword">this</span>);
+ connect(rfcommServer<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothserver.html" translate="no">QBluetoothServer</a></span><span class="operator">::</span>newConnection<span class="operator">,</span>
+         <span class="keyword">this</span><span class="operator">,</span> <span class="type">QOverload</span><span class="operator">&lt;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span>ChatServer<span class="operator">::</span>clientConnected));
+ <span class="type">bool</span> result <span class="operator">=</span> rfcommServer<span class="operator">-</span><span class="operator">&gt;</span>listen(localAdapter);
+ <span class="keyword">if</span> (<span class="operator">!</span>result) {
+     <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Cannot bind chat server to&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> localAdapter<span class="operator">.</span>toString();
+     <span class="keyword">return</span>;
+ }
+</pre>
+<p>The chat server is only useful if others know that it is there. To enable other devices to discover it, a record describing the service needs to be published in the system's SDP (Service Discovery Protocol) database. The <a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a> class encapsulates a service record.</p>
+<p>We will publish a service record that contains some textual descriptions of the services, a UUID that uniquely identifies the service, the discoverability attribute, and connection parameters.</p>
+<p>The textual description of the service is stored in the <code translate="no">ServiceName</code>, <code translate="no">ServiceDescription</code>, and <code translate="no">ServiceProvider</code> attributes.</p>
+<pre class="cpp" translate="no">
+ serviceInfo<span class="operator">.</span>setAttribute(<span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>ServiceName<span class="operator">,</span> tr(<span class="string">&quot;Bt Chat Server&quot;</span>));
+ serviceInfo<span class="operator">.</span>setAttribute(<span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>ServiceDescription<span class="operator">,</span>
+                          tr(<span class="string">&quot;Example bluetooth chat server&quot;</span>));
+ serviceInfo<span class="operator">.</span>setAttribute(<span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>ServiceProvider<span class="operator">,</span> tr(<span class="string">&quot;qt-project.org&quot;</span>));
+</pre>
+<p>Bluetooth uses UUIDs as unique identifiers. The chat service uses a randomly generated UUID.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">static</span> constexpr <span class="keyword">auto</span> serviceUuid <span class="operator">=</span> <span class="string">&quot;e8e10f95-1a70-4b27-9ccf-02010264e9c8&quot;</span>_L1;
+ serviceInfo<span class="operator">.</span>setServiceUuid(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span>(serviceUuid));
+</pre>
+<p>A Bluetooth service is only discoverable if it is in the <a href="qbluetoothuuid.html#ServiceClassUuid-enum" translate="no">PublicBrowseGroup</a>.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">const</span> <span class="keyword">auto</span> groupUuid <span class="operator">=</span> <span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span>(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span><span class="operator">::</span>ServiceClassUuid<span class="operator">::</span>PublicBrowseGroup);
+ <span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>Sequence publicBrowse;
+ publicBrowse <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(groupUuid);
+ serviceInfo<span class="operator">.</span>setAttribute(<span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>BrowseGroupList<span class="operator">,</span> publicBrowse);
+</pre>
+<p>The <code translate="no">ProtocolDescriptorList</code> attribute is used to publish the connection parameters that the remote device requires to connect to our service. Here we specify that the <code translate="no">Rfcomm</code> protocol is used and set the port number to the port that our <code translate="no">rfcommServer</code> instance is listening to.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>Sequence protocolDescriptorList;
+ <span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>Sequence protocol;
+ protocol <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span>(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span><span class="operator">::</span>ProtocolUuid<span class="operator">::</span>L2cap));
+ protocolDescriptorList<span class="operator">.</span>append(<span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(protocol));
+ protocol<span class="operator">.</span>clear();
+ protocol <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span>(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span><span class="operator">::</span>ProtocolUuid<span class="operator">::</span>Rfcomm))
+          <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(<span class="type"><a href="../qtcore/qttypes.html#quint8-typedef" translate="no">quint8</a></span>(rfcommServer<span class="operator">-</span><span class="operator">&gt;</span>serverPort()));
+ protocolDescriptorList<span class="operator">.</span>append(<span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(protocol));
+ serviceInfo<span class="operator">.</span>setAttribute(<span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>ProtocolDescriptorList<span class="operator">,</span>
+                          protocolDescriptorList);
+</pre>
+<p>Finally, we register the service record with the system.</p>
+<pre class="cpp" translate="no">
+ serviceInfo<span class="operator">.</span>registerService(localAdapter);
+</pre>
+<p>As mentioned earlier, incoming connections are handled in the <code translate="no">clientConnected()</code> slot where pending connections are connected to the <a href="../qtcore/qiodevice.html#readyRead" translate="no">readyRead</a>() and <a href="qbluetoothsocket.html#disconnected" translate="no">disconnected</a>() signals. The signals notify others that a new client has connected.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatServer<span class="operator">::</span>clientConnected()
+ {
+     <span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span> <span class="operator">*</span>socket <span class="operator">=</span> rfcommServer<span class="operator">-</span><span class="operator">&gt;</span>nextPendingConnection();
+     <span class="keyword">if</span> (<span class="operator">!</span>socket)
+         <span class="keyword">return</span>;
+
+     connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span><span class="operator">::</span>readyRead<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>ChatServer<span class="operator">::</span>readSocket);
+     connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span><span class="operator">::</span>disconnected<span class="operator">,</span>
+             <span class="keyword">this</span><span class="operator">,</span> <span class="type">QOverload</span><span class="operator">&lt;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span>ChatServer<span class="operator">::</span>clientDisconnected));
+     clientSockets<span class="operator">.</span>append(socket);
+     clientNames<span class="operator">[</span>socket<span class="operator">]</span> <span class="operator">=</span> socket<span class="operator">-</span><span class="operator">&gt;</span>peerName();
+     <span class="keyword">emit</span> clientConnected(socket<span class="operator">-</span><span class="operator">&gt;</span>peerName());
+ }
+</pre>
+<p>The <code translate="no">readSocket()</code> slot is called whenever data is ready to be read from a client socket. The slot reads individual lines from the socket, converts them from UTF-8, and emits the <code translate="no">messageReceived()</code> signal.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatServer<span class="operator">::</span>readSocket()
+ {
+     <span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span> <span class="operator">*</span>socket <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(sender());
+     <span class="keyword">if</span> (<span class="operator">!</span>socket)
+         <span class="keyword">return</span>;
+
+     <span class="keyword">while</span> (socket<span class="operator">-</span><span class="operator">&gt;</span>canReadLine()) {
+         <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> line <span class="operator">=</span> socket<span class="operator">-</span><span class="operator">&gt;</span>readLine()<span class="operator">.</span>trimmed();
+         <span class="keyword">emit</span> messageReceived(clientNames<span class="operator">[</span>socket<span class="operator">]</span><span class="operator">,</span>
+                              <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromUtf8(line<span class="operator">.</span>constData()<span class="operator">,</span> line<span class="operator">.</span>length()));
+     }
+ }
+</pre>
+<p>The <code translate="no">clientDisconnected()</code> slot is called whenever a client disconnects from the service. The slot emits a signal to notify others that a client has disconnected, and deletes the socket.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatServer<span class="operator">::</span>clientDisconnected()
+ {
+     <span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span> <span class="operator">*</span>socket <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(sender());
+     <span class="keyword">if</span> (<span class="operator">!</span>socket)
+         <span class="keyword">return</span>;
+
+     <span class="keyword">emit</span> clientDisconnected(clientNames<span class="operator">[</span>socket<span class="operator">]</span>);
+
+     clientSockets<span class="operator">.</span>removeOne(socket);
+     clientNames<span class="operator">.</span>remove(socket);
+
+     socket<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+ }
+</pre>
+<p>The <code translate="no">sendMessage()</code> slot is used to send a message to all connected clients. The message is converted into UTF-8 and appended with a newline before being sent to all clients.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatServer<span class="operator">::</span>sendMessage(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>message)
+ {
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> text <span class="operator">=</span> message<span class="operator">.</span>toUtf8() <span class="operator">+</span> <span class="char">'\n'</span>;
+
+     <span class="keyword">for</span> (<span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span> <span class="operator">*</span>socket : std<span class="operator">::</span>as_const(clientSockets))
+         socket<span class="operator">-</span><span class="operator">&gt;</span>write(text);
+ }
+</pre>
+<p>When the chat server is stopped, the service record is removed from the system SDP database, all connected client sockets are deleted, and the <code translate="no">rfcommServer</code> instance is deleted.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatServer<span class="operator">::</span>stopServer()
+ {
+     <span class="comment">// Unregister service</span>
+     serviceInfo<span class="operator">.</span>unregisterService();
+
+     <span class="comment">// Close sockets</span>
+     <a href="../qtcore/qtalgorithms.html#qDeleteAll-1" translate="no">qDeleteAll</a>(clientSockets);
+     clientNames<span class="operator">.</span>clear();
+
+     <span class="comment">// Close server</span>
+     <span class="keyword">delete</span> rfcommServer;
+     rfcommServer <span class="operator">=</span> nullptr;
+ }
+</pre>
+<h4 id="service-discovery">Service Discovery</h4>
+<p>Before connecting to the server, the client needs to scan the nearby devices and search for the device that is advertising the chat service. This is done by the <code translate="no">RemoteSelector</code> class.</p>
+<p>To start service lookup, the <code translate="no">RemoteSelector</code> creates an instance of <a href="qbluetoothservicediscoveryagent.html" translate="no">QBluetoothServiceDiscoveryAgent</a> and connects to its signals.</p>
+<pre class="cpp" translate="no">
+     m_discoveryAgent <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbluetoothservicediscoveryagent.html" translate="no">QBluetoothServiceDiscoveryAgent</a></span>(localAdapter);
+
+     connect(m_discoveryAgent<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothservicediscoveryagent.html" translate="no">QBluetoothServiceDiscoveryAgent</a></span><span class="operator">::</span>serviceDiscovered<span class="operator">,</span>
+             <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>RemoteSelector<span class="operator">::</span>serviceDiscovered);
+     connect(m_discoveryAgent<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothservicediscoveryagent.html" translate="no">QBluetoothServiceDiscoveryAgent</a></span><span class="operator">::</span>finished<span class="operator">,</span>
+             <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>RemoteSelector<span class="operator">::</span>discoveryFinished);
+     connect(m_discoveryAgent<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothservicediscoveryagent.html" translate="no">QBluetoothServiceDiscoveryAgent</a></span><span class="operator">::</span>canceled<span class="operator">,</span>
+             <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>RemoteSelector<span class="operator">::</span>discoveryFinished);
+</pre>
+<p>An UUID filter is set, so that the service discovery only shows the devices that advertise the needed service. After that a <a href="qbluetoothservicediscoveryagent.html#DiscoveryMode-enum" translate="no">FullDiscovery</a> is started:</p>
+<pre class="cpp" translate="no">
+     m_discoveryAgent<span class="operator">-</span><span class="operator">&gt;</span>setUuidFilter(uuid);
+     m_discoveryAgent<span class="operator">-</span><span class="operator">&gt;</span>start(<span class="type"><a href="qbluetoothservicediscoveryagent.html" translate="no">QBluetoothServiceDiscoveryAgent</a></span><span class="operator">::</span>FullDiscovery);
+</pre>
+<p>When a matching service is discovered, a <a href="qbluetoothservicediscoveryagent.html#serviceDiscovered" translate="no">serviceDiscovered</a>() signal is emitted with an instance of <a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a> as a parameter. This service info is used to extract the device name and the service name, and add a new entry to the list of discovered remote devices:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> remoteName;
+     <span class="keyword">if</span> (serviceInfo<span class="operator">.</span>device()<span class="operator">.</span>name()<span class="operator">.</span>isEmpty())
+         remoteName <span class="operator">=</span> address<span class="operator">.</span>toString();
+     <span class="keyword">else</span>
+         remoteName <span class="operator">=</span> serviceInfo<span class="operator">.</span>device()<span class="operator">.</span>name();
+
+     <span class="type"><a href="../qtwidgets/qlistwidgetitem.html" translate="no">QListWidgetItem</a></span> <span class="operator">*</span>item <span class="operator">=</span>
+         <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlistwidgetitem.html" translate="no">QListWidgetItem</a></span>(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 %2&quot;</span>)<span class="operator">.</span>arg(remoteName<span class="operator">,</span>
+                                                              serviceInfo<span class="operator">.</span>serviceName()));
+
+     m_discoveredServices<span class="operator">.</span>insert(item<span class="operator">,</span> serviceInfo);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>remoteDevices<span class="operator">-</span><span class="operator">&gt;</span>addItem(item);
+</pre>
+<p>Later the user can select one of the devices from the list and try to connect to it.</p>
+<h4 id="chat-client">Chat Client</h4>
+<p>The chat client is implemented by the <code translate="no">ChatClient</code> class. The <code translate="no">ChatClient</code> class is declared as:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> ChatClient : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> ChatClient(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+     <span class="operator">~</span>ChatClient();
+
+     <span class="type">void</span> startClient(<span class="keyword">const</span> <span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span> <span class="operator">&amp;</span>remoteService);
+     <span class="type">void</span> stopClient();
+
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> sendMessage(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>message);
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> messageReceived(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>sender<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>message);
+     <span class="type">void</span> connected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name);
+     <span class="type">void</span> disconnected();
+     <span class="type">void</span> socketErrorOccurred(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>errorString);
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> readSocket();
+     <span class="type">void</span> connected();
+     <span class="type">void</span> onSocketErrorOccurred(<span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span><span class="operator">::</span>SocketError);
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span> <span class="operator">*</span>socket <span class="operator">=</span> nullptr;
+ };
+</pre>
+<p>The client creates a new <a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a> and connects to the remote service described by the <code translate="no">remoteService</code> parameter. Slots are connected to the socket's <a href="../qtcore/qiodevice.html#readyRead" translate="no">readyRead</a>(), <a href="qbluetoothsocket.html#connected" translate="no">connected</a>(), and <a href="qbluetoothsocket.html#disconnected" translate="no">disconnected</a>() signals.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatClient<span class="operator">::</span>startClient(<span class="keyword">const</span> <span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span> <span class="operator">&amp;</span>remoteService)
+ {
+     <span class="keyword">if</span> (socket)
+         <span class="keyword">return</span>;
+
+     <span class="comment">// Connect to service</span>
+     socket <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span>(<span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span><span class="operator">::</span>RfcommProtocol);
+     <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Create socket&quot;</span>;
+     socket<span class="operator">-</span><span class="operator">&gt;</span>connectToService(remoteService);
+     <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;ConnectToService done&quot;</span>;
+
+     connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span><span class="operator">::</span>readyRead<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>ChatClient<span class="operator">::</span>readSocket);
+     connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span><span class="operator">::</span>connected<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="type">QOverload</span><span class="operator">&lt;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span>ChatClient<span class="operator">::</span>connected));
+     connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span><span class="operator">::</span>disconnected<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>ChatClient<span class="operator">::</span>disconnected);
+     connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a></span><span class="operator">::</span>errorOccurred<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>ChatClient<span class="operator">::</span>onSocketErrorOccurred);
+ }
+</pre>
+<p>On successful socket connection we emit a signal to notify other users.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatClient<span class="operator">::</span>connected()
+ {
+     <span class="keyword">emit</span> connected(socket<span class="operator">-</span><span class="operator">&gt;</span>peerName());
+ }
+</pre>
+<p>Similarly to the chat server, the <code translate="no">readSocket()</code> slot is called when data is available from the socket. Lines are read individually and converted from UTF-8. The <code translate="no">messageReceived()</code> signal is emitted.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatClient<span class="operator">::</span>readSocket()
+ {
+     <span class="keyword">if</span> (<span class="operator">!</span>socket)
+         <span class="keyword">return</span>;
+
+     <span class="keyword">while</span> (socket<span class="operator">-</span><span class="operator">&gt;</span>canReadLine()) {
+         <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> line <span class="operator">=</span> socket<span class="operator">-</span><span class="operator">&gt;</span>readLine()<span class="operator">.</span>trimmed();
+         <span class="keyword">emit</span> messageReceived(socket<span class="operator">-</span><span class="operator">&gt;</span>peerName()<span class="operator">,</span>
+                              <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromUtf8(line<span class="operator">.</span>constData()<span class="operator">,</span> line<span class="operator">.</span>length()));
+     }
+ }
+</pre>
+<p>The <code translate="no">sendMessage()</code> slot is used to send a message to the remote device. The message is converted to UTF-8 and a newline is appended.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatClient<span class="operator">::</span>sendMessage(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>message)
+ {
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> text <span class="operator">=</span> message<span class="operator">.</span>toUtf8() <span class="operator">+</span> <span class="char">'\n'</span>;
+     socket<span class="operator">-</span><span class="operator">&gt;</span>write(text);
+ }
+</pre>
+<p>To disconnect from the remote chat service, the <a href="qbluetoothsocket.html" translate="no">QBluetoothSocket</a> instance is deleted.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChatClient<span class="operator">::</span>stopClient()
+ {
+     <span class="keyword">delete</span> socket;
+     socket <span class="operator">=</span> nullptr;
+ }
+</pre>
+<h4 id="chat-dialog">Chat Dialog</h4>
+<p>The main window of this example is the chat dialog, implemented in the <code translate="no">Chat</code> class. This class displays a chat session between a single <code translate="no">ChatServer</code> and zero or more <code translate="no">ChatClient</code>s. The <code translate="no">Chat</code> class is declared as:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> Chat : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qdialog.html" translate="no">QDialog</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> Chat(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+     <span class="operator">~</span>Chat();
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> sendMessage(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>message);
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> connectClicked();
+     <span class="type">void</span> sendClicked();
+
+     <span class="type">void</span> showMessage(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>sender<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>message);
+
+     <span class="type">void</span> clientConnected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name);
+     <span class="type">void</span> clientDisconnected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name);
+     <span class="type">void</span> clientDisconnected();
+     <span class="type">void</span> connected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name);
+     <span class="type">void</span> reactOnSocketError(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>error);
+
+     <span class="type">void</span> newAdapterSelected();
+
+     <span class="type">void</span> initBluetooth();
+
+ <span class="keyword">private</span>:
+     <span class="type">int</span> adapterFromUserSelection() <span class="keyword">const</span>;
+     <span class="type">int</span> currentAdapterIndex <span class="operator">=</span> <span class="number">0</span>;
+     Ui<span class="operator">::</span>Chat <span class="operator">*</span>ui;
+
+     ChatServer <span class="operator">*</span>server <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>ChatClient <span class="operator">*</span><span class="operator">&gt;</span> clients;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qbluetoothhostinfo.html" translate="no">QBluetoothHostInfo</a></span><span class="operator">&gt;</span> localAdapters;
+
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> localName;
+ };
+</pre>
+<p>First we construct the user interface</p>
+<pre class="cpp" translate="no">
+ ui<span class="operator">-</span><span class="operator">&gt;</span>setupUi(<span class="keyword">this</span>);
+
+ connect(ui<span class="operator">-</span><span class="operator">&gt;</span>quitButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Chat<span class="operator">::</span>accept);
+ connect(ui<span class="operator">-</span><span class="operator">&gt;</span>connectButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Chat<span class="operator">::</span>connectClicked);
+ connect(ui<span class="operator">-</span><span class="operator">&gt;</span>sendButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Chat<span class="operator">::</span>sendClicked);
+</pre>
+<p>We create an instance of the <code translate="no">ChatServer</code> and respond to its <code translate="no">clientConnected()</code>, <code translate="no">clientDiconnected()</code>, and <code translate="no">messageReceived()</code> signals.</p>
+<pre class="cpp" translate="no">
+ server <span class="operator">=</span> <span class="keyword">new</span> ChatServer(<span class="keyword">this</span>);
+ connect(server<span class="operator">,</span> <span class="type">QOverload</span><span class="operator">&lt;</span><span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span>ChatServer<span class="operator">::</span>clientConnected)<span class="operator">,</span>
+         <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Chat<span class="operator">::</span>clientConnected);
+ connect(server<span class="operator">,</span> <span class="type">QOverload</span><span class="operator">&lt;</span><span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span>ChatServer<span class="operator">::</span>clientDisconnected)<span class="operator">,</span>
+         <span class="keyword">this</span><span class="operator">,</span>  <span class="type">QOverload</span><span class="operator">&lt;</span><span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span>Chat<span class="operator">::</span>clientDisconnected));
+ connect(server<span class="operator">,</span> <span class="operator">&amp;</span>ChatServer<span class="operator">::</span>messageReceived<span class="operator">,</span>
+         <span class="keyword">this</span><span class="operator">,</span>  <span class="operator">&amp;</span>Chat<span class="operator">::</span>showMessage);
+ connect(<span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Chat<span class="operator">::</span>sendMessage<span class="operator">,</span> server<span class="operator">,</span> <span class="operator">&amp;</span>ChatServer<span class="operator">::</span>sendMessage);
+ server<span class="operator">-</span><span class="operator">&gt;</span>startServer();
+</pre>
+<p>In response to the <code translate="no">clientConnected()</code> and <code translate="no">clientDisconnected()</code> signals of the <code translate="no">ChatServer</code>, we display the typical &quot;X has joined chat.&quot; and &quot;Y has left.&quot; messages in the chat session.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> Chat<span class="operator">::</span>clientConnected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name)
+ {
+     ui<span class="operator">-</span><span class="operator">&gt;</span>chat<span class="operator">-</span><span class="operator">&gt;</span>insertPlainText(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 has joined chat.\n&quot;</span>)<span class="operator">.</span>arg(name));
+ }
+
+ <span class="type">void</span> Chat<span class="operator">::</span>clientDisconnected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name)
+ {
+     ui<span class="operator">-</span><span class="operator">&gt;</span>chat<span class="operator">-</span><span class="operator">&gt;</span>insertPlainText(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1 has left.\n&quot;</span>)<span class="operator">.</span>arg(name));
+ }
+</pre>
+<p>Incoming messages from clients connected to the <code translate="no">ChatServer</code> are handled in the <code translate="no">showMessage()</code> slot. The message text tagged with the remote device name is displayed in the chat session.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> Chat<span class="operator">::</span>showMessage(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>sender<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>message)
+ {
+     ui<span class="operator">-</span><span class="operator">&gt;</span>chat<span class="operator">-</span><span class="operator">&gt;</span>insertPlainText(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;%1: %2\n&quot;</span>)<span class="operator">.</span>arg(sender<span class="operator">,</span> message));
+     ui<span class="operator">-</span><span class="operator">&gt;</span>chat<span class="operator">-</span><span class="operator">&gt;</span>ensureCursorVisible();
+ }
+</pre>
+<p>In response to the connect button being clicked, the application starts service discovery and presents a list of discovered chat services on remote devices. A <code translate="no">ChatClient</code> for the service is selected by the user.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> Chat<span class="operator">::</span>connectClicked()
+ {
+     ui<span class="operator">-</span><span class="operator">&gt;</span>connectButton<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">false</span>);
+
+     <span class="comment">// scan for services</span>
+     <span class="keyword">const</span> <span class="type"><a href="qbluetoothaddress.html" translate="no">QBluetoothAddress</a></span> adapter <span class="operator">=</span> localAdapters<span class="operator">.</span>isEmpty() <span class="operator">?</span>
+                                            <span class="type"><a href="qbluetoothaddress.html" translate="no">QBluetoothAddress</a></span>() :
+                                            localAdapters<span class="operator">.</span>at(currentAdapterIndex)<span class="operator">.</span>address();
+
+     RemoteSelector remoteSelector(adapter);
+ <span class="preprocessor">#ifdef Q_OS_ANDROID</span>
+     <span class="comment">// QTBUG-61392</span>
+     Q_UNUSED(serviceUuid);
+     remoteSelector<span class="operator">.</span>startDiscovery(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span>(reverseUuid));
+ <span class="preprocessor">#else</span>
+     remoteSelector<span class="operator">.</span>startDiscovery(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span>(serviceUuid));
+ <span class="preprocessor">#endif</span>
+     <span class="keyword">if</span> (remoteSelector<span class="operator">.</span>exec() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtwidgets/qdialog.html" translate="no">QDialog</a></span><span class="operator">::</span>Accepted) {
+         <span class="type"><a href="qbluetoothserviceinfo.html" translate="no">QBluetoothServiceInfo</a></span> service <span class="operator">=</span> remoteSelector<span class="operator">.</span>service();
+
+         <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Connecting to service&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> service<span class="operator">.</span>serviceName()
+                  <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;on&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> service<span class="operator">.</span>device()<span class="operator">.</span>name();
+
+         <span class="comment">// Create client</span>
+         ChatClient <span class="operator">*</span>client <span class="operator">=</span> <span class="keyword">new</span> ChatClient(<span class="keyword">this</span>);
+
+         connect(client<span class="operator">,</span> <span class="operator">&amp;</span>ChatClient<span class="operator">::</span>messageReceived<span class="operator">,</span>
+                 <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Chat<span class="operator">::</span>showMessage);
+         connect(client<span class="operator">,</span> <span class="operator">&amp;</span>ChatClient<span class="operator">::</span>disconnected<span class="operator">,</span>
+                 <span class="keyword">this</span><span class="operator">,</span> <span class="type">QOverload</span><span class="operator">&lt;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span>Chat<span class="operator">::</span>clientDisconnected));
+         connect(client<span class="operator">,</span> <span class="type">QOverload</span><span class="operator">&lt;</span><span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span>ChatClient<span class="operator">::</span>connected)<span class="operator">,</span>
+                 <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Chat<span class="operator">::</span>connected);
+         connect(client<span class="operator">,</span> <span class="operator">&amp;</span>ChatClient<span class="operator">::</span>socketErrorOccurred<span class="operator">,</span>
+                 <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Chat<span class="operator">::</span>reactOnSocketError);
+         connect(<span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Chat<span class="operator">::</span>sendMessage<span class="operator">,</span> client<span class="operator">,</span> <span class="operator">&amp;</span>ChatClient<span class="operator">::</span>sendMessage);
+         client<span class="operator">-</span><span class="operator">&gt;</span>startClient(service);
+
+         clients<span class="operator">.</span>append(client);
+     }
+
+     ui<span class="operator">-</span><span class="operator">&gt;</span>connectButton<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">true</span>);
+ }
+</pre>
+<p>In reponse to the <code translate="no">connected()</code> signals from <code translate="no">ChatClient</code>, we display the &quot;Joined chat with X.&quot; message in the chat session.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> Chat<span class="operator">::</span>connected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name)
+ {
+     ui<span class="operator">-</span><span class="operator">&gt;</span>chat<span class="operator">-</span><span class="operator">&gt;</span>insertPlainText(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;Joined chat with %1.\n&quot;</span>)<span class="operator">.</span>arg(name));
+ }
+</pre>
+<p>Messages are sent to all remote devices via the <code translate="no">ChatServer</code> and <code translate="no">ChatClient</code> instances by emitting the <code translate="no">sendMessage()</code> signal.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> Chat<span class="operator">::</span>sendClicked()
+ {
+     ui<span class="operator">-</span><span class="operator">&gt;</span>sendButton<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">false</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>sendText<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">false</span>);
+
+     showMessage(localName<span class="operator">,</span> ui<span class="operator">-</span><span class="operator">&gt;</span>sendText<span class="operator">-</span><span class="operator">&gt;</span>text());
+     <span class="keyword">emit</span> sendMessage(ui<span class="operator">-</span><span class="operator">&gt;</span>sendText<span class="operator">-</span><span class="operator">&gt;</span>text());
+
+     ui<span class="operator">-</span><span class="operator">&gt;</span>sendText<span class="operator">-</span><span class="operator">&gt;</span>clear();
+
+     ui<span class="operator">-</span><span class="operator">&gt;</span>sendText<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">true</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>sendButton<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">true</span>);
+ <span class="preprocessor">#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)</span>
+     <span class="comment">// avoid keyboard automatically popping up again on mobile devices</span>
+     ui<span class="operator">-</span><span class="operator">&gt;</span>sendButton<span class="operator">-</span><span class="operator">&gt;</span>setFocus();
+ <span class="preprocessor">#else</span>
+     ui<span class="operator">-</span><span class="operator">&gt;</span>sendText<span class="operator">-</span><span class="operator">&gt;</span>setFocus();
+ <span class="preprocessor">#endif</span>
+ }
+</pre>
+<p>We need to clean up <code translate="no">ChatClient</code> instances when the remote device forces a disconnect.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> Chat<span class="operator">::</span>clientDisconnected()
+ {
+     ChatClient <span class="operator">*</span>client <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span>ChatClient <span class="operator">*</span><span class="operator">&gt;</span>(sender());
+     <span class="keyword">if</span> (client) {
+         clients<span class="operator">.</span>removeOne(client);
+         client<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+     }
+ }
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtconnectivity.git/tree/examples/bluetooth/btchat?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@btchat -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

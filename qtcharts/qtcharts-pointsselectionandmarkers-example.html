@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- examples-pointsselectionandmarkers.qdoc -->
+  <meta name="description" content="Shows how to use light markers and points selection for a series.">
+  <title>Using Light Markers and Points Selection | Qt Charts 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtcharts-index.html" translate="no">Qt Charts</a></li>
+<li>Using Light Markers and Points Selection</li>
+<li id="buildversion"><a href="qtcharts-index.html" translate="no">Qt Charts | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Using Light Markers and Points Selection</h1>
+<!-- $$$qtcharts-pointsselectionandmarkers-example.html-description -->
+<div class="descr" id="details">
+<div class="admonition note">
+<p><b>Note: </b>This is part of the <a href="qtcharts-chartsgallery-example.html" translate="no">Charts with Widgets Gallery</a> example.</p>
+</div>
+<p class="centerAlign"><img src="images/examples_pointsselectionandmarkers1.png" alt="" /></p><p class="centerAlign"><img src="images/examples_pointsselectionandmarkers2.png" alt="" /></p><p>We start with creating a series, filling it with the data, and setting up selection functionality. It's important not to set points visibility to <code translate="no">true</code>, because light markers functionality is an independent feature and setting both would result in undesired behavior.</p>
+<pre class="cpp" translate="no">
+ constexpr <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> marker_size <span class="operator">=</span> <span class="number">20.</span>;
+
+ <span class="keyword">auto</span> series <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsplineseries.html" translate="no">QSplineSeries</a></span>;
+ series<span class="operator">-</span><span class="operator">&gt;</span>append({<span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">0.</span><span class="operator">,</span> <span class="number">0.</span>)<span class="operator">,</span>
+                 <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">0.5</span><span class="operator">,</span> <span class="number">2.27</span>)<span class="operator">,</span>
+                 <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">1.5</span><span class="operator">,</span> <span class="number">2.2</span>)<span class="operator">,</span>
+                 <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">3.3</span><span class="operator">,</span> <span class="number">1.7</span>)<span class="operator">,</span>
+                 <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">4.23</span><span class="operator">,</span> <span class="number">3.1</span>)<span class="operator">,</span>
+                 <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">5.3</span><span class="operator">,</span> <span class="number">2.3</span>)<span class="operator">,</span>
+                 <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">6.47</span><span class="operator">,</span> <span class="number">4.1</span>)
+ });
+ series<span class="operator">-</span><span class="operator">&gt;</span>setMarkerSize(marker_size);
+ series<span class="operator">-</span><span class="operator">&gt;</span>setLightMarker(rectangle(marker_size<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red));
+ series<span class="operator">-</span><span class="operator">&gt;</span>setSelectedLightMarker(blueTriangle(marker_size));
+
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(series<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>clicked<span class="operator">,</span> series<span class="operator">,</span> <span class="operator">[</span><span class="operator">=</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span> <span class="operator">&amp;</span>point) {
+     <span class="type">int</span> index <span class="operator">=</span> series<span class="operator">-</span><span class="operator">&gt;</span>points()<span class="operator">.</span>indexOf(point);
+     <span class="keyword">if</span> (index <span class="operator">!</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>)
+         series<span class="operator">-</span><span class="operator">&gt;</span>toggleSelection({index});
+ });
+</pre>
+<p>Then we create the <code translate="no">QChart</code>, the <code translate="no">QChartview</code> and the control widget with its layout to arrange customization elements.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> chart <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qchart.html" translate="no">QChart</a></span>;
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addSeries(series);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>createDefaultAxes();
+ chart<span class="operator">-</span><span class="operator">&gt;</span>legend()<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>layout()<span class="operator">-</span><span class="operator">&gt;</span>setContentsMargins(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Select points with mouse click&quot;</span>);
+
+ <span class="keyword">auto</span> chartView <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qchartview.html" translate="no">QChartView</a></span>(chart<span class="operator">,</span> <span class="keyword">this</span>);
+ chartView<span class="operator">-</span><span class="operator">&gt;</span>setRenderHint(<span class="type"><a href="../qtgui/qpainter.html" translate="no">QPainter</a></span><span class="operator">::</span>Antialiasing);
+
+ <span class="keyword">auto</span> controlWidget <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>(<span class="keyword">this</span>);
+ <span class="keyword">auto</span> controlLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgridlayout.html" translate="no">QGridLayout</a></span>(controlWidget);
+</pre>
+<p>The next step is creating elements of customization.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> charPointCombobox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(controlWidget);
+ <span class="keyword">auto</span> charPointSelectedCombobox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(controlWidget);
+ <span class="keyword">auto</span> lineColorCombobox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(controlWidget);
+ <span class="keyword">auto</span> showUnselectedPointsCheckbox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(controlWidget);
+</pre>
+<p>We create the label for the marker selection combobox and add fill the combobox with the items. Also, we provide functionality to the combobox. Considering the implementation of the light markers functionality, we need to make sure if displaying of unselected points is checked. Switching the visibility of the light marker off is achieved by setting it to <code translate="no">&quot;empty&quot;</code> <code translate="no">QImage</code>. If the user unchecks the displaying of unselected points and changes the light marker image, unselected points have to remain invisible. If checking isn't performed, new <code translate="no">QImage</code> will be set for light marker and unselected points will be visible even though it has been switched off.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> charPoint <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Char point: &quot;</span>)<span class="operator">,</span> controlWidget);
+ charPointCombobox<span class="operator">-</span><span class="operator">&gt;</span>addItems({tr(<span class="string">&quot;Red rectangle&quot;</span>)<span class="operator">,</span>
+                              tr(<span class="string">&quot;Green triangle&quot;</span>)<span class="operator">,</span>
+                              tr(<span class="string">&quot;Orange circle&quot;</span>)
+ });
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(charPointCombobox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> series<span class="operator">,</span> <span class="operator">[</span><span class="operator">=</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type">int</span> index) {
+     <span class="keyword">if</span> (showUnselectedPointsCheckbox<span class="operator">-</span><span class="operator">&gt;</span>isChecked())
+         series<span class="operator">-</span><span class="operator">&gt;</span>setLightMarker(getPointRepresentation(PointType(index)<span class="operator">,</span> marker_size));
+ });
+</pre>
+<p>Almost the same procedure applies to the selected point light marker and line color. The only difference is that there's no need to check visibility of unselected points as it doesn't affect the functionality.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> charPointSelected <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Char point selected: &quot;</span>)<span class="operator">,</span> controlWidget);
+ charPointSelectedCombobox<span class="operator">-</span><span class="operator">&gt;</span>addItems({tr(<span class="string">&quot;Blue triangle&quot;</span>)<span class="operator">,</span>
+                                      tr(<span class="string">&quot;Yellow rectangle&quot;</span>)<span class="operator">,</span>
+                                      tr(<span class="string">&quot;Lavender circle&quot;</span>)
+ });
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(charPointSelectedCombobox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> series<span class="operator">,</span> <span class="operator">[</span><span class="operator">=</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type">int</span> index) {
+     series<span class="operator">-</span><span class="operator">&gt;</span>setSelectedLightMarker(getSelectedPointRepresentation(SelectedPointType(index)<span class="operator">,</span> marker_size));
+ });
+
+ <span class="keyword">auto</span> lineColorLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Line color: &quot;</span>)<span class="operator">,</span> controlWidget);
+ lineColorCombobox<span class="operator">-</span><span class="operator">&gt;</span>addItems({tr(<span class="string">&quot;Blue&quot;</span>)<span class="operator">,</span>
+                              tr(<span class="string">&quot;Black&quot;</span>)<span class="operator">,</span>
+                              tr(<span class="string">&quot;Mint&quot;</span>)
+ });
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(lineColorCombobox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> series<span class="operator">,</span> <span class="operator">[</span><span class="operator">=</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type">int</span> index) {
+     series<span class="operator">-</span><span class="operator">&gt;</span>setColor(makeLineColor(LineColor(index)));
+ });
+</pre>
+<p>A small difference comes with changing visibility of unselected points. As it was mentioned before, making light markers invisible is achieved by setting them to &quot;empty&quot; <code translate="no">QImage</code>. That is why, depending on checkbox state, selected point light marker is set to &quot;empty&quot; <code translate="no">QImage</code> or to the light marker extracted from the current index of the corresponding combobox.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> showUnselectedPointsLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Display unselected points: &quot;</span>)<span class="operator">,</span> controlWidget);
+ showUnselectedPointsCheckbox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(showUnselectedPointsCheckbox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> series<span class="operator">,</span> <span class="operator">[</span><span class="operator">=</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type">int</span> state) {
+     <span class="keyword">if</span> (state)
+         series<span class="operator">-</span><span class="operator">&gt;</span>setLightMarker(getPointRepresentation(PointType(charPointCombobox<span class="operator">-</span><span class="operator">&gt;</span>currentIndex())<span class="operator">,</span> marker_size));
+     <span class="keyword">else</span>
+         series<span class="operator">-</span><span class="operator">&gt;</span>setLightMarker(<span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span>());
+ });
+</pre>
+<p>The final part is to arrange the elements, add all the widgets to the main widget, and set the main window size.</p>
+<pre class="cpp" translate="no">
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(charPoint<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(charPointCombobox<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span>);
+
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(charPointSelected<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span>);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(charPointSelectedCombobox<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span>);
+
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(lineColorLabel<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">0</span>);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(lineColorCombobox<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">1</span>);
+
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(showUnselectedPointsLabel<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">0</span>);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(showUnselectedPointsCheckbox<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">2</span>);
+
+ m_mainWidget <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>(<span class="keyword">this</span>);
+ <span class="keyword">auto</span> mainLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qhboxlayout.html" translate="no">QHBoxLayout</a></span>(m_mainWidget);
+ mainLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(chartView);
+ mainLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(controlWidget);
+</pre>
+</div>
+<!-- @@@qtcharts-pointsselectionandmarkers-example.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

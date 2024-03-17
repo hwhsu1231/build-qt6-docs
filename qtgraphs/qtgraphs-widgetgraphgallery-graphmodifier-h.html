@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef GRAPHMODIFIER_H</span>
+ <span class="preprocessor">#define GRAPHMODIFIER_H</span>
+
+ <span class="preprocessor">#include &lt;QtGraphs/q3dbars.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qbardataproxy.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qabstract3dseries.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/qpropertyanimation.h&gt;</span>
+
+ <span class="keyword">class</span> RainfallData;
+
+ <span class="keyword">class</span> GraphModifier : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> GraphModifier(<span class="type"><a href="q3dbars.html" translate="no">Q3DBars</a></span> <span class="operator">*</span>bargraph<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent);
+     <span class="operator">~</span>GraphModifier();
+
+     <span class="type">void</span> resetTemperatureData();
+     <span class="type">void</span> changePresetCamera();
+     <span class="type">void</span> changeLabelBackground();
+     <span class="type">void</span> changeFont(<span class="keyword">const</span> <span class="type"><a href="../qtgui/qfont.html" translate="no">QFont</a></span> <span class="operator">&amp;</span>font);
+     <span class="type">void</span> changeFontSize(<span class="type">int</span> fontsize);
+     <span class="type">void</span> rotateX(<span class="type">int</span> rotation);
+     <span class="type">void</span> rotateY(<span class="type">int</span> rotation);
+     <span class="type">void</span> setBackgroundEnabled(<span class="type">int</span> enabled);
+     <span class="type">void</span> setGridEnabled(<span class="type">int</span> enabled);
+     <span class="type">void</span> setSmoothBars(<span class="type">int</span> smooth);
+     <span class="type">void</span> setSeriesVisibility(<span class="type">int</span> enabled);
+     <span class="type">void</span> setReverseValueAxis(<span class="type">int</span> enabled);
+     <span class="type">void</span> setReflection(<span class="type">bool</span> enabled);
+     <span class="type">void</span> changeDataMode(<span class="type">bool</span> customData);
+
+ <span class="keyword">public</span> Q_SLOTS:
+     <span class="type">void</span> changeRange(<span class="type">int</span> range);
+     <span class="type">void</span> changeStyle(<span class="type">int</span> style);
+     <span class="type">void</span> changeSelectionMode(<span class="type">int</span> selectionMode);
+     <span class="type">void</span> changeTheme(<span class="type">int</span> theme);
+     <span class="type">void</span> changeShadowQuality(<span class="type">int</span> quality);
+     <span class="type">void</span> shadowQualityUpdatedByVisual(QAbstract3DGraph<span class="operator">::</span>ShadowQuality shadowQuality);
+     <span class="type">void</span> changeLabelRotation(<span class="type">int</span> rotation);
+     <span class="type">void</span> setAxisTitleVisibility(<span class="type">bool</span> enabled);
+     <span class="type">void</span> setAxisTitleFixed(<span class="type">bool</span> enabled);
+     <span class="type">void</span> zoomToSelectedBar();
+     <span class="type">void</span> setDataModeToWeather(<span class="type">bool</span> enabled);
+     <span class="type">void</span> setDataModeToCustom(<span class="type">bool</span> enabled);
+
+ Q_SIGNALS:
+     <span class="type">void</span> shadowQualityChanged(<span class="type">int</span> quality);
+     <span class="type">void</span> backgroundEnabledChanged(<span class="type">bool</span> enabled);
+     <span class="type">void</span> gridEnabledChanged(<span class="type">bool</span> enabled);
+     <span class="type">void</span> fontChanged(<span class="keyword">const</span> <span class="type"><a href="../qtgui/qfont.html" translate="no">QFont</a></span> <span class="operator">&amp;</span>font);
+     <span class="type">void</span> fontSizeChanged(<span class="type">int</span> size);
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="q3dbars.html" translate="no">Q3DBars</a></span> <span class="operator">*</span>m_graph <span class="operator">=</span> nullptr;
+     <span class="type">float</span> m_xRotation <span class="operator">=</span> <span class="number">0.f</span>;
+     <span class="type">float</span> m_yRotation <span class="operator">=</span> <span class="number">0.f</span>;
+     <span class="type">int</span> m_fontSize <span class="operator">=</span> <span class="number">30</span>;
+     <span class="type">int</span> m_segments <span class="operator">=</span> <span class="number">4</span>;
+     <span class="type">int</span> m_subSegments <span class="operator">=</span> <span class="number">3</span>;
+     <span class="type">float</span> m_minval <span class="operator">=</span> <span class="operator">-</span><span class="number">20.f</span>;
+     <span class="type">float</span> m_maxval <span class="operator">=</span> <span class="number">20.f</span>;
+     <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> m_months <span class="operator">=</span> {};
+     <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> m_years <span class="operator">=</span> {};
+     QValue3DAxis <span class="operator">*</span>m_temperatureAxis <span class="operator">=</span> nullptr;
+     QCategory3DAxis <span class="operator">*</span>m_yearAxis <span class="operator">=</span> nullptr;
+     QCategory3DAxis <span class="operator">*</span>m_monthAxis <span class="operator">=</span> nullptr;
+     QBar3DSeries <span class="operator">*</span>m_primarySeries <span class="operator">=</span> nullptr;
+     QBar3DSeries <span class="operator">*</span>m_secondarySeries <span class="operator">=</span> nullptr;
+     QAbstract3DSeries<span class="operator">::</span>Mesh m_barMesh <span class="operator">=</span> QAbstract3DSeries<span class="operator">::</span>MeshBevelBar;
+     <span class="type">bool</span> m_smooth <span class="operator">=</span> <span class="keyword">false</span>;
+     <span class="type"><a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a></span> m_animationCameraX <span class="operator">=</span> {};
+     <span class="type"><a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a></span> m_animationCameraY <span class="operator">=</span> {};
+     <span class="type"><a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a></span> m_animationCameraZoom <span class="operator">=</span> {};
+     <span class="type"><a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a></span> m_animationCameraTarget <span class="operator">=</span> {};
+     <span class="type">float</span> m_defaultAngleX <span class="operator">=</span> <span class="number">0.f</span>;
+     <span class="type">float</span> m_defaultAngleY <span class="operator">=</span> <span class="number">0.f</span>;
+     <span class="type">float</span> m_defaultZoom <span class="operator">=</span> <span class="number">0.f</span>;
+     QVector3D m_defaultTarget <span class="operator">=</span> {};
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> m_celsiusString;
+     RainfallData <span class="operator">*</span>m_customData <span class="operator">=</span> nullptr;
+ };
+
+ <span class="preprocessor">#endif</span>
+</pre>

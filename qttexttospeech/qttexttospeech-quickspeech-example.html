@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- quickspeech.qdoc -->
+  <meta name="description" content="The Quick Speech example reads out user-provided text.">
+  <title>Quick Speech Example | Qt TextToSpeech 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qttexttospeech-index.html" translate="no">Qt TextToSpeech</a></li>
+<li><a href="qttexttospeech-examples.html" translate="no">Qt TextToSpeech Examples</a></li>
+<li>Quick Speech Example</li>
+<li id="buildversion"><a href="qttexttospeech-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#initializing-a-texttospeech">Initializing a TextToSpeech</a></li>
+<li class="level1"><a href="#getting-the-status">Getting the status</a></li>
+<li class="level1"><a href="#highlighting-words-as-they-are-spoken">Highlighting words as they are spoken</a></li>
+<li class="level1"><a href="#controlling-speech">Controlling speech</a></li>
+<li class="level2"><a href="#the-speak-button">The speak button</a></li>
+<li class="level1"><a href="#the-pause-resume-and-stop-buttons">The pause, resume, and stop buttons</a></li>
+<li class="level1"><a href="#selecting-text-to-speech-options">Selecting text to speech options</a></li>
+<li class="level2"><a href="#selecting-engine-locale-and-voice">Selecting engine, locale, and voice</a></li>
+<li class="level2"><a href="#selecting-volume-pitch-and-rate">Selecting volume, pitch, and rate</a></li>
+<li class="level1"><a href="#updating-available-options">Updating available options</a></li>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Quick Speech Example</h1>
+<!-- $$$quickspeech-brief -->
+<p>The Quick Speech example reads out user-provided text.</p>
+<!-- @@@quickspeech -->
+<!-- $$$quickspeech-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/quickspeech-example.png" alt="" /></p><p>The <i>Quick Speech</i> example demonstrates how the <a href="qml-qttexttospeech-texttospeech.html" translate="no">TextToSpeech</a> type can be used in a <a href="../qtquick/qtquick-index.html" translate="no">Qt Quick</a> application to read out text and to control the speech.</p>
+<p>The example uses <a href="../qtquickcontrols/qtquickcontrols-index.html" translate="no">Qt Quick Controls</a> to provide controls for the speech's pitch, volume, and rate. It also lets the user select an engine, a language, and a voice.</p>
+<h4 id="initializing-a-texttospeech">Initializing a TextToSpeech</h4>
+<p>First, we initialize the text to speech object <code translate="no">tts</code>:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="qml-qttexttospeech-texttospeech.html" translate="no">TextToSpeech</a></span> {
+         <span class="name">id</span>: <span class="name">tts</span>
+         <span class="name">volume</span>: <span class="name">volumeSlider</span>.<span class="name">value</span>
+         <span class="name">pitch</span>: <span class="name">pitchSlider</span>.<span class="name">value</span>
+         <span class="name">rate</span>: <span class="name">rateSlider</span>.<span class="name">value</span>
+</pre>
+<h4 id="getting-the-status">Getting the status</h4>
+<p class="centerAlign"><img src="images/status.gif" alt="" /></p><p>Switch cases are used to update the Label <code translate="no">statusLabel</code> in the footer.</p>
+<pre class="cpp" translate="no">
+         <span class="name">onStateChanged</span>: (<span class="keyword"></span>state) =&gt; {
+             <span class="keyword">switch</span> (<span class="name">state</span>) {
+                 <span class="keyword">case</span> <span class="name">TextToSpeech</span>.<span class="name">Ready</span>:
+                     <span class="name">statusLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;Ready&quot;</span>)
+                     <span class="keyword">break</span>
+                 <span class="keyword">case</span> <span class="name">TextToSpeech</span>.<span class="name">Speaking</span>:
+                     <span class="name">statusLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;Speaking&quot;</span>)
+                     <span class="keyword">break</span>
+                 <span class="keyword">case</span> <span class="name">TextToSpeech</span>.<span class="name">Paused</span>:
+                     <span class="name">statusLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;Paused...&quot;</span>)
+                     <span class="keyword">break</span>
+                 <span class="keyword">case</span> <span class="name">TextToSpeech</span>.<span class="name">Error</span>:
+                     <span class="name">statusLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;Error!&quot;</span>)
+                     <span class="keyword">break</span>
+             }
+</pre>
+<h4 id="highlighting-words-as-they-are-spoken">Highlighting words as they are spoken</h4>
+<p>The <a href="../qtquickcontrols/qml-qtquick-controls-textarea.html" translate="no">TextArea</a> <code translate="no">input</code> is used to get the text to input and the <a href="qml-qttexttospeech-texttospeech.html#sayingWord-signal" translate="no">onSayingWord</a> signal as the trigger and also to know the position to highlight words as they are spoken.</p>
+<pre class="cpp" translate="no">
+         <span class="name">onSayingWord</span>: (<span class="keyword"></span>word, id, start, length)=&gt; {
+             <span class="name">input</span>.<span class="name">select</span>(<span class="name">start</span>, <span class="name">start</span> <span class="operator">+</span> <span class="name">length</span>)
+</pre>
+<p>The <a href="../qtquickcontrols/qml-qtquick-controls-textarea.html" translate="no">TextArea</a> <code translate="no">input</code> is declared here:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">anchors</span>.margins: <span class="number">8</span>
+         <span class="name">id</span>: <span class="name">inputForm</span>
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textarea.html" translate="no">TextArea</a></span> {
+             <span class="name">id</span>: <span class="name">input</span>
+             <span class="name">wrapMode</span>: <span class="name">TextEdit</span>.<span class="name">WordWrap</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Hello, world!&quot;</span>)
+             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             <span class="name">Layout</span>.minimumHeight: <span class="name">implicitHeight</span>
+             <span class="name">font</span>.pointSize: <span class="number">24</span>
+         }
+</pre>
+<h4 id="controlling-speech">Controlling speech</h4>
+<p><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a> types are arranged with a <a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a> and configured to control the <a href="qml-qttexttospeech-texttospeech.html" translate="no">TextToSpeech</a> <code translate="no">tts</code>.</p>
+<h5 id="the-speak-button">The speak button</h5>
+<p>A <a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a> is created labeled &quot;Speak&quot;. It is enabled if <code translate="no">tts</code>'s state property is either <a href="qtexttospeech.html#State-enum" translate="no">Paused</a> or <a href="qtexttospeech.html#State-enum" translate="no">Ready</a>.</p>
+<pre class="cpp" translate="no">
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Speak&quot;</span>)
+                 <span class="name">enabled</span>: [<span class="name">TextToSpeech</span>.<span class="name">Paused</span>, <span class="name">TextToSpeech</span>.<span class="name">Ready</span>].<span class="name">includes</span>(<span class="name">tts</span>.<span class="name">state</span>)
+</pre>
+<p>When the button is clicked, the available voices on the target devices are retrieved, and <code translate="no">tts.voice</code> is set to the currently selected voice of <code translate="no">voicesComboBox</code>. Then <a href="qml-qttexttospeech-texttospeech.html#say-method" translate="no">TextToSpeech::say</a>() is called and is passed the text in the <code translate="no">inputbox</code>.</p>
+<pre class="cpp" translate="no">
+                 <span class="name">onClicked</span>: {
+ <span class="comment">//! [say0]</span>
+                     let voices = <span class="name">tts</span>.<span class="name">availableVoices</span>()
+                     <span class="name">tts</span>.<span class="name">voice</span> <span class="operator">=</span> <span class="name">voices</span>[<span class="name">voicesComboBox</span>.<span class="name">currentIndex</span>]
+ <span class="comment">//! [say1]</span>
+                     <span class="name">tts</span>.<span class="name">say</span>(<span class="name">input</span>.<span class="name">text</span>)
+                 }
+</pre>
+<h4 id="the-pause-resume-and-stop-buttons">The pause, resume, and stop buttons</h4>
+<p>These buttons are similar in implementation to the <code translate="no">Speak</code> button:</p>
+<pre class="cpp" translate="no">
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Pause&quot;</span>)
+                 <span class="name">enabled</span>: <span class="name">tts</span>.<span class="name">state</span> <span class="operator">==</span> <span class="name">TextToSpeech</span>.<span class="name">Speaking</span>
+                 <span class="name">onClicked</span>: <span class="name">tts</span>.<span class="name">pause</span>()
+                 <span class="name">visible</span>: <span class="name">tts</span>.<span class="name">engineCapabilities</span> <span class="operator">&amp;</span> <span class="name">TextToSpeech</span>.<span class="name">Capabilities</span>.<span class="name">PauseResume</span>
+             }
+ <span class="comment">//! [pause]</span>
+ <span class="comment">//! [resume]</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Resume&quot;</span>)
+                 <span class="name">enabled</span>: <span class="name">tts</span>.<span class="name">state</span> <span class="operator">==</span> <span class="name">TextToSpeech</span>.<span class="name">Paused</span>
+                 <span class="name">onClicked</span>: <span class="name">tts</span>.<span class="name">resume</span>()
+                 <span class="name">visible</span>: <span class="name">tts</span>.<span class="name">engineCapabilities</span> <span class="operator">&amp;</span> <span class="name">TextToSpeech</span>.<span class="name">Capabilities</span>.<span class="name">PauseResume</span>
+             }
+ <span class="comment">//! [resume]</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Stop&quot;</span>)
+                 <span class="name">enabled</span>: [<span class="name">TextToSpeech</span>.<span class="name">Speaking</span>, <span class="name">TextToSpeech</span>.<span class="name">Paused</span>].<span class="name">includes</span>(<span class="name">tts</span>.<span class="name">state</span>)
+                 <span class="name">onClicked</span>: <span class="name">tts</span>.<span class="name">stop</span>()
+             }
+         }
+</pre>
+<h4 id="selecting-text-to-speech-options">Selecting text to speech options</h4>
+<p>A <a href="../qtquick/qml-qtquick-layouts-gridlayout.html" translate="no">GridLayout</a> is used to arrange the controls and labels for the selection of engine, locale, voice, volume, pitch, and rate options for text to speech synthesis.</p>
+<h5 id="selecting-engine-locale-and-voice">Selecting engine, locale, and voice</h5>
+<p>A group of <a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a> components are used for selecting these parameters.</p>
+<p>For the engine selection <a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a>, <code translate="no">tts.availableEngines()</code> is used as the model.</p>
+<p>The <a href="../qtquickcontrols/qml-qtquick-controls-combobox.html#activated-signal" translate="no">onActivated</a> triggers assigning tts.engine the current text at the ComboBoxes current index.</p>
+<pre class="cpp" translate="no">
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Engine:&quot;</span>)
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                 <span class="name">id</span>: <span class="name">enginesComboBox</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                 <span class="name">model</span>: <span class="name">tts</span>.<span class="name">availableEngines</span>()
+                 <span class="name">onActivated</span>: {
+                     <span class="name">tts</span>.<span class="name">engine</span> <span class="operator">=</span> <span class="name">textAt</span>(<span class="name">currentIndex</span>)
+                     <span class="name">updateLocales</span>()
+                     <span class="name">updateVoices</span>()
+</pre>
+<p>The last two lines in the above code snippet show that the available locales and voices are updated at this point as well, as they are dependent on the selected engine. Those functions are covered in a <a href="qttexttospeech-quickspeech-example.html#updating-available-options" translate="no">following section</a>.</p>
+<p>The <code translate="no">localesComboBox</code> is implemented the same way as <code translate="no">engineComboBox</code>, but without updating the available engines.</p>
+<pre class="cpp" translate="no">
+                 }
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Locale:&quot;</span>)
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                 <span class="name">id</span>: <span class="name">localesComboBox</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                 <span class="name">onActivated</span>: {
+                     let locales = <span class="name">tts</span>.<span class="name">availableLocales</span>()
+                     <span class="name">tts</span>.<span class="name">locale</span> <span class="operator">=</span> <span class="name">locales</span>[<span class="name">currentIndex</span>]
+                     <span class="name">updateVoices</span>()
+                 }
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Voice:&quot;</span>)
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                 <span class="name">id</span>: <span class="name">voicesComboBox</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+</pre>
+<h5 id="selecting-volume-pitch-and-rate">Selecting volume, pitch, and rate</h5>
+<p>These controls are implemented with <a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Sliders</a> as follows:</p>
+<pre class="cpp" translate="no">
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Volume:&quot;</span>)
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">volumeSlider</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1.0</span>
+                 <span class="name">stepSize</span>: <span class="number">0.2</span>
+                 <span class="name">value</span>: <span class="number">0.8</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Pitch:&quot;</span>)
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">pitchSlider</span>
+                 <span class="name">from</span>: -<span class="number">1.0</span>
+                 <span class="name">to</span>: <span class="number">1.0</span>
+                 <span class="name">stepSize</span>: <span class="number">0.5</span>
+                 <span class="name">value</span>: <span class="number">0</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Rate:&quot;</span>)
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">rateSlider</span>
+                 <span class="name">from</span>: -<span class="number">1.0</span>
+                 <span class="name">to</span>: <span class="number">1.0</span>
+                 <span class="name">stepSize</span>: <span class="number">0.5</span>
+                 <span class="name">value</span>: <span class="number">0</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+         }
+     }
+</pre>
+<h4 id="updating-available-options">Updating available options</h4>
+<p>By using the <code translate="no">Component.onCompleted</code> signal, the following is done once the root <a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a> has been instantiated.</p>
+<ul>
+<li>The <code translate="no">enginesComboBox</code> index is set to the currently set engine of <code translate="no">tts</code>.</li>
+<li>The available locales and voices are updated.</li>
+<li>The current state of <code translate="no">tts</code> is signaled.</li>
+</ul>
+<pre class="cpp" translate="no">
+     <span class="name">Component</span>.onCompleted: {
+         <span class="name">enginesComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">tts</span>.<span class="name">availableEngines</span>().<span class="name">indexOf</span>(<span class="name">tts</span>.<span class="name">engine</span>)
+         <span class="name">updateLocales</span>()
+         <span class="name">updateVoices</span>()
+
+         <span class="name">tts</span>.<span class="name">onStateChanged</span>(<span class="name">tts</span>.<span class="name">state</span>)
+</pre>
+<p>Used throughout the application, the <code translate="no">updateLocales()</code> and <code translate="no">updateVoice()</code> functions are implemented as follows:</p>
+<pre class="cpp" translate="no">
+     }
+
+     <span class="keyword">function </span><span class="name">updateLocales</span>() {
+         let allLocales = <span class="name">tts</span>.<span class="name">availableLocales</span>().<span class="name">map</span>((<span class="keyword"></span>locale) =&gt; <span class="keyword"></span><span class="name">locale</span>.<span class="name">nativeLanguageName</span>)
+         let currentLocaleIndex = <span class="name">allLocales</span>.<span class="name">indexOf</span>(<span class="name">tts</span>.<span class="name">locale</span>.<span class="name">nativeLanguageName</span>)
+         <span class="name">localesComboBox</span>.<span class="name">model</span> <span class="operator">=</span> <span class="name">allLocales</span>
+         <span class="name">localesComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">currentLocaleIndex</span>
+     }
+
+     <span class="keyword">function </span><span class="name">updateVoices</span>() {
+         <span class="name">voicesComboBox</span>.<span class="name">model</span> <span class="operator">=</span> <span class="name">tts</span>.<span class="name">availableVoices</span>().<span class="name">map</span>((<span class="keyword"></span>voice) =&gt; <span class="keyword"></span><span class="name">voice</span>.<span class="name">name</span>)
+         let indexOfVoice = <span class="name">tts</span>.<span class="name">availableVoices</span>().<span class="name">indexOf</span>(<span class="name">tts</span>.<span class="name">voice</span>)
+         <span class="name">voicesComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">indexOfVoice</span>
+</pre>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtspeech.git/tree/examples/speech/quickspeech?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@quickspeech -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

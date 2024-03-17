@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-particles3d.qdoc -->
+  <meta name="description" content="Demonstrates how to use the Qt Quick 3D Particles3D module.">
+  <title>Qt Quick 3D - Particles 3D Testbed Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Particles 3D Testbed Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Particles 3D Testbed Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Particles3D
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">mainWindow</span>
+
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">clearColor</span>: <span class="string">&quot;#202020&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+             <span class="name">antialiasingMode</span>: <span class="name">AppSettings</span>.<span class="name">antialiasingMode</span>
+             <span class="name">antialiasingQuality</span>: <span class="name">AppSettings</span>.<span class="name">antialiasingQuality</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">id</span>: <span class="name">camera</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">100</span>, <span class="number">600</span>)
+         }
+
+         <span class="type"><a href="qml-qtquick3d-pointlight.html" translate="no">PointLight</a></span> {
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">400</span>, <span class="number">100</span>)
+             <span class="name">brightness</span>: <span class="number">10</span>
+             <span class="name">ambientColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.3</span>, <span class="number">0.3</span>, <span class="number">0.3</span>, <span class="number">1.0</span>)
+         }
+
+         <span class="comment">// Model shared between particles</span>
+         <span class="type"><a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a></span> {
+             <span class="name">id</span>: <span class="name">particleComponent</span>
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">source</span>: <span class="string">&quot;#Cube&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.4</span>, <span class="number">0.4</span>, <span class="number">0.4</span>)
+                 <span class="name">materials</span>: <span class="name">DefaultMaterial</span> {
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-particles3d-particlesystem3d.html" translate="no">ParticleSystem3D</a></span> {
+             <span class="name">id</span>: <span class="name">psystem</span>
+
+             <span class="comment">// Particles</span>
+             <span class="type"><a href="qml-qtquick3d-particles3d-modelparticle3d.html" translate="no">ModelParticle3D</a></span> {
+                 <span class="name">id</span>: <span class="name">particleNone</span>
+                 <span class="name">delegate</span>: <span class="name">particleComponent</span>
+                 <span class="name">maxAmount</span>: <span class="number">40</span>
+                 <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+                 <span class="name">fadeInEffect</span>: <span class="name">ModelParticle3D</span>.<span class="name">FadeNone</span>
+                 <span class="name">fadeOutEffect</span>: <span class="name">ModelParticle3D</span>.<span class="name">FadeNone</span>
+                 <span class="name">hasTransparency</span>: <span class="number">false</span>
+             }
+             <span class="type"><a href="qml-qtquick3d-particles3d-modelparticle3d.html" translate="no">ModelParticle3D</a></span> {
+                 <span class="name">id</span>: <span class="name">particleOpacity</span>
+                 <span class="name">delegate</span>: <span class="name">particleComponent</span>
+                 <span class="name">maxAmount</span>: <span class="number">40</span>
+                 <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+                 <span class="name">fadeInEffect</span>: <span class="name">ModelParticle3D</span>.<span class="name">FadeOpacity</span>
+                 <span class="name">fadeOutEffect</span>: <span class="name">ModelParticle3D</span>.<span class="name">FadeOpacity</span>
+                 <span class="name">fadeInDuration</span>: <span class="name">sliderFadeInDuration</span>.<span class="name">sliderValue</span>
+                 <span class="name">fadeOutDuration</span>: <span class="name">sliderFadeOutDuration</span>.<span class="name">sliderValue</span>
+             }
+             <span class="type"><a href="qml-qtquick3d-particles3d-modelparticle3d.html" translate="no">ModelParticle3D</a></span> {
+                 <span class="name">id</span>: <span class="name">particleScale</span>
+                 <span class="name">delegate</span>: <span class="name">particleComponent</span>
+                 <span class="name">maxAmount</span>: <span class="number">40</span>
+                 <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+                 <span class="name">fadeInEffect</span>: <span class="name">ModelParticle3D</span>.<span class="name">FadeScale</span>
+                 <span class="name">fadeOutEffect</span>: <span class="name">ModelParticle3D</span>.<span class="name">FadeScale</span>
+                 <span class="name">fadeInDuration</span>: <span class="name">sliderFadeInDuration</span>.<span class="name">sliderValue</span>
+                 <span class="name">fadeOutDuration</span>: <span class="name">sliderFadeOutDuration</span>.<span class="name">sliderValue</span>
+             }
+             <span class="type"><a href="qml-qtquick3d-particles3d-modelparticle3d.html" translate="no">ModelParticle3D</a></span> {
+                 <span class="name">id</span>: <span class="name">particleScaleOpacity</span>
+                 <span class="name">delegate</span>: <span class="name">particleComponent</span>
+                 <span class="name">maxAmount</span>: <span class="number">40</span>
+                 <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+                 <span class="name">fadeInEffect</span>: <span class="name">ModelParticle3D</span>.<span class="name">FadeScale</span>
+                 <span class="name">fadeOutEffect</span>: <span class="name">ModelParticle3D</span>.<span class="name">FadeOpacity</span>
+                 <span class="name">fadeInDuration</span>: <span class="name">sliderFadeInDuration</span>.<span class="name">sliderValue</span>
+                 <span class="name">fadeOutDuration</span>: <span class="name">sliderFadeOutDuration</span>.<span class="name">sliderValue</span>
+             }
+
+             <span class="comment">// Emitters, one per particle</span>
+             <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                 <span class="name">particle</span>: <span class="name">particleNone</span>
+                 <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">300</span>, <span class="number">200</span>, <span class="number">0</span>)
+                 <span class="name">particleScaleVariation</span>: <span class="number">0.5</span>
+                 <span class="name">particleRotationVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">180</span>, <span class="number">180</span>, <span class="number">180</span>)
+                 <span class="name">particleRotationVelocityVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">200</span>);
+                 <span class="name">velocity</span>: <span class="name">VectorDirection3D</span> {
+                     <span class="name">direction</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">200</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 }
+                 <span class="name">emitRate</span>: <span class="number">10</span>
+                 <span class="name">lifeSpan</span>: <span class="number">4000</span>
+                 <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                     <span class="name">x</span>: <span class="number">80</span>
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+                         <span class="name">text</span>: <span class="string">&quot;NONE&quot;</span>
+                         <span class="name">font</span>.pointSize: <span class="name">AppSettings</span>.<span class="name">fontSizeLarge</span>
+                         <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+                     }
+                 }
+             }
+             <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                 <span class="name">particle</span>: <span class="name">particleOpacity</span>
+                 <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">300</span>, <span class="number">100</span>, <span class="number">0</span>)
+                 <span class="name">particleScaleVariation</span>: <span class="number">0.5</span>
+                 <span class="name">particleRotationVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">180</span>, <span class="number">180</span>, <span class="number">180</span>)
+                 <span class="name">particleRotationVelocityVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">200</span>);
+                 <span class="name">velocity</span>: <span class="name">VectorDirection3D</span> {
+                     <span class="name">direction</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">200</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 }
+                 <span class="name">emitRate</span>: <span class="number">10</span>
+                 <span class="name">lifeSpan</span>: <span class="number">4000</span>
+                 <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                     <span class="name">x</span>: <span class="number">80</span>
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+                         <span class="name">text</span>: <span class="string">&quot;OPACITY&quot;</span>
+                         <span class="name">font</span>.pointSize: <span class="name">AppSettings</span>.<span class="name">fontSizeLarge</span>
+                         <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+                     }
+                 }
+             }
+             <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                 <span class="name">particle</span>: <span class="name">particleScale</span>
+                 <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">300</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">particleScaleVariation</span>: <span class="number">0.5</span>
+                 <span class="name">particleRotationVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">180</span>, <span class="number">180</span>, <span class="number">180</span>)
+                 <span class="name">particleRotationVelocityVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">200</span>);
+                 <span class="name">velocity</span>: <span class="name">VectorDirection3D</span> {
+                     <span class="name">direction</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">200</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 }
+                 <span class="name">emitRate</span>: <span class="number">10</span>
+                 <span class="name">lifeSpan</span>: <span class="number">4000</span>
+                 <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                     <span class="name">x</span>: <span class="number">80</span>
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+                         <span class="name">text</span>: <span class="string">&quot;SCALE&quot;</span>
+                         <span class="name">font</span>.pointSize: <span class="name">AppSettings</span>.<span class="name">fontSizeLarge</span>
+                         <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+                     }
+                 }
+             }
+             <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                 <span class="name">particle</span>: <span class="name">particleScaleOpacity</span>
+                 <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">300</span>, -<span class="number">100</span>, <span class="number">0</span>)
+                 <span class="name">particleScaleVariation</span>: <span class="number">0.5</span>
+                 <span class="name">particleRotationVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">180</span>, <span class="number">180</span>, <span class="number">180</span>)
+                 <span class="name">particleRotationVelocityVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">200</span>);
+                 <span class="name">velocity</span>: <span class="name">VectorDirection3D</span> {
+                     <span class="name">direction</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">200</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 }
+                 <span class="name">emitRate</span>: <span class="number">10</span>
+                 <span class="name">lifeSpan</span>: <span class="number">4000</span>
+                 <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                     <span class="name">x</span>: <span class="number">80</span>
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+                         <span class="name">text</span>: <span class="string">&quot;SCALE -&gt; OPACITY&quot;</span>
+                         <span class="name">font</span>.pointSize: <span class="name">AppSettings</span>.<span class="name">fontSizeLarge</span>
+                         <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+                     }
+                 }
+             }
+         }
+     }
+
+     <span class="type">SettingsView</span> {
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="string">&quot;Fade In Duration (ms)&quot;</span>
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderFadeInDuration</span>
+             <span class="name">sliderValue</span>: <span class="number">1500</span>
+             <span class="name">fromValue</span>: <span class="number">0</span>
+             <span class="name">toValue</span>: <span class="number">4000</span>
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="string">&quot;Fade Out Duration (ms)&quot;</span>
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderFadeOutDuration</span>
+             <span class="name">sliderValue</span>: <span class="number">1500</span>
+             <span class="name">fromValue</span>: <span class="number">0</span>
+             <span class="name">toValue</span>: <span class="number">4000</span>
+         }
+     }
+
+     <span class="type">LoggingView</span> {
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">particleSystems</span>: [<span class="name">psystem</span>]
+     }
+ }
+</pre>

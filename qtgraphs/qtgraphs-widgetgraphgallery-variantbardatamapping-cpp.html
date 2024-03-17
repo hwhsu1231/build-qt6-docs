@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;variantbardatamapping.h&quot;</span>
+
+ VariantBarDataMapping<span class="operator">::</span>VariantBarDataMapping(<span class="type">int</span> rowIndex<span class="operator">,</span> <span class="type">int</span> columnIndex<span class="operator">,</span> <span class="type">int</span> valueIndex<span class="operator">,</span>
+                                              <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>rowCategories<span class="operator">,</span>
+                                              <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>columnCategories)
+     : <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>(nullptr)
+ {
+     m_rowIndex <span class="operator">=</span> rowIndex;
+     m_columnIndex <span class="operator">=</span> columnIndex;
+     m_valueIndex <span class="operator">=</span> valueIndex;
+     m_rowCategories <span class="operator">=</span> rowCategories;
+     m_columnCategories <span class="operator">=</span> columnCategories;
+ }
+
+ VariantBarDataMapping<span class="operator">::</span><span class="operator">~</span>VariantBarDataMapping() <span class="operator">=</span> <span class="keyword">default</span>;
+
+ <span class="type">void</span> VariantBarDataMapping<span class="operator">::</span>setRowIndex(<span class="type">int</span> index)
+ {
+     m_rowIndex <span class="operator">=</span> index;
+     <span class="keyword">emit</span> mappingChanged();
+ }
+
+ <span class="type">int</span> VariantBarDataMapping<span class="operator">::</span>rowIndex() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_rowIndex;
+ }
+
+ <span class="type">void</span> VariantBarDataMapping<span class="operator">::</span>setColumnIndex(<span class="type">int</span> index)
+ {
+     m_columnIndex <span class="operator">=</span> index;
+     <span class="keyword">emit</span> mappingChanged();
+ }
+
+ <span class="type">int</span> VariantBarDataMapping<span class="operator">::</span>columnIndex() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_columnIndex;
+ }
+
+ <span class="type">void</span> VariantBarDataMapping<span class="operator">::</span>setValueIndex(<span class="type">int</span> index)
+ {
+     m_valueIndex <span class="operator">=</span> index;
+     <span class="keyword">emit</span> mappingChanged();
+ }
+
+ <span class="type">int</span> VariantBarDataMapping<span class="operator">::</span>valueIndex() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_valueIndex;
+ }
+
+ <span class="type">void</span> VariantBarDataMapping<span class="operator">::</span>setRowCategories(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>categories)
+ {
+     m_rowCategories <span class="operator">=</span> categories;
+     <span class="keyword">emit</span> mappingChanged();
+ }
+
+ <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>VariantBarDataMapping<span class="operator">::</span>rowCategories() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_rowCategories;
+ }
+
+ <span class="type">void</span> VariantBarDataMapping<span class="operator">::</span>setColumnCategories(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>categories)
+ {
+     m_columnCategories <span class="operator">=</span> categories;
+     <span class="keyword">emit</span> mappingChanged();
+ }
+
+ <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>VariantBarDataMapping<span class="operator">::</span>columnCategories() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_columnCategories;
+ }
+
+ <span class="type">void</span> VariantBarDataMapping<span class="operator">::</span>remap(<span class="type">int</span> rowIndex<span class="operator">,</span> <span class="type">int</span> columnIndex<span class="operator">,</span> <span class="type">int</span> valueIndex<span class="operator">,</span>
+                                   <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>rowCategories<span class="operator">,</span>
+                                   <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>columnCategories)
+ {
+     m_rowIndex <span class="operator">=</span> rowIndex;
+     m_columnIndex <span class="operator">=</span> columnIndex;
+     m_valueIndex <span class="operator">=</span> valueIndex;
+     m_rowCategories <span class="operator">=</span> rowCategories;
+     m_columnCategories <span class="operator">=</span> columnCategories;
+     <span class="keyword">emit</span> mappingChanged();
+ }
+</pre>

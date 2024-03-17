@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-particles3d.qdoc -->
+  <meta name="description" content="Demonstrates how to use the Qt Quick 3D Particles3D module.">
+  <title>Qt Quick 3D - Particles 3D Testbed Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Particles 3D Testbed Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Particles 3D Testbed Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ pragma ComponentBehavior: Bound
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Particles3D
+ import QtQuick.Timeline
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">mainWindow</span>
+
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-timeline.html" translate="no">Timeline</a></span> {
+         <span class="name">id</span>: <span class="name">timeline</span>
+         <span class="name">enabled</span>: <span class="number">true</span>
+         <span class="name">startFrame</span>: <span class="number">0</span>
+         <span class="name">endFrame</span>: <span class="number">100</span>
+         <span class="name">animations</span>: [
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-timelineanimation.html" translate="no">TimelineAnimation</a></span> {
+                 <span class="name">id</span>: <span class="name">timelineAnimation</span>
+                 <span class="name">running</span>: <span class="number">true</span>
+                 <span class="name">duration</span>: (<span class="number">100</span> <span class="operator">-</span> <span class="name">timeline</span>.<span class="name">currentFrame</span>) <span class="operator">*</span> <span class="number">100</span>
+                 <span class="name">from</span>: <span class="name">timeline</span>.<span class="name">currentFrame</span>
+                 <span class="name">to</span>: <span class="number">100</span>
+             }
+         ]
+         <span class="name">keyframeGroups</span>: [
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframegroup.html" translate="no">KeyframeGroup</a></span> {
+                 <span class="name">target</span>: <span class="name">psystem</span>
+                 <span class="name">property</span>: <span class="string">&quot;time&quot;</span>
+                 <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> { <span class="name">frame</span>: <span class="number">0</span>; <span class="name">value</span>: <span class="number">0</span> }
+                 <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> { <span class="name">frame</span>: <span class="number">100</span>; <span class="name">value</span>: <span class="number">15000</span> }
+             },
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframegroup.html" translate="no">KeyframeGroup</a></span> {
+                 <span class="name">target</span>: <span class="name">cameraRotation</span>
+                 <span class="name">property</span>: <span class="string">&quot;rot&quot;</span>
+                 <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> { <span class="name">frame</span>: <span class="number">0</span>; <span class="name">value</span>: <span class="number">0</span> }
+                 <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> { <span class="name">frame</span>: <span class="number">100</span>; <span class="name">value</span>: <span class="number">180</span> }
+             },
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframegroup.html" translate="no">KeyframeGroup</a></span> {
+                 <span class="name">target</span>: <span class="name">actNode</span>
+                 <span class="name">property</span>: <span class="string">&quot;y&quot;</span>
+                 <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> { <span class="name">frame</span>: <span class="number">0</span>; <span class="name">value</span>: <span class="number">50</span> }
+                 <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> { <span class="name">frame</span>: <span class="number">100</span>; <span class="name">value</span>: -<span class="number">100</span> }
+             }
+         ]
+     }
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">camera</span>: <span class="name">camera</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">clearColor</span>: <span class="string">&quot;#404040&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+             <span class="name">antialiasingMode</span>: <span class="name">AppSettings</span>.<span class="name">antialiasingMode</span>
+             <span class="name">antialiasingQuality</span>: <span class="name">AppSettings</span>.<span class="name">antialiasingQuality</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">cameraRotation</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">rot</span>: <span class="number">0.0</span>
+             <span class="name">eulerRotation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="name">rot</span>, <span class="number">0</span>)
+             <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+                 <span class="name">id</span>: <span class="name">camera</span>
+                 <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">150</span>)
+                 <span class="name">clipFar</span>: <span class="number">2000</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+             <span class="name">brightness</span>: <span class="number">50</span>
+             <span class="name">eulerRotation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">90</span>, -<span class="number">90</span>, <span class="number">0</span>)
+             <span class="name">castsShadow</span>: <span class="number">true</span>
+             <span class="name">shadowFactor</span>: <span class="number">25</span>
+             <span class="name">shadowMapQuality</span>: <span class="name">Light</span>.<span class="name">ShadowMapQualityHigh</span>
+         }
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+             <span class="name">eulerRotation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">180</span>, <span class="number">0</span>, <span class="number">0</span>)
+             <span class="name">brightness</span>: <span class="number">25</span>
+         }
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+             <span class="name">brightness</span>: <span class="number">25</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+             <span class="name">eulerRotation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">90</span>, <span class="number">0</span>, <span class="number">0</span>)
+             <span class="name">y</span>: -<span class="number">30</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">3</span>, <span class="number">3</span>, <span class="number">1</span>)
+             <span class="name">receivesShadows</span>: <span class="number">true</span>
+             <span class="name">materials</span>: [
+                 <span class="type"><a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a></span> {
+                     <span class="name">diffuseColor</span>: <span class="string">&quot;#0c100c&quot;</span>
+                 }
+             ]
+         }
+
+         <span class="type"><a href="qml-qtquick3d-particles3d-particlesystem3d.html" translate="no">ParticleSystem3D</a></span> {
+             <span class="name">id</span>: <span class="name">psystem</span>
+             <span class="name">running</span>: <span class="number">false</span>
+             <span class="name">x</span>: -<span class="number">100</span>
+
+             <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                 <span class="name">id</span>: <span class="name">actNode</span>
+                 <span class="name">eulerRotation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">90</span>, <span class="number">0</span>, <span class="number">0</span>)
+
+                 <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                     <span class="name">visible</span>: <span class="name">particle</span>.<span class="name">emitMode</span> <span class="operator">===</span> <span class="name">ModelBlendParticle3D</span>.<span class="name">Activation</span>
+                     <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+                     <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">1</span>)
+                     <span class="name">receivesShadows</span>: <span class="number">false</span>
+                     <span class="name">materials</span>: [
+                         <span class="type"><a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a></span> {
+                             <span class="name">lighting</span>: <span class="name">DefaultMaterial</span>.<span class="name">NoLighting</span>
+                             <span class="name">cullMode</span>: <span class="name">Material</span>.<span class="name">NoCulling</span>
+                             <span class="name">opacity</span>: <span class="number">0.25</span>
+                         }
+                     ]
+                 }
+             }
+
+             <span class="type"><a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a></span> {
+                 <span class="name">id</span>: <span class="name">modelComponent</span>
+                 <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                     <span class="name">source</span>: <span class="string">&quot;meshes/oldqtlogo.mesh&quot;</span>
+                     <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>)
+                     <span class="name">receivesShadows</span>: <span class="number">false</span>
+                     <span class="name">materials</span>: [
+                         <span class="type"><a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a></span> {
+                             <span class="name">baseColor</span>: <span class="string">&quot;#41cd52&quot;</span>
+                             <span class="name">metalness</span>: <span class="number">0.8</span>
+                             <span class="name">roughness</span>: <span class="number">0.1</span>
+                             <span class="name">specularAmount</span>: <span class="number">1</span>
+                             <span class="name">cullMode</span>: <span class="name">cullingModelBox</span>.<span class="name">checked</span> ? <span class="name">Material</span>.<span class="name">BackFaceCulling</span> : <span class="name">Material</span>.<span class="name">NoCulling</span>
+                         }
+                     ]
+                 }
+             }
+
+             <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                 <span class="name">id</span>: <span class="name">translateNode</span>
+                 <span class="name">x</span>: <span class="number">150</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-particles3d-modelblendparticle3d.html" translate="no">ModelBlendParticle3D</a></span> {
+                 <span class="name">id</span>: <span class="name">particle</span>
+                 <span class="name">delegate</span>: <span class="name">modelComponent</span>
+                 <span class="name">endNode</span>: <span class="name">translateNode</span>
+                 <span class="name">modelBlendMode</span>: <span class="name">blendModeSelectionBox</span>.<span class="name">index</span>
+                 <span class="name">endTime</span>: <span class="number">1500</span>
+                 <span class="name">activationNode</span>: <span class="name">actNode</span>
+                 <span class="name">emitMode</span>: <span class="name">emitModeSelectionBox</span>.<span class="name">index</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                 <span class="name">id</span>: <span class="name">emitter</span>
+                 <span class="name">system</span>: <span class="name">psystem</span>
+                 <span class="name">particle</span>: <span class="name">particle</span>
+                 <span class="name">lifeSpan</span>: <span class="name">particle</span>.<span class="name">modelBlendMode</span> <span class="operator">===</span> <span class="name">ModelBlendParticle3D</span>.<span class="name">Explode</span> ? <span class="number">40000</span> : <span class="number">4000</span>
+                 <span class="name">emitRate</span>: <span class="name">particle</span>.<span class="name">maxAmount</span> <span class="operator">/</span> <span class="number">10</span>
+                 <span class="name">velocity</span>: <span class="name">VectorDirection3D</span> {
+                     <span class="name">direction</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">50</span>, <span class="number">10</span>, <span class="number">0</span>)
+                     <span class="name">directionVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">10</span>, <span class="number">10</span>)
+                 }
+                 <span class="name">particleRotation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">20</span>, <span class="number">0</span>, <span class="number">3</span>)
+                 <span class="name">particleRotationVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">4</span>, <span class="number">0</span>, <span class="number">1</span>)
+                 <span class="name">particleScale</span>: <span class="number">1.0</span>
+                 <span class="name">particleEndScale</span>: <span class="number">1.0</span>
+             }
+         }
+     }
+
+     <span class="type">SettingsView</span> {
+         <span class="name">id</span>: <span class="name">settingsView</span>
+         <span class="type">CustomCheckBox</span> {
+             <span class="name">id</span>: <span class="name">cullingModelBox</span>
+             <span class="name">text</span>: <span class="string">&quot;Enable culling&quot;</span>
+             <span class="name">checked</span>: <span class="number">false</span>
+         }
+         <span class="type">CustomSelectionBox</span> {
+             <span class="name">id</span>: <span class="name">blendModeSelectionBox</span>
+             <span class="name">text</span>: <span class="string">&quot;Blend Mode&quot;</span>
+             <span class="name">values</span>: [<span class="string">&quot;Explode&quot;</span>, <span class="string">&quot;Construct&quot;</span>, <span class="string">&quot;Transfer&quot;</span>]
+             <span class="name">parentWidth</span>: <span class="name">settingsView</span>.<span class="name">width</span>
+             <span class="name">onSelectionChanged</span>: {
+                 <span class="name">timeline</span>.<span class="name">currentFrame</span> <span class="operator">=</span> <span class="number">0</span>
+                 <span class="name">psystem</span>.<span class="name">reset</span>()
+             }
+         }
+         <span class="type">CustomSelectionBox</span> {
+             <span class="name">id</span>: <span class="name">emitModeSelectionBox</span>
+             <span class="name">text</span>: <span class="string">&quot;Emit Mode&quot;</span>
+             <span class="name">values</span>: [<span class="string">&quot;Sequential&quot;</span>, <span class="string">&quot;Random&quot;</span>, <span class="string">&quot;Activation&quot;</span>]
+             <span class="name">parentWidth</span>: <span class="name">settingsView</span>.<span class="name">width</span>
+             <span class="name">onSelectionChanged</span>: {
+                 <span class="name">timeline</span>.<span class="name">currentFrame</span> <span class="operator">=</span> <span class="number">0</span>
+                 <span class="name">psystem</span>.<span class="name">reset</span>()
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-frame.html" translate="no">Frame</a></span> {
+         <span class="name">id</span>: <span class="name">toolbar</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.leftMargin: <span class="number">20</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.rightMargin: <span class="number">20</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.bottomMargin: <span class="number">80</span>
+         <span class="name">height</span>: <span class="number">60</span>
+         <span class="name">padding</span>: <span class="number">0</span>
+         <span class="name">background</span>: <span class="name">Rectangle</span> {
+             <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+             <span class="name">radius</span>: <span class="number">4</span>
+             <span class="name">opacity</span>: <span class="number">0.2</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">id</span>: <span class="name">playButton</span>
+                 <span class="name">Layout</span>.leftMargin: <span class="number">14</span>
+                 <span class="name">icon</span>.source: <span class="name">timelineAnimation</span>.<span class="name">running</span> ? <span class="string">&quot;qrc:/images/icon_pause.png&quot;</span> : <span class="string">&quot;qrc:/images/icon_play.png&quot;</span>
+                 <span class="name">icon</span>.width: <span class="name">toolbar</span>.<span class="name">height</span> <span class="operator">-</span> <span class="number">10</span>
+                 <span class="name">icon</span>.height: <span class="name">toolbar</span>.<span class="name">height</span> <span class="operator">-</span> <span class="number">10</span>
+                 <span class="name">icon</span>.color: <span class="string">&quot;transparent&quot;</span>
+                 <span class="name">background</span>: <span class="name">Rectangle</span> {
+                     <span class="name">color</span>: <span class="string">&quot;transparent&quot;</span>
+                 }
+                 <span class="name">onClicked</span>: {
+                     <span class="comment">// If we are close to end, start from the beginning</span>
+                     <span class="keyword">if</span> (<span class="name">timeline</span>.<span class="name">currentFrame</span> <span class="operator">&gt;=</span> <span class="name">timeline</span>.<span class="name">endFrame</span> <span class="operator">-</span> <span class="number">1.0</span>)
+                         <span class="name">timeline</span>.<span class="name">currentFrame</span> <span class="operator">=</span> <span class="number">0</span>;
+
+                     <span class="name">timelineAnimation</span>.<span class="name">running</span> <span class="operator">=</span> !<span class="name">timelineAnimation</span>.<span class="name">running</span>;
+                 }
+             }
+
+             <span class="type">CustomSlider</span> {
+                 <span class="name">id</span>: <span class="name">sliderTimelineTime</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                 <span class="name">sliderValue</span>: <span class="name">timeline</span>.<span class="name">currentFrame</span>
+                 <span class="name">sliderEnabled</span>: !<span class="name">timelineAnimation</span>.<span class="name">running</span> <span class="operator">||</span> <span class="name">timelineAnimation</span>.<span class="name">paused</span>
+                 <span class="name">fromValue</span>: <span class="number">0.0</span>
+                 <span class="name">toValue</span>: <span class="number">100.0</span>
+                 <span class="name">onSliderValueChanged</span>: <span class="name">timeline</span>.<span class="name">currentFrame</span> <span class="operator">=</span> <span class="name">sliderValue</span>;
+             }
+         }
+     }
+
+     <span class="type">LoggingView</span> {
+         <span class="name">id</span>: <span class="name">loggingView</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">particleSystems</span>: [<span class="name">psystem</span>]
+     }
+ }
+</pre>

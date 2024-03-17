@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- bluetooth-index.qdoc -->
+  <meta name="description" content="Qt Bluetooth enables connectivity between Bluetooth enabled devices.">
+  <title>Qt Bluetooth 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li>Qt Bluetooth</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#using-the-module">Using the Module</a></li>
+<li class="level2"><a href="#building-with-cmake">Building with CMake</a></li>
+<li class="level2"><a href="#building-with-qmake">Building with qmake</a></li>
+<li class="level1"><a href="#permissions">Permissions</a></li>
+<li class="level1"><a href="#related-information">Related Information</a></li>
+<li class="level2"><a href="#building-qt-bluetooth">Building Qt Bluetooth</a></li>
+<li class="level2"><a href="#articles-and-guides">Articles and Guides</a></li>
+<li class="level2"><a href="#reference">Reference</a></li>
+<li class="level2"><a href="#logging-categories">Logging Categories</a></li>
+<li class="level2"><a href="#examples">Examples</a></li>
+<li class="level1"><a href="#module-evolution">Module Evolution</a></li>
+<li class="level1"><a href="#licenses-and-attributions">Licenses and Attributions</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt Bluetooth</h1>
+<!-- $$$qtbluetooth-index.html-description -->
+<div class="descr" id="details">
+<p>The Bluetooth API provides connectivity between Bluetooth enabled devices.</p>
+<p>Currently, the API is supported on the following platforms:</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >API Feature</th><th ><a href="../qtdoc/android.html" translate="no">Android</a></th><th ><a href="../qtdoc/ios.html" translate="no">iOS</a></th><th ><a href="../qtdoc/linux.html" translate="no">Linux (BlueZ 5.x)</a></th><th ><a href="../qtdoc/whatsnew66.html#macos" translate="no">macOS</a></th><th ><a href="../qtdoc/windows.html" translate="no">Windows</a></th></tr></thead>
+<tr valign="top" class="odd"><td >Classic Bluetooth</td><td >x</td><td ></td><td >x</td><td >x</td><td >x</td></tr>
+<tr valign="top" class="even"><td >Bluetooth LE Central</td><td >x</td><td >x</td><td >x</td><td >x</td><td >x</td></tr>
+<tr valign="top" class="odd"><td >Bluetooth LE Peripheral</td><td >x</td><td >x</td><td >x</td><td >x</td><td ></td></tr>
+</table></div>
+<h2 id="overview">Overview</h2>
+<p>Bluetooth is a short-range (less than 100 meters) wireless technology. It has a data transfer rate of 2.1 Mbps, which makes it ideal for transferring data between devices. Bluetooth connectivity is based on basic device management, such as scanning for devices, gathering information about them, and exchanging data between them.</p>
+<p>Qt Bluetooth supports Bluetooth Low Energy development for client/central role use cases. Further details can be found in the <a href="qtbluetooth-le-overview.html" translate="no">Bluetooth Low Energy Overview</a> section.</p>
+<h2 id="using-the-module">Using the Module</h2>
+<p>Using a Qt module's C++ API requires linking against the module library, either directly or through other dependencies. Several build tools have dedicated support for this, including <a href="https://cmake.org/cmake/help/latest/" translate="no">CMake</a> and <a href="../qmake/qmake-manual.html" translate="no">qmake</a>.</p>
+<h3 id="building-with-cmake">Building with CMake</h3>
+<p>Use the <code translate="no">find_package()</code> command to locate the needed module component in the <code translate="no">Qt6</code> package:</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS Bluetooth)
+ target_link_libraries(mytarget PRIVATE Qt6<span class="operator">::</span>Bluetooth)
+</pre>
+<p>For more details, see the <a href="../qtcmake/cmake-manual.html" translate="no">Build with CMake</a> overview.</p>
+<h3 id="building-with-qmake">Building with qmake</h3>
+<p>To configure the module for building with qmake, add the module as a value of the <code translate="no">QT</code> variable in the project's .pro file:</p>
+<pre class="cpp" translate="no">
+ QT <span class="operator">+</span><span class="operator">=</span> bluetooth
+</pre>
+<h2 id="permissions">Permissions</h2>
+<p>Starting from Qt 6.6, the Qt Bluetooth module uses new <a href="../qtcore/qpermission.html" translate="no">QPermission</a> API to handle <a href="../qtcore/qbluetoothpermission.html" translate="no">Bluetooth</a> permissions. This means that Qt itself no longer queries for these permissions, so this needs to be done directly from the client application.</p>
+<p>Please refer to the <a href="../qtcore/permissions.html" translate="no">Application Permissions</a> page for an example of how to integrate the new <a href="../qtcore/qpermission.html" translate="no">QPermission</a> API into the application.</p>
+<h2 id="related-information">Related Information</h2>
+<h3 id="building-qt-bluetooth">Building Qt Bluetooth</h3>
+<p>Even though the module can be built for all Qt platforms, the module is not ported to all of them. Non-supported platforms employ a dummy backend that is automatically selected when the platform is not supported. The dummy backend reports appropriate error messages and values, which enables you to detect at runtime that the current platform is not supported. The dummy backend is also selected on Linux if BlueZ development headers are not found during build time or Qt was built without Qt D-Bus support.</p>
+<p>The usage of the dummy backend is highlighted via an appropriate warning while building and running.</p>
+<h4 id="linux-specific">Linux Specific</h4>
+<p>Since Qt 6.5 the Linux peripheral support has two backend alternatives: BlueZ DBus and Bluetooth kernel API. The Bluez DBus backend introduced in Qt 6.5 is intended as the eventual successor of the lower abstraction level kernel backend.</p>
+<p>The BlueZ DBus API is more limited in terms of features and is therefore not the default backend for compatibility reasons.</p>
+<p>The BlueZ DBus backend can be configured to use by setting the <i>QT_BLUETOOTH_USE_DBUS_PERIPHERAL</i> environment variable. The <a href="qlowenergycontroller.html" translate="no">QLowEnergyController</a> peripheral instantiation then introspects the presence of BlueZ DBus peripheral APIs on the local bluetooth adapter. The minimum version requirement for BlueZ is 5.56.</p>
+<p>One noteworthy difference is that with BlueZ DBus peripheral backend the user process no longer needs to have the <i>CAP_NET_ADMIN</i> capability (eg. run as root).</p>
+<h4 id="macos-specific">macOS Specific</h4>
+<p>The Bluetooth API on macOS requires a certain type of event dispatcher that in Qt causes a dependency to <a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a>. However, you can set the environment variable <code translate="no">QT_EVENT_DISPATCHER_CORE_FOUNDATION=1</code> to circumvent this issue.</p>
+<p>Applications that don't use Classic Bluetooth will find a subset of <a href="qtbluetooth-module.html" translate="no">QtBluetooth</a> is available, as CoreBluetooth (Bluetooth LE) don't require <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> or <a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a>.</p>
+<h3 id="articles-and-guides">Articles and Guides</h3>
+<ul>
+<li><a href="qtbluetooth-overview.html" translate="no">Classic Bluetooth Overview</a></li>
+<li><a href="qtbluetooth-le-overview.html" translate="no">Bluetooth Low Energy Overview</a></li>
+</ul>
+<h3 id="reference">Reference</h3>
+<ul>
+<li><a href="qtbluetooth-module.html" translate="no">C++ Classes</a></li>
+</ul>
+<h3 id="logging-categories">Logging Categories</h3>
+<p>The <a href="qtbluetooth-module.html" translate="no">QtBluetooth</a> module exports the following <a href="../qtcore/qloggingcategory.html#configuring-categories" translate="no">logging categories</a>:</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Logging Category</th><th >Description</th></tr></thead>
+<tr valign="top" class="odd"><td >qt.bluetooth</td><td >Enables logging of cross platform code path in <a href="qtbluetooth-module.html" translate="no">QtBluetooth</a></td></tr>
+<tr valign="top" class="even"><td >qt.bluetooth.android</td><td >Enables logging of the <a href="../qtdoc/android.html" translate="no">Android</a> implementation</td></tr>
+<tr valign="top" class="odd"><td >qt.bluetooth.bluez</td><td >Enables logging of the BLuez/Linux implementation</td></tr>
+<tr valign="top" class="even"><td >qt.bluetooth.ios</td><td >Enables logging of the <a href="../qtdoc/ios.html" translate="no">iOS</a> implementation</td></tr>
+<tr valign="top" class="odd"><td >qt.bluetooth.osx</td><td >Enables logging of the <a href="../qtdoc/macos.html" translate="no">macOS</a> implementation</td></tr>
+<tr valign="top" class="even"><td >qt.bluetooth.windows</td><td >Enables logging of the <a href="../qtdoc/windows.html" translate="no">Windows</a> implementation</td></tr>
+</table></div>
+<p>Logging categories enable additional warning and debug output for <a href="qtbluetooth-module.html" translate="no">QtBluetooth</a>. More detailed information about logging is found in <a href="../qtcore/qloggingcategory.html" translate="no">QLoggingCategory</a>. A quick way to enable all <a href="qtbluetooth-module.html" translate="no">QtBluetooth</a> logging is to add the following line to the <code translate="no">main()</code> function:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qloggingcategory.html" translate="no">QLoggingCategory</a></span><span class="operator">::</span>setFilterRules(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;qt.bluetooth* = true&quot;</span>));
+</pre>
+<h3 id="examples">Examples</h3>
+<ul>
+<li>QML<ul>
+<li><a href="qtbluetooth-heartrate-game-example.html" translate="no">Bluetooth Low Energy Heart Rate Game</a></li>
+<li><a href="qtbluetooth-heartrate-server-example.html" translate="no">Bluetooth Low Energy Heart Rate Server</a></li>
+<li><a href="qtbluetooth-lowenergyscanner-example.html" translate="no">Bluetooth Low Energy Scanner</a></li>
+</ul>
+</li>
+<li>C++<ul>
+<li><a href="qtbluetooth-btchat-example.html" translate="no">Bluetooth Chat</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="module-evolution">Module Evolution</h2>
+<p><a href="qtbluetooth-changes-qt6.html" translate="no">Changes to Qt Bluetooth</a> lists important changes in the module API and functionality that were done for the Qt 6 series of Qt.</p>
+<h2 id="licenses-and-attributions">Licenses and Attributions</h2>
+<p>Qt Bluetooth is available under commercial licenses from <a href="http://www.qt.io/about-us/" translate="no">The Qt Company</a>. In addition, it is available under the <a href="http://www.gnu.org/licenses/lgpl-3.0.html" translate="no">GNU Lesser General Public License, version 3</a>, or the <a href="http://www.gnu.org/licenses/gpl-2.0.html" translate="no">GNU General Public License, version 2</a>. See <a href="../qtdoc/licensing.html" translate="no">Qt Licensing</a> for further details.</p>
+<p>On Linux, Qt Bluetooth uses a separate executable, <code translate="no">sdpscanner</code>, to integrate with the official Linux bluetooth protocol stack BlueZ. BlueZ is available under the <a href="http://www.gnu.org/licenses/gpl-2.0.html" translate="no">GNU General Public License, version 2</a>.</p>
+<div class="table"><table class="annotated">
+<tr class="odd topAlign"><td class="tblName" translate="no"><p><a href="qtbluetooth-attribution-bluez.html">BlueZ</a></p></td><td class="tblDescr"><p>GNU General Public License v2.0 only (This does not force user code to be GPL'ed. For more info see details.)</p></td></tr>
+</table></div>
+</div>
+<!-- @@@qtbluetooth-index.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

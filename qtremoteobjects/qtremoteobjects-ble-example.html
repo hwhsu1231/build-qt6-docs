@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- ble.qdoc -->
+  <meta name="description" content="Using QtBluetooth Low Energy (BT LE or BLE for short) as a transport medium with Qt Remote Objects.">
+  <title>QtRemoteObjects Bluetooth LE Example | Qt Remote Objects 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtremoteobjects-index.html" translate="no">Qt Remote Objects</a></li>
+<li><a href="qtremoteobjects-examples.html" translate="no">Qt Remote Objects Examples</a></li>
+<li>QtRemoteObjects Bluetooth LE Example</li>
+<li id="buildversion"><a href="qtremoteobjects-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#data-flow">Data flow</a></li>
+<li class="level1"><a href="#known-limitations">Known limitations</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">QtRemoteObjects Bluetooth LE Example</h1>
+<!-- $$$ble-brief -->
+<p>Using <a href="../qtbluetooth/qtbluetooth-module.html" translate="no">QtBluetooth</a> Low Energy (BT LE or BLE for short) as a transport medium with Qt Remote Objects.</p>
+<!-- @@@ble -->
+<!-- $$$ble-description -->
+<div class="descr" id="details">
+<p>This is achieved by wrapping the bluetooth low energy transport logic in a <a href="../qtcore/qiodevice.html" translate="no">QIODevice</a>.</p>
+<p>The example consists of a client and server application which communicate over the bluetooth low energy radio.</p>
+<p>The server-side is a simple heater object which is either turned ON (heats) or OFF (cools). The temperature changes periodically and this temperature is shown by the client-side GUI. This changing temperature value flows from the server to client as remote object property. The client-side can control the ON/OFF status of the server-side heater object. This data flows similarly as a remote object property.</p>
+<h4 id="overview">Overview</h4>
+<p>Bluetooth Low Energy is inherently a client/server architecture, where server advertises its services and client discovers them, after which the data can be transferred.</p>
+<p>The following Figure illustrates the main steps when running the example:</p>
+<p class="centerAlign"><img src="images/ble_example_flow.png" alt="&quot;Main phases when starting the example&quot;" /></p><h4 id="data-flow">Data flow</h4>
+<p>The data flows over the Bluetooth Low Energy medium. This is implemented with two GATT characteristics, one for each direction. This is illustrated by the following Figure:</p>
+<p class="centerAlign"><img src="images/ble_example_iodevice.png" alt="&quot;BT LE IO Device&quot;" /></p><h4 id="known-limitations">Known limitations</h4>
+<p>The example relies on <a href="../qtbluetooth/qlowenergycontroller.html#connected" translate="no">QLowEnergyController::connected</a>() and <a href="../qtbluetooth/qlowenergycontroller.html#disconnected" translate="no">QLowEnergyController::disconnected</a>() signals to detect client connection and disconnection. These signals are not always reliable on the server (peripheral) side on all platforms. This is typically not a problem when connecting for the first time, but may be an issue on subsequent reconnections if the server is not restarted.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtremoteobjects.git/tree/examples/remoteobjects/ble?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@ble -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

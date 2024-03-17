@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- highdpi.qdoc -->
+  <meta name="description" content="Describes Qt's support for high DPI displays.">
+  <title>High DPI | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>High DPI</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#conceptual-model">Conceptual Model</a></li>
+<li class="level1"><a href="#drawing">Drawing</a></li>
+<li class="level1"><a href="#image-assets">Image Assets</a></li>
+<li class="level1"><a href="#device-independent-screen-geometry">Device Independent Screen Geometry</a></li>
+<li class="level1"><a href="#configuring">Configuring</a></li>
+<li class="level2"><a href="#platform-details">Platform Details</a></li>
+<li class="level1"><a href="#testing">Testing</a></li>
+<li class="level2"><a href="#qt-scale-factor">QT_SCALE_FACTOR</a></li>
+<li class="level2"><a href="#dprgadget">DprGadget</a></li>
+<li class="level1"><a href="#environment-variable-reference">Environment Variable Reference</a></li>
+<li class="level1"><a href="#coordinate-systems-reference">Coordinate Systems Reference</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">High DPI</h1>
+<!-- $$$highdpi.html-description -->
+<div class="descr" id="details">
+<p>High-DPI displays &ndash; also known as retina displays &ndash; are displays with high resolution (pixels) in relation to their physical size (mm), resulting in a high pixel density, or high number of <i>dots per inch</i> (DPI). The increased resolution is used to provide more detailed content on screen (smoother text, more detailed icons), rather than more content (more windows, larger window sizes).</p>
+<p>Qt supports high-DPI displays on all platforms, and provides a unified API that abstracts over any platform differences. Qt will automatically account for the display resolution when using higher level APIs such as Qt Widgets and Qt Quick, and applications only need to provide high-resolution assets, such as images and icons. Changes in the platform's user preferences are automatically picked up.</p>
+<p>Lower-level graphics drawing (such as OpenGL code) need to be high-DPI aware, but can use cross platform Qt APIs to learn about the platform's display resolutions.</p>
+<h2 id="conceptual-model">Conceptual Model</h2>
+<p>Qt uses a model where the application coordinate system is independent of the display device resolution. The application operates in <i>device-independent pixels</i>, which are then mapped to the physical pixels of the display via a scale factor, known as the <i>device pixel ratio</i>. The scale factor is expressed as a floating point number, for example <code translate="no">1.0</code> or <code translate="no">2.0</code>, or informally as <code translate="no">1x</code> and <code translate="no">2x</code>.</p>
+<p>For example, creating a <a href="../qtgui/qwindow.html" translate="no">QWindow</a> or <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>, and setting its size to 200x200 will cover 200x200 display pixels on a normal density display (with a device pixel ratio of 1.0), but will cover 400x400 pixels on a high density display (with a device pixel ratio of 2.0).</p>
+<p>This model applies to most units in higher level Qt GUI, Widgets, and Quick APIs, including widget and item geometry, event geometry, desktop, window and screen geometry, as well as animation velocities.</p>
+<div class="admonition note">
+<p><b>Note: </b>The model does not handle differences between UI classes, such as the size of touch targets vs mouse targets.</p>
+</div>
+<h2 id="drawing">Drawing</h2>
+<p>Qt will automatically take advantage of the increased density of a high-DPI display when using drawing APIs such as <a href="../qtgui/qpainter.html" translate="no">QPainter</a>, or when rendering graphic primitives or text in Qt Quick.</p>
+<p>As a result the application can operate in a single unified coordinate system, without needing to account for the possible display densities the application will run on.</p>
+<p>However, when using lower level drawing APIs, for example OpenGL, the application needs to take the device pixel ratio of the display into account. This is available both per window, as <a href="../qtgui/qwindow.html#devicePixelRatio" translate="no">QWindow::devicePixelRatio</a>() (tracking the device pixel ratio of the window when moved between displays), or per display, as <a href="../qtgui/qscreen.html#devicePixelRatio-prop" translate="no">QScreen::devicePixelRatio</a>().</p>
+<p>Image buffers such as <a href="../qtgui/qimage.html" translate="no">QImage</a> and <a href="../qtgui/qpixmap.html" translate="no">QPixmap</a> represent the raw pixels, and as a result do not operate in the device independent coordinate system described earlier. A <a href="../qtgui/qimage.html" translate="no">QImage</a> of size 400x400, with a device pixel ratio of 2.0, will fit a 200x200 <a href="../qtgui/qwindow.html" translate="no">QWindow</a> on a high density (2x) display, or will be automatically down-scaled to 200x200 during drawing if targeting a normal density (1x) display. See <a href="../qtgui/qpainter.html#drawing-high-resolution-versions-of-pixmaps-and-images" translate="no">Drawing High Resolution Versions of Pixmaps and Images</a> for more details.</p>
+<h2 id="image-assets">Image Assets</h2>
+<p>To take advantage of the increased pixel density of high-DPI displays, the application should also include high-DPI versions of static image assets. This is achieved by using a special naming convention for the high density assets, for example <code translate="no">logo@2x.png</code>, and loading both the normal density image and the high-density image into a <a href="../qtgui/qicon.html" translate="no">QIcon</a>. Qt will automatically choose the best representation for the target display at runtime. See <a href="../qtgui/qicon.html#high-dpi-icons" translate="no">High DPI Icons</a> for more details.</p>
+<h2 id="device-independent-screen-geometry">Device Independent Screen Geometry</h2>
+<p>Qt applications generally operate in device independent pixels. This includes window and screen geometries reported to the application.</p>
+<p>This means that <a href="../qtgui/qscreen.html#geometry-prop" translate="no">QScreen::geometry</a>() may not return the screen's physical pixel count, or the pixel size as reported by the operating system. This has implications for virtual desktop geometry:</p>
+<p>Modern desktop operating systems typically create one shared coordinate system for all connected screens, and allows the user to position screens to match their physical screen setup, usually via a configuration dialog. If this positioning is done in a coordinate system equivalent to Qt's device independent pixels (like on macOS) then <a href="../qtgui/qscreen.html" translate="no">QScreen</a> geometry will match the native screen layout. If the positioning is done in screen physical pixels (like on Windows), then Qt's treatment of screen geometry may introduce &quot;gaps&quot; in virtual desktop geometry unused by any screen.</p>
+<p>Specifically, Qt will scale the screen size (resulting in a &quot;smaller&quot; screen for positive scale factors), but will not change the screen position. This will produce an islands-of-screens type virtual desktop geometry.</p>
+<p>Application code should not assume that positions immediately adjacent to and outside one screen is a valid position on the neighboring screen. Instead, get the screen list using <a href="../qtgui/qguiapplication.html#screens" translate="no">QGuiApplication::screens</a>() and use that list to reason about available screen geometry.</p>
+<h2 id="configuring">Configuring</h2>
+<p>As an end user you may want to adjust the DPI or scale settings to match display hardware, or to account for viewing distance and personal preferences. These adjustments should be done using the native display settings of the platform, so that all applications will agree on the same DPI or scale factor values. Qt does not provide end user facilities to configure the behavior of Qt's high-DPI support.</p>
+<p>The operating system may represent the scale factor either as a factor (1.5), as a percentage (150%), or as dots per inch (144 DPI). Qt translates these to the device pixel ratio seen by the application. In the latter case Qt assumes a &quot;base&quot; DPI &ndash; e.g 96 on X11 &ndash; and calculates the resulting device pixel ratio accordingly.</p>
+<p>Integer scale factors (e.g&#x2e; 1.0 or 2.0) are preferred for best results. &quot;Rounding&quot; the scale factor to 25% increments can also give good results. Setting the scale factor or DPI to the exact physical display DPI may not give good visual results due to the fractional scaling involved. If the application suffers from visual artifacts in this scenario, it can use <a href="../qtgui/qguiapplication.html#setHighDpiScaleFactorRoundingPolicy" translate="no">QGuiApplication::setHighDpiScaleFactorRoundingPolicy</a>() to limit the scale factors it will see.</p>
+<h3 id="platform-details">Platform Details</h3>
+<p>The following table describes how to configure high-DPI on various platforms.</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Platform</th><th >Configuration</th></tr></thead>
+<tr valign="top" class="odd"><td >macOS</td><td >Set the scale for each display in the display preferences. macOS will reflect this to Qt as an integer device pixel ratio.</td></tr>
+<tr valign="top" class="even"><td >Windows</td><td >Set the scale factor for each display in the display settings. The base scale factor is 100%, and can be adjusted in 25% steps.</td></tr>
+<tr valign="top" class="odd"><td >Ubuntu</td><td >Set the scale factor in display settings. On Ubuntu 20.04 and later this can be done per display, in increments of 25%. Earlier versions support setting a global scale to either 100% or 200%.</td></tr>
+<tr valign="top" class="even"><td >X11</td><td >Set Xft.dpi, or opt-in to use physical DPI. See &quot;Configuring X11&quot; below.</td></tr>
+<tr valign="top" class="odd"><td >Wayland</td><td >Qt reads <code translate="no">wl_output::scale</code>, which is restricted to integer values. Wayland compositors typically have a configuration option for setting the scale factor, for example <code translate="no">weston --scale</code>.</td></tr>
+<tr valign="top" class="even"><td >EGLFS</td><td >Set <code translate="no">QT_FONT_DPI</code> to the desired logical DPI value, for example <code translate="no">QT_FONT_DPI=192</code>. Qt assumes that the base DPI is 96, and scales the UI accordingly.</td></tr>
+</table></div>
+<div class="admonition note">
+<p><b>Note: </b>Some windowing systems may have limitations that are then reflected in Qt. Qt does not provide workarounds for these limitations. Instead, consider workarounds on the windowing system level.</p>
+</div>
+<h4 id="configuring-x11">Configuring X11</h4>
+<p>The required configuration input to Qt is per-screen logical DPI. Currently, X11 provides either global logical DPI or per-screen physical DPI. Neither of these are exactly what Qt needs, which can make DPI configuration on X11 more complicated than on other platforms.</p>
+<p>Desktops environments such as Ubuntu and Kubntu implement workarounds for the lack of logical DPI, and provide easily configurable high-DPI support. If you instead want to configure X11 DPI settings manually then this section describes which X11 settings Qt reads.</p>
+<p>Some X11 configuration workflows involves overriding the reported physical size of the screen in order to make DPI calculations yield a specific DPI value. Qt supports this workflow, but this requires opting in, as described below.</p>
+<p>The exact configuration priority is as follows, where Qt uses the first option available. Note that the behavior depends on the Qt version in use. Qt 5 behavior assumes that AA_EnableHighDpiScaling has been set (this flag is not needed on Qt 6).</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th  colspan="3">X11 DPI Configuration Priority</th></tr>
+<tr class="qt-style"><th >Property</th><th >Notes</th></tr></thead>
+<tr valign="top" class="odd"><td >1. Xft/DPI</td><td >From X settings. Global logical DPI value.</td></tr>
+<tr valign="top" class="even"><td >2. Xft.dpi</td><td >From X resources. Global logical DPI value.</td></tr>
+<tr valign="top" class="odd"><td >3. RandR physical DPI [Qt 5 Only]</td><td >DPI calculated from per-screen physical size and pixel size, as reported by <code translate="no">randr</code>. specifically, the <code translate="no">mwidth</code> and <code translate="no">mheight</code> fields of the <code translate="no">xcb_randr_screen_change_notify_event_t</code> structure is used. The DPI will be rounded to an integer and clamped to be not less than 96.</td></tr>
+<tr valign="top" class="even"><td >4. 96 DPI</td><td >Fallback value.</td></tr>
+</table></div>
+<p>The QT_USE_PHYSICAL_DPI override</p>
+<p>Set QT_USE_PHYSICAL_DPI=1 to make Qt use RandR physical DPI unconditionally; specifically the <code translate="no">mwidth</code> and <code translate="no">mheight</code> fields of the xcb_randr_screen_change_notify_event_t structure is used. The DPI value will be rounded to an integer.</p>
+<h4 id="configuring-windows">Configuring Windows</h4>
+<p>Qt uses the Windows display scale settings automatically; no specific settings are required. For example, if a display is configured for 175% scale then Qt apps will see a device pixel ratio of 1.75 on that screen.</p>
+<p>Windows defines several<a href="https://docs.microsoft.com/en-us/windows/win32/hidpi/high-dpi-desktop-application-development-on-windows" translate="no">DPI Awareness</a> levels, which applications set in order to opt-in to high-DPI features. Qt 6 is Per-Monitor DPI Aware V2 by default. If you are incorporating code which assumes a single global DPI then you might want to set a different awareness level. This can be done by adding an entry to qt.conf:</p>
+<pre class="cpp plain" translate="no">
+ [Platforms]
+ WindowsArguments = dpiawareness=0,1,2
+</pre>
+<h2 id="testing">Testing</h2>
+<h3 id="qt-scale-factor">QT_SCALE_FACTOR</h3>
+<p>Set the QT_SCALE_FACTOR environment variable to provide a global scale factor for the application.</p>
+<pre class="cpp plain" translate="no">
+ QT_SCALE_FACTOR=2 ./myapp
+</pre>
+<p>This scales all application geometry (including the device pixel ratio) by the given factor, which enables testing high-DPI support independently of available hardware. The set scale factor will be used as-is by Qt, and will not be affected by the <a href="../qtcore/qt.html#HighDpiScaleFactorRoundingPolicy-enum" translate="no">rounding policy</a>.</p>
+<p>The effective device pixel ratio, as returned by <a href="../qtgui/qwindow.html#devicePixelRatio" translate="no">QWindow::devicePixelRatio</a>(), will be a product of the set scale factor and the native device pixel ratio. For example, setting QT_SCALE_FACTOR=2 on a 2x Wayland display will result in the application seeing a device pixel ratio of 4.</p>
+<h3 id="dprgadget">DprGadget</h3>
+<p>The DprGadget test application can be used to inspect the native configuration, and how Qt reacts to it:</p>
+<p class="centerAlign"><img src="images/dprgadget.png" alt="" /></p><p>DprGadget displays the device pixel ratio of the window, as reported by <a href="../qtgui/qwindow.html#devicePixelRatio" translate="no">QWindow::devicePixelRatio</a>(). In addition is displays the native DPI and device pixel ratio of the screen the widow is on, as reported by QPlatformScreen::logicalDpi() and QPlatformScreen::devicePixelRatio().</p>
+<p>The displayed values should be updated automatically on screen and DPI changes, and the dialog should maintain the same size. If not, it might be a Qt bug.</p>
+<p>DprGradget is a part Qt's manual test suite, and can be found at <code translate="no">qtbase/tests/manual/highdpi/dprgadget</code>.</p>
+<h2 id="environment-variable-reference">Environment Variable Reference</h2>
+<p>This section lists high-DPI related environment variables recognized by Qt. In alphabetical order:</p>
+<ul>
+<li>QT_ENABLE_HIGHDPI_SCALING Set to 0 to disable high-dpi scaling; effectively reverting to Qt 5 default behavior. Note that this has no effect on platforms such as Wayland or macOS - it does not disable any native high-DPI support. This variable is intended for testing purposes only, and we do not recommend setting it on a permanent basis.</li>
+<li>QT_FONT_DPI Sets a global DPI. This is a legacy environment variable provided for backwards compatibility.</li>
+<li>QT_SCALE_FACTOR Sets a global scale factor. For debugging and testing purposes.</li>
+<li>QT_SCALE_FACTOR_ROUNDING_POLICY Sets the scale factor <a href="../qtcore/qt.html#HighDpiScaleFactorRoundingPolicy-enum" translate="no">rounding policy</a>, which is applied to the scale factor computed from screen DPI. Supported values include<ul>
+<li>Round (Qt 5 default)</li>
+<li>PassThrough (Qt 6 default)</li>
+</ul>
+</li>
+<li>QT_SCREEN_SCALE_FACTORS Sets a list of screen scale factors. The list can be in one of two formats; either a semicolon-separated list of screen scale factors (&quot;1;1.5;2&quot;), or a semicolon-separated list of screen=factor entries (&quot;screenA=1;screenB=1.5;screenC=2&quot;). Setting this environment variable is not recommended since it prevents Qt from using system DPI values.</li>
+<li>QT_USE_PHYSICAL_DPI Makes Qt use physical DPI instead of logical DPI. Using logical DPI is normally the best option; this environment variable can be set in cases where logical DPI is not available and the physical DPI is known to be correct.</li>
+</ul>
+<h2 id="coordinate-systems-reference">Coordinate Systems Reference</h2>
+<ul>
+<li>Device Independent Pixels This is Qt's main coordinate system. Window, widget, Quick item, event, and screen geometry are all in device independent pixels. Typically, a device independent pixel has a constant visual size across device types and screen densities. Though this is a generalization, the exact size depends on device configuration.</li>
+<li>Device Pixels This coordinate system is used for rasterization and low-level graphics tasks, for example when using the OpenGL API. The device pixel coordinate system is often equivalent to the physical coordinate system of the display, but this is not guaranteed. For example, both macOS and Ubuntu may apply additional scaling, depending on display settings.</li>
+<li>Native Pixels This is the coordinate system used by the native API, such as Win32 or Cocoa (macOS). Depending on platform and screen configuration, native pixels may be equivalent to device independent or device pixels.</li>
+</ul>
+</div>
+<!-- @@@highdpi.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

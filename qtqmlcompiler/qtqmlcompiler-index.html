@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtqmlcompiler-index.qdoc -->
+  <meta name="description" content="Provides tools for static analysis of QML code.">
+  <title>Qt QML Compiler 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li>Qt QML Compiler</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt QML Compiler</h1>
+<!-- $$$qtqmlcompiler-index.html-description -->
+<div class="descr" id="details">
+<p>The Qt QML Compiler module offers the <a href="qqmlsa.html" translate="no">QQmlSA</a> framework which provides tools for static analysis of QML code. These tools can help ensure syntactic validity and warn about QML anti-patterns.</p>
+<p>Adding static analysis to a QML program is done by writing plugins. They will run a collection of analysis passes over the elements and properties of the QML code. The passes can be registered with a PassManager which holds the passes and can be called to analyze an element and its children.</p>
+<p>A pass is a check for a certain rule or condition evaluated on elements or properties. If the condition is met, the pass can warn the user of an indentified issue in the code and maybe even suggest a fix. It is called a pass because the analysis performed on elements and properties happens by running a collection of passes on them in succesion. Each pass should be responsible for identifying one specific issue only. Combining a set of passes can perform more complex analysis and, together, form a plugin.</p>
+<p>Element passes are defined by two main components, namely <code translate="no">shouldRun()</code> and <code translate="no">run()</code>. When performing the analysis, the pass manager will execute the pass over every element it encounters while traversing the children of the root element. For each element, if <code translate="no">shouldRun()</code> evaluated on that element returns <code translate="no">true</code> then <code translate="no">run()</code> is executed on it.</p>
+<p>Passes on properties trigger on three different events, namely when the property is bound, when it is read, and when it is written to. These can be implemented by overriding the <code translate="no">onBinding()</code>, <code translate="no">onRead()</code> and <code translate="no">onWrite()</code> functions respectively.</p>
+<p>As the code grows, so does the number of elements and properties. Performing the static analysis passes on all of them can become expensive. That's why it is good to be granular when deciding which elements and properties to analyze. For elements, the <code translate="no">shouldRun()</code> is intended to be a cheap check to determine if <code translate="no">run()</code>, which performs the real computation, should be run. For properties, the selection is done when registering the passes with the manager. The <code translate="no">registerPropertyPass()</code> function takes the <code translate="no">moduleName</code>, <code translate="no">typeName</code> and <code translate="no">propertyName</code> strings as arguments. These are used to filter down the set of properties affected by the registered pass.</p>
+</div>
+<!-- @@@qtqmlcompiler-index.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

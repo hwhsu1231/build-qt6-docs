@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- html2pdf.qdoc -->
+  <meta name="description" content="Converts web pages to PDF documents using Qt WebEngine.">
+  <title>WebEngine Widgets Html2Pdf Example | Qt WebEngine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtwebengine-index.html" translate="no">Qt WebEngine</a></li>
+<li><a href="webengine-widgetexamples.html" translate="no">Qt WebEngine Widgets Examples</a></li>
+<li>WebEngine Widgets Html2Pdf Example</li>
+<li id="buildversion"><a href="qtwebengine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#the-conversion-process">The Conversion Process</a></li>
+<li class="level1"><a href="#the-main-function">The Main Function</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">WebEngine Widgets Html2Pdf Example</h1>
+<!-- $$$webenginewidgets/html2pdf-brief -->
+<p>Converts web pages to PDF documents using Qt WebEngine.</p>
+<!-- @@@webenginewidgets/html2pdf -->
+<!-- $$$webenginewidgets/html2pdf-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/html2pdf-example.png" alt="" /></p><p><i>Html2Pdf</i> demonstrates how to use Qt WebEngine to implement a command-line application for converting web pages into PDF documents.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="the-conversion-process">The Conversion Process</h4>
+<p>In order to convert a web page into a PDF document we need to:</p>
+<ol class="1" type="1"><li>Create a <a href="qwebengineview.html" translate="no">QWebEngineView</a>.</li>
+<li>Tell the <a href="qwebengineview.html" translate="no">QWebEngineView</a> to begin loading the target URL and wait for it to finish.</li>
+<li>Tell the <a href="qwebengineview.html" translate="no">QWebEngineView</a> to begin converting the loaded page into a PDF file and again wait for it to finish.</li>
+<li>Once the conversion is finished, exit the program.</li>
+</ol>
+<p>This process is encapsulated in the <i>Html2PdfConverter</i> class:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &lt;QApplication&gt;</span>
+ <span class="preprocessor">#include &lt;QCommandLineParser&gt;</span>
+ <span class="preprocessor">#include &lt;QFile&gt;</span>
+ <span class="preprocessor">#include &lt;QTextStream&gt;</span>
+ <span class="preprocessor">#include &lt;QWebEngineView&gt;</span>
+
+ <span class="preprocessor">#include &lt;functional&gt;</span>
+ <span class="preprocessor">#include &lt;utility&gt;</span>
+
+ <span class="keyword">class</span> Html2PdfConverter : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> Html2PdfConverter(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> inputPath<span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> outputPath);
+     <span class="type">int</span> run();
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> loadFinished(<span class="type">bool</span> ok);
+     <span class="type">void</span> pdfPrintingFinished(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>filePath<span class="operator">,</span> <span class="type">bool</span> success);
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> m_inputPath;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> m_outputPath;
+     <span class="type"><a href="../qtcore/qscopedpointer.html" translate="no">QScopedPointer</a></span><span class="operator">&lt;</span><span class="type"><a href="qwebengineview.html" translate="no">QWebEngineView</a></span><span class="operator">&gt;</span> m_view;
+ };
+</pre>
+<p>In the constructor we create the <a href="qwebengineview.html" translate="no">QWebEngineView</a> and connect to its <a href="qwebengineview.html#loadFinished" translate="no">QWebEngineView::loadFinished</a> and <a href="qwebengineview.html#pdfPrintingFinished" translate="no">QWebEngineView::pdfPrintingFinished</a> signals:</p>
+<pre class="cpp" translate="no">
+ Html2PdfConverter<span class="operator">::</span>Html2PdfConverter(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> inputPath<span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> outputPath)
+     : m_inputPath(std<span class="operator">::</span>move(inputPath))
+     <span class="operator">,</span> m_outputPath(std<span class="operator">::</span>move(outputPath))
+     <span class="operator">,</span> m_view(<span class="keyword">new</span> <span class="type"><a href="qwebengineview.html" translate="no">QWebEngineView</a></span>)
+ {
+     connect(m_view<span class="operator">.</span>data()<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qwebengineview.html" translate="no">QWebEngineView</a></span><span class="operator">::</span>loadFinished<span class="operator">,</span>
+             <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Html2PdfConverter<span class="operator">::</span>loadFinished);
+     connect(m_view<span class="operator">.</span>data()<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qwebengineview.html" translate="no">QWebEngineView</a></span><span class="operator">::</span>pdfPrintingFinished<span class="operator">,</span>
+             <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Html2PdfConverter<span class="operator">::</span>pdfPrintingFinished);
+ }
+</pre>
+<p>The <code translate="no">run()</code> method will trigger the conversion process by asking <a href="qwebenginepage.html" translate="no">QWebEnginePage</a> to start loading the target URL. We then enter the main event loop:</p>
+<pre class="cpp" translate="no">
+ <span class="type">int</span> Html2PdfConverter<span class="operator">::</span>run()
+ {
+     m_view<span class="operator">-</span><span class="operator">&gt;</span>load(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span><span class="operator">::</span>fromUserInput(m_inputPath));
+     <span class="keyword">return</span> <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span><span class="operator">::</span>exec();
+ }
+</pre>
+<p>After the loading is finished we begin PDF generation. We ask the <a href="qwebenginepage.html#printToPdf" translate="no">QWebEnginePage::printToPdf</a> method to write the output directly to disk:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> Html2PdfConverter<span class="operator">::</span>loadFinished(<span class="type">bool</span> ok)
+ {
+     <span class="keyword">if</span> (<span class="operator">!</span>ok) {
+         <span class="type"><a href="../qtcore/qtextstream.html" translate="no">QTextStream</a></span>(stderr)
+             <span class="operator">&lt;</span><span class="operator">&lt;</span> tr(<span class="string">&quot;failed to load URL '%1'&quot;</span>)<span class="operator">.</span>arg(m_inputPath) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;\n&quot;</span>;
+         <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>exit(<span class="number">1</span>);
+         <span class="keyword">return</span>;
+     }
+
+     m_view<span class="operator">-</span><span class="operator">&gt;</span>printToPdf(m_outputPath);
+ }
+</pre>
+<p>Once we receive the signal that the PDF conversion has finished, all that remains is to report potential errors and exit the program:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> Html2PdfConverter<span class="operator">::</span>pdfPrintingFinished(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>filePath<span class="operator">,</span> <span class="type">bool</span> success)
+ {
+     <span class="keyword">if</span> (<span class="operator">!</span>success) {
+         <span class="type"><a href="../qtcore/qtextstream.html" translate="no">QTextStream</a></span>(stderr)
+             <span class="operator">&lt;</span><span class="operator">&lt;</span> tr(<span class="string">&quot;failed to print to output file '%1'&quot;</span>)<span class="operator">.</span>arg(filePath) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;\n&quot;</span>;
+         <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>exit(<span class="number">1</span>);
+     } <span class="keyword">else</span> {
+         <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>quit();
+     }
+ }
+</pre>
+<h4 id="the-main-function">The Main Function</h4>
+<p>Our <code translate="no">main</code> function is responsible for setting up a <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> and parsing command line arguments:</p>
+<pre class="cpp" translate="no">
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
+ {
+     <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span> app(argc<span class="operator">,</span> argv);
+     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>setOrganizationName(<span class="string">&quot;QtExamples&quot;</span>);
+     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>setApplicationName(<span class="string">&quot;html2pdf&quot;</span>);
+     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>setApplicationVersion(QT_VERSION_STR);
+
+     <span class="type"><a href="../qtcore/qcommandlineparser.html" translate="no">QCommandLineParser</a></span> parser;
+     parser<span class="operator">.</span>setApplicationDescription(
+         <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;main&quot;</span><span class="operator">,</span> <span class="string">&quot;Converts the web page INPUT into the PDF file OUTPUT.&quot;</span>));
+     parser<span class="operator">.</span>addHelpOption();
+     parser<span class="operator">.</span>addVersionOption();
+     parser<span class="operator">.</span>addPositionalArgument(
+         <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;main&quot;</span><span class="operator">,</span> <span class="string">&quot;INPUT&quot;</span>)<span class="operator">,</span>
+         <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;main&quot;</span><span class="operator">,</span> <span class="string">&quot;Input URL for PDF conversion.&quot;</span>));
+     parser<span class="operator">.</span>addPositionalArgument(
+         <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;main&quot;</span><span class="operator">,</span> <span class="string">&quot;OUTPUT&quot;</span>)<span class="operator">,</span>
+         <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;main&quot;</span><span class="operator">,</span> <span class="string">&quot;Output file name for PDF conversion.&quot;</span>));
+
+     parser<span class="operator">.</span>process(<span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>arguments());
+
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> requiredArguments <span class="operator">=</span> parser<span class="operator">.</span>positionalArguments();
+     <span class="keyword">if</span> (requiredArguments<span class="operator">.</span>size() <span class="operator">!</span><span class="operator">=</span> <span class="number">2</span>)
+         parser<span class="operator">.</span>showHelp(<span class="number">1</span>);
+
+     Html2PdfConverter converter(requiredArguments<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">,</span> requiredArguments<span class="operator">.</span>at(<span class="number">1</span>));
+     <span class="keyword">return</span> converter<span class="operator">.</span>run();
+ }
+</pre>
+<p>Note that to use Qt WebEngine Widgets we need to create a <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> and not a <a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a>, even though this is a command line application.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtwebengine.git/tree/examples/webenginewidgets/html2pdf?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@webenginewidgets/html2pdf -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

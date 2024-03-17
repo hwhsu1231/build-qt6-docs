@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- remoteobjects_server.qdoc -->
+  <meta name="description" content="A server which shares a time object with connected clients.">
+  <title>Time Server Application | Qt Remote Objects 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtremoteobjects-index.html" translate="no">Qt Remote Objects</a></li>
+<li><a href="qtremoteobjects-examples.html" translate="no">Qt Remote Objects Examples</a></li>
+<li>Time Server Application</li>
+<li id="buildversion"><a href="qtremoteobjects-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#defining-remote-objects-using-a-rep-file">Defining Remote Objects using a REP-file</a></li>
+<li class="level1"><a href="#the-timemodel-class">The TimeModel Class</a></li>
+<li class="level1"><a href="#sharing-an-instance-of-timemodel">Sharing an Instance of TimeModel</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Time Server Application</h1>
+<!-- $$$remoteobjects_server-brief -->
+<p>A server which shares a time object with connected clients.</p>
+<!-- @@@remoteobjects_server -->
+<!-- $$$remoteobjects_server-description -->
+<div class="descr" id="details">
+<p>The Time Server Application instantiates a <code translate="no">MinuteTimer</code> object and shares it with all connected <a href="qtremoteobjects-clientapp-example.html" translate="no">Time Client Applications</a>.</p>
+<p class="centerAlign"><img src="images/remoteobjects-server-example.webp" alt="" /></p><h4 id="defining-remote-objects-using-a-rep-file">Defining Remote Objects using a REP-file</h4>
+<p>The REP-file &quot;timemodel.rep&quot; in the parent directory of the example is used to generate the header-files used by both applications. For this application, the generated &quot;rep_timemodel_source.h&quot; file defines <code translate="no">MinuteTimerSource</code>, the the class to subclass for the implementation of <code translate="no">MinuteTimer</code>, and other related classes.</p>
+<h4 id="the-timemodel-class">The TimeModel Class</h4>
+<p>The <code translate="no">TimeModel</code> class in timemodel.h and timemodel.cpp implements the time object to share. It uses a <code translate="no">QBasicTimer</code> to ensure that the time is updated by calling the <code translate="no">timerEvent</code> member function.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> MinuteTimer<span class="operator">::</span>timerEvent(<span class="type"><a href="../qtcore/qtimerevent.html" translate="no">QTimerEvent</a></span> <span class="operator">*</span>)
+ {
+     <span class="type"><a href="../qtcore/qtime.html" translate="no">QTime</a></span> now <span class="operator">=</span> <span class="type"><a href="../qtcore/qtime.html" translate="no">QTime</a></span><span class="operator">::</span>currentTime();
+     <span class="keyword">if</span> (now<span class="operator">.</span>second() <span class="operator">=</span><span class="operator">=</span> <span class="number">59</span> <span class="operator">&amp;</span><span class="operator">&amp;</span> now<span class="operator">.</span>minute() <span class="operator">=</span><span class="operator">=</span> time<span class="operator">.</span>minute() <span class="operator">&amp;</span><span class="operator">&amp;</span> now<span class="operator">.</span>hour() <span class="operator">=</span><span class="operator">=</span> time<span class="operator">.</span>hour()) {
+         <span class="comment">// just missed time tick over, force it, wait extra 0.5 seconds</span>
+         time <span class="operator">=</span> time<span class="operator">.</span>addSecs(<span class="number">60</span>);
+         timer<span class="operator">.</span>start(<span class="number">60500</span><span class="operator">,</span> <span class="keyword">this</span>);
+     } <span class="keyword">else</span> {
+         time <span class="operator">=</span> now;
+         timer<span class="operator">.</span>start(<span class="number">60000</span><span class="operator">-</span>time<span class="operator">.</span>second()<span class="operator">*</span><span class="number">1000</span><span class="operator">,</span> <span class="keyword">this</span>);
+     }
+     <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>()<span class="operator">&lt;</span><span class="operator">&lt;</span><span class="string">&quot;Time&quot;</span><span class="operator">&lt;</span><span class="operator">&lt;</span>time;
+     setHour(time<span class="operator">.</span>hour());
+     setMinute(time<span class="operator">.</span>minute());
+     <span class="keyword">emit</span> timeChanged();
+ }
+</pre>
+<h4 id="sharing-an-instance-of-timemodel">Sharing an Instance of TimeModel</h4>
+<p>Instances of <code translate="no">QRemoteObjectHost</code> and a <code translate="no">QRemoteObjectRegistryHost</code> are created to host an object and having a registry to find it. A <code translate="no">MinuteTimer</code> object is then created and it is shared using the <code translate="no">enableRemoting</code> member function of the <code translate="no">QRemoteObjectRegistryHost</code> object.</p>
+<pre class="cpp" translate="no">
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
+ {
+     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span> app(argc<span class="operator">,</span> argv);
+
+     <span class="preprocessor">#if defined(Q_OS_UNIX) || defined(Q_OS_LINUX) || defined(Q_OS_QNX)</span>
+         signal(SIGINT<span class="operator">,</span> <span class="operator">&amp;</span>unix_handler);
+     <span class="preprocessor">#elif defined(Q_OS_WIN32)</span>
+         SetConsoleCtrlHandler((PHANDLER_ROUTINE)WinHandler<span class="operator">,</span> TRUE);
+     <span class="preprocessor">#endif</span>
+     <span class="type"><a href="qremoteobjecthost.html" translate="no">QRemoteObjectHost</a></span> node(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;local:replica&quot;</span>))<span class="operator">,</span><span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;local:registry&quot;</span>)));
+     <span class="type"><a href="qremoteobjectregistryhost.html" translate="no">QRemoteObjectRegistryHost</a></span> node2(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;local:registry&quot;</span>)));
+     MinuteTimer timer;
+     node2<span class="operator">.</span>enableRemoting(<span class="operator">&amp;</span>timer);
+
+     Q_UNUSED(timer)
+     <span class="keyword">return</span> app<span class="operator">.</span>exec();
+ }
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtremoteobjects.git/tree/examples/remoteobjects/remoteobjects_server?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<p><b>See also </b><a href="qtremoteobjects-clientapp-example.html" translate="no">Time Client Application</a>.</p>
+<!-- @@@remoteobjects_server -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

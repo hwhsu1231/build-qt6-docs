@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtprotobufgen.qdoc -->
+  <meta name="description" content="An overview of the qtprotobufgen tool and how to use it.">
+  <title>The qtprotobufgen Tool | Qt GRPC 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgrpc-index.html" translate="no">Qt GRPC</a></li>
+<li>The qtprotobufgen Tool</li>
+<li id="buildversion"><a href="qtgrpc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#usage">Usage</a></li>
+<li class="level2"><a href="#cmake">CMake</a></li>
+<li class="level2"><a href="#qml-extended-protobuf-example">QML extended protobuf example:</a></li>
+<li class="level2"><a href="#running-manually">Running manually</a></li>
+<li class="level2"><a href="#options">Options</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">The qtprotobufgen Tool</h1>
+<!-- $$$qtprotobufgen-qt-tool.html-description -->
+<div class="descr" id="details">
+<p>The <code translate="no">qtprotobufgen</code> tool can be used to generate <a href="../qtprotobuf/qtprotobuf.html" translate="no">QtProtobuf</a> classes from a protobuf schema. The tool is provided by the CMake <code translate="no">Qt6::ProtobufTools</code> package. It works as an extension to Google's <code translate="no">protoc</code> tool.</p>
+<pre class="cpp plain" translate="no">
+ find_package(Qt6 COMPONENTS ProtobufTools REQUIRED)
+</pre>
+<h2 id="usage">Usage</h2>
+<p>Qt provides CMake functions that ease the use of the <code translate="no">qtprotobufgen</code> tool. When using CMake as a build tool you should prefer using the Qt CMake API. For build systems other than CMake, adapt the commands described in <a href="qtprotobufgen-qt-tool.html#running-manually" translate="no">Running manually</a>.</p>
+<div class="admonition note">
+<p><b>Note: </b>there is no explicit support for building gRPC and Protobuf applications using the Qt GRPC module with <i>qmake</i>.</p>
+</div>
+<h3 id="cmake">CMake</h3>
+<p>The following CMake commands integrate a protobuf schema into a Qt project.</p>
+<span id="cmake-commands-qtprotobuf"></span><div class="table"><table class="annotated">
+<tr class="odd topAlign"><td class="tblName" translate="no"><p><a href="../qtprotobuf/qt-add-protobuf.html">qt_add_protobuf</a></p></td><td class="tblDescr"><p>Generates Qt-based C++ source code using a protobuf schema</p></td></tr>
+</table></div>
+<p>Usually <code translate="no">qtprotobufgen</code> would be invoked through CMake using the <code translate="no">qt_add_protobuf</code> macro, as shown in the following examples:</p>
+<pre class="cpp plain" translate="no">
+ cmake_minimum_required(VERSION 3.16..&#x2e;3&#x2e;22)
+ project(MyThings)
+
+ find_package(Qt6 REQUIRED COMPONENTS Protobuf)
+ qt_standard_project_setup()
+
+ qt_add_protobuf(MyMessages
+     GENERATE_PACKAGE_SUBFOLDERS
+     PROTO_FILES
+         path/to/message.proto
+         path/to/other_message.proto
+     PROTO_INCLUDES
+         /path/to/proto/include
+ )
+
+ qt_add_executable(MyApp main.cpp)
+
+ target_link_libraries(MyApp PRIVATE MyMessages)
+</pre>
+<p>In the example above, we generate a library called <code translate="no">MyMessages</code>, which contains the message types defined in the paths passed to the <code translate="no">PROTO_FILES</code> option. The <code translate="no">GENERATE_PACKAGE_SUBFOLDERS</code> option to generate a folder structure for the generated files. And the <code translate="no">PROTO_INCLUDES</code> option tells protoc to look for dependencies or imports in the specified directories. We create a target for an executable called <code translate="no">MyApp</code>, which we link to the <code translate="no">MyMessages</code> library.</p>
+<h3 id="qml-extended-protobuf-example">QML extended protobuf example:</h3>
+<pre class="cpp plain" translate="no">
+ cmake_minimum_required(VERSION 3.16..&#x2e;3&#x2e;22)
+ project(MyThings)
+
+ find_package(Qt6 REQUIRED COMPONENTS Protobuf Quick)
+ qt_standard_project_setup()
+
+ qt_add_protobuf(MyMessagesPlugin
+     QML
+     QML_URI my.messages.module.uri
+     PROTO_FILES
+         path/to/message.proto
+         path/to/other_message.proto
+     PROTO_INCLUDES
+         /path/to/proto/include
+ )
+
+ qt_add_qml_module(MyApp
+     URI example.uri
+     VERSION 1.0
+     QML_FILES qml/main.qml
+ )
+
+ qt_add_executable(MyApp main.cpp)
+ target_link_libraries(MyApp PRIVATE Quick)
+</pre>
+<p>In the QML extended example above, we generate a QML module called <code translate="no">MyMessagesPlugin</code>, which contains the message types defined in the paths passed to the <code translate="no">PROTO_FILES</code> option. We use the <code translate="no">QML</code> option, that enables proto message types registration in the <code translate="no">QML</code> context. The registered types will be available in <code translate="no">QML</code> by importing a path that is set by the <code translate="no">QML_URI</code>. Finally, we create a target for an executable called <code translate="no">MyApp</code>, which has a QML module for the graphical part and loads <code translate="no">MyMessagesPlugin</code> into the main.qml file via the <code translate="no">my.messages.module.uri</code> import.</p>
+<h3 id="running-manually">Running manually</h3>
+<pre class="cpp plain" translate="no">
+ protoc --plugin=protoc-gen-qtprotobuf=&lt;path/to/bin/&gt;qtprotobufgen \
+     --qtprotobuf_out=&quot;[&lt;options&gt;:]&lt;output_dir&gt;&quot; \
+     [--qtprotobuf_opt=&quot;&lt;options&gt;&quot;] \
+     [-I/extra/proto/include/path] \
+     &lt;protofile&gt;.proto
+</pre>
+<p>The <code translate="no">options</code> argument is a semicolon-separated list of <a href="qtprotobufgen-qt-tool.html#options" translate="no">Options</a>. It can be passed in <i>two</i> different ways. Either by prepending to the options to the output_dir argument, delimited by a colon. Or through a separate argument, <code translate="no">--qtprotobuf_opt</code>. You also can pass the corresponding keys as the <code translate="no">QT_PROTOBUF_OPTIONS</code> environment variable. Keys need to be presented as a semicolon-separated list:</p>
+<pre class="cpp plain" translate="no">
+ export QT_PROTOBUF_OPTIONS=&quot;COPY_COMMENTS;GENERATE_PACKAGE_SUBFOLDERS;EXTRA_NAMESPACE=MyTopLevelNamespace&quot;
+</pre>
+<h3 id="options">Options</h3>
+<p>The generator supports options that can be provided to tune generation. Options have direct aliases in the <a href="../qtprotobuf/qt-add-protobuf.html" translate="no">qt_add_protobuf</a> function. The following options are supported:</p>
+<ul>
+<li><code translate="no">COPY_COMMENTS</code> copies comments from <code translate="no">.proto</code> files. If provided in the parameter list, comments related to messages and fields are copied to generated header files.</li>
+<li><code translate="no">GENERATE_PACKAGE_SUBFOLDERS</code> generates a folder structure for the generated files matching the <code translate="no">.proto</code> file's package name. For example, <code translate="no">package io.qt.test;</code> would put the generated files into <code translate="no">io/qt/test/</code>.</li>
+<li><code translate="no">EXTRA_NAMESPACE</code> is an optional namespace that will be used for the generated classes. The classes are always generated in a namespace whose name is the same as the package name specified in the <code translate="no">.proto</code> file. If this option is used, then everything will be nested inside the extra namespace.</li>
+<li><code translate="no">EXPORT_MACRO</code> is the base name of the symbol export macro used for the generated code. The generated macro name is constructed as <code translate="no">QPB_&lt;EXPORT_MACRO&gt;_EXPORT</code>. If the option is not set, the macro is not generated.</li>
+<li><code translate="no">QML_URI</code> enables <a href="../qtprotobuf/qprotobufmessage.html" translate="no">QProtobufMessage</a> types in the QML context by registering them in a QML module via the provided <code translate="no">URI</code> import path. The <code translate="no">URI</code> option will be used in the line of the generated <code translate="no">qmldir</code> file, and also used to form the target path by replacing dots with forward slashes.<div class="admonition note">
+<p><b>Note: </b>Read Identified Modules for further in-depth discussion of the <code translate="no">URI</code>.</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- @@@qtprotobufgen-qt-tool.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

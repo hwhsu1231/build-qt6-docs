@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qsignalspy.qdoc -->
+  <meta name="description" content="The QSignalSpy class enables introspection of signal emission.">
+  <title>QSignalSpy Class | Qt Test 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qttest-index.html" translate="no">Qt Test</a></li>
+<li><a href="qttest-module.html" translate="no">C++ Classes</a></li>
+<li>QSignalSpy</li>
+<li id="buildversion"><a href="qttest-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+<li class="level2"><a href="#verifying-signal-emissions">Verifying Signal Emissions</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">QSignalSpy Class</h1>
+<!-- $$$QSignalSpy-brief -->
+<p>The QSignalSpy class enables introspection of signal emission. <a href="#details">More...</a></p>
+<!-- @@@QSignalSpy -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign">  <span class="preprocessor">#include &lt;QSignalSpy&gt;</span></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> CMake:</td><td class="memItemRight bottomAlign"> find_package(Qt6 REQUIRED COMPONENTS Test) <br/>
+target_link_libraries(mytarget PRIVATE Qt6::Test)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> qmake:</td><td class="memItemRight bottomAlign"> QT += testlib</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <a href="../qtcore/qobject.html" translate="no">QObject</a> and <a href="../qtcore/qlist.html" translate="no">QList</a></td></tr>
+</table></div>
+<ul>
+<li><a href="qsignalspy-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="public-functions">Public Functions</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qsignalspy.html#QSignalSpy" translate="no">QSignalSpy</a></b>(const QObject *<i>object</i>, const char *<i>signal</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qsignalspy.html#QSignalSpy-1" translate="no">QSignalSpy</a></b>(const QObject *<i>object</i>, PointerToMemberFunction <i>signal</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qsignalspy.html#QSignalSpy-2" translate="no">QSignalSpy</a></b>(const QObject *<i>obj</i>, const QMetaMethod &amp;<i>signal</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsignalspy.html#isValid" translate="no">isValid</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QByteArray </td><td class="memItemRight bottomAlign"><b><a href="qsignalspy.html#signal" translate="no">signal</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsignalspy.html#wait" translate="no">wait</a></b>(int <i>timeout</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsignalspy.html#wait-1" translate="no">wait</a></b>(std::chrono::milliseconds <i>timeout</i> = std::chrono::seconds{5})</td></tr>
+</table></div>
+<!-- $$$QSignalSpy-description -->
+<div class="descr">
+<h2 id="details">Detailed Description</h2>
+<p>QSignalSpy can connect to any signal of any object and records its emission. QSignalSpy itself is a list of <a href="../qtcore/qvariant.html" translate="no">QVariant</a> lists. Each emission of the signal will append one item to the list, containing the arguments of the signal.</p>
+<p>The following example records all signal emissions for the <code translate="no">clicked()</code> signal of a <a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span> <span class="operator">*</span>box <span class="operator">=</span> <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>;
+ <span class="type"><a href="qsignalspy.html#QSignalSpy" translate="no">QSignalSpy</a></span> spy(box<span class="operator">,</span> SIGNAL(clicked(<span class="type">bool</span>)));
+
+ <span class="comment">// do something that triggers the signal</span>
+ box<span class="operator">-</span><span class="operator">&gt;</span>animateClick();
+
+ QCOMPARE(spy<span class="operator">.</span>count()<span class="operator">,</span> <span class="number">1</span>); <span class="comment">// make sure the signal was emitted exactly one time</span>
+ <span class="type"><a href="../qtcore/qlist.html#QList-1" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">&gt;</span> arguments <span class="operator">=</span> spy<span class="operator">.</span>takeFirst(); <span class="comment">// take the first signal</span>
+
+ QVERIFY(arguments<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">.</span>toBool() <span class="operator">=</span><span class="operator">=</span> <span class="keyword">true</span>); <span class="comment">// verify the first argument</span>
+</pre>
+<p><code translate="no">spy.takeFirst()</code> returns the arguments for the first emitted signal, as a list of <a href="../qtcore/qvariant.html" translate="no">QVariant</a> objects. The <code translate="no">clicked()</code> signal has a single bool argument, which is stored as the first entry in the list of arguments.</p>
+<p>The example below catches a signal from a custom object:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qsignalspy.html#QSignalSpy" translate="no">QSignalSpy</a></span> spy(myCustomObject<span class="operator">,</span> SIGNAL(mySignal(<span class="type">int</span><span class="operator">,</span><span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">,</span><span class="type">double</span>)));
+
+ myCustomObject<span class="operator">-</span><span class="operator">&gt;</span>doSomething(); <span class="comment">// trigger emission of the signal</span>
+
+ <span class="type"><a href="../qtcore/qlist.html#QList-1" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">&gt;</span> arguments <span class="operator">=</span> spy<span class="operator">.</span>takeFirst();
+ QVERIFY(arguments<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">.</span>typeId() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qmetatype.html" translate="no">QMetaType</a></span><span class="operator">::</span>Int);
+ QVERIFY(arguments<span class="operator">.</span>at(<span class="number">1</span>)<span class="operator">.</span>typeId() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qmetatype.html" translate="no">QMetaType</a></span><span class="operator">::</span><span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span>);
+ QVERIFY(arguments<span class="operator">.</span>at(<span class="number">2</span>)<span class="operator">.</span>typeId() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qmetatype.html" translate="no">QMetaType</a></span><span class="operator">::</span>Double);
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Non-standard data types need to be registered, using the <a href="../qtcore/qmetatype.html#qRegisterMetaType-3" translate="no">qRegisterMetaType</a>() function, before you can create a QSignalSpy. For example:</p>
+</div>
+<pre class="cpp" translate="no">
+ <a href="../qtcore/qmetatype.html#qRegisterMetaType-3" translate="no">qRegisterMetaType</a><span class="operator">&lt;</span>SomeStruct<span class="operator">&gt;</span>();
+ <span class="type"><a href="qsignalspy.html#QSignalSpy" translate="no">QSignalSpy</a></span> spy(<span class="operator">&amp;</span>model<span class="operator">,</span> SIGNAL(whatever(SomeStruct)));
+</pre>
+<p>To retrieve the instance, you can use <a href="../qtcore/qvariant.html#qvariant_cast" translate="no">qvariant_cast</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// get the first argument from the first received signal:</span>
+ SomeStruct result <span class="operator">=</span> qvariant_cast<span class="operator">&lt;</span>SomeStruct<span class="operator">&gt;</span>(spy<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">.</span>at(<span class="number">0</span>));
+</pre>
+<h3 id="verifying-signal-emissions">Verifying Signal Emissions</h3>
+<p>The QSignalSpy class provides an elegant mechanism for capturing the list of signals emitted by an object. However, you should verify its validity after construction. The constructor does a number of sanity checks, such as verifying that the signal to be spied upon actually exists. To make the diagnosis of test failures easier, the results of these checks should be checked by calling <code translate="no">QVERIFY(spy.isValid())</code> before proceeding further with a test.</p>
+</div>
+<p><b>See also </b><a href="qtest.html#QVERIFY" translate="no">QVERIFY</a>().</p>
+<!-- @@@QSignalSpy -->
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$QSignalSpy[overload1]$$$QSignalSpyconstQObject*constchar* -->
+<h3 class="fn" translate="no" id="QSignalSpy"><code translate="no">[explicit] </code>QSignalSpy::<span class="name">QSignalSpy</span>(const <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>object</i>, const <span class="type">char</span> *<i>signal</i>)</h3>
+<p>Constructs a new QSignalSpy that listens for emissions of the <i translate="no">signal</i> from the <a href="../qtcore/qobject.html" translate="no">QObject</a> <i translate="no">object</i>. If QSignalSpy is not able to listen for a valid signal (for example, because <i translate="no">object</i> is <code translate="no">nullptr</code> or <i translate="no">signal</i> does not denote a valid signal of <i translate="no">object</i>), an explanatory warning message will be output using <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() and subsequent calls to <code translate="no">isValid()</code> will return false.</p>
+<p>Example:</p>
+<pre class="cpp" translate="no">
+ <span class="type">QSignalSpy</span> spy(myPushButton<span class="operator">,</span> SIGNAL(clicked(<span class="type">bool</span>)));
+</pre>
+<!-- @@@QSignalSpy -->
+<!-- $$$QSignalSpy$$$QSignalSpyconstQObject*PointerToMemberFunction -->
+<h3 class="fn" translate="no" id="QSignalSpy-1">template &lt;typename PointerToMemberFunction&gt; QSignalSpy::<span class="name">QSignalSpy</span>(const <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>object</i>, <span class="type">PointerToMemberFunction</span> <i>signal</i>)</h3>
+<p>Constructs a new QSignalSpy that listens for emissions of the <i translate="no">signal</i> from the <a href="../qtcore/qobject.html" translate="no">QObject</a> <i translate="no">object</i>. If QSignalSpy is not able to listen for a valid signal (for example, because <i translate="no">object</i> is <code translate="no">nullptr</code> or <i translate="no">signal</i> does not denote a valid signal of <i translate="no">object</i>), an explanatory warning message will be output using <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() and subsequent calls to <code translate="no">isValid()</code> will return false.</p>
+<p>Example:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qsignalspy.html#QSignalSpy" translate="no">QSignalSpy</a></span> spy(myPushButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked);
+</pre>
+<!-- @@@QSignalSpy -->
+<!-- $$$QSignalSpy$$$QSignalSpyconstQObject*constQMetaMethod& -->
+<h3 class="fn" translate="no" id="QSignalSpy-2">QSignalSpy::<span class="name">QSignalSpy</span>(const <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>obj</i>, const <span class="type"><a href="../qtcore/qmetamethod.html" translate="no">QMetaMethod</a></span> &amp;<i>signal</i>)</h3>
+<p>Constructs a new QSignalSpy that listens for emissions of the <i translate="no">signal</i> from the <a href="../qtcore/qobject.html" translate="no">QObject</a> <i translate="no">obj</i>. If QSignalSpy is not able to listen for a valid signal (for example, because <i translate="no">obj</i> is <code translate="no">nullptr</code> or <i translate="no">signal</i> does not denote a valid signal of <i translate="no">obj</i>), an explanatory warning message will be output using <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() and subsequent calls to <code translate="no">isValid()</code> will return false.</p>
+<p>This constructor is convenient to use when Qt's meta-object system is heavily used in a test.</p>
+<p>Basic usage example:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> object;
+ <span class="keyword">auto</span> mo <span class="operator">=</span> object<span class="operator">.</span>metaObject();
+ <span class="keyword">auto</span> signalIndex <span class="operator">=</span> mo<span class="operator">-</span><span class="operator">&gt;</span>indexOfSignal(<span class="string">&quot;objectNameChanged(QString)&quot;</span>);
+ <span class="keyword">auto</span> signal <span class="operator">=</span> mo<span class="operator">-</span><span class="operator">&gt;</span>method(signalIndex);
+
+ <span class="type"><a href="qsignalspy.html#QSignalSpy" translate="no">QSignalSpy</a></span> spy(<span class="operator">&amp;</span>object<span class="operator">,</span> signal);
+ object<span class="operator">.</span>setObjectName(<span class="string">&quot;A new object name&quot;</span>);
+ QCOMPARE(spy<span class="operator">.</span>count()<span class="operator">,</span> <span class="number">1</span>);
+</pre>
+<p>Imagine we need to check whether all properties of the <a href="../qtgui/qwindow.html" translate="no">QWindow</a> class that represent minimum and maximum dimensions are properly writable. The following example demonstrates one of the approaches:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> tst_QWindow<span class="operator">::</span>writeMinMaxDimensionalProps_data()
+     <span class="type">QTest</span><span class="operator">::</span>addColumn<span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>(<span class="string">&quot;propertyIndex&quot;</span>);
+
+     <span class="comment">// Collect all relevant properties</span>
+     <span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">auto</span> mo <span class="operator">=</span> <span class="type"><a href="../qtgui/qwindow.html" translate="no">QWindow</a></span><span class="operator">::</span>staticMetaObject;
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> mo<span class="operator">.</span>propertyOffset(); i <span class="operator">&lt;</span> mo<span class="operator">.</span>propertyCount(); <span class="operator">+</span><span class="operator">+</span>i) {
+         <span class="keyword">auto</span> property <span class="operator">=</span> mo<span class="operator">.</span>property(i);
+
+         <span class="comment">// ...that have type int</span>
+         <span class="keyword">if</span> (property<span class="operator">.</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>Int) {
+             <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qregularexpression.html" translate="no">QRegularExpression</a></span> re(<span class="string">&quot;^minimum|maximum&quot;</span>);
+             <span class="keyword">const</span> <span class="keyword">auto</span> name <span class="operator">=</span> property<span class="operator">.</span>name();
+
+             <span class="comment">// ...and start with &quot;minimum&quot; or &quot;maximum&quot;</span>
+             <span class="keyword">if</span> (re<span class="operator">.</span>match(name)<span class="operator">.</span>hasMatch()) {
+                 <span class="type">QTest</span><span class="operator">::</span>addRow(<span class="string">&quot;%s&quot;</span><span class="operator">,</span> name) <span class="operator">&lt;</span><span class="operator">&lt;</span> i;
+             }
+         }
+     }
+ }
+
+ <span class="type">void</span> tst_QWindow<span class="operator">::</span>writeMinMaxDimensionalProps()
+ {
+     QFETCH(<span class="type">int</span><span class="operator">,</span> propertyIndex);
+
+     <span class="keyword">auto</span> property <span class="operator">=</span> <span class="type"><a href="../qtgui/qwindow.html" translate="no">QWindow</a></span><span class="operator">::</span>staticMetaObject<span class="operator">.</span>property(propertyIndex);
+     QVERIFY(property<span class="operator">.</span>isWritable());
+     QVERIFY(property<span class="operator">.</span>hasNotifySignal());
+
+     <span class="type"><a href="../qtgui/qwindow.html" translate="no">QWindow</a></span> window;
+     <span class="type"><a href="qsignalspy.html#QSignalSpy" translate="no">QSignalSpy</a></span> spy(<span class="operator">&amp;</span>window<span class="operator">,</span> property<span class="operator">.</span>notifySignal());
+
+     QVERIFY(property<span class="operator">.</span>write(<span class="operator">&amp;</span>window<span class="operator">,</span> <span class="number">42</span>));
+     QCOMPARE(spy<span class="operator">.</span>count()<span class="operator">,</span> <span class="number">1</span>);
+ }
+</pre>
+<!-- @@@QSignalSpy -->
+<!-- $$$isValid[overload1]$$$isValid -->
+<h3 class="fn" translate="no" id="isValid"><span class="type">bool</span> QSignalSpy::<span class="name">isValid</span>() const</h3>
+<p>Returns <code translate="no">true</code> if the signal spy listens to a valid signal, otherwise false.</p>
+<!-- @@@isValid -->
+<!-- $$$signal[overload1]$$$signal -->
+<h3 class="fn" translate="no" id="signal"><span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> QSignalSpy::<span class="name">signal</span>() const</h3>
+<p>Returns the normalized signal the spy is currently listening to.</p>
+<!-- @@@signal -->
+<!-- $$$wait[overload1]$$$waitint -->
+<h3 class="fn" translate="no" id="wait"><span class="type">bool</span> QSignalSpy::<span class="name">wait</span>(<span class="type">int</span> <i>timeout</i>)</h3>
+<p>This is an overloaded function, equivalent passing <i translate="no">timeout</i> to the chrono overload:</p>
+<pre class="cpp" translate="no">
+ wait(std<span class="operator">::</span>chrono<span class="operator">::</span>milliseconds{timeout});
+</pre>
+<p>Returns <code translate="no">true</code> if the signal was emitted at least once in <i translate="no">timeout</i>, otherwise returns <code translate="no">false</code>.</p>
+<!-- @@@wait -->
+<!-- $$$wait$$$waitstd::chrono::milliseconds -->
+<h3 class="fn" translate="no" id="wait-1"><code translate="no">[since 6.6] </code><span class="type">bool</span> QSignalSpy::<span class="name">wait</span>(<span class="type">std::chrono::milliseconds</span> <i>timeout</i> = std::chrono::seconds{5})</h3>
+<p>Starts an event loop that runs until the given signal is received or <i translate="no">timeout</i> has passed, whichever happens first.</p>
+<p><i translate="no">timeout</i> is any valid std::chrono::duration (std::chrono::seconds, std::chrono::milliseconds ..&#x2e;etc).</p>
+<p>Returns <code translate="no">true</code> if the signal was emitted at least once in <i translate="no">timeout</i>, otherwise returns <code translate="no">false</code>.</p>
+<p>Example:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">using</span> <span class="keyword">namespace</span> std<span class="operator">::</span>chrono_literals;
+ <span class="type"><a href="qsignalspy.html#QSignalSpy" translate="no">QSignalSpy</a></span> spy(object<span class="operator">,</span> signal);
+ spy<span class="operator">.</span>wait(<span class="number">2s</span>);
+</pre>
+<p>This function was introduced in Qt 6.6.</p>
+<!-- @@@wait -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

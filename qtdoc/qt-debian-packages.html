@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- debian-packages.qdoc -->
+  <meta name="description" content="Instructions How to Use Enterprise Qt Debian Packages">
+  <title>Enterprise Qt Debian Packages | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Enterprise Qt Debian Packages</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#debian-repository-configuration-format">Debian Repository Configuration Format</a></li>
+<li class="level1"><a href="#installing-public-gpg-key">Installing Public GPG Key</a></li>
+<li class="level1"><a href="#configuring-authentication">Configuring Authentication</a></li>
+<li class="level1"><a href="#updating-local-package-cache">Updating Local Package Cache</a></li>
+<li class="level1"><a href="#full-configuration-example">Full Configuration Example</a></li>
+<li class="level1"><a href="#troubleshooting">Troubleshooting</a></li>
+<li class="level2"><a href="#difficulties-in-authentication">Difficulties in authentication</a></li>
+<li class="level2"><a href="#difficulties-with-repository-gpg-key-usage">Difficulties with repository GPG key usage</a></li>
+<li class="level1"><a href="#repository-information-for-qt-releases">Repository information for Qt Releases</a></li>
+<li class="level2"><a href="#qt-creator">Qt Creator</a></li>
+<li class="level2"><a href="#qt-6-3-2">Qt 6.3&#x2e;2</a></li>
+<li class="level2"><a href="#qt-6-3-1">Qt 6.3&#x2e;1</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Enterprise Qt Debian Packages</h1>
+<!-- $$$qt-debian-packages.html-description -->
+<div class="descr" id="details">
+<p>To use Enterprise Debian packages with Qt, add your enterprise repositories to Advanced Packaging Tool (APT). For details, see <a href="qt-debian-packages.html#debian-repository-configuration-format" translate="no">Debian Repository Configuration Format</a>.</p>
+<p>To use the enterprise repositories, you need to:</p>
+<ul>
+<li><a href="qt-debian-packages.html#installing-public-gpg-key" translate="no">Install a public GPG key</a> for enterprise repositories</li>
+<li><a href="qt-debian-packages.html#configuring-authentication" translate="no">Configure Qt Account based authentication</a> for enterprise repository access</li>
+<li><a href="qt-debian-packages.html#full-configuration-example" translate="no">Configure repositories</a></li>
+</ul>
+<div class="admonition note">
+<p><b>Note: </b>The Enterprise Qt Debian packages are provided as technology-preview packages. For more details and support, <a href="https://www.qt.io/contact-us" translate="no">contact us</a>.</p>
+</div>
+<h2 id="debian-repository-configuration-format">Debian Repository Configuration Format</h2>
+<p>To add extra repositories for APT, insert repositories into a file with an extension of <i>.list</i> under the <i>/etc/apt/sources.list.d</i> directory. For each repository, add a new entry in the file. The generic format is as follows:</p>
+<pre class="cpp plain" translate="no">
+ deb [arch=&lt;arch&gt; signed-by=&lt;path&gt;] &lt;REPO_URL&gt; &lt;DIST&gt; &lt;COMPONENT(s)&gt;
+</pre>
+<p>An example of an enterprise repository entry:</p>
+<pre class="cpp plain" translate="no">
+ $ sudo nano /etc/apt/sources.list.d/tqtc.list
+
+     deb [arch=arm64 signed-by=/home/&lt;user&gt;/keyrings/tqtc/qt-company-debian-repo.gpg] https://debian-packages.qt.io/debian/enterprise/qt-6.3&#x2e;1-arm64 tqtc-focal main
+</pre>
+<p>See <a href="qt-debian-packages.html#repository-information-for-qt-releases" translate="no">Repository information for Qt Releases</a> for detailed information on how you can configure repositories per Qt release and architecture.</p>
+<h2 id="installing-public-gpg-key">Installing Public GPG Key</h2>
+<p>Install a public GPG (GNU Privacy Guard) key for Enterprise Qt Debian repositories as follows:</p>
+<pre class="cpp plain" translate="no">
+ $ mkdir -p $HOME/keyrings/tqtc  # pick a suitable location for you!
+ $ cd $HOME/keyrings/tqtc
+ $ wget https://cdn.qt.io/debian/keys/qt-company-debian-repo.gpg
+</pre>
+<h2 id="configuring-authentication">Configuring Authentication</h2>
+<p>To access the listed repositories, you need an enterprise Qt Account or an evaluation Qt Account.</p>
+<div class="admonition note">
+<p><b>Note: </b>If your password contains special characters, you may need to escape those by using <b>'\'</b> or <b>'%40'</b>.</p>
+</div>
+<p>Configure the Qt Account credentials for your APT package manager as follows:</p>
+<pre class="cpp plain" translate="no">
+ $ sudo nano /etc/apt/auth.conf
+
+       machine https://debian-packages.qt.io
+       login &lt;Qt Account login name (email)&gt;
+       password &lt;Qt Account password&gt;
+</pre>
+<h2 id="updating-local-package-cache">Updating Local Package Cache</h2>
+<p>Update the local package cache as follows:</p>
+<pre class="cpp plain" translate="no">
+ $ sudo apt-get update
+</pre>
+<p>No errors should originate from the added repository in the output.</p>
+<h2 id="full-configuration-example">Full Configuration Example</h2>
+<p>The following code snippet demonstrates the whole work flow with Enterprise Qt Debian packages:</p>
+<pre class="cpp plain" translate="no">
+ # install repository key
+ $ mkdir -p $HOME/keyrings/tqtc
+ $ cd $HOME/keyrings/tqtc
+ $ wget https://cdn.qt.io/debian/keys/qt-company-debian-repo.gpg
+
+ # configure Qt Account based authentication to Qt Debian repositories
+ $ sudo nano /etc/apt/auth.conf
+   machine https://debian-packages.qt.io
+   login &lt;your Qt Account email&gt;
+   password &lt;your Qt Account password&gt;
+
+ # add repositories
+ $ sudo nano /etc/apt/sources.list.d/tqtc.list
+     deb [arch=arm64 signed-by=/home/&lt;user&gt;/keyrings/tqtc/qt-company-debian-repo.gpg]
+     https://debian-packages.qt.io/debian/enterprise/qt-6.3&#x2e;1-arm64 tqtc-focal main
+
+ # update local package cache
+ $ sudo apt-get update
+
+ # search and install packages
+ $ apt-cache search qt6.3&#x2e;1
+ ..&#x2e;&#x2e;
+ ..&#x2e;&#x2e;
+ # files are installed under /opt/qt-6.3&#x2e;1/
+ $ sudo apt-get install qt6.3&#x2e;1-declarative-dev qt6.3&#x2e;1-declarative-private-dev ..&#x2e;
+</pre>
+<p>See <a href="qt-debian-packages.html#repository-information-for-qt-releases" translate="no">Repository information for Qt Releases</a> to pick the needed repositories into your <i>/etc/apt/sources.list.d/tqtc.list</i> file.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="difficulties-in-authentication">Difficulties in authentication</h3>
+<p>The server may response with the following HTTP error codes:</p>
+<h4 id="401-unauthorized">401 Unauthorized</h4>
+<p>Wrong credentials. User email and password must be provided in correct format.</p>
+<p>Also, try storing the credentials directly into the repository config:</p>
+<pre class="cpp plain" translate="no">
+ deb [..&#x2e;] https://&lt;Qt Account email&gt;:&lt;Qt Account passwd&gt;@https://debian-packages.qt.io/..&#x2e;&#x2e;&#x2e;
+</pre>
+<p>If your password contains special characters, you may need to escape those for APT. Use '' or '%40' for escaping those characters or try changing your Qt Account password.</p>
+<h4 id="403-forbidden">403 Forbidden</h4>
+<p>Missing credentials.</p>
+<h4 id="429-too-many-requests">429 Too Many Requests</h4>
+<p>User has sent too much <b>failed</b> requests (3 requests per minute).</p>
+<h4 id="500-internal-server-error">500 Internal Server Error</h4>
+<p>Contact <a href="https://www.qt.io/contact-us" translate="no">Qt support</a>.</p>
+<h3 id="difficulties-with-repository-gpg-key-usage">Difficulties with repository GPG key usage</h3>
+<p>An alternative to 'signed-by' usage attribute in the repository config is to install the key in the following way, althoug this is not recommended as it's deprecated way to install it:</p>
+<pre class="cpp plain" translate="no">
+ $ sudo apt-key add qt-company-debian-repo.gpg
+</pre>
+<h2 id="repository-information-for-qt-releases">Repository information for Qt Releases</h2>
+<p>Below you can find the Qt releases that the Enterprise Qt Debian packages supports. Pick the needed repositories and add them to your <i>/etc/apt/sources.list.d/tqtc.list</i> as instructed above.</p>
+<p>Also, the following tables list the installation directories on your system and the Linux distribution compatible with the packages.</p>
+<div class="admonition note">
+<p><b>Note: </b>To access the listed repositories, you need an evaluation Qt Account or a commercial Qt Account with a Qt for Device Creation license.</p>
+</div>
+<div class="admonition note">
+<p><b>Note: </b>The packages may work on other distributions as well but there is no guarantee on that.</p>
+</div>
+<h3 id="qt-creator">Qt Creator</h3>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Architecture</th><th >Distribution</th><th >Installation directory</th><th >Package resource list entries for APT</th></tr></thead>
+<tr valign="top" class="odd"><td >amd64</td><td >focal-fossa (Ubuntu 20.04)</td><td >/opt/qt-creator/</td><td >deb [arch=amd64 signed-by=&lt;path&gt;] https://debian-packages.qt.io/debian/enterprise/qtcreator-amd64 tqtc-focal main</td></tr>
+<tr valign="top" class="even"><td >arm64</td><td >focal-fossa (Ubuntu 20.04)</td><td >/opt/qt-creator/</td><td >deb [arch=arm64 signed-by=&lt;path&gt;] https://debian-packages.qt.io/debian/enterprise/qtcreator-arm64 tqtc-focal main</td></tr>
+</table></div>
+<h3 id="qt-6-3-2">Qt 6.3&#x2e;2</h3>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Architecture</th><th >Distribution</th><th >Installation directory</th><th >Package resource list entries for APT</th></tr></thead>
+<tr valign="top" class="odd"><td >amd64</td><td >focal-fossa (Ubuntu 20.04)</td><td >/opt/qt-6.3&#x2e;2/x86_64-linux-gnu/</td><td >deb [arch=amd64 signed-by=&lt;path&gt;] https://debian-packages.qt.io/debian/enterprise/qt-6.3&#x2e;2-amd64 tqtc-focal main</td></tr>
+<tr valign="top" class="even"><td >arm64</td><td >focal-fossa (Ubuntu 20.04)</td><td >/opt/qt-6.3&#x2e;2/aarch64-linux-gnu/</td><td >deb [arch=arm64 signed-by=&lt;path&gt;] https://debian-packages.qt.io/debian/enterprise/qt-6.3&#x2e;2-arm64 tqtc-focal main</td></tr>
+</table></div>
+<h3 id="qt-6-3-1">Qt 6.3&#x2e;1</h3>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Architecture</th><th >Distribution (build platform)</th><th >Installation directory</th><th >Package resource list entries for APT</th></tr></thead>
+<tr valign="top" class="odd"><td >amd64</td><td >focal-fossa (Ubuntu 20.04)</td><td >/opt/qt-6.3&#x2e;1/x86_64-linux-gnu/</td><td >deb [arch=amd64 signed-by=&lt;path&gt;] https://debian-packages.qt.io/debian/enterprise/qt-6.3&#x2e;1-amd64 tqtc-focal main</td></tr>
+<tr valign="top" class="even"><td >arm64</td><td >focal-fossa (Ubuntu 20.04)</td><td >/opt/qt-6.3&#x2e;1/aarch64-linux-gnu/</td><td >deb [arch=arm64 signed-by=&lt;path&gt;] https://debian-packages.qt.io/debian/enterprise/qt-6.3&#x2e;1-arm64 tqtc-focal main</td></tr>
+</table></div>
+</div>
+<!-- @@@qt-debian-packages.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

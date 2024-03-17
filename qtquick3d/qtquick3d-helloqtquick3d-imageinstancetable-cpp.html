@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- helloqtquick3d.qdoc -->
+  <meta name="description" content="Demonstrates simple instanced drawing.">
+  <title>Hello Qt Quick 3D Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Hello Qt Quick 3D Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Hello Qt Quick 3D Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;imageinstancetable.h&quot;</span>
+ <span class="preprocessor">#include &lt;math.h&gt;</span>
+ <span class="preprocessor">#include &lt;QMatrix4x4&gt;</span>
+ <span class="preprocessor">#include &lt;QColor&gt;</span>
+ <span class="preprocessor">#include &lt;QImage&gt;</span>
+ <span class="preprocessor">#include &lt;QQmlFile&gt;</span>
+
+ ImageInstanceTable<span class="operator">::</span>ImageInstanceTable(QQuick3DObject <span class="operator">*</span>parent) : QQuick3DInstancing(parent)
+ {
+ }
+
+ ImageInstanceTable<span class="operator">::</span><span class="operator">~</span>ImageInstanceTable()
+ {
+ }
+
+ <span class="type">int</span> ImageInstanceTable<span class="operator">::</span>gridSize() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_gridSize;
+ }
+
+ <span class="type">float</span> ImageInstanceTable<span class="operator">::</span>gridSpacing() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_gridSpacing;
+ }
+
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> ImageInstanceTable<span class="operator">::</span>image() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_imageSource;
+ }
+
+ <span class="type">void</span> ImageInstanceTable<span class="operator">::</span>setGridSize(<span class="type">int</span> gridSize)
+ {
+     <span class="keyword">if</span> (m_gridSize <span class="operator">=</span><span class="operator">=</span> gridSize)
+         <span class="keyword">return</span>;
+
+     m_gridSize <span class="operator">=</span> gridSize;
+     <span class="keyword">emit</span> gridSizeChanged(m_gridSize);
+     markDirty();
+     m_dirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">void</span> ImageInstanceTable<span class="operator">::</span>setGridSpacing(<span class="type">float</span> gridSpacing)
+ {
+     <span class="keyword">if</span> (<a href="../qtcore/qtnumeric.html#qFuzzyCompare-1" translate="no">qFuzzyCompare</a>(m_gridSpacing<span class="operator">,</span> gridSpacing))
+         <span class="keyword">return</span>;
+
+     m_gridSpacing <span class="operator">=</span> gridSpacing;
+     <span class="keyword">emit</span> gridSpacingChanged(m_gridSpacing);
+     markDirty();
+     m_dirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">void</span> ImageInstanceTable<span class="operator">::</span>setImage(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> image)
+ {
+     <span class="keyword">if</span> (m_imageSource <span class="operator">=</span><span class="operator">=</span> image)
+         <span class="keyword">return</span>;
+
+     m_imageSource <span class="operator">=</span> image;
+     <span class="keyword">emit</span> imageChanged(m_imageSource);
+     markDirty();
+     m_dirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> ImageInstanceTable<span class="operator">::</span>getInstanceBuffer(<span class="type">int</span> <span class="operator">*</span>instanceCount)
+ {
+     <span class="keyword">if</span> (m_dirty) {
+         <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> image(m_imageSource);
+         <span class="keyword">if</span> (image<span class="operator">.</span>isNull())
+             <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Could not load image&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> m_imageSource;
+         m_instanceData<span class="operator">.</span>resize(<span class="number">0</span>);
+         image <span class="operator">=</span> image<span class="operator">.</span>scaledToWidth(m_gridSize<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>SmoothTransformation);
+         <span class="type">int</span> instanceNumber <span class="operator">=</span> <span class="number">0</span>;
+         <span class="keyword">for</span> (<span class="type">int</span> blockX <span class="operator">=</span> <span class="number">0</span>; blockX <span class="operator">&lt;</span> image<span class="operator">.</span>width(); <span class="operator">+</span><span class="operator">+</span>blockX) {
+             <span class="type">float</span> xPos <span class="operator">=</span> m_gridSpacing <span class="operator">*</span> (blockX <span class="operator">-</span> m_gridSize<span class="operator">/</span><span class="number">2</span>);
+             <span class="keyword">for</span> (<span class="type">int</span> blockY <span class="operator">=</span> <span class="number">0</span>; blockY <span class="operator">&lt;</span> image<span class="operator">.</span>width(); <span class="operator">+</span><span class="operator">+</span>blockY) {
+                 <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> color <span class="operator">=</span> image<span class="operator">.</span>pixel(blockX<span class="operator">,</span> blockY);
+                 <span class="type">float</span> yPos <span class="operator">=</span> <span class="operator">-</span>m_gridSpacing <span class="operator">*</span> (blockY <span class="operator">-</span> m_gridSize<span class="operator">/</span><span class="number">2</span>);
+
+                 <span class="type">float</span> zPos <span class="operator">=</span> <span class="number">10</span> <span class="operator">*</span> m_gridSpacing <span class="operator">*</span> (color<span class="operator">.</span>lightnessF() <span class="operator">-</span> <span class="number">1.0</span>);
+
+                 <span class="keyword">auto</span> entry <span class="operator">=</span> calculateTableEntry({xPos<span class="operator">,</span>yPos<span class="operator">,</span>zPos}<span class="operator">,</span> {<span class="number">1.0</span><span class="operator">,</span> <span class="number">1.0</span><span class="operator">,</span> <span class="number">1.0</span>}<span class="operator">,</span> {<span class="number">0</span><span class="operator">,</span><span class="number">0</span><span class="operator">,</span><span class="number">0</span>}<span class="operator">,</span> color<span class="operator">,</span> {});
+                 m_instanceData<span class="operator">.</span>append(<span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">&gt;</span>(<span class="operator">&amp;</span>entry)<span class="operator">,</span> <span class="keyword">sizeof</span>(entry));
+                 instanceNumber<span class="operator">+</span><span class="operator">+</span>;
+             }
+         }
+         m_instanceCount <span class="operator">=</span> instanceNumber;
+         m_dirty <span class="operator">=</span> <span class="keyword">false</span>;
+     }
+     <span class="keyword">if</span> (instanceCount)
+         <span class="operator">*</span>instanceCount <span class="operator">=</span> m_instanceCount;
+
+     <span class="keyword">return</span> m_instanceData;
+ }
+</pre>

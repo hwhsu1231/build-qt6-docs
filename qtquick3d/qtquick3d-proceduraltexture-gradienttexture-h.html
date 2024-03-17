@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-proceduraltexture.qdoc -->
+  <meta name="description" content="Demonstrates how to provide custom texture data from C++ or QML.">
+  <title>Qt Quick 3D - Procedural Texture Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Procedural Texture Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Procedural Texture Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef GRADIENTTEXTURE_H</span>
+ <span class="preprocessor">#define GRADIENTTEXTURE_H</span>
+
+ <span class="preprocessor">#include &lt;QtQuick3D/QQuick3DTextureData&gt;</span>
+
+ <span class="preprocessor">#include &lt;QtGui/QColor&gt;</span>
+
+ <span class="keyword">class</span> GradientTexture : <span class="keyword">public</span> QQuick3DTextureData
+ {
+     Q_OBJECT
+     Q_PROPERTY(<span class="type">int</span> height READ height WRITE setHeight NOTIFY heightChanged)
+     Q_PROPERTY(<span class="type">int</span> width READ width WRITE setWidth NOTIFY widthChanged)
+     Q_PROPERTY(<span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> startColor READ startColor WRITE setStartColor NOTIFY startColorChanged)
+     Q_PROPERTY(<span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> endColor READ endColor WRITE setEndColor NOTIFY endColorChanged)
+     QML_NAMED_ELEMENT(GradientTexture)
+
+ <span class="keyword">public</span>:
+     GradientTexture();
+
+     <span class="type">int</span> height() <span class="keyword">const</span>;
+     <span class="type">int</span> width() <span class="keyword">const</span>;
+     <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> startColor() <span class="keyword">const</span>;
+     <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> endColor() <span class="keyword">const</span>;
+
+ <span class="keyword">public</span> Q_SLOTS:
+     <span class="type">void</span> setHeight(<span class="type">int</span> height);
+     <span class="type">void</span> setWidth(<span class="type">int</span> width);
+     <span class="type">void</span> setStartColor(<span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> startColor);
+     <span class="type">void</span> setEndColor(<span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> endColor);
+
+ Q_SIGNALS:
+     <span class="type">void</span> heightChanged(<span class="type">int</span> height);
+     <span class="type">void</span> widthChanged(<span class="type">int</span> width);
+     <span class="type">void</span> startColorChanged(<span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> startColor);
+     <span class="type">void</span> endColorChanged(<span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> endColor);
+
+ <span class="keyword">private</span>:
+     <span class="type">void</span> updateTexture();
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> generateTexture();
+
+     <span class="keyword">static</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> linearInterpolate(<span class="keyword">const</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> <span class="operator">&amp;</span>color1<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> <span class="operator">&amp;</span>color2<span class="operator">,</span> <span class="type">float</span> value);
+
+     <span class="type">int</span> m_height <span class="operator">=</span> <span class="number">256</span>;
+     <span class="type">int</span> m_width <span class="operator">=</span> <span class="number">256</span>;
+     <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> m_startColor <span class="operator">=</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span>(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;#d4fc79&quot;</span>));
+     <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> m_endColor <span class="operator">=</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span>(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;#96e6a1&quot;</span>));
+ };
+
+ <span class="preprocessor">#endif // GRADIENTTEXTURE_H</span>
+</pre>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qlevelofdetail.cpp -->
+  <meta name="description" content="LevelOfDetail provides a way of controlling the complexity of rendered entities based on their size on the screen.">
+  <title>LevelOfDetail QML Type | Qt 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qt3d-index.html" translate="no">Qt 3D</a></li>
+<li><a href="qt3d-qml.html" translate="no">QML Types</a></li>
+<li><a href="qt3d-render-qmlmodule.html" translate="no">Qt3D.Render</a></li>
+<li>LevelOfDetail</li>
+<li id="buildversion"><a href="qt3d-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">LevelOfDetail QML Type</h1>
+<!-- $$$LevelOfDetail-brief -->
+<p>LevelOfDetail provides a way of controlling the complexity of rendered entities based on their size on the screen. <a href="#details">More...</a></p>
+<!-- @@@LevelOfDetail -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import Qt3D.Render 2.6</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Instantiates:</td><td class="memItemRight bottomAlign"> <a href="qt3drender-qlevelofdetail.html" translate="no">QLevelOfDetail</a></td></tr><tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <p><a href="qml-qt3d-core-component3d.html" translate="no">Component3D</a></p>
+</td></tr></table></div><ul>
+<li><a href="qml-qt3d-render-levelofdetail-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qt3d-render-levelofdetail.html#ThresholdType-prop" translate="no">ThresholdType</a></b> : enumeration</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-render-levelofdetail.html#camera-prop" translate="no">camera</a></b> : Camera</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-render-levelofdetail.html#currentIndex-prop" translate="no">currentIndex</a></b> : int</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-render-levelofdetail.html#thresholdType-propx" translate="no">thresholdType</a></b> : int</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-render-levelofdetail.html#thresholds-prop" translate="no">thresholds</a></b> : QList&lt;qreal&gt;</li>
+<li class="fn" translate="no"><b><a href="qml-qt3d-render-levelofdetail.html#volumeOverride-prop" translate="no">volumeOverride</a></b> : int</li>
+</ul>
+<!-- $$$LevelOfDetail-description -->
+<h2 id="details">Detailed Description</h2>
+<p>LevelOfDetail can be used to control the representation of an entity based on distance from the observer or size on the screen.</p>
+<p>In order to improve rendering performance, objects that are very small can be rendered using far fewer details, in geometry or texture.</p>
+<p>The component is controlled by specifying thresholds of values which are interpreted as either distances from the camera or screen size.</p>
+<p>As the point of view changes, the <a href="qml-qt3d-render-levelofdetail.html#currentIndex-prop" translate="no">currentIndex</a> property will change to reflect matching value in the range array.</p>
+<p>The <a href="qml-qt3d-render-levelofdetail.html#currentIndex-prop" translate="no">currentIndex</a> property can then be used, for example, to enable or disable entities, change source in an <a href="qml-qt3d-core-entityloader.html" translate="no">EntityLoader</a>, or material.</p>
+<p>The LevelOfDetail component is not shareable between multiple Entity's.</p>
+<pre class="cpp" translate="no">
+ import Qt3D.Core 2.0
+ import Qt3D.Render 2.0
+
+ <span class="type"><a href="qml-qt3d-core-entity.html" translate="no">Entity</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+
+     <span class="comment">// Scene</span>
+     <span class="type"><a href="qml-qt3d-render-camera.html" translate="no">Camera</a></span> { <span class="name">id</span>: <span class="name">mainCamera</span> }
+
+     <span class="type"><a href="qml-qt3d-render-levelofdetail.html" translate="no">LevelOfDetail</a></span> {
+         <span class="name">id</span>: <span class="name">lod</span>
+         <span class="name">camera</span>: <span class="name">mainCamera</span>
+         <span class="name">thresholds</span>: [<span class="number">20</span>, <span class="number">35</span>, <span class="number">50</span>, <span class="number">65</span>]
+         <span class="name">thresholdType</span>: <span class="name">LevelOfDetail</span>.<span class="name">DistanceToCameraThreshold</span>
+     }
+
+     <span class="type"><a href="qml-qt3d-render-geometryrenderer.html" translate="no">GeometryRenderer</a></span> {
+         <span class="name">id</span>: <span class="name">mesh</span>
+         <span class="name">view</span>: <span class="name">CylinderMesh</span> {
+             property <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span> <span class="name">sliceValues</span>: [<span class="number">20</span>, <span class="number">10</span>, <span class="number">6</span>, <span class="number">4</span>]
+             <span class="name">slices</span>: <span class="name">sliceValues</span>[<span class="name">lod</span>.<span class="name">currentIndex</span>]
+         }
+     }
+
+     <span class="type"><a href="qml-qt3d-core-entity.html" translate="no">Entity</a></span> {
+         <span class="name">id</span>: <span class="name">renderableEntity</span>
+         <span class="name">components</span>: [ <span class="name">mesh</span>, <span class="name">lod</span> ]
+     }
+ }
+</pre>
+<!-- @@@LevelOfDetail -->
+<h2>Property Documentation</h2>
+<!-- $$$ThresholdType -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="ThresholdType-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">ThresholdType</span> : <span class="type"><a href="../qtqml/qml-enumeration.html" translate="no">enumeration</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Specifies how the values in the thresholds are interpreted</p>
+<ul>
+<li>DistanceToCameraThreshold Distance from the entity to the selected camera</li>
+<li>ProjectedScreenPixelSizeThreshold Size of the entity when projected on the screen as seen from the selected camera, expressed in number of pixels on the side of the bounding square in screen space.</li>
+</ul>
+<p><b>See also </b><a href="qt3drender-qlevelofdetail.html#ThresholdType-enum" translate="no">Qt3DRender::QLevelOfDetail::ThresholdType</a>.</p>
+</div></div><!-- @@@ThresholdType -->
+<br/>
+<!-- $$$camera -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="camera-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">camera</span> : <span class="type"><a href="qml-qt3d-render-camera.html" translate="no">Camera</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Holds the id of the camera that is used to compute the actual distance or the screen size.</p>
+</div></div><!-- @@@camera -->
+<br/>
+<!-- $$$currentIndex -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="currentIndex-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">currentIndex</span> : <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>The index in the range array which matches the current distance to the camera or screen size.</p>
+</div></div><!-- @@@currentIndex -->
+<br/>
+<!-- $$$thresholdType -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="thresholdType-propx">
+<td class="tblQmlPropNode"><p>
+<span class="name">thresholdType</span> : <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Specifies how range values are interpreted.</p>
+</div></div><!-- @@@thresholdType -->
+<br/>
+<!-- $$$thresholds -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="thresholds-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">thresholds</span> : <span class="type">QList</span>&lt;<span class="type">qreal</span>&gt;</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Array of range values as float point numbers. The value for the most detailed representation should be specified first.</p>
+<p>If <a href="qml-qt3d-render-levelofdetail.html#thresholdType-propx" translate="no">LevelOfDetail::thresholdType</a> is set to <a href="qml-qt3d-render-levelofdetail.html" translate="no">LevelOfDetail</a>.DistanceToCameraThreshold, values should be specified in ascending order, in camera space coordinates</p>
+<p>If <a href="qml-qt3d-render-levelofdetail.html#thresholdType-propx" translate="no">LevelOfDetail::thresholdType</a> is set to <a href="qml-qt3d-render-levelofdetail.html" translate="no">LevelOfDetail</a>.ProjectedScreenPixelSizeThreshold, values should be specified in descending order, in screen space pixels.</p>
+</div></div><!-- @@@thresholds -->
+<br/>
+<!-- $$$volumeOverride -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="volumeOverride-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">volumeOverride</span> : <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Specifies what is used to evaluate the distance or screen size.</p>
+<p>The default is a sphere of radius 1 and centered at the local origin of the entity. This proxy volume is used to compute the distance to the camera or the size of the screen projection.</p>
+<p>If this value to null, the bounding volume of the entity is used. Care must be taken that this bounding volume never becomes invalid.</p>
+<p><b>See also </b><a href="qt3drender-qlevelofdetailboundingsphere.html" translate="no">Qt3DRender::QLevelOfDetailBoundingSphere</a>.</p>
+</div></div><!-- @@@volumeOverride -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

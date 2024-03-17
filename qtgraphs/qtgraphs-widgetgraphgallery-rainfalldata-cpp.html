@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;rainfalldata.h&quot;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/q3dscene.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/q3dcamera.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qbar3dseries.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/q3dtheme.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/qtextstream.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/qfile.h&gt;</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
+
+ RainfallData<span class="operator">::</span>RainfallData()
+ {
+     <span class="comment">// In data file the months are in numeric format, so create custom list</span>
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">1</span>; i <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">12</span>; <span class="operator">+</span><span class="operator">+</span>i)
+         m_numericMonths <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(i);
+
+     m_columnCount <span class="operator">=</span> m_numericMonths<span class="operator">.</span>size();
+
+     updateYearsList(<span class="number">2010</span><span class="operator">,</span> <span class="number">2022</span>);
+
+     <span class="comment">// Create proxy and series</span>
+     m_proxy <span class="operator">=</span> <span class="keyword">new</span> VariantBarDataProxy;
+     m_series <span class="operator">=</span> <span class="keyword">new</span> QBar3DSeries(m_proxy);
+
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;%.1f mm&quot;</span>_s);
+
+     <span class="comment">// Create the axes</span>
+     m_rowAxis <span class="operator">=</span> <span class="keyword">new</span> QCategory3DAxis(<span class="keyword">this</span>);
+     m_colAxis <span class="operator">=</span> <span class="keyword">new</span> QCategory3DAxis(<span class="keyword">this</span>);
+     m_valueAxis <span class="operator">=</span> <span class="keyword">new</span> QValue3DAxis(<span class="keyword">this</span>);
+     m_rowAxis<span class="operator">-</span><span class="operator">&gt;</span>setAutoAdjustRange(<span class="keyword">true</span>);
+     m_colAxis<span class="operator">-</span><span class="operator">&gt;</span>setAutoAdjustRange(<span class="keyword">true</span>);
+     m_valueAxis<span class="operator">-</span><span class="operator">&gt;</span>setAutoAdjustRange(<span class="keyword">true</span>);
+
+     <span class="comment">// Set axis labels and titles</span>
+     <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> months{<span class="string">&quot;January&quot;</span><span class="operator">,</span> <span class="string">&quot;February&quot;</span><span class="operator">,</span> <span class="string">&quot;March&quot;</span><span class="operator">,</span> <span class="string">&quot;April&quot;</span><span class="operator">,</span>
+                        <span class="string">&quot;May&quot;</span><span class="operator">,</span> <span class="string">&quot;June&quot;</span><span class="operator">,</span> <span class="string">&quot;July&quot;</span><span class="operator">,</span> <span class="string">&quot;August&quot;</span><span class="operator">,</span> <span class="string">&quot;September&quot;</span><span class="operator">,</span> <span class="string">&quot;October&quot;</span><span class="operator">,</span>
+                        <span class="string">&quot;November&quot;</span><span class="operator">,</span><span class="string">&quot;December&quot;</span>};
+     m_rowAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Year&quot;</span>);
+     m_colAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Month&quot;</span>);
+     m_valueAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;rainfall (mm)&quot;</span>);
+     m_valueAxis<span class="operator">-</span><span class="operator">&gt;</span>setSegmentCount(<span class="number">5</span>);
+     m_rowAxis<span class="operator">-</span><span class="operator">&gt;</span>setLabels(m_years);
+     m_colAxis<span class="operator">-</span><span class="operator">&gt;</span>setLabels(months);
+     m_rowAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+     m_colAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+     m_valueAxis<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+
+     addDataSet();
+ }
+
+ RainfallData<span class="operator">::</span><span class="operator">~</span>RainfallData()
+ {
+     <span class="keyword">delete</span> m_mapping;
+ }
+
+ <span class="type">void</span> RainfallData<span class="operator">::</span>updateYearsList(<span class="type">int</span> start<span class="operator">,</span> <span class="type">int</span> end)
+ {
+     m_years<span class="operator">.</span>clear();
+
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> start; i <span class="operator">&lt;</span><span class="operator">=</span> end; <span class="operator">+</span><span class="operator">+</span>i)
+         m_years <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(i);
+
+     m_rowCount <span class="operator">=</span> m_years<span class="operator">.</span>size();
+ }
+
+ <span class="type">void</span> RainfallData<span class="operator">::</span>addDataSet()
+ {
+     <span class="comment">// Create a new variant data set and data item list</span>
+     m_dataSet <span class="operator">=</span>  <span class="keyword">new</span> VariantDataSet;
+     <span class="keyword">auto</span> <span class="operator">*</span>itemList <span class="operator">=</span> <span class="keyword">new</span> VariantDataItemList;
+
+     <span class="comment">// Read data from a data file into the data item list</span>
+     <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> dataFile(<span class="string">&quot;:/data/raindata.txt&quot;</span>);
+     <span class="keyword">if</span> (dataFile<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly <span class="operator">|</span> <span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>Text)) {
+         <span class="type"><a href="../qtcore/qtextstream.html" translate="no">QTextStream</a></span> stream(<span class="operator">&amp;</span>dataFile);
+         <span class="keyword">while</span> (<span class="operator">!</span>stream<span class="operator">.</span>atEnd()) {
+             <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> line <span class="operator">=</span> stream<span class="operator">.</span>readLine();
+             <span class="keyword">if</span> (line<span class="operator">.</span>startsWith(<span class="char">'#'</span>)) <span class="comment">// Ignore comments</span>
+                 <span class="keyword">continue</span>;
+             <span class="keyword">const</span> <span class="keyword">auto</span> strList <span class="operator">=</span> <span class="type"><a href="../qtcore/qstringview.html" translate="no">QStringView</a></span>{line}<span class="operator">.</span>split(<span class="char">','</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>SkipEmptyParts);
+             <span class="comment">// Each line has three data items: Year, month, and rainfall value</span>
+             <span class="keyword">if</span> (strList<span class="operator">.</span>size() <span class="operator">&lt;</span> <span class="number">3</span>) {
+                 <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Invalid row read from data:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> line;
+                 <span class="keyword">continue</span>;
+             }
+             <span class="comment">// Store year and month as strings, and rainfall value as double</span>
+             <span class="comment">// into a variant data item and add the item to the item list.</span>
+             <span class="keyword">auto</span> <span class="operator">*</span>newItem <span class="operator">=</span> <span class="keyword">new</span> VariantDataItem;
+             <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">2</span>; <span class="operator">+</span><span class="operator">+</span>i)
+                 newItem<span class="operator">-</span><span class="operator">&gt;</span>append(strList<span class="operator">.</span>at(i)<span class="operator">.</span>trimmed()<span class="operator">.</span>toString());
+             newItem<span class="operator">-</span><span class="operator">&gt;</span>append(strList<span class="operator">.</span>at(<span class="number">2</span>)<span class="operator">.</span>trimmed()<span class="operator">.</span>toDouble());
+             itemList<span class="operator">-</span><span class="operator">&gt;</span>append(newItem);
+         }
+     } <span class="keyword">else</span> {
+         <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Unable to open data file:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> dataFile<span class="operator">.</span>fileName();
+     }
+
+     <span class="comment">// Add items to the data set and set it to the proxy</span>
+     m_dataSet<span class="operator">-</span><span class="operator">&gt;</span>addItems(itemList);
+     m_proxy<span class="operator">-</span><span class="operator">&gt;</span>setDataSet(m_dataSet);
+
+     <span class="comment">// Create new mapping for the data and set it to the proxy</span>
+     m_mapping <span class="operator">=</span> <span class="keyword">new</span> VariantBarDataMapping(<span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> m_years<span class="operator">,</span> m_numericMonths);
+     m_proxy<span class="operator">-</span><span class="operator">&gt;</span>setMapping(m_mapping);
+ }
+</pre>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- android-3rdparty-libs.qdoc -->
+  <meta name="description" content="Instructions on including third-party Android libraries in an application.">
+  <title>Third-party Android Libraries | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Third-party Android Libraries</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="android-services.html" />
+  <link rel="next" href="android-publishing-to-googleplay.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="android-services.html">Android Services</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-publishing-to-googleplay.html">Publishing to Google Play</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#prerequisites">Prerequisites</a></li>
+<li class="level1"><a href="#including-a-library-to-an-android-project">Including a Library to an Android Project</a></li>
+<li class="level2"><a href="#adding-a-jar-or-aar-library">Adding a .jar or .aar Library</a></li>
+<li class="level1"><a href="#adding-a-library-project">Adding a Library Project</a></li>
+<li class="level1"><a href="#deployment">Deployment</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Third-party Android Libraries</h1>
+<!-- $$$android-3rdparty-libs.html-description -->
+<div class="descr" id="details">
+<p>This guide describes how to include a Java-based third-party library in your application package. There are many Java libraries which provide APIs that may be useful to your application.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>This guide assumes that the <a href="../qtcore/android-deploy-qt-tool.html#androiddeployqt" translate="no">androiddeployqt</a> tool is used for constructing the deployment package. When using Qt Creator for building and deploying, androiddeployqt is used behind the scenes, so this also applies to development with Qt Creator. Explaining how to access the Java APIs after being included in the project is not in the scope of this guide. For more information, see <a href="deployment-android.html#customizing-the-package-templates" translate="no">Customizing the Package Templates</a>.</p>
+<h2 id="including-a-library-to-an-android-project">Including a Library to an Android Project</h2>
+<p>The very first thing you need to do is to copy the library files into your project. The contents of the library have to be copied without modifications into the packaging directory, i.e&#x2e; into the path set with <a href="../qmake/qmake-manual.html" translate="no">qmake</a> variable <a href="../qmake/qmake-variable-reference.html#android-package-source-dir" translate="no">ANDROID_PACKAGE_SOURCE_DIR</a>. For more information, see <a href="deployment-android.html#android-libraries" translate="no">Android Libraries</a>.</p>
+<p>If you are using Qt Creator, you can quickly set up the packaging directory structure by selecting <b translate="no">Projects</b> &gt; <b translate="no">Build</b> &gt; <b translate="no">Build Android APK</b> &gt; <b translate="no">Create Templates</b>. This creates a directory for your <a href="deployment-android.html#customizing-the-package-templates" translate="no">Android package customizations</a>. Copy the library directory into <code translate="no">$ANDROID_PACKAGE_SOURCE_DIR/libs/</code>.</p>
+<h3 id="adding-a-jar-or-aar-library">Adding a .jar or .aar Library</h3>
+<p>By default, Qt for Android uses can use <code translate="no">.jar</code> or <code translate="no">.aar</code> libraries that are found in the path <code translate="no">$ANDROID_PACKAGE_SOURCE_DIR/libs/</code>. Qt has the following rule in <code translate="no">build.gradle</code> file that is part of <a href="deployment-android.html#gradle-files" translate="no">the Gradle files</a> used by Android build:</p>
+<pre class="cpp plain" translate="no">
+ dependencies {
+     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+</pre>
+<h2 id="adding-a-library-project">Adding a Library Project</h2>
+<p>Having a library called <code translate="no">CustomLibrary</code>, similar to the previous approach, copy the library project to your packaging directory <code translate="no">$ANDROID_PACKAGE_SOURCE_DIR/libs/</code>, then create a file <code translate="no">settings.gradle</code> with the following content:</p>
+<pre class="cpp plain" translate="no">
+ include ':libs:CustomLibrary'
+</pre>
+<p>Then, add the dependency to <code translate="no">build.gradle</code> file inside the <code translate="no">dependencies</code> block:</p>
+<pre class="cpp plain" translate="no">
+ dependencies {
+     implementation project(&quot;:libs:CustomLibrary&quot;)
+ }
+</pre>
+<p>For more information on adding libraries to an Android project, see <a href="https://developer.android.com/studio/build/dependencies" translate="no">Add build dependencies Android documentation</a>.</p>
+<h2 id="deployment">Deployment</h2>
+<p>Once <a href="http://www.gradle.org" translate="no">Gradle</a> settings and the library files are all properly configured, Qt for Android should be able to build your <code translate="no">APK</code> or <code translate="no">AAB</code> package with your custom library.</p>
+</div>
+<!-- @@@android-3rdparty-libs.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="android-services.html">Android Services</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-publishing-to-googleplay.html">Publishing to Google Play</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

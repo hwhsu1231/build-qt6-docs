@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- examples-logvalueaxis.qdoc -->
+  <meta name="description" content="Shows how to use QLogValueAxis.">
+  <title>Using Logarithmic Value Axes | Qt Charts 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtcharts-index.html" translate="no">Qt Charts</a></li>
+<li>Using Logarithmic Value Axes</li>
+<li id="buildversion"><a href="qtcharts-index.html" translate="no">Qt Charts | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Using Logarithmic Value Axes</h1>
+<!-- $$$qtcharts-logvalueaxis-example.html-description -->
+<div class="descr" id="details">
+<div class="admonition note">
+<p><b>Note: </b>This is part of the <a href="qtcharts-chartsgallery-example.html" translate="no">Charts with Widgets Gallery</a> example.</p>
+</div>
+<p class="centerAlign"><img src="images/examples_logvalueaxis.png" alt="" /></p><p>Create a <a href="qlineseries.html" translate="no">QLineSeries</a> instance and add some data to it.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> series <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qlineseries.html" translate="no">QLineSeries</a></span>;
+ <span class="operator">*</span>series <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">1.0</span><span class="operator">,</span> <span class="number">1.0</span>) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">2.0</span><span class="operator">,</span> <span class="number">73.0</span>) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">3.0</span><span class="operator">,</span> <span class="number">268.0</span>) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">4.0</span><span class="operator">,</span> <span class="number">17.0</span>)
+         <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">5.0</span><span class="operator">,</span> <span class="number">4325.0</span>) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">6.0</span><span class="operator">,</span> <span class="number">723.0</span>);
+</pre>
+<p>To present the data on the chart we need a <a href="qchart.html" translate="no">QChart</a> instance. Add the series to it, hide the legend and set the title of the chart.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> chart <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qchart.html" translate="no">QChart</a></span>;
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addSeries(series);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>legend()<span class="operator">-</span><span class="operator">&gt;</span>hide();
+ chart<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Logarithmic Axis&quot;</span>);
+</pre>
+<p>Create the axes. Add them to the chart and attach to the series.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> axisX <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qvalueaxis.html" translate="no">QValueAxis</a></span>;
+ axisX<span class="operator">-</span><span class="operator">&gt;</span>setTitleText(<span class="string">&quot;Data point&quot;</span>);
+ axisX<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%i&quot;</span>);
+ axisX<span class="operator">-</span><span class="operator">&gt;</span>setTickCount(series<span class="operator">-</span><span class="operator">&gt;</span>count());
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addAxis(axisX<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignBottom);
+ series<span class="operator">-</span><span class="operator">&gt;</span>attachAxis(axisX);
+
+ <span class="keyword">auto</span> axisY <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qlogvalueaxis.html" translate="no">QLogValueAxis</a></span>;
+ axisY<span class="operator">-</span><span class="operator">&gt;</span>setTitleText(<span class="string">&quot;Values&quot;</span>);
+ axisY<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%g&quot;</span>);
+ axisY<span class="operator">-</span><span class="operator">&gt;</span>setBase(<span class="number">8.0</span>);
+ axisY<span class="operator">-</span><span class="operator">&gt;</span>setMinorTickCount(<span class="operator">-</span><span class="number">1</span>);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addAxis(axisY<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignLeft);
+ series<span class="operator">-</span><span class="operator">&gt;</span>attachAxis(axisY);
+</pre>
+<p>Then create a <a href="qchartview.html" translate="no">QChartView</a> object with <a href="qchart.html" translate="no">QChart</a> as a parameter.</p>
+<pre class="cpp" translate="no">
+ createDefaultChartView(chart);
+</pre>
+<p>The chart is ready to be shown.</p>
+</div>
+<!-- @@@qtcharts-logvalueaxis-example.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

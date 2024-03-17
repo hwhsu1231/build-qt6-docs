@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- surfacegallery.qdoc -->
+  <meta name="description" content="Gallery with three different ways to use a Surface3D graph.">
+  <title>Surface Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Surface Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Surface Graph Gallery</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtGraphs
+
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     <span class="name">id</span>: <span class="name">heightMapView</span>
+     <span class="name">color</span>: <span class="name">surfacePlot</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+
+     required property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">portraitMode</span>
+
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">buttonWidth</span>: <span class="name">heightMapView</span>.<span class="name">portraitMode</span> ? (<span class="name">heightMapView</span>.<span class="name">width</span> <span class="operator">-</span> <span class="number">35</span>) <span class="operator">/</span> <span class="number">2</span>
+                                                           : (<span class="name">heightMapView</span>.<span class="name">width</span> <span class="operator">-</span> <span class="number">40</span>) <span class="operator">/</span> <span class="number">3</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+         <span class="name">id</span>: <span class="name">surfaceView</span>
+         <span class="name">anchors</span>.top: <span class="name">buttons</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.bottom: <span class="name">heightMapView</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.left: <span class="name">heightMapView</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.right: <span class="name">heightMapView</span>.<span class="name">right</span>
+
+         <span class="type"><a href="qml-qtgraphs-colorgradient.html" translate="no">ColorGradient</a></span> {
+             <span class="name">id</span>: <span class="name">surfaceGradient</span>
+             <span class="type"><a href="qml-qtgraphs-colorgradientstop.html" translate="no">ColorGradientStop</a></span> { <span class="name">position</span>: <span class="number">0.0</span>; <span class="name">color</span>: <span class="string">&quot;darkgreen&quot;</span>}
+             <span class="type"><a href="qml-qtgraphs-colorgradientstop.html" translate="no">ColorGradientStop</a></span> { <span class="name">position</span>: <span class="number">0.15</span>; <span class="name">color</span>: <span class="string">&quot;darkslategray&quot;</span> }
+             <span class="type"><a href="qml-qtgraphs-colorgradientstop.html" translate="no">ColorGradientStop</a></span> { <span class="name">position</span>: <span class="number">0.7</span>; <span class="name">color</span>: <span class="string">&quot;peru&quot;</span> }
+             <span class="type"><a href="qml-qtgraphs-colorgradientstop.html" translate="no">ColorGradientStop</a></span> { <span class="name">position</span>: <span class="number">1.0</span>; <span class="name">color</span>: <span class="string">&quot;white&quot;</span> }
+         }
+
+         <span class="type"><a href="qml-qtgraphs-surface3d.html" translate="no">Surface3D</a></span> {
+             <span class="name">id</span>: <span class="name">surfacePlot</span>
+             <span class="name">width</span>: <span class="name">surfaceView</span>.<span class="name">width</span>
+             <span class="name">height</span>: <span class="name">surfaceView</span>.<span class="name">height</span>
+             <span class="name">aspectRatio</span>: <span class="number">3.0</span>
+             <span class="name">theme</span>: <span class="name">Theme3D</span> {
+                 <span class="name">type</span>: <span class="name">Theme3D</span>.<span class="name">ThemeStoneMoss</span>
+                 <span class="name">font</span>.family: <span class="string">&quot;STCaiyun&quot;</span>
+                 <span class="name">font</span>.pointSize: <span class="number">35</span>
+                 <span class="name">colorStyle</span>: <span class="name">Theme3D</span>.<span class="name">ColorStyleRangeGradient</span>
+                 <span class="name">baseGradients</span>: [<span class="name">surfaceGradient</span>] <span class="comment">// Use the custom gradient</span>
+             }
+             <span class="name">shadowQuality</span>: <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityMedium</span>
+             <span class="name">selectionMode</span>: <span class="name">AbstractGraph3D</span>.<span class="name">SelectionSlice</span> <span class="operator">|</span> <span class="name">AbstractGraph3D</span>.<span class="name">SelectionItemAndRow</span>
+             <span class="name">scene</span>.activeCamera.cameraPreset: <span class="name">Camera3D</span>.<span class="name">CameraPresetIsometricLeft</span>
+             <span class="name">axisX</span>.segmentCount: <span class="number">3</span>
+             <span class="name">axisX</span>.subSegmentCount: <span class="number">3</span>
+             <span class="name">axisX</span>.labelFormat: <span class="string">&quot;%i&quot;</span>
+             <span class="name">axisZ</span>.segmentCount: <span class="number">3</span>
+             <span class="name">axisZ</span>.subSegmentCount: <span class="number">3</span>
+             <span class="name">axisZ</span>.labelFormat: <span class="string">&quot;%i&quot;</span>
+             <span class="name">axisY</span>.segmentCount: <span class="number">2</span>
+             <span class="name">axisY</span>.subSegmentCount: <span class="number">2</span>
+             <span class="name">axisY</span>.labelFormat: <span class="string">&quot;%i&quot;</span>
+             <span class="name">axisY</span>.title: <span class="string">&quot;Height (m)&quot;</span>
+             <span class="name">axisX</span>.title: <span class="string">&quot;Longitude 175.x\&quot;E&quot;</span>
+             <span class="name">axisZ</span>.title: <span class="string">&quot;Latitude -39.x\&quot;N&quot;</span>
+             <span class="name">axisY</span>.titleVisible: <span class="number">true</span>
+             <span class="name">axisX</span>.titleVisible: <span class="number">true</span>
+             <span class="name">axisZ</span>.titleVisible: <span class="number">true</span>
+
+             <span class="type"><a href="qml-qtgraphs-surface3dseries.html" translate="no">Surface3DSeries</a></span> {
+                 <span class="name">id</span>: <span class="name">heightSeries</span>
+                 <span class="name">flatShadingEnabled</span>: <span class="number">false</span>
+                 <span class="name">drawMode</span>: <span class="name">Surface3DSeries</span>.<span class="name">DrawSurface</span>
+
+                 <span class="type"><a href="qml-qtgraphs-heightmapsurfacedataproxy.html" translate="no">HeightMapSurfaceDataProxy</a></span> {
+                     <span class="name">heightMapFile</span>: <span class="string">&quot;://qml/surfacegallery/heightmap.png&quot;</span>
+                     <span class="comment">// We don't want the default data values set by heightmap proxy, but use</span>
+                     <span class="comment">// actual coordinate and height values instead</span>
+                     <span class="name">autoScaleY</span>: <span class="number">true</span>
+                     <span class="name">minYValue</span>: <span class="number">740</span>
+                     <span class="name">maxYValue</span>: <span class="number">2787</span>
+                     <span class="name">minZValue</span>: -<span class="number">374</span> <span class="comment">// ~ -39.374411&quot;N</span>
+                     <span class="name">maxZValue</span>: -<span class="number">116</span> <span class="comment">// ~ -39.115971&quot;N</span>
+                     <span class="name">minXValue</span>: <span class="number">472</span>  <span class="comment">// ~ 175.471767&quot;E</span>
+                     <span class="name">maxXValue</span>: <span class="number">781</span>  <span class="comment">// ~ 175.780758&quot;E</span>
+                 }
+
+                 <span class="name">onDrawModeChanged</span>: <span class="name">heightMapView</span>.<span class="name">checkState</span>()
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+         <span class="name">id</span>: <span class="name">buttons</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.margins: <span class="number">10</span>
+         <span class="name">height</span>: <span class="name">heightMapView</span>.<span class="name">portraitMode</span> ? <span class="name">surfaceGridToggle</span>.<span class="name">implicitHeight</span> <span class="operator">*</span> <span class="number">3</span> <span class="operator">+</span> <span class="number">20</span>
+                                            : <span class="name">surfaceGridToggle</span>.<span class="name">implicitHeight</span> <span class="operator">*</span> <span class="number">2</span> <span class="operator">+</span> <span class="number">15</span>
+         <span class="name">opacity</span>: <span class="number">0.5</span>
+
+         <span class="type">Button</span> {
+             <span class="name">id</span>: <span class="name">surfaceGridToggle</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+             <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+             <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+             <span class="name">width</span>: <span class="name">heightMapView</span>.<span class="name">buttonWidth</span> <span class="comment">// Calculated elsewhere based on screen orientation</span>
+             <span class="name">text</span>: <span class="string">&quot;Show Surface\nGrid&quot;</span>
+             <span class="name">onClicked</span>: {
+                 <span class="keyword">if</span> (<span class="name">heightSeries</span>.<span class="name">drawMode</span> <span class="operator">&amp;</span> <span class="name">Surface3DSeries</span>.<span class="name">DrawWireframe</span>)
+                     <span class="name">heightSeries</span>.<span class="name">drawMode</span> <span class="operator">&amp;=</span> ~<span class="name">Surface3DSeries</span>.<span class="name">DrawWireframe</span>;
+                 <span class="keyword">else</span>
+                     <span class="name">heightSeries</span>.<span class="name">drawMode</span> <span class="operator">|=</span> <span class="name">Surface3DSeries</span>.<span class="name">DrawWireframe</span>;
+             }
+         }
+
+         <span class="type">Button</span> {
+             <span class="name">id</span>: <span class="name">surfaceGridColor</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+             <span class="name">anchors</span>.left: <span class="name">surfaceGridToggle</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+             <span class="name">width</span>: <span class="name">heightMapView</span>.<span class="name">buttonWidth</span>
+             <span class="name">text</span>: <span class="string">&quot;Red surface\ngrid color&quot;</span>
+             <span class="name">onClicked</span>: {
+                 <span class="keyword">if</span> (<span class="name">Qt</span>.<span class="name">colorEqual</span>(<span class="name">heightSeries</span>.<span class="name">wireframeColor</span>, <span class="string">&quot;#000000&quot;</span>)) {
+                     <span class="name">heightSeries</span>.<span class="name">wireframeColor</span> <span class="operator">=</span> <span class="string">&quot;red&quot;</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Black surface\ngrid color&quot;</span>;
+                 } <span class="keyword">else</span> {
+                     <span class="name">heightSeries</span>.<span class="name">wireframeColor</span> <span class="operator">=</span> <span class="string">&quot;black&quot;</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Red surface\ngrid color&quot;</span>;
+                 }
+             }
+         }
+
+         <span class="type">Button</span> {
+             <span class="name">id</span>: <span class="name">surfaceToggle</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+             <span class="name">anchors</span>.left: <span class="name">heightMapView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">surfaceGridColor</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">heightMapView</span>.<span class="name">portraitMode</span> ? <span class="name">surfaceGridColor</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+             <span class="name">width</span>: <span class="name">heightMapView</span>.<span class="name">buttonWidth</span>
+             <span class="name">text</span>: <span class="string">&quot;Hide\nSurface&quot;</span>
+             <span class="name">onClicked</span>: {
+                 <span class="keyword">if</span> (<span class="name">heightSeries</span>.<span class="name">drawMode</span> <span class="operator">&amp;</span> <span class="name">Surface3DSeries</span>.<span class="name">DrawSurface</span>)
+                     <span class="name">heightSeries</span>.<span class="name">drawMode</span> <span class="operator">&amp;=</span> ~<span class="name">Surface3DSeries</span>.<span class="name">DrawSurface</span>;
+                 <span class="keyword">else</span>
+                     <span class="name">heightSeries</span>.<span class="name">drawMode</span> <span class="operator">|=</span> <span class="name">Surface3DSeries</span>.<span class="name">DrawSurface</span>;
+             }
+         }
+
+         <span class="type">Button</span> {
+             <span class="name">id</span>: <span class="name">flatShadingToggle</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+             <span class="name">anchors</span>.left: <span class="name">heightMapView</span>.<span class="name">portraitMode</span> ? <span class="name">surfaceToggle</span>.<span class="name">right</span> : <span class="name">parent</span>.<span class="name">left</span>
+             <span class="name">anchors</span>.top: <span class="name">heightMapView</span>.<span class="name">portraitMode</span> ? <span class="name">surfaceGridColor</span>.<span class="name">bottom</span> : <span class="name">surfaceToggle</span>.<span class="name">bottom</span>
+             <span class="name">width</span>: <span class="name">heightMapView</span>.<span class="name">buttonWidth</span>
+             <span class="name">text</span>: <span class="name">heightSeries</span>.<span class="name">flatShadingSupported</span> ? <span class="string">&quot;Show\nFlat&quot;</span> : <span class="string">&quot;Flat not\nsupported&quot;</span>
+             <span class="name">enabled</span>: <span class="name">heightSeries</span>.<span class="name">flatShadingSupported</span>
+             <span class="name">onClicked</span>: {
+                 <span class="keyword">if</span> (<span class="name">heightSeries</span>.<span class="name">flatShadingEnabled</span>) {
+                     <span class="name">heightSeries</span>.<span class="name">flatShadingEnabled</span> <span class="operator">=</span> <span class="number">false</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show\nFlat&quot;</span>
+                 } <span class="keyword">else</span> {
+                     <span class="name">heightSeries</span>.<span class="name">flatShadingEnabled</span> <span class="operator">=</span> <span class="number">true</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show\nSmooth&quot;</span>
+                 }
+             }
+         }
+
+         <span class="type">Button</span> {
+             <span class="name">id</span>: <span class="name">backgroundToggle</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+             <span class="name">anchors</span>.left: <span class="name">heightMapView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">flatShadingToggle</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">heightMapView</span>.<span class="name">portraitMode</span> ? <span class="name">flatShadingToggle</span>.<span class="name">bottom</span>
+                                                     : <span class="name">surfaceToggle</span>.<span class="name">bottom</span>
+             <span class="name">width</span>: <span class="name">heightMapView</span>.<span class="name">buttonWidth</span>
+             <span class="name">text</span>: <span class="string">&quot;Hide\nBackground&quot;</span>
+             <span class="name">onClicked</span>: {
+                 <span class="keyword">if</span> (<span class="name">surfacePlot</span>.<span class="name">theme</span>.<span class="name">backgroundEnabled</span>) {
+                     <span class="name">surfacePlot</span>.<span class="name">theme</span>.<span class="name">backgroundEnabled</span> <span class="operator">=</span> <span class="number">false</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show\nBackground&quot;</span>;
+                 } <span class="keyword">else</span> {
+                     <span class="name">surfacePlot</span>.<span class="name">theme</span>.<span class="name">backgroundEnabled</span> <span class="operator">=</span> <span class="number">true</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Hide\nBackground&quot;</span>;
+                 }
+             }
+         }
+
+         <span class="type">Button</span> {
+             <span class="name">id</span>: <span class="name">gridToggle</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+             <span class="name">anchors</span>.left: <span class="name">backgroundToggle</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">heightMapView</span>.<span class="name">portraitMode</span> ? <span class="name">flatShadingToggle</span>.<span class="name">bottom</span>
+                                                     : <span class="name">surfaceToggle</span>.<span class="name">bottom</span>
+             <span class="name">width</span>: <span class="name">heightMapView</span>.<span class="name">buttonWidth</span>
+             <span class="name">text</span>: <span class="string">&quot;Hide\nGrid&quot;</span>
+             <span class="name">onClicked</span>: {
+                 <span class="keyword">if</span> (<span class="name">surfacePlot</span>.<span class="name">theme</span>.<span class="name">gridEnabled</span>) {
+                     <span class="name">surfacePlot</span>.<span class="name">theme</span>.<span class="name">gridEnabled</span> <span class="operator">=</span> <span class="number">false</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show\nGrid&quot;</span>;
+                 } <span class="keyword">else</span> {
+                     <span class="name">surfacePlot</span>.<span class="name">theme</span>.<span class="name">gridEnabled</span> <span class="operator">=</span> <span class="number">true</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Hide\nGrid&quot;</span>;
+                 }
+             }
+         }
+     }
+
+     <span class="keyword">function </span><span class="name">checkState</span>() {
+         <span class="keyword">if</span> (<span class="name">heightSeries</span>.<span class="name">drawMode</span> <span class="operator">&amp;</span> <span class="name">Surface3DSeries</span>.<span class="name">DrawSurface</span>)
+             <span class="name">surfaceToggle</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Hide\nSurface&quot;</span>;
+         <span class="keyword">else</span>
+             <span class="name">surfaceToggle</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show\nSurface&quot;</span>;
+
+         <span class="keyword">if</span> (<span class="name">heightSeries</span>.<span class="name">drawMode</span> <span class="operator">&amp;</span> <span class="name">Surface3DSeries</span>.<span class="name">DrawWireframe</span>)
+             <span class="name">surfaceGridToggle</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Hide Surface\nGrid&quot;</span>;
+         <span class="keyword">else</span>
+             <span class="name">surfaceGridToggle</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show Surface\nGrid&quot;</span>;
+     }
+ }
+</pre>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- documentviewer.qdoc -->
+  <meta name="description" content="A Widgets application to display and print JSON, text, and PDF files.">
+  <title>Document Viewer | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Document Viewer</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#creating-an-application-and-the-main-window">Creating an application and the main window</a></li>
+<li class="level1"><a href="#mainwindow-class">MainWindow class</a></li>
+<li class="level1"><a href="#viewerfactory-class">ViewerFactory class</a></li>
+<li class="level1"><a href="#abstractviewer-class">AbstractViewer class</a></li>
+<li class="level2"><a href="#signals">Signals</a></li>
+<li class="level1"><a href="#txtviewer-class">TxtViewer class</a></li>
+<li class="level1"><a href="#jsonviewer-class">JsonViewer class</a></li>
+<li class="level1"><a href="#pdfviewer-class">PdfViewer class</a></li>
+<li class="level1"><a href="#other-relevant-classes">Other relevant classes</a></li>
+<li class="level2"><a href="#hoverwatcher-class">HoverWatcher class</a></li>
+<li class="level2"><a href="#recentfiles-class">RecentFiles class</a></li>
+<li class="level2"><a href="#recentfilemenu-class">RecentFileMenu class</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Document Viewer</h1>
+<!-- $$$demos/documentviewer-brief -->
+<p>A Widgets application to display and print JSON, text, and PDF files.</p>
+<!-- @@@demos/documentviewer -->
+<!-- $$$demos/documentviewer-description -->
+<div class="descr" id="details">
+<p><i>Document Viewer</i> demonstrates how to use a <a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a> with static and dynamic toolbars, menus, and actions. Additionally, it demonstrates the following features in widget-based applications:</p>
+<ul>
+<li>Using <a href="../qtcore/qsettings.html" translate="no">QSettings</a> to query and save user preferences, and managing previously opened file history.</li>
+<li>Controlling cursor behavior when hovering over widgets.</li>
+<li>Creating dynamically loaded plugins.</li>
+</ul>
+<p class="centerAlign"><img src="images/documentviewer_open.png" alt="" /></p><h4 id="creating-an-application-and-the-main-window">Creating an application and the main window</h4>
+<p>The application and its main window is constructed in <code translate="no">main.cpp</code>. The main() function uses <a href="../qtcore/qcommandlineparser.html" translate="no">QCommandLineParser</a> to process command line arguments &ndash; <i>help</i>, <i>version</i>, and an optional positional argument, <i>file</i>. If the user provided a path to a file when launching the application, the main window opens it:</p>
+<pre class="cpp" translate="no">
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
+ {
+     <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span> app(argc<span class="operator">,</span> argv);
+     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>setOrganizationName(<span class="string">&quot;QtProject&quot;</span>_L1);
+     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>setApplicationName(<span class="string">&quot;DocumentViewer&quot;</span>_L1);
+     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>setApplicationVersion(<span class="string">&quot;1.0&quot;</span>_L1);
+
+     <span class="type"><a href="../qtcore/qcommandlineparser.html" translate="no">QCommandLineParser</a></span> parser;
+     parser<span class="operator">.</span>setApplicationDescription(<span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;main&quot;</span><span class="operator">,</span>
+                                                      <span class="string">&quot;A viewer for JSON, PDF and text files&quot;</span>));
+     parser<span class="operator">.</span>addHelpOption();
+     parser<span class="operator">.</span>addVersionOption();
+     parser<span class="operator">.</span>addPositionalArgument(<span class="string">&quot;File&quot;</span>_L1<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span><span class="operator">::</span>translate(<span class="string">&quot;main&quot;</span><span class="operator">,</span>
+                                                                     <span class="string">&quot;JSON, PDF or text file to open&quot;</span>));
+     parser<span class="operator">.</span>process(app);
+
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>positionalArguments <span class="operator">=</span> parser<span class="operator">.</span>positionalArguments();
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>fileName <span class="operator">=</span> (positionalArguments<span class="operator">.</span>count() <span class="operator">&gt;</span> <span class="number">0</span>) <span class="operator">?</span> positionalArguments<span class="operator">.</span>at(<span class="number">0</span>)
+                                                                 : <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span>();
+
+     MainWindow w;
+     w<span class="operator">.</span>show();
+     <span class="keyword">if</span> (<span class="operator">!</span>fileName<span class="operator">.</span>isEmpty())
+         w<span class="operator">.</span>openFile(fileName);
+
+     <span class="keyword">return</span> app<span class="operator">.</span>exec();
+ }
+</pre>
+<h4 id="mainwindow-class">MainWindow class</h4>
+<p>The <code translate="no">MainWindow</code> class provides an application screen with menus, actions, and a toolbar. It can open a file, automatically detecting its content type. It also maintains a list of previously opened files, using <a href="../qtcore/qsettings.html" translate="no">QSettings</a> to store and reload settings when launched. The MainWindow creates a suitable <i>viewer</i> for the opened file, based on its content type, and provides support for printing a document.</p>
+<p>MainWindow's constructor initializes the user interface created in Qt Designer. The <code translate="no">mainwindow.ui</code> file provides a <a href="../qtwidgets/qtabwidget.html" translate="no">QTabWidget</a> on the left, showing bookmarks and thumbnails. On the right, there is a <a href="../qtwidgets/qscrollarea.html" translate="no">QScrollArea</a> for viewing file content.</p>
+<h4 id="viewerfactory-class">ViewerFactory class</h4>
+<p>The <code translate="no">ViewerFactory</code> class manages viewers for known file types. These viewers are implemented as plugins. When an instance of a ViewerFactory is created, pointers to the view area and the main window are passed to the constructor:</p>
+<pre class="cpp" translate="no">
+ m_factory<span class="operator">.</span>reset(<span class="keyword">new</span> ViewerFactory(ui<span class="operator">-</span><span class="operator">&gt;</span>viewArea<span class="operator">,</span> <span class="keyword">this</span>));
+</pre>
+<p>ViewerFactory loads all available plugins on construction. It provides a public API to query the loaded plugins, their names, and supported MIME types:</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">using</span> ViewerList <span class="operator">=</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>AbstractViewer <span class="operator">*</span><span class="operator">&gt;</span>;
+     <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> viewerNames(<span class="type">bool</span> showDefault <span class="operator">=</span> <span class="keyword">false</span>) <span class="keyword">const</span>;
+     ViewerList viewers() <span class="keyword">const</span>;
+     AbstractViewer <span class="operator">*</span>findViewer(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>viewerName) <span class="keyword">const</span>;
+     AbstractViewer <span class="operator">*</span>defaultViewer() <span class="keyword">const</span>;
+     <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> supportedMimeTypes() <span class="keyword">const</span>;
+</pre>
+<p>The <code translate="no">viewer()</code> function returns a pointer to the plugin suitable to open the <a href="../qtcore/qfile.html" translate="no">QFile</a> passed as an argument:</p>
+<pre class="cpp" translate="no">
+ m_viewer <span class="operator">=</span> m_factory<span class="operator">-</span><span class="operator">&gt;</span>viewer(file);
+</pre>
+<p>If the application settings contain a section for the viewer, it's passed to the viewer's virtual <code translate="no">restoreState()</code> function:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> MainWindow<span class="operator">::</span>restoreViewerSettings()
+ {
+     <span class="keyword">if</span> (<span class="operator">!</span>m_viewer)
+         <span class="keyword">return</span>;
+
+     <span class="type"><a href="../qtcore/qsettings.html" translate="no">QSettings</a></span> settings;
+     settings<span class="operator">.</span>beginGroup(settingsViewers);
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> viewerSettings <span class="operator">=</span> settings<span class="operator">.</span>value(m_viewer<span class="operator">-</span><span class="operator">&gt;</span>viewerName()<span class="operator">,</span> <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span>())<span class="operator">.</span>toByteArray();
+     settings<span class="operator">.</span>endGroup();
+     <span class="keyword">if</span> (<span class="operator">!</span>viewerSettings<span class="operator">.</span>isEmpty())
+         m_viewer<span class="operator">-</span><span class="operator">&gt;</span>restoreState(viewerSettings);
+ }
+</pre>
+<p>Then, the standard UI assets are passed to the viewer and the main scroll area is set to show the viewer's display widget:</p>
+<pre class="cpp" translate="no">
+     m_viewer<span class="operator">-</span><span class="operator">&gt;</span>initViewer(ui<span class="operator">-</span><span class="operator">&gt;</span>actionBack<span class="operator">,</span> ui<span class="operator">-</span><span class="operator">&gt;</span>actionForward<span class="operator">,</span> ui<span class="operator">-</span><span class="operator">&gt;</span>menuHelp<span class="operator">-</span><span class="operator">&gt;</span>menuAction()<span class="operator">,</span> ui<span class="operator">-</span><span class="operator">&gt;</span>tabWidget);
+     restoreViewerSettings();
+     ui<span class="operator">-</span><span class="operator">&gt;</span>scrollArea<span class="operator">-</span><span class="operator">&gt;</span>setWidget(m_viewer<span class="operator">-</span><span class="operator">&gt;</span>widget());
+     <span class="keyword">return</span> <span class="keyword">true</span>;
+ }
+</pre>
+<h4 id="abstractviewer-class">AbstractViewer class</h4>
+<p><code translate="no">AbstractViewer</code> provides a generalized API to view, save, and print a document. Properties of both the document and the viewer can be queried:</p>
+<ul>
+<li>Does the document have content?</li>
+<li>Has it been modified?</li>
+<li>Is an overview (thumbnails or bookmarks) supported?</li>
+</ul>
+<p>AbstractViewer provides protected methods for derived classes to create actions and menus on the main window. In order to display these assets on the main window, they are parented to it. AbstractViewer is responsible for removing and destroying the UI assets it creates. It inherits from <a href="../qtcore/qobject.html" translate="no">QObject</a> to implement signals and slots.</p>
+<h5 id="signals">Signals</h5>
+<p><code translate="no">void uiInitialized();</code></p>
+<p>This signal is emitted after a viewer receives all necessary information about UI assets on the main window.</p>
+<p><code translate="no">void printingEnabledChanged(bool enabled);</code></p>
+<p>This signal is emitted when document printing is either enabled or disabled. This happens after a new document was successfully loaded, or, for example, all content was removed.</p>
+<p><code translate="no">void printStatusChanged(AbstractViewer::PrintStatus status);</code></p>
+<p>After starting the printing process, this signal notifies about changes in its progress.</p>
+<p><code translate="no">void documentLoaded(const QString &amp;fileName);</code></p>
+<p>This signal notifies the application that a document was successfully loaded.</p>
+<h4 id="txtviewer-class">TxtViewer class</h4>
+<p><code translate="no">TxtViewer</code> is a simple text viewer, inheriting from AbstractViewer. It supports editing text files, copy/cut and paste, printing, and saving changes.</p>
+<h4 id="jsonviewer-class">JsonViewer class</h4>
+<p><code translate="no">JsonViewer</code> displays a JSON file in a <a href="../qtwidgets/qtreeview.html" translate="no">QTreeView</a>. Internally, it loads the contents of a file into a <a href="../qtcore/qjsondocument.html" translate="no">QJsonDocument</a> and uses it to populate a custom tree model with <code translate="no">JsonItemModel</code>.</p>
+<p>The JSON viewer plugin demonstrates how to implement a custom item model inherited from <a href="../qtcore/qabstractitemmodel.html" translate="no">QAbstractItemModel</a>. The <code translate="no">JsonTreeItem</code> class provides a basic API for manipulating JSON data and propagating it back to the underlying <a href="../qtcore/qjsondocument.html" translate="no">QJsonDocument</a>.</p>
+<p>JsonViewer uses the top-level objects of the document as bookmarks for navigation. Other nodes (keys and values) can be added as additional bookmarks, or removed from the bookmark list. A <a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a> is used as a search field to navigate through the JSON tree.</p>
+<h4 id="pdfviewer-class">PdfViewer class</h4>
+<p>The <code translate="no">PdfViewer</code> class (and plugin) is a fork of the <a href="../qtpdf/qtpdf-pdfviewer-example.html" translate="no">PDF Viewer Widget Example</a>. It demonstrates the use of <a href="../qtwidgets/qscroller.html" translate="no">QScroller</a> to smoothly flick through a document.</p>
+<h4 id="other-relevant-classes">Other relevant classes</h4>
+<h5 id="hoverwatcher-class">HoverWatcher class</h5>
+<p>The <code translate="no">HoverWatcher</code> class sets an override cursor when hovering the mouse over a widget, restoring it upon departure. To prevent multiple HoverWatcher instances being created for the same widget, it is implemented as a singleton per widget.</p>
+<p>HoverWatcher inherits from <a href="../qtcore/qobject.html" translate="no">QObject</a> and takes the <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> it watches as the instance's parent. It installs an event filter to intercept hover events without consuming them:</p>
+<pre class="cpp" translate="no">
+ HoverWatcher<span class="operator">::</span>HoverWatcher(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>watched)
+     : <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>(watched)<span class="operator">,</span> m_watched(watched)
+ {
+     Q_ASSERT(watched);
+     m_cursorShapes<span class="operator">[</span>Entered<span class="operator">]</span><span class="operator">.</span>emplace(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>OpenHandCursor);
+     m_cursorShapes<span class="operator">[</span>MousePress<span class="operator">]</span><span class="operator">.</span>emplace(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>ClosedHandCursor);
+     m_cursorShapes<span class="operator">[</span>MouseRelease<span class="operator">]</span><span class="operator">.</span>emplace(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>OpenHandCursor);
+     <span class="comment">// no default for Left =&gt; restore override cursor</span>
+     m_watched<span class="operator">-</span><span class="operator">&gt;</span>installEventFilter(<span class="keyword">this</span>);
+ }
+</pre>
+<p>The <code translate="no">HoverAction</code> enum lists the actions that HoverWatcher reacts to:</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">enum</span> HoverAction {
+         Entered<span class="operator">,</span>
+         MousePress<span class="operator">,</span>
+         MouseRelease<span class="operator">,</span>
+         Left<span class="operator">,</span>
+         Ignore
+     };
+</pre>
+<p>Static functions create watchers, check their existence for a specific <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>, or dismiss a watcher:</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">static</span> HoverWatcher <span class="operator">*</span>watcher(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>watched);
+     <span class="keyword">static</span> <span class="keyword">const</span> HoverWatcher <span class="operator">*</span>watcher(<span class="keyword">const</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>watched);
+     <span class="keyword">static</span> <span class="type">bool</span> hasWatcher(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>widget);
+     <span class="keyword">static</span> <span class="type">void</span> dismiss(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>watched);
+</pre>
+<p>A cursor shape can be set or unset for each HoverAction. If there is no associated cursor shape, the application's override cursor is restored when the action is triggered.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> setCursorShape(HoverAction type<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>CursorShape shape);
+     <span class="type">void</span> unSetCursorShape(HoverAction type);
+</pre>
+<p>The <code translate="no">mouseButtons</code> property holds the mouse buttons to consider for a <code translate="no">MousePress</code> action:</p>
+<pre class="cpp" translate="no">
+     <span class="type">void</span> setMouseButtons(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>MouseButtons buttons);
+     <span class="type">void</span> setMouseButton(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>MouseButton button<span class="operator">,</span> <span class="type">bool</span> enable);
+</pre>
+<p>Action-specific signals are emitted after processing an action:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> entered();
+     <span class="type">void</span> mousePressed();
+     <span class="type">void</span> mouseReleased();
+     <span class="type">void</span> left();
+</pre>
+<p>A general signal is emitted which passes the processed action as an argument:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> hoverAction(HoverAction action);
+</pre>
+<h5 id="recentfiles-class">RecentFiles class</h5>
+<p><code translate="no">RecentFiles</code> is a <a href="../qtcore/qstringlist.html" translate="no">QStringList</a> that is specialized to manage a list of recently opened files.</p>
+<p>RecentFiles has slots to add either a single file or multiple files in one go. An entry is added to the list of recent files if the path points to a file that exists and can be opened. If a file is already in the list, it is removed from its original position and added to the top.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> addFile(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>fileName) { addFile(fileName<span class="operator">,</span> EmitPolicy<span class="operator">::</span>EmitWhenChanged); }
+     <span class="type">void</span> addFiles(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>fileNames);
+</pre>
+<p>Files are removed from the list either by name or by index:</p>
+<pre class="cpp" translate="no">
+     <span class="type">void</span> removeFile(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>fileName) { removeFile(m_files<span class="operator">.</span>indexOf(fileName)); }
+     <span class="type">void</span> removeFile(qsizetype index) {removeFile(index<span class="operator">,</span> RemoveReason<span class="operator">::</span>Other); }
+</pre>
+<p>Slots that implement saving and restoring from <a href="../qtcore/qsettings.html" translate="no">QSettings</a>:</p>
+<pre class="cpp" translate="no">
+     <span class="type">void</span> saveSettings(<span class="type"><a href="../qtcore/qsettings.html" translate="no">QSettings</a></span> <span class="operator">&amp;</span>settings<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>key) <span class="keyword">const</span>;
+     <span class="type">bool</span> restoreFromSettings(<span class="type"><a href="../qtcore/qsettings.html" translate="no">QSettings</a></span> <span class="operator">&amp;</span>settings<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>key);
+</pre>
+<p>When restoring settings, nonexistent files are ignored. The <code translate="no">maxFiles</code> property holds the maximum amount of recent files to store (default is 10).</p>
+<pre class="cpp" translate="no">
+ qsizetype maxFiles();
+ <span class="type">void</span> setMaxFiles(qsizetype maxFiles);
+</pre>
+<p><code translate="no">RecentFiles</code> verifies that a file can be read before accepting it.</p>
+<h5 id="recentfilemenu-class">RecentFileMenu class</h5>
+<p><code translate="no">RecentFileMenu</code> is a <a href="../qtwidgets/qmenu.html" translate="no">QMenu</a>, specialized to display a <a href="qtdoc-demos-documentviewer-example.html#recentfiles-class" translate="no">RecentFiles</a> object as a submenu.</p>
+<p>Its constructor takes a pointer to a parent <a href="../qtcore/qobject.html" translate="no">QObject</a> and a pointer to a RecentFiles object, the content of which it will visualize. Its <code translate="no">fileOpened()</code> signal, triggered when the user selects a recent file from the list, passes the absolute path to the file as an argument.</p>
+<div class="admonition note">
+<p><b>Note: </b><code translate="no">RecentFileMenu</code> is destroyed either by its parent widget, or by the <code translate="no">RecentFiles</code> object passed to its constructor.</p>
+</div>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> RecentFileMenu : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qmenu.html" translate="no">QMenu</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> RecentFileMenu(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent<span class="operator">,</span> RecentFiles <span class="operator">*</span>recent);
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> fileOpened(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>fileName);
+     ...
+ };
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtdoc.git/tree/examples/demos/documentviewer?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@demos/documentviewer -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

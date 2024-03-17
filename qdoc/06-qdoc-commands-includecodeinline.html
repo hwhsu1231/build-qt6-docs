@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qdoc-manual-markupcmds.qdoc -->
+  <title>Including Code Inline | QDoc Manual 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qdoc-index.html" translate="no">QDoc Manual</a></li>
+<li>Including Code Inline</li>
+<li id="buildversion"><a href="qdoc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="05-qdoc-commands-documentstructure.html" />
+  <link rel="next" href="07-0-qdoc-commands-includingexternalcode.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="05-qdoc-commands-documentstructure.html">Document Structure</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="07-0-qdoc-commands-includingexternalcode.html">Including External Code</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#code">\code</a></li>
+<li class="level2"><a href="#highlighting-and-autolinking">Highlighting and autolinking</a></li>
+<li class="level2"><a href="#code-snippet-parameters">Code snippet parameters</a></li>
+<li class="level2"><a href="#including-code-from-external-files">Including code from external files</a></li>
+<li class="level1"><a href="#badcode">\badcode</a></li>
+<li class="level1"><a href="#qml">\qml</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Including Code Inline</h1>
+<!-- $$$06-qdoc-commands-includecodeinline.html-description -->
+<div class="descr" id="details">
+<p>The following commands are used to render source code without formatting. The source code begins on a new line, rendered in the code.</p>
+<div class="admonition note">
+<p><b>Note: </b>Although most of these commands are for rendering C++ code, the <a href="07-0-qdoc-commands-includingexternalcode.html#snippet-command" translate="no">\snippet</a> and <a href="07-0-qdoc-commands-includingexternalcode.html#codeline-command" translate="no">\codeline</a> commands are preferred over the others. These commands allow equivalent code snippets for other Qt language bindings to be substituted for the C++ snippets in the documentation.</p>
+</div>
+<span id="code-command"></span><h2 id="code">\code</h2>
+<p>The \code and \endcode commands enclose a snippet of source code.</p>
+<div class="admonition note">
+<p><b>Note: </b>The <a href="04-qdoc-commands-textmarkup.html#c-command" translate="no">\c</a> command can be used for short code fragments within a sentence. The \code command is for longer code snippets. It renders the code verbatim in a separate paragraph in a html &lt;pre&gt; element, and parses the enclosed snippet, creating links to any known types in the code.</p>
+</div>
+<p>For documenting command-line instructions, shell scripts, or any content that is not in a Qt language recognized by QDoc, use <a href="06-qdoc-commands-includecodeinline.html#badcode-command" translate="no">\badcode</a> instead.</p>
+<p>When processing the \code command, QDoc removes all indentation that is common for the verbatim code blocks within a <code translate="no">/</code><code translate="no">*!</code> ..&#x2e; <code translate="no">*</code><code translate="no">/</code> comment before it adds the standard indentation.</p>
+<div class="admonition note">
+<p><b>Note: </b>This doesn't apply to externally quoted code using the <a href="07-0-qdoc-commands-includingexternalcode.html#quotefromfile-command" translate="no">\quotefromfile</a> or <a href="07-0-qdoc-commands-includingexternalcode.html#quotefile-command" translate="no">\quotefile</a> command.</p>
+</div>
+<pre class="cpp" translate="no">
+ <span class="comment">/*!
+     \code
+         #include &lt;QApplication&gt;
+         #include &lt;QPushButton&gt;
+
+         int main(int argc, char *argv[])
+         {
+             ...
+         }
+     \endcode
+ */</span>
+</pre>
+<p>Other QDoc commands are disabled within \code..&#x2e; \endcode, and the special character '\' is accepted and rendered like the rest of the code, unless it is followed by a digit and parameters were passed to \code.</p>
+<h3 id="highlighting-and-autolinking">Highlighting and autolinking</h3>
+<p>The \code commands attempts to parse its contents as code of a specific language, as defined in the <a href="22-qdoc-configuration-generalvariables.html#language-variable" translate="no">language</a> configuration variable. This provides highlighting and automatic linking to types detected in the code.</p>
+<p>As an exception since QDoc version 6.4, when the \code command is used within a QML-specific <a href="13-qdoc-commands-topics.html" translate="no">topic</a>, QDoc first attempts to recognize the code as QML; for other topics, the language configuration variable takes precedence. To explicitly mark the code snippet as QML, use the <a href="06-qdoc-commands-includecodeinline.html#qml-command" translate="no">\qml</a> command instead.</p>
+<h3 id="code-snippet-parameters">Code snippet parameters</h3>
+<p>Since QDoc version 5.12, \code command accepts also optional parameters. Parameters are useful for injecting simple strings into the code snippet. To inject a string to a specific location in the snippet, add a backslash followed by a digit (1..8). The digits correspond with the order of the argument list, where arguments are separated by spaces.</p>
+<p>For example:</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \code * hello
+     /\1 \2 \1/
+     \endcode
+ */
+</pre>
+<p>For the above snippet, QDoc renders the word <i>hello</i> enclosed in a C-style comment.</p>
+<h3 id="including-code-from-external-files">Including code from external files</h3>
+<p>To include code snippets from an external file, use the <a href="07-0-qdoc-commands-includingexternalcode.html#snippet-command" translate="no">\snippet</a> and <a href="07-0-qdoc-commands-includingexternalcode.html#codeline-command" translate="no">\codeline</a> commands.</p>
+<p>See also <a href="04-qdoc-commands-textmarkup.html#c-command" translate="no">\c</a>, <a href="06-qdoc-commands-includecodeinline.html#qml-command" translate="no">\qml</a>, <a href="06-qdoc-commands-includecodeinline.html#badcode-command" translate="no">\badcode</a>, <a href="07-0-qdoc-commands-includingexternalcode.html#quotefromfile-command" translate="no">\quotefromfile</a>, and <a href="22-qdoc-configuration-generalvariables.html#language-variable" translate="no">language</a>.</p>
+<span id="badcode-command"></span><h2 id="badcode">\badcode</h2>
+<p>Similar to <a href="06-qdoc-commands-includecodeinline.html#code-command" translate="no">\code</a>, \badcode and \endcode commands enclose content that is rendered verbatim in a separate paragraph, but no parsing or automatic link creation is performed. Instead, the content is treated as plain text.</p>
+<p>Substitute \code with this command when documenting command-line instructions, shell scripts or any other content that is not in a Qt language, but should still be styled similarly to a \code paragraph.</p>
+<p>Like \code, \badcode accepts also optional parameters.</p>
+<span id="qml-command"></span><h2 id="qml">\qml</h2>
+<p>The \qml and \endqml commands enclose a snippet of QML source code. Use these for proper syntax highlighting of QML code snippets. The enclosed snippet must be complete as if it was a valid .qml file. If the snippet is incomplete, QDoc will issue a warning and ignore the snippet.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \qml
+         import QtQuick 2.0
+
+         Row {
+             Rectangle {
+                 width: 100; height: 100
+                 color: &quot;blue&quot;
+                 transform: Translate { y: 20 }
+             }
+             Rectangle {
+                 width: 100; height: 100
+                 color: &quot;red&quot;
+                 transform: Translate { y: -20 }
+             }
+         }
+     \endqml
+ */
+</pre>
+<p>Like the <a href="06-qdoc-commands-includecodeinline.html#code-command" translate="no">\code</a> command, \qml accepts optional parameters.</p>
+</div>
+<!-- @@@06-qdoc-commands-includecodeinline.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="05-qdoc-commands-documentstructure.html">Document Structure</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="07-0-qdoc-commands-includingexternalcode.html">Including External Code</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

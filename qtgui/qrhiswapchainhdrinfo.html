@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qrhi.cpp -->
+  <meta name="description" content="Describes the high dynamic range related information of the swapchain's associated output.">
+  <title>QRhiSwapChainHdrInfo Struct | Qt GUI 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
+<li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
+<li>QRhiSwapChainHdrInfo</li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#public-types">Public Types</a></li>
+<li class="level1"><a href="#public-variables">Public Variables</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">QRhiSwapChainHdrInfo Struct</h1>
+<!-- $$$QRhiSwapChainHdrInfo-brief -->
+<p>Describes the high dynamic range related information of the swapchain's associated output. <a href="#details">More...</a></p>
+<!-- @@@QRhiSwapChainHdrInfo -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign">  <span class="preprocessor">#include &lt;QRhiSwapChainHdrInfo&gt;</span></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> CMake:</td><td class="memItemRight bottomAlign"> find_package(Qt6 REQUIRED COMPONENTS Gui) <br/>
+target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> qmake:</td><td class="memItemRight bottomAlign"> QT += gui</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> Qt 6.6</td></tr>
+</table></div>
+<ul>
+<li><a href="qrhiswapchainhdrinfo-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="public-types">Public Types</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="qrhiswapchainhdrinfo.html#LimitsType-enum" translate="no">LimitsType</a></b> { LuminanceInNits, ColorComponentValue }</td></tr>
+</table></div>
+<h2 id="public-variables">Public Variables</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qrhiswapchainhdrinfo.html#isHardCodedDefaults-var" translate="no">isHardCodedDefaults</a></b></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> union (unnamed union at /home/runner/work/build-qt6-docs/build-qt6-docs/qt6/qtbase/src/gui/rhi/qrhi.h:1481:5) </td><td class="memItemRight bottomAlign"><b><a href="qrhiswapchainhdrinfo.html#limits-var" translate="no">limits</a></b></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QRhiSwapChainHdrInfo::LimitsType </td><td class="memItemRight bottomAlign"><b><a href="qrhiswapchainhdrinfo.html#limitsType-var" translate="no">limitsType</a></b></td></tr>
+</table></div>
+<!-- $$$QRhiSwapChainHdrInfo-description -->
+<div class="descr">
+<h2 id="details">Detailed Description</h2>
+<p>To perform tonemapping, one often needs to know the maximum luminance of the display the swapchain's window is associated with. While this is often made user-configurable, it can be highly useful to set defaults based on the values reported by the display itself, thus providing a decent starting point.</p>
+<p>There are some problems however: the information is exposed in different forms on different platforms, whereas with cross-platform graphics APIs there is often no associated solution at all, because managing such information is not in the scope of the API (and may rather be retrievable via other platform-specific means, if any).</p>
+<p>The struct returned from <a href="qrhiswapchain.html#hdrInfo" translate="no">QRhiSwapChain::hdrInfo</a>() contains either some hard-coded defaults, indicated by the <code translate="no">isHardCodedDefaults</code> field, or real values received from an API such as DXGI (IDXGIOutput6) or Cocoa (NSScreen). The default is 1000 nits for maximum luminance.</p>
+<p>With Metal on macOS/iOS, there is no luminance values exposed in the platform APIs. Instead, the maximum color component value, that would be 1.0 in a non-HDR setup, is provided. The <code translate="no">limitsType</code> field indicates what kind of information is available. It is then up to the clients of <a href="qrhi.html" translate="no">QRhi</a> to access the correct data from the <code translate="no">limits</code> union and use it as they see fit.</p>
+<p>With an API like Vulkan, where there is no way to get such information, the values are always the built-in defaults and <code translate="no">isHardCodedDefaults</code> is always true.</p>
+<div class="admonition note">
+<p><b>Note: </b>This is a RHI API with limited compatibility guarantees, see <a href="qrhi.html" translate="no">QRhi</a> for details.</p>
+</div>
+</div>
+<p><b>See also </b><a href="qrhiswapchain.html#hdrInfo" translate="no">QRhiSwapChain::hdrInfo</a>().</p>
+<!-- @@@QRhiSwapChainHdrInfo -->
+<div class="types">
+<h2>Member Type Documentation</h2>
+<!-- $$$LimitsType$$$LuminanceInNits$$$ColorComponentValue -->
+<h3 class="fn" translate="no" id="LimitsType-enum">enum QRhiSwapChainHdrInfo::<span class="name">LimitsType</span></h3>
+<div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
+<tr><td class="topAlign"><code translate="no">QRhiSwapChainHdrInfo::LuminanceInNits</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">Indicates that the <a href="qrhiswapchainhdrinfo.html#limits-var" translate="no">limits</a> union has its <code translate="no">luminanceInNits</code> struct set</td></tr>
+<tr><td class="topAlign"><code translate="no">QRhiSwapChainHdrInfo::ColorComponentValue</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">Indicates that the <a href="qrhiswapchainhdrinfo.html#limits-var" translate="no">limits</a> union has its <code translate="no">colorComponentValue</code> struct set</td></tr>
+</table></div>
+<!-- @@@LimitsType -->
+</div>
+<div class="vars">
+<h2>Member Variable Documentation</h2>
+<!-- $$$isHardCodedDefaults -->
+<h3 class="fn" translate="no" id="isHardCodedDefaults-var"><span class="type">bool</span> QRhiSwapChainHdrInfo::<span class="name">isHardCodedDefaults</span></h3>
+<p>Set to true when the data in the <a href="qrhiswapchainhdrinfo.html" translate="no">QRhiSwapChainHdrInfo</a> consists entirely of the hard-coded default values, for example because there is no way to query the relevant information with a given graphics API or platform. (or because querying it can be achieved only by means, e.g&#x2e; platform APIs in some other area, that are out of scope for the <a href="qrhi.html" translate="no">QRhi</a> layer of the Qt graphics stack to handle)</p>
+<p><b>See also </b><a href="qrhiswapchain.html#hdrInfo" translate="no">QRhiSwapChain::hdrInfo</a>().</p>
+<!-- @@@isHardCodedDefaults -->
+<!-- $$$limits -->
+<h3 class="fn" translate="no" id="limits-var"><span class="type">union</span> (<span class="type">unnamed</span> <span class="type">union</span> <span class="type">at</span> /<span class="type">home</span>/<span class="type">runner</span>/<span class="type">work</span>/<span class="type">build</span>-<span class="type">qt6</span>-<span class="type">docs</span>/<span class="type">build</span>-<span class="type">qt6</span>-<span class="type">docs</span>/<span class="type">qt6</span>/<span class="type">qtbase</span>/<span class="type">src</span>/<span class="type">gui</span>/<span class="type">rhi</span>/<span class="type">qrhi</span>.<span class="type">h:1481:5</span>) QRhiSwapChainHdrInfo::<span class="name">limits</span></h3>
+<p>Contains the actual values queried from the graphics API or the platform. The type of data is indicated by <a href="qrhiswapchainhdrinfo.html#limitsType-var" translate="no">limitsType</a>. This is therefore a union. There are currently two options:</p>
+<p>Luminance values in nits:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">struct</span> {
+     <span class="type">float</span> minLuminance;
+     <span class="type">float</span> maxLuminance;
+ } luminanceInNits;
+</pre>
+<p>Whereas for macOS/iOS, the current maximum and potential maximum color component values are provided:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">struct</span> {
+     <span class="type">float</span> maxColorComponentValue;
+     <span class="type">float</span> maxPotentialColorComponentValue;
+ } colorComponentValue;
+</pre>
+<p><b>See also </b><a href="qrhiswapchain.html#hdrInfo" translate="no">QRhiSwapChain::hdrInfo</a>().</p>
+<!-- @@@limits -->
+<!-- $$$limitsType -->
+<h3 class="fn" translate="no" id="limitsType-var"><span class="type"><a href="qrhiswapchainhdrinfo.html#LimitsType-enum" translate="no">QRhiSwapChainHdrInfo::LimitsType</a></span> QRhiSwapChainHdrInfo::<span class="name">limitsType</span></h3>
+<p>With Metal on macOS/iOS, there is no luminance values exposed in the platform APIs. Instead, the maximum color component value, that would be 1.0 in a non-HDR setup, is provided. This value indicates what kind of information is available in <a href="qrhiswapchainhdrinfo.html#limits-var" translate="no">limits</a>.</p>
+<p><b>See also </b><a href="qrhiswapchain.html#hdrInfo" translate="no">QRhiSwapChain::hdrInfo</a>().</p>
+<!-- @@@limitsType -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

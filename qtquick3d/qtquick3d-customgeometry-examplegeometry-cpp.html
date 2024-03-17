@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-customgeometry.qdoc -->
+  <meta name="description" content="Demonstrates providing custom vertex data from C++ and QML.">
+  <title>Qt Quick 3D - Custom Geometry Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Custom Geometry Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Custom Geometry Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;examplegeometry.h&quot;</span>
+ <span class="preprocessor">#include &lt;QRandomGenerator&gt;</span>
+ <span class="preprocessor">#include &lt;QVector3D&gt;</span>
+
+ ExampleTriangleGeometry<span class="operator">::</span>ExampleTriangleGeometry()
+ {
+     updateData();
+ }
+
+ <span class="type">void</span> ExampleTriangleGeometry<span class="operator">::</span>setNormals(<span class="type">bool</span> enable)
+ {
+     <span class="keyword">if</span> (m_hasNormals <span class="operator">=</span><span class="operator">=</span> enable)
+         <span class="keyword">return</span>;
+
+     m_hasNormals <span class="operator">=</span> enable;
+     <span class="keyword">emit</span> normalsChanged();
+     updateData();
+     update();
+ }
+
+ <span class="type">void</span> ExampleTriangleGeometry<span class="operator">::</span>setNormalXY(<span class="type">float</span> xy)
+ {
+     <span class="keyword">if</span> (m_normalXY <span class="operator">=</span><span class="operator">=</span> xy)
+         <span class="keyword">return</span>;
+
+     m_normalXY <span class="operator">=</span> xy;
+     <span class="keyword">emit</span> normalXYChanged();
+     updateData();
+     update();
+ }
+
+ <span class="type">void</span> ExampleTriangleGeometry<span class="operator">::</span>setUV(<span class="type">bool</span> enable)
+ {
+     <span class="keyword">if</span> (m_hasUV <span class="operator">=</span><span class="operator">=</span> enable)
+         <span class="keyword">return</span>;
+
+     m_hasUV <span class="operator">=</span> enable;
+     <span class="keyword">emit</span> uvChanged();
+     updateData();
+     update();
+ }
+
+ <span class="type">void</span> ExampleTriangleGeometry<span class="operator">::</span>setUVAdjust(<span class="type">float</span> f)
+ {
+     <span class="keyword">if</span> (m_uvAdjust <span class="operator">=</span><span class="operator">=</span> f)
+         <span class="keyword">return</span>;
+
+     m_uvAdjust <span class="operator">=</span> f;
+     <span class="keyword">emit</span> uvAdjustChanged();
+     updateData();
+     update();
+ }
+
+ <span class="type">void</span> ExampleTriangleGeometry<span class="operator">::</span>updateData()
+ {
+     clear();
+
+     <span class="type">int</span> stride <span class="operator">=</span> <span class="number">3</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>);
+     <span class="keyword">if</span> (m_hasNormals)
+         stride <span class="operator">+</span><span class="operator">=</span> <span class="number">3</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>);
+     <span class="keyword">if</span> (m_hasUV)
+         stride <span class="operator">+</span><span class="operator">=</span> <span class="number">2</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>);
+
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> vertexData(<span class="number">3</span> <span class="operator">*</span> stride<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Initialization<span class="operator">::</span>Uninitialized);
+     <span class="type">float</span> <span class="operator">*</span>p <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="type">float</span> <span class="operator">*</span><span class="operator">&gt;</span>(vertexData<span class="operator">.</span>data());
+
+     <span class="comment">// a triangle, front face = counter-clockwise</span>
+     <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="operator">-</span><span class="number">1.0f</span>; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="operator">-</span><span class="number">1.0f</span>; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">0.0f</span>;
+     <span class="keyword">if</span> (m_hasNormals) {
+         <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> m_normalXY; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> m_normalXY; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">1.0f</span>;
+     }
+     <span class="keyword">if</span> (m_hasUV) {
+         <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">0.0f</span> <span class="operator">+</span> m_uvAdjust; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">0.0f</span> <span class="operator">+</span> m_uvAdjust;
+     }
+     <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">1.0f</span>; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="operator">-</span><span class="number">1.0f</span>; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">0.0f</span>;
+     <span class="keyword">if</span> (m_hasNormals) {
+         <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> m_normalXY; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> m_normalXY; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">1.0f</span>;
+     }
+     <span class="keyword">if</span> (m_hasUV) {
+         <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">1.0f</span> <span class="operator">-</span> m_uvAdjust; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">0.0f</span> <span class="operator">+</span> m_uvAdjust;
+     }
+     <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">0.0f</span>; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">1.0f</span>; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">0.0f</span>;
+     <span class="keyword">if</span> (m_hasNormals) {
+         <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> m_normalXY; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> m_normalXY; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">1.0f</span>;
+     }
+     <span class="keyword">if</span> (m_hasUV) {
+         <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">1.0f</span> <span class="operator">-</span> m_uvAdjust; <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">1.0f</span> <span class="operator">-</span> m_uvAdjust;
+     }
+
+     setVertexData(vertexData);
+     setStride(stride);
+     setBounds(QVector3D(<span class="operator">-</span><span class="number">1.0f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">1.0f</span><span class="operator">,</span> <span class="number">0.0f</span>)<span class="operator">,</span> QVector3D(<span class="operator">+</span><span class="number">1.0f</span><span class="operator">,</span> <span class="operator">+</span><span class="number">1.0f</span><span class="operator">,</span> <span class="number">0.0f</span>));
+
+     setPrimitiveType(QQuick3DGeometry<span class="operator">::</span>PrimitiveType<span class="operator">::</span>Triangles);
+
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>PositionSemantic<span class="operator">,</span>
+                  <span class="number">0</span><span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>F32Type);
+
+     <span class="keyword">if</span> (m_hasNormals) {
+         addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>NormalSemantic<span class="operator">,</span>
+                      <span class="number">3</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>)<span class="operator">,</span>
+                      QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>F32Type);
+     }
+
+     <span class="keyword">if</span> (m_hasUV) {
+         addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>TexCoordSemantic<span class="operator">,</span>
+                      m_hasNormals <span class="operator">?</span> <span class="number">6</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>) : <span class="number">3</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>)<span class="operator">,</span>
+                      QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>F32Type);
+     }
+ }
+
+ ExamplePointGeometry<span class="operator">::</span>ExamplePointGeometry()
+ {
+     updateData();
+ }
+
+ <span class="type">void</span> ExamplePointGeometry<span class="operator">::</span>updateData()
+ {
+     clear();
+
+     constexpr <span class="keyword">auto</span> randomFloat <span class="operator">=</span> <span class="operator">[</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type">float</span> lowest<span class="operator">,</span> <span class="keyword">const</span> <span class="type">float</span> highest) <span class="operator">-</span><span class="operator">&gt;</span> <span class="type">float</span> {
+         <span class="keyword">return</span> lowest <span class="operator">+</span> <span class="type"><a href="../qtcore/qrandomgenerator.html" translate="no">QRandomGenerator</a></span><span class="operator">::</span>global()<span class="operator">-</span><span class="operator">&gt;</span>generateDouble() <span class="operator">*</span> (highest <span class="operator">-</span> lowest);
+     };
+     constexpr <span class="type">int</span> NUM_POINTS <span class="operator">=</span> <span class="number">2000</span>;
+     constexpr <span class="type">int</span> stride <span class="operator">=</span> <span class="number">3</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>);
+
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> vertexData;
+     vertexData<span class="operator">.</span>resize(NUM_POINTS <span class="operator">*</span> stride);
+     <span class="type">float</span> <span class="operator">*</span>p <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="type">float</span> <span class="operator">*</span><span class="operator">&gt;</span>(vertexData<span class="operator">.</span>data());
+
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> NUM_POINTS; <span class="operator">+</span><span class="operator">+</span>i) {
+         <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> randomFloat(<span class="operator">-</span><span class="number">5.0f</span><span class="operator">,</span> <span class="operator">+</span><span class="number">5.0f</span>);
+         <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> randomFloat(<span class="operator">-</span><span class="number">5.0f</span><span class="operator">,</span> <span class="operator">+</span><span class="number">5.0f</span>);
+         <span class="operator">*</span>p<span class="operator">+</span><span class="operator">+</span> <span class="operator">=</span> <span class="number">0.0f</span>;
+     }
+
+     setVertexData(vertexData);
+     setStride(stride);
+     setBounds(QVector3D(<span class="operator">-</span><span class="number">5.0f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">5.0f</span><span class="operator">,</span> <span class="number">0.0f</span>)<span class="operator">,</span> QVector3D(<span class="operator">+</span><span class="number">5.0f</span><span class="operator">,</span> <span class="operator">+</span><span class="number">5.0f</span><span class="operator">,</span> <span class="number">0.0f</span>));
+
+     setPrimitiveType(QQuick3DGeometry<span class="operator">::</span>PrimitiveType<span class="operator">::</span>Points);
+
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>PositionSemantic<span class="operator">,</span>
+                  <span class="number">0</span><span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>F32Type);
+ }
+</pre>

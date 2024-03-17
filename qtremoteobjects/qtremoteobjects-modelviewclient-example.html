@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- modelviewclient.qdoc -->
+  <meta name="description" content="Developing a very simple client program which displays the content and changes made on a server.">
+  <title>Model-View Client | Qt Remote Objects 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtremoteobjects-index.html" translate="no">Qt Remote Objects</a></li>
+<li><a href="qtremoteobjects-examples.html" translate="no">Qt Remote Objects Examples</a></li>
+<li>Model-View Client</li>
+<li id="buildversion"><a href="qtremoteobjects-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Model-View Client</h1>
+<!-- $$$modelviewclient-brief -->
+<p>Developing a very simple client program which displays the content and changes made on a server.</p>
+<!-- @@@modelviewclient -->
+<!-- $$$modelviewclient-description -->
+<div class="descr" id="details">
+<p>This is the client-side application that accompanies the <a href="qtremoteobjects-modelviewserver-example.html" translate="no">Model-View Server</a>.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="qremoteobjectnode.html" translate="no">QRemoteObjectNode</a></span> node(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;local:registry&quot;</span>)));
+     node<span class="operator">.</span>setHeartbeatInterval(<span class="number">1000</span>);
+</pre>
+<p>We start by creating a <a href="qremoteobjectnode.html" translate="no">QRemoteObjectNode</a> and connecting it to a registry found on the local machine. We also set a <a href="qremoteobjectnode.html#heartbeatInterval-prop" translate="no">heartbeat interval</a>. The heartbeat is useful to detect if the connection to the <a href="qtremoteobjects-source.html#source" translate="no">Source</a> has been disrupted. In this case, since all the traffic is local, it would detect when the server has been closed.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtcore/qscopedpointer.html" translate="no">QScopedPointer</a></span><span class="operator">&lt;</span><span class="type"><a href="qabstractitemmodelreplica.html" translate="no">QAbstractItemModelReplica</a></span><span class="operator">&gt;</span> model(node<span class="operator">.</span>acquireModel(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;RemoteModel&quot;</span>)));
+</pre>
+<p>We then <a href="qremoteobjectnode.html#acquireModel" translate="no">acquire</a> the model which contains all of our data. In this case, we're looking to acquire a model named <code translate="no">RemoteModel</code> from the remote object network we are connected to.</p>
+<pre class="cpp" translate="no">
+     <span class="type">QTreeView</span> view;
+     view<span class="operator">.</span>setWindowTitle(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;RemoteView&quot;</span>));
+     view<span class="operator">.</span>resize(<span class="number">640</span><span class="operator">,</span><span class="number">480</span>);
+     view<span class="operator">.</span>setModel(model<span class="operator">.</span>data());
+     view<span class="operator">.</span>show();
+</pre>
+<p>And finally, we display the model in a very basic application.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtremoteobjects.git/tree/examples/remoteobjects/modelviewclient?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@modelviewclient -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

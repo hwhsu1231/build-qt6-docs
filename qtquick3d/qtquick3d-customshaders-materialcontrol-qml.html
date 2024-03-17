@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-customshaders.qdoc -->
+  <meta name="description" content="Demonstrates the use of custom vertex and fragment shaders.">
+  <title>Qt Quick 3D - Custom Shaders Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Custom Shaders Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Custom Shaders Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2019 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">time</span>: <span class="name">time</span>.<span class="name">sliderValue</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">amplitude</span>: <span class="name">amplitude</span>.<span class="name">sliderValue</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">alpha</span>: <span class="name">alpha</span>.<span class="name">sliderValue</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">animateRotation</span>: <span class="name">animControl</span>.<span class="name">checkBoxSet</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">texturing</span>: <span class="name">texControl</span>.<span class="name">checkBoxSet</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">textureFromItem</span> : <span class="name">texControl2</span>.<span class="name">checkBoxSet</span>
+
+     <span class="name">color</span>: <span class="string">&quot;#6b7080&quot;</span>
+     <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+     <span class="name">height</span>: <span class="number">75</span>
+
+     component PropertySlider : <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+         <span class="name">id</span>: <span class="name">sliderRoot</span>
+         required property <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span> <span class="name">name</span>
+         required property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">sliderValue</span>
+         required property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">fromValue</span>
+         required property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">toValue</span>
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+             <span class="name">id</span>: <span class="name">propText</span>
+             <span class="name">text</span>: <span class="name">sliderRoot</span>.<span class="name">name</span>
+             <span class="name">color</span>: <span class="string">&quot;#222840&quot;</span>
+             <span class="name">font</span>.pointSize: <span class="number">12</span>
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+             <span class="name">id</span>: <span class="name">slider</span>
+             <span class="name">from</span>: <span class="name">sliderRoot</span>.<span class="name">fromValue</span>
+             <span class="name">to</span>: <span class="name">sliderRoot</span>.<span class="name">toValue</span>
+             <span class="name">value</span>: <span class="name">sliderRoot</span>.<span class="name">sliderValue</span>
+             <span class="name">stepSize</span>: <span class="number">0.01</span>
+             <span class="name">onValueChanged</span>: <span class="name">sliderRoot</span>.<span class="name">sliderValue</span> <span class="operator">=</span> <span class="name">value</span>
+             <span class="name">Layout</span>.minimumWidth: <span class="number">100</span>
+             <span class="name">Layout</span>.maximumWidth: <span class="number">200</span>
+             <span class="name">background</span>: <span class="name">Rectangle</span> {
+                 <span class="name">x</span>: <span class="name">slider</span>.<span class="name">leftPadding</span>
+                 <span class="name">y</span>: <span class="name">slider</span>.<span class="name">topPadding</span> <span class="operator">+</span> <span class="name">slider</span>.<span class="name">availableHeight</span> <span class="operator">/</span> <span class="number">2</span> <span class="operator">-</span> <span class="name">height</span> <span class="operator">/</span> <span class="number">2</span>
+                 <span class="name">implicitWidth</span>: <span class="number">120</span>
+                 <span class="name">implicitHeight</span>: <span class="number">4</span>
+                 <span class="name">width</span>: <span class="name">slider</span>.<span class="name">availableWidth</span>
+                 <span class="name">height</span>: <span class="name">implicitHeight</span>
+                 <span class="name">radius</span>: <span class="number">1</span>
+                 <span class="name">color</span>: <span class="string">&quot;#222840&quot;</span>
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+                     <span class="name">width</span>: <span class="name">slider</span>.<span class="name">visualPosition</span> <span class="operator">*</span> <span class="name">parent</span>.<span class="name">width</span>
+                     <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span>
+                     <span class="name">color</span>: <span class="string">&quot;#848895&quot;</span>
+                     <span class="name">radius</span>: <span class="number">1</span>
+                 }
+             }
+             <span class="name">handle</span>: <span class="name">Rectangle</span> {
+                 <span class="name">x</span>: <span class="name">slider</span>.<span class="name">leftPadding</span> <span class="operator">+</span> <span class="name">slider</span>.<span class="name">visualPosition</span> <span class="operator">*</span> (<span class="name">slider</span>.<span class="name">availableWidth</span> <span class="operator">-</span> <span class="name">width</span>)
+                 <span class="name">y</span>: <span class="name">slider</span>.<span class="name">topPadding</span> <span class="operator">+</span> <span class="name">slider</span>.<span class="name">availableHeight</span> <span class="operator">/</span> <span class="number">2</span> <span class="operator">-</span> <span class="name">height</span> <span class="operator">/</span> <span class="number">2</span>
+                 <span class="name">implicitWidth</span>: <span class="number">20</span>
+                 <span class="name">implicitHeight</span>: <span class="number">20</span>
+                 <span class="name">radius</span>: <span class="number">5</span>
+                 <span class="name">color</span>: <span class="name">slider</span>.<span class="name">pressed</span> ? <span class="string">&quot;#222840&quot;</span> : <span class="string">&quot;#6b7080&quot;</span>
+                 <span class="name">border</span>.color: <span class="string">&quot;#848895&quot;</span>
+             }
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+             <span class="name">id</span>: <span class="name">valueText</span>
+             <span class="name">text</span>: <span class="name">slider</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+             <span class="name">color</span>: <span class="string">&quot;#222840&quot;</span>
+             <span class="name">font</span>.pointSize: <span class="number">12</span>
+             <span class="name">font</span>.bold: <span class="number">true</span>
+             <span class="name">Layout</span>.minimumWidth: <span class="number">40</span>
+             <span class="name">Layout</span>.maximumWidth: <span class="number">40</span>
+         }
+     }
+
+     component PropertyCheckBox : <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+         <span class="name">id</span>: <span class="name">checkBoxRoot</span>
+         required property <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span> <span class="name">checkBoxText</span>
+         required property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">checkBoxSet</span>
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+             <span class="name">text</span>: <span class="name">checkBoxRoot</span>.<span class="name">checkBoxText</span>
+             <span class="name">font</span>.pointSize: <span class="number">12</span>
+             <span class="name">font</span>.bold: <span class="number">true</span>
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+             <span class="name">checked</span>: <span class="number">false</span>
+             <span class="name">onCheckedChanged</span>: <span class="name">checkBoxRoot</span>.<span class="name">checkBoxSet</span> <span class="operator">=</span> <span class="name">checked</span>
+         }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-scrollbar.html" translate="no">ScrollBar</a></span> {
+         <span class="name">id</span>: <span class="name">hbar</span>
+         <span class="name">policy</span>: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">&lt;</span> <span class="name">columnLayout</span>.<span class="name">width</span> ? <span class="name">ScrollBar</span>.<span class="name">AlwaysOn</span> : <span class="name">ScrollBar</span>.<span class="name">AsNeeded</span>
+         <span class="name">orientation</span>: <span class="name">Qt</span>.<span class="name">Horizontal</span>
+         <span class="name">size</span>: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">/</span> <span class="name">columnLayout</span>.<span class="name">width</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">id</span>: <span class="name">columnLayout</span>
+         readonly property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">leftMargin</span>: <span class="number">25</span>
+         <span class="name">x</span>: <span class="name">leftMargin</span> <span class="operator">-</span> <span class="name">hbar</span>.<span class="name">position</span> <span class="operator">*</span> <span class="name">width</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="name">spacing</span>: <span class="number">10</span>
+             <span class="type">PropertySlider</span> {
+                 <span class="name">id</span>: <span class="name">time</span>
+                 <span class="name">sliderValue</span>: <span class="number">0.0</span>
+                 <span class="name">name</span>: <span class="string">&quot;Time&quot;</span>
+                 <span class="name">fromValue</span>: <span class="number">0.0</span>
+                 <span class="name">toValue</span>: <span class="number">1.0</span>
+             }
+             <span class="type">PropertySlider</span> {
+                 <span class="name">id</span>: <span class="name">amplitude</span>
+                 <span class="name">sliderValue</span>: <span class="number">5.0</span>
+                 <span class="name">name</span>: <span class="string">&quot;Amplitude&quot;</span>
+                 <span class="name">fromValue</span>: <span class="number">1.0</span>
+                 <span class="name">toValue</span>: <span class="number">20.0</span>
+             }
+             <span class="type">PropertySlider</span> {
+                 <span class="name">id</span>: <span class="name">alpha</span>
+                 <span class="name">sliderValue</span>: <span class="number">1.0</span>
+                 <span class="name">name</span>: <span class="string">&quot;Alpha&quot;</span>
+                 <span class="name">fromValue</span>: <span class="number">0.0</span>
+                 <span class="name">toValue</span>: <span class="number">1.0</span>
+             }
+             <span class="type">PropertyCheckBox</span> {
+                 <span class="name">id</span>: <span class="name">animControl</span>
+                 <span class="name">checkBoxText</span>: <span class="string">&quot;Rotate&quot;</span>
+                 <span class="name">checkBoxSet</span>: <span class="number">false</span>
+             }
+             <span class="type">PropertyCheckBox</span> {
+                 <span class="name">id</span>: <span class="name">texControl</span>
+                 <span class="name">checkBoxText</span>: <span class="string">&quot;Texture&quot;</span>
+                 <span class="name">checkBoxSet</span>: <span class="number">false</span>
+             }
+             <span class="name">Layout</span>.rightMargin: <span class="name">texControl</span>.<span class="name">checkBoxSet</span> ? <span class="number">0</span> : <span class="name">texControl2</span>.<span class="name">width</span> <span class="operator">+</span> <span class="number">10</span>
+             <span class="type">PropertyCheckBox</span> {
+                 <span class="name">id</span>: <span class="name">texControl2</span>
+                 <span class="name">visible</span>: <span class="name">texControl</span>.<span class="name">checkBoxSet</span>
+                 <span class="name">checkBoxText</span>: <span class="string">&quot;Texture with Item&quot;</span>
+                 <span class="name">checkBoxSet</span>: <span class="number">false</span>
+             }
+         }
+     }
+ }
+</pre>

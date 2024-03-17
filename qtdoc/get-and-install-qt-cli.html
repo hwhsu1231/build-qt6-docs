@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- installer-cli.qdoc -->
+  <meta name="description" content="How to download and install with CLI.">
+  <title>Get and Install Qt with Command Line Interface | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Get and Install Qt with Command Line Interface</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#installing-without-user-interaction">Installing Without User Interaction</a></li>
+<li class="level2"><a href="#new-installation-with-qt-online-installer">New Installation with Qt Online Installer</a></li>
+<li class="level2"><a href="#updating-installation-with-maintenance-tool">Updating Installation with Maintenance Tool</a></li>
+<li class="level2"><a href="#options-for-unattended-usage">Options for Unattended Usage</a></li>
+<li class="level2"><a href="#message-identifiers-for-auto-answer">Message Identifiers for <code translate="no">--auto-answer</code></a></li>
+<li class="level2"><a href="#providing-login-information">Providing Login Information</a></li>
+<li class="level1"><a href="#installing-with-user-interaction">Installing With User Interaction</a></li>
+<li class="level1"><a href="#uninstalling-packages">Uninstalling Packages</a></li>
+<li class="level1"><a href="#searching-packages">Searching Packages</a></li>
+<li class="level1"><a href="#listing-installed-packages">Listing Installed Packages</a></li>
+<li class="level1"><a href="#checking-updates">Checking Updates</a></li>
+<li class="level1"><a href="#updating-packages">Updating Packages</a></li>
+<li class="level1"><a href="#popular-commands">Popular Commands</a></li>
+<li class="level1"><a href="#selecting-mirror-for-opensource">Selecting Mirror for Opensource</a></li>
+<li class="level1"><a href="#further-information">Further Information</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Get and Install Qt with Command Line Interface</h1>
+<!-- $$$get-and-install-qt-cli.html-description -->
+<div class="descr" id="details">
+<p>From Qt Online Installer and Maintenance Tool 4.0 onward, an improved command line interface (CLI) enables installing, uninstalling, updating, and searching components. You can use the command line interface with Qt Online installer and Maintenance Tool.</p>
+<p>The command line interface supports both <b>interactive and non-interactive usage (unattended usage)</b>. The following topics provide examples and information on how you can use the command line interface:</p>
+<ul>
+<li><a href="get-and-install-qt-cli.html#installing-without-user-interaction" translate="no">Installing Without User Interaction</a></li>
+<li><a href="get-and-install-qt-cli.html#installing-with-user-interaction" translate="no">Installing With User Interaction</a></li>
+<li><a href="get-and-install-qt-cli.html#uninstalling-packages" translate="no">Uninstalling Packages</a></li>
+<li><a href="get-and-install-qt-cli.html#searching-packages" translate="no">Searching Packages</a></li>
+<li><a href="get-and-install-qt-cli.html#listing-installed-packages" translate="no">Listing Installed Packages</a></li>
+<li><a href="get-and-install-qt-cli.html#checking-updates" translate="no">Checking Updates</a></li>
+<li><a href="get-and-install-qt-cli.html#updating-packages" translate="no">Updating Packages</a></li>
+<li><a href="get-and-install-qt-cli.html#popular-commands" translate="no">Popular Commands</a></li>
+<li><a href="get-and-install-qt-cli.html#selecting-mirror-for-opensource" translate="no">Selecting Mirror for Opensource</a></li>
+<li><a href="get-and-install-qt-cli.html#further-information" translate="no">Further Information</a></li>
+</ul>
+<h2 id="installing-without-user-interaction">Installing Without User Interaction</h2>
+<p>By default, Qt Online installer or Maintenance Tool may ask for additional information during installation, which requires user attention. Unattended usage via the command line interface is possible by providing all the requested information beforehand with appropriate options.</p>
+<h3 id="new-installation-with-qt-online-installer">New Installation with Qt Online Installer</h3>
+<p>You can do new installations from the command line interface without user interaction as follows:</p>
+<ol class="1" type="1"><li>Define the <i>Qt Online Installer</i> executable.</li>
+<li>Define the installation directory with <b><code translate="no">--root</code></b>.</li>
+<li>Use the <b><code translate="no">install &lt;list of packages&gt;</code></b> command with <b>options for unattended usage</b>. See the full list of options in <a href="get-and-install-qt-cli.html#options-for-unattended-usage" translate="no">Options for Unattended Usage</a>.</li>
+</ol>
+<p>The following examples demonstrate how you install Qt 6.6&#x2e;0 binaries with Qt Online installer for Windows, macOS, and Linux. The unattended commands automatically accept the licenses (<b><code translate="no">--accept-licenses</code></b>), answer all message queries with their default answer (<b><code translate="no">--default-answer</code></b>), skip asking for permission to continue performing (<b><code translate="no">--confirm-command</code></b>), and accept all message queries (<b><code translate="no">accept-messages</code></b>):</p>
+<pre class="cpp plain" translate="no">
+ # Windows: new installation with Qt Online installer
+ qt-unified-windows-x64-[Qt Online Installer version]-online.exe --root C:\Users\[username]\installation_dir --accept-licenses --default-answer --confirm-command --accept-messages install qt.qt6.660.win64_msvc2019_64
+
+ # macOS: new installation with Qt Online installer
+ qt-unified-macOS-x64-[Qt Online Installer version]-online.dmg --root /home/&lt;username&gt;/installation_dir --accept-licenses --default-answer --confirm-command --accept-messages install qt.qt6.660.clang_644
+
+ # linux: new installation with Qt Online installer
+ qt-unified-linux-x64-[Qt Online Installer version]-online.run --root /home/&lt;username&gt;/installation_dir --accept-licenses --default-answer --confirm-command --accept-messages install qt.qt6.660.gcc_64
+</pre>
+<p><a href="get-and-install-qt-cli.html#options-for-unattended-usage" translate="no">Options for Unattended Usage</a> lists all available options for unattended usage.</p>
+<h3 id="updating-installation-with-maintenance-tool">Updating Installation with Maintenance Tool</h3>
+<p>You can update existing installation from the command line interface without user interaction as follows:</p>
+<ol class="1" type="1"><li>Define the <i>Maintenance Tool</i> executable.</li>
+<li>Use <b><code translate="no">install &lt;list of packages&gt;</code></b> with <b>options for unattended usage</b>. See the full list of options in <a href="get-and-install-qt-cli.html#options-for-unattended-usage" translate="no">Options for Unattended Usage</a>.</li>
+</ol>
+<p>The following examples demonstrate how you add Qt 6.6&#x2e;0 binaries with Maintenance Tool to an exsting installation on Windows, macOS, and Linux. The unattended commands automatically accept the licenses (<b><code translate="no">--accept-licenses</code></b>), answer all message queries with their default answer (<b><code translate="no">--default-answer</code></b>), skip asking for permission to continue performing (<b><code translate="no">--confirm-command</code></b>), and accept all message queries <b><code translate="no">accept-messages</code></b>):</p>
+<pre class="cpp plain" translate="no">
+ # Windows: update installation with Maintenance Tool
+ MaintenanceTool.exe --accept-licenses --default-answer --confirm-command --accept-messages install qt.qt6.660.win64_msvc2019_64
+
+ # macOS: update installation with Maintenance Tool
+ MaintenanceTool.dmg --accept-licenses --default-answer --confirm-command --accept-messages install qt.qt6.660.clang_64
+
+ # linux: update installation with Maintenance Tool
+ MaintenanceTool.run --accept-licenses --default-answer --confirm-command --accept-messages install qt.qt6.660.gcc_64
+</pre>
+<h3 id="options-for-unattended-usage">Options for Unattended Usage</h3>
+<p>The following table lists all options for unattended command line usage:</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Option for unattended usage</th><th >Description</th></tr></thead>
+<tr valign="top" class="odd"><td ><code translate="no">--accept-licenses</code></td><td >Automatically accepts all license agreements.</td></tr>
+<tr valign="top" class="even"><td ><code translate="no">--accept-obligations</code></td><td >In the opensource installations, accepts Qt Open Source usage obligations without user input.</td></tr>
+<tr valign="top" class="odd"><td ><code translate="no">--default-answer</code></td><td >Answers all message queries with their default answer.</td></tr>
+<tr valign="top" class="even"><td ><code translate="no">--auto-answer &lt;identifier=value&gt;</code></td><td >In case you want different answers to certain queries, you can use this option. For example, <code translate="no">--auto-answer telemetry-question=Yes,AssociateCommonFiletypes=Yes</code>. See all message identifiers in <a href="get-and-install-qt-cli.html#message-identifiers-for-auto-answer" translate="no">Message Identifiers for --auto-answer</a>.</td></tr>
+<tr valign="top" class="odd"><td ><code translate="no">--accept-messages</code></td><td >Accepts all message queries.</td></tr>
+<tr valign="top" class="even"><td ><code translate="no">--reject-messages</code></td><td >Rejects all message queries.</td></tr>
+<tr valign="top" class="odd"><td ><code translate="no">--confirm-command</code></td><td >By default, Qt Online Installer and Maintenance Tool print a summary of components to be affected by the option. Then they ask for permission to continue acting, to prevent accidental changes. This option skips asking for permission to continue.</td></tr>
+<tr valign="top" class="even"><td ><code translate="no">--email &lt;your_email&gt;</code></td><td >Provides the email when you log in from the command line. For more information, see <a href="get-and-install-qt-cli.html#providing-login-information" translate="no">Providing Login Information</a>.</td></tr>
+<tr valign="top" class="odd"><td ><code translate="no">--pw &lt;your_pw&gt;</code></td><td >Provides the password when you log in from the command line. For more information, see <a href="get-and-install-qt-cli.html#providing-login-information" translate="no">Providing Login Information</a>.</td></tr>
+<tr valign="top" class="even"><td ><code translate="no">--file-query &lt;identifier=value&gt;</code></td><td >Sometimes the installer asks for a file or a folder location. You can provide the location with <code translate="no">--file-query &lt;identifier=value&gt;</code>. For example, <code translate="no">--file-query PathForSDP7=&lt;path_to_sdp&gt;</code>.<p>The identifiers are printed into the command line before the actual question and message type. You can pick up the identifiers from there.</p>
+</td></tr>
+</table></div>
+<h3 id="message-identifiers-for-auto-answer">Message Identifiers for <code translate="no">--auto-answer</code></h3>
+<p>Use the <code translate="no">--auto-answer</code> option to provide answers to certain queries. The following table lists known identifiers and values used for <code translate="no">--auto-answer</code>:</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >ID</th><th >Values</th><th >Default</th></tr></thead>
+<tr valign="top" class="odd"><td >OperationDoesNotExistError</td><td >Abort, Ignore</td><td >Ignore</td></tr>
+<tr valign="top" class="even"><td >OverwriteTargetDirectory</td><td >Yes, No</td><td >No</td></tr>
+<tr valign="top" class="odd"><td >stopProcessesForUpdates</td><td >Retry, Ignore, Cancel</td><td >Cancel</td></tr>
+<tr valign="top" class="even"><td >installationErrorWithCancel</td><td >Retry, Ignore, Cancel</td><td >Cancel</td></tr>
+<tr valign="top" class="odd"><td >installationErrorWithIgnore</td><td >Retry, Ignore</td><td >Ignore</td></tr>
+<tr valign="top" class="even"><td >AssociateCommonFiletypes</td><td >Yes, No</td><td >Yes</td></tr>
+<tr valign="top" class="odd"><td >telemetry-question</td><td >Yes, No</td><td >Yes</td></tr>
+</table></div>
+<h3 id="providing-login-information">Providing Login Information</h3>
+<p>Qt Online Installer and MaintenanceTool have a forced login. The forced login uses information on the <i>qtaccount.ini</i> file if it is available in cache. You find <i>qtaccount.ini</i> as follows:</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Host</th><th >qtaccount.ini location</th></tr></thead>
+<tr valign="top" class="odd"><td >Windows</td><td ><code translate="no">C:\Users\&lt;username&gt;\AppData\Roaming\Qt</code></td></tr>
+<tr valign="top" class="even"><td >macOS</td><td ><code translate="no">/Users/&lt;username&gt;/Library/Application Support/Qt/qtaccount.ini</code></td></tr>
+<tr valign="top" class="odd"><td >Linux</td><td ><code translate="no">/home/&lt;username&gt;/.local/share/Qt/qtaccount.ini</code></td></tr>
+</table></div>
+<p>Optionally, you can login either from the command line using the switches for email and password: <code translate="no">--email &lt;your_email&gt;</code> and <code translate="no">--pw &lt;your_pw&gt;</code>.</p>
+<p>Alternatively, you can save the jwt token to the environment variable <code translate="no">QT_INSTALLER_JWT_TOKEN</code>. You find the token in the <i>qtaccount.ini</i> file.</p>
+<h2 id="installing-with-user-interaction">Installing With User Interaction</h2>
+<p>You can use the command line interface with user interaction as follows:</p>
+<ol class="1" type="1"><li>Define the executable:<ul>
+<li><i>Qt Online Installer</i> if you need to do a new installation.</li>
+<li><i>Maintenance Tool</i> if you need to update an existing installation.</li>
+</ul>
+</li>
+<li>When you do a new installation, define the installation directory with <code translate="no">--root</code></li>
+<li>Use <b><code translate="no">install &lt;list of packages&gt;</code></b> to install the listed packages.</li>
+</ol>
+<p>The following examples demonstrate how you create a new installation of Qt 6.6&#x2e;0 binaries with Qt Online installer for Windows, macOS, and Linux:</p>
+<pre class="cpp plain" translate="no">
+ # Windows: new installation with user interaction
+ qt-unified-windows-x64-[Qt Online Installer version]-online.exe --root C:\Users\[username]\installation_dir install qt.qt6.660.win64_msvc2019_64
+
+ # macOS: new installation with user interaction
+ qt-unified-macOS-x64-[Qt Online Installer version]-online.dmg --root /home/&lt;username&gt;/installation_dir install qt.qt6.660.clang_64
+
+ # linux: new installation with user interaction
+ qt-unified-linux-x64-[Qt Online Installer version]-online.run --root /home/&lt;username&gt;/installation_dir install qt.qt6.660.gcc_64
+</pre>
+<p>The following examples demonstrate how you update your existing installation by installing the Qt 6.6&#x2e;0 binaries with Maintenance Tool:</p>
+<pre class="cpp plain" translate="no">
+ # Windows: update installation with Maintenance Tool
+ MaintenanceTool.exe install qt.qt6.660.win64_msvc2019_64
+
+ # macOS: update installation with Maintenance Tool
+ MaintenanceTool.dmg install qt.qt6.660.clang_64
+
+ # Linux: update installation with Maintenance Tool
+ MaintenanceTool.run install qt.qt6.660.gcc_64
+</pre>
+<h2 id="uninstalling-packages">Uninstalling Packages</h2>
+<p>The command line interface provides two commands for uninstalling packages:</p>
+<ul>
+<li>The <b><code translate="no">remove &lt;list of packages&gt;</code></b> command uninstalls the listed packages.</li>
+<li>The <b><code translate="no">purge</code></b> command uninstalls all installed packages.</li>
+</ul>
+<p>You should use both commands with Maintenance Tool.</p>
+<p>By default, Maintenance Tool prints a summary of components to be affected by the command. Then the tool asks for permission to continue acting, to prevent accidental changes. Use <b><code translate="no">--confirm-command</code></b> to skip asking for permission to continue.</p>
+<p>The following example uninstalls the Qt 6.6&#x2e;0 binaries without user interaction:</p>
+<pre class="cpp plain" translate="no">
+ # windows
+ MaintenanceTool.exe --confirm-command remove qt.qt6.660.win64_msvc2019_64
+
+ # macOS
+ MaintenanceTool.dmg --confirm-command remove install qt.qt6.660.clang_64
+
+ # linux
+ MaintenanceTool.run --confirm-command remove qt.qt6.660.gcc_64
+</pre>
+<p>The following examples uninstall all packages and ask for permission to continue performing the action:</p>
+<pre class="cpp plain" translate="no">
+ # Windows
+ MaintenanceTool.exe purge
+
+ # macOS
+ MaintenanceTool.dmg purge
+
+ # Linux
+ MaintenanceTool.run purge
+</pre>
+<h2 id="searching-packages">Searching Packages</h2>
+<p>Search available packages with the <code translate="no">search</code> command and regular expressions: <b><code translate="no">search &lt;regexp&gt;</code></b>. You can filter the results with <b><code translate="no">--filter-packages &lt;regexp&gt;</code></b>. For example, filtering with the display name information can help search.</p>
+<p>For example, the following command finds all MSVC 2019 packages for Qt 6.6&#x2e;0:</p>
+<pre class="cpp plain" translate="no">
+ search .*660.*msvc2019
+</pre>
+<p>You get the same result when you filter the search result as follows:</p>
+<pre class="cpp plain" translate="no">
+ search --filter-packages DisplayName=MSVC 2019,Version=6.6&#x2e;0
+</pre>
+<p>As a result, you get the following packages:</p>
+<pre class="cpp plain" translate="no">
+ &lt;availablepackages&gt;
+     &lt;package name=&quot;qt.qt6.660.win64_msvc2019_64&quot; displayname=&quot;MSVC 2019 64-bit&quot; version=&quot;6.6&#x2e;0-0-202303290841&quot;/&gt;
+     &lt;package name=&quot;qt.qt6.660.win64_msvc2019_arm64&quot; displayname=&quot;MSVC 2019 ARM64 (TP)&quot; version=&quot;6.6&#x2e;0-0-202303290841&quot;/&gt;
+ &lt;/availablepackages&gt;
+</pre>
+<p>You can also use filtering when you search all Qt versions that some package is provided for. For example, search all Qt Charts packages provided for Qt versions:</p>
+<pre class="cpp plain" translate="no">
+ search --filter-packages DisplayName=charts
+</pre>
+<p>The search result is as follows:</p>
+<pre class="cpp plain" translate="no">
+ &lt;availablepackages&gt;
+     &lt;package name=&quot;qt.qt5.5125.qtcharts&quot; displayname=&quot;Qt Charts&quot; version=&quot;5.12.5-0-201909090651&quot;/&gt;
+     &lt;package name=&quot;qt.qt6.641.addons.qtcharts&quot; displayname=&quot;Qt Charts&quot; version=&quot;6.4&#x2e;1-0-202211101525&quot;/&gt;
+     &lt;package name=&quot;qt.qt5.5123.qtcharts&quot; displayname=&quot;Qt Charts&quot; version=&quot;5.12.3-0-201904161619&quot;/&gt;
+</pre>
+<h2 id="listing-installed-packages">Listing Installed Packages</h2>
+<p>The <b><code translate="no">list</code></b> command lists all packages you have installed. Use the command with Maintenance Tool as follows:</p>
+<pre class="cpp plain" translate="no">
+ # Windows
+ MaintenanceTool.exe list
+
+ # macOS
+ MaintenanceTool.dmg list
+
+ # Linux
+ MaintenanceTool.run list
+</pre>
+<h2 id="checking-updates">Checking Updates</h2>
+<p>The <b><code translate="no">check-updates</code></b> command checks the updates that are available for the installed packages. Use the command with Maintenance Tool as follows:</p>
+<pre class="cpp plain" translate="no">
+ # Windows
+ MaintenanceTool.exe check-updates
+
+ # macOS
+ MaintenanceTool.dmg check-updates
+
+ # Linux
+ MaintenanceTool.run check-updates
+</pre>
+<h2 id="updating-packages">Updating Packages</h2>
+<p>The <b><code translate="no">update</code></b> command updates the installed packages. Use the command with Maintenance Tool as follows:</p>
+<pre class="cpp plain" translate="no">
+ # windows
+ MaintenanceTool.exe update
+
+ # macOS
+ MaintenanceTool.dmg update
+
+ # linux
+ MaintenanceTool.run update
+</pre>
+<h2 id="popular-commands">Popular Commands</h2>
+<p>Use the command <b><code translate="no">&lt;installer_executable&gt; --help</code></b> to study the available commands and options. Popular commands are as follows:</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Command</th><th >Usage</th></tr></thead>
+<tr valign="top" class="odd"><td ><code translate="no">in</code>, <code translate="no">install &lt;pkg ..&#x2e;&gt;</code></td><td >Installs packages given as an argument. If you don't give any packages, installs the default package set.</td></tr>
+<tr valign="top" class="even"><td ><code translate="no">rm</code>, <code translate="no">remove &lt;pkg ..&#x2e;&gt;</code></td><td >Uninstalls selected packages and their child components.</td></tr>
+<tr valign="top" class="odd"><td ><code translate="no">ch</code>, <code translate="no">check-updates</code></td><td >Shows information about available updates on Maintenance Tool.</td></tr>
+<tr valign="top" class="even"><td ><code translate="no">up</code>, <code translate="no">update &lt;pkg ..&#x2e;&gt;</code></td><td >Updates packages given as an argument. If no packages are given, install all available updates.</td></tr>
+<tr valign="top" class="odd"><td ><code translate="no">se</code>, <code translate="no">search &lt;regexp&gt;</code></td><td >Searches available packages. If you don't give any search pattern, shows all available packages. You can use the <code translate="no">--filter-packages</code> option to specify additional filters for the search operation. See <a href="https://doc.qt.io/qtinstallerframework/ifw-cli.html#summary-of-options" translate="no">Summary of Options</a> in Qt Installer Framework Manual.</td></tr>
+</table></div>
+<p><a href="https://doc.qt.io/qtinstallerframework/ifw-cli.html" translate="no">Qt Installer Framework Manual</a> provides more information about the commands and options.</p>
+<h2 id="selecting-mirror-for-opensource">Selecting Mirror for Opensource</h2>
+<p>The Qt Online Installer has an option for selecting a mirror for opensource metadata and downloads. Set the mirror from the command line with the <b><code translate="no">--mirror</code></b> option.</p>
+<p>For example, use <code translate="no">--mirror</code> as follows:</p>
+<pre class="cpp plain" translate="no">
+ installer(.exe) --mirror http://www.nic.funet.fi/pub/mirrors/download.qt-project.org
+ installer(.exe) --mirror http://ftp2.nluug.nl/languages/qt
+ maintenancetool(.exe) --mirror http://qt.mirror.constant.com
+</pre>
+<p>As the example shows, don't use the full path but use the path before '/online' (no forward slash at the end).</p>
+<p>You find the available mirrors from <a href="https://download.qt.io/online/qtsdkrepository/windows_x86/root/qt/Updates.xml.mirrorlist" translate="no">https://download.qt.io/online/qtsdkrepository/windows_x86/root/qt/Updates.xml.mirrorlist</a>.</p>
+<h2 id="further-information">Further Information</h2>
+<p><a href="https://doc.qt.io/qtinstallerframework/" translate="no">Qt Installer Framework Manual</a> provides more detailed information about the command line interface:</p>
+<ul>
+<li><a href="https://doc.qt.io/qtinstallerframework/ifw-use-cases-cli.html" translate="no">Using from Command Line</a> describes different command line interface use cases.</li>
+<li><a href="https://doc.qt.io/qtinstallerframework/ifw-cli.html#summary-of-options" translate="no">Summary of Options</a> lists all available options.</li>
+<li><a href="https://doc.qt.io/qtinstallerframework/ifw-cli.html#summary-of-commands" translate="no">Summary of Commands</a> lists all available commands.</li>
+</ul>
+</div>
+<!-- @@@get-and-install-qt-cli.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- rhitextureitem.qdoc -->
+  <meta name="description" content="Shows how to implement a custom QQuickItem that displays a QRhi-rendered texture.">
+  <title>Scene Graph - RHI Texture Item | Qt Quick 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick-index.html" translate="no">Qt Quick</a></li>
+<li>Scene Graph - RHI Texture Item</li>
+<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#walkthrough">Walkthrough</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Scene Graph - RHI Texture Item</h1>
+<!-- $$$scenegraph/rhitextureitem-brief -->
+<p>Shows how to implement a custom <a href="qquickitem.html" translate="no">QQuickItem</a> that displays a <a href="../qtgui/qrhi.html" translate="no">QRhi</a>-rendered texture.</p>
+<!-- @@@scenegraph/rhitextureitem -->
+<!-- $$$scenegraph/rhitextureitem-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/rhitextureitem-example.jpg" alt="" /></p><p>This example shows how to implement an item that performs cross-platform, portable 3D rendering into a texture using the <a href="../qtgui/qrhi.html" translate="no">QRhi</a> APIs and then displays that image.</p>
+<p>The <a href="qtquick-scenegraph-rhiunderqml-example.html" translate="no">RHI Under QML</a> example shows how to implement portable, cross-platform 3D rendering with the <a href="../qtgui/qrhi.html" translate="no">QRhi</a> APIs in a manner where the custom rendering is issued before the Qt Quick scene graph's own rendering, effectively providing an &quot;underlay&quot;. That approach is efficient since now additional render targets and render passes are needed, the custom rendering is injected in the main render pass before the scene graph's own draw calls.</p>
+<p>In contrast, this example involves a separate render target (a <a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a>, the <a href="../qtgui/qrhitexture.html#pixelSize" translate="no">dimensions</a> of which match the <a href="qquickitem.html" translate="no">QQuickItem</a>'s size in the scene) and a whole render pass that is used to clear and then draw into that texture. The texture is then used with an instance of a custom <a href="qquickitem.html" translate="no">QQuickItem</a> subclass that is implemented using the <a href="qsgsimpletexturenode.html" translate="no">QSGSimpleTextureNode</a> helper class.</p>
+<p>Compared to the underlay/overlay approach, this allows displaying, blending, and transforming the flattened 2D image of the 3D rendering anywhere in the Qt Quick scene since here we have a true <a href="qquickitem.html" translate="no">QQuickItem</a>. This comes at the expense of being more expensive in terms of resources and performance since it involves rendering to a texture first.</p>
+<div class="admonition note">
+<p><b>Note: </b>This example demonstrates advanced, low-level functionality performing portable, cross-platform 3D rendering, while relying on APIs with limited compatibility guarantee from the Qt Gui module. To be able to use the <a href="../qtgui/qrhi.html" translate="no">QRhi</a> APIs, the application links to <code translate="no">Qt::GuiPrivate</code> and includes <code translate="no">&lt;rhi/qrhi.h&gt;</code>.</p>
+</div>
+<h4 id="walkthrough">Walkthrough</h4>
+<p><code translate="no">ExampleRhiItem</code> is the <a href="qquickitem.html" translate="no">QQuickItem</a> subclass that is exposed to QML and is instantied in the scene.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> ExampleRhiItem : <span class="keyword">public</span> RhiItem
+ {
+     Q_OBJECT
+     QML_NAMED_ELEMENT(ExampleRhiItem)
+     Q_PROPERTY(<span class="type">float</span> angle READ angle WRITE setAngle NOTIFY angleChanged)
+
+ <span class="keyword">public</span>:
+     <span class="type">float</span> angle() <span class="keyword">const</span> { <span class="keyword">return</span> m_angle; }
+     <span class="type">void</span> setAngle(<span class="type">float</span> a);
+
+     RhiItemRenderer <span class="operator">*</span>createRenderer() override;
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> angleChanged();
+
+ <span class="keyword">private</span>:
+     <span class="type">float</span> m_angle <span class="operator">=</span> <span class="number">0.0f</span>;
+ };
+</pre>
+<p>The <code translate="no">angle</code> property has a <a href="qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a> on it, this is what drives the continuous rotation of the 3D mesh.</p>
+<pre class="qml" translate="no">
+ <span class="type">ExampleRhiItem</span> {
+     <span class="name">id</span>: <span class="name">renderer</span>
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+     <span class="name">anchors</span>.margins: <span class="number">10</span>
+
+     NumberAnimation on <span class="name">angle</span> {
+         <span class="name">from</span>: <span class="number">0</span>
+         <span class="name">to</span>: <span class="number">360</span>
+         <span class="name">duration</span>: <span class="number">5000</span>
+         <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+     }
+</pre>
+<p><code translate="no">ExampleRhiItem</code> drives from <code translate="no">RhiItem</code>, which contains the generic implementation of a <a href="qquickitem.html" translate="no">QQuickItem</a> that maintains and displays a <a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a>. The design is somewhat similar to the legacy <a href="qquickframebufferobject.html" translate="no">QQuickFramebufferObject</a> and its inner Renderer class. In essence what is implemented here offers the core functionality of <a href="qquickframebufferobject.html" translate="no">QQuickFramebufferObject</a>, but without being tied to OpenGL. To support the threaded rendering model of the Qt Quick scene graph, the a separate <code translate="no">RhiItemRenderer</code> object is instantiated that then lives on the Qt Quick render thread, if there is one. <code translate="no">RhiItem</code>, being a <a href="qquickitem.html" translate="no">QQuickItem</a>, lives and operates on the main (gui) thread.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> RhiItem : <span class="keyword">public</span> <span class="type"><a href="qquickitem.html" translate="no">QQuickItem</a></span>
+ {
+     Q_OBJECT
+ <span class="keyword">public</span>:
+     RhiItem(<span class="type"><a href="qquickitem.html" translate="no">QQuickItem</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+
+     <span class="keyword">virtual</span> RhiItemRenderer <span class="operator">*</span>createRenderer() <span class="operator">=</span> <span class="number">0</span>;
+
+ <span class="keyword">protected</span>:
+     <span class="type"><a href="qsgnode.html" translate="no">QSGNode</a></span> <span class="operator">*</span>updatePaintNode(<span class="type"><a href="qsgnode.html" translate="no">QSGNode</a></span> <span class="operator">*</span><span class="operator">,</span> UpdatePaintNodeData <span class="operator">*</span>) override;
+     <span class="type">void</span> geometryChange(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qrectf.html" translate="no">QRectF</a></span> <span class="operator">&amp;</span>newGeometry<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qrectf.html" translate="no">QRectF</a></span> <span class="operator">&amp;</span>oldGeometry) override;
+     <span class="type">void</span> releaseResources() override;
+     <span class="type">bool</span> isTextureProvider() <span class="keyword">const</span> override;
+     <span class="type"><a href="qsgtextureprovider.html" translate="no">QSGTextureProvider</a></span> <span class="operator">*</span>textureProvider() <span class="keyword">const</span> override;
+
+ <span class="keyword">private</span> Q_SLOTS:
+     <span class="type">void</span> invalidateSceneGraph();
+
+ <span class="keyword">private</span>:
+     <span class="keyword">mutable</span> RhiItemNode <span class="operator">*</span>node <span class="operator">=</span> nullptr;
+ };
+</pre>
+<p><code translate="no">RhiItemRenderer</code> has three pure virtual functions expected to be reimplemented in subclasses. <code translate="no">initialize()</code> is called to let the application-provided renderer to know the <a href="../qtgui/qrhi.html" translate="no">QRhi</a> and <a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a> instances to use. The example also handles the resizing of the item, which leads to having to use a new texture with a size different than before. This means <code translate="no">initialize()</code> may be called multiple times during the lifetime of a <code translate="no">RhiItemRenderer</code>.</p>
+<p><code translate="no">synchronize()</code> is called from the scene graph's synchronizing phase, i.e&#x2e; from the <code translate="no">RhiItem</code>'s <a href="qquickitem.html#updatePaintNode" translate="no">updatePaintNode</a>(). That implies that, if the threaded rendering model is used, that it is safe to copy data between the main and the render thread since the main thread is blocked.</p>
+<p><code translate="no">render()</code> is the function that is called every time the <code translate="no">RhiItem</code>'s texture's content needs updating. This function is expected to record a render pass onto the provided <a href="../qtgui/qrhicommandbuffer.html" translate="no">QRhiCommandBuffer</a>, targeting a <a href="../qtgui/qrhitexturerendertarget.html" translate="no">QRhiTextureRenderTarget</a> associated with the <a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a> passed to <code translate="no">initialize()</code>.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> RhiItemRenderer
+ {
+ <span class="keyword">public</span>:
+     <span class="keyword">virtual</span> <span class="operator">~</span>RhiItemRenderer() { }
+     <span class="keyword">virtual</span> <span class="type">void</span> initialize(<span class="type"><a href="../qtgui/qrhi.html" translate="no">QRhi</a></span> <span class="operator">*</span>rhi<span class="operator">,</span> <span class="type"><a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a></span> <span class="operator">*</span>outputTexture) <span class="operator">=</span> <span class="number">0</span>;
+     <span class="keyword">virtual</span> <span class="type">void</span> synchronize(RhiItem <span class="operator">*</span>item) <span class="operator">=</span> <span class="number">0</span>;
+     <span class="keyword">virtual</span> <span class="type">void</span> render(<span class="type"><a href="../qtgui/qrhicommandbuffer.html" translate="no">QRhiCommandBuffer</a></span> <span class="operator">*</span>cb) <span class="operator">=</span> <span class="number">0</span>;
+</pre>
+<p>The scene graph node that is instantied by <code translate="no">RhiItem</code> is implemented using <a href="qsgsimpletexturenode.html" translate="no">QSGSimpleTextureNode</a>.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> RhiItemNode : <span class="keyword">public</span> <span class="type"><a href="qsgtextureprovider.html" translate="no">QSGTextureProvider</a></span><span class="operator">,</span> <span class="keyword">public</span> <span class="type"><a href="qsgsimpletexturenode.html" translate="no">QSGSimpleTextureNode</a></span>
+</pre>
+<p><code translate="no">RhiItemNode</code> connects to the window's <a href="qquickwindow.html#beforeRendering" translate="no">beforeRendering</a>() signal. This signal is emitted on the render thread, if there is one, every time the Qt Quick scene graph has started to prepare a new frame.</p>
+<pre class="cpp" translate="no">
+ RhiItemNode<span class="operator">::</span>RhiItemNode(RhiItem <span class="operator">*</span>item)
+     : m_item(item)
+ {
+     m_window <span class="operator">=</span> m_item<span class="operator">-</span><span class="operator">&gt;</span>window();
+     connect(m_window<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qquickwindow.html" translate="no">QQuickWindow</a></span><span class="operator">::</span>beforeRendering<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>RhiItemNode<span class="operator">::</span>render<span class="operator">,</span>
+             <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>DirectConnection);
+</pre>
+<p>The slot connected to this signal retrieves the <a href="../qtgui/qrhicommandbuffer.html" translate="no">QRhiCommandBuffer</a> used by the <a href="qquickwindow.html" translate="no">QQuickWindow</a>, while also providing an example of what to do if there is no on-screen window, and so no <a href="../qtgui/qrhiswapchain.html" translate="no">QRhiSwapChain</a> associated with the <a href="qquickwindow.html" translate="no">QQuickWindow</a>. Then the <code translate="no">RhiItemRenderer</code>'s <code translate="no">render()</code> function is invoked.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> RhiItemNode<span class="operator">::</span>render()
+ {
+     <span class="comment">// called before Qt Quick starts recording its main render pass</span>
+
+     <span class="keyword">if</span> (<span class="operator">!</span>isValid() <span class="operator">|</span><span class="operator">|</span> <span class="operator">!</span>m_renderPending)
+         <span class="keyword">return</span>;
+
+     <span class="type"><a href="../qtgui/qrhiswapchain.html" translate="no">QRhiSwapChain</a></span> <span class="operator">*</span>swapchain <span class="operator">=</span> m_window<span class="operator">-</span><span class="operator">&gt;</span>swapChain();
+     <span class="type"><a href="qsgrendererinterface.html" translate="no">QSGRendererInterface</a></span> <span class="operator">*</span>rif <span class="operator">=</span> m_window<span class="operator">-</span><span class="operator">&gt;</span>rendererInterface();
+
+     <span class="comment">// For completeness, handle both cases: on-screen QQuickWindow vs.</span>
+     <span class="comment">// off-screen QQuickWindow e.g. by using QQuickRenderControl to redirect</span>
+     <span class="comment">// into a texture. For the application's purposes just handling the first</span>
+     <span class="comment">// (swapchain is non-null) would be sufficient.</span>
+     <span class="type"><a href="../qtgui/qrhicommandbuffer.html" translate="no">QRhiCommandBuffer</a></span> <span class="operator">*</span>cb <span class="operator">=</span> swapchain <span class="operator">?</span> swapchain<span class="operator">-</span><span class="operator">&gt;</span>currentFrameCommandBuffer()
+                                       : <span class="keyword">static_cast</span><span class="operator">&lt;</span><span class="type"><a href="../qtgui/qrhicommandbuffer.html" translate="no">QRhiCommandBuffer</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(
+                                           rif<span class="operator">-</span><span class="operator">&gt;</span>getResource(m_window<span class="operator">,</span> <span class="type"><a href="qsgrendererinterface.html" translate="no">QSGRendererInterface</a></span><span class="operator">::</span>RhiRedirectCommandBuffer));
+
+     <span class="keyword">if</span> (<span class="operator">!</span>cb) {
+         <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>(<span class="string">&quot;Neither swapchain nor redirected command buffer are available.&quot;</span>);
+         <span class="keyword">return</span>;
+     }
+
+     m_renderPending <span class="operator">=</span> <span class="keyword">false</span>;
+     m_renderer<span class="operator">-</span><span class="operator">&gt;</span>render(cb);
+
+     markDirty(<span class="type"><a href="qsgnode.html" translate="no">QSGNode</a></span><span class="operator">::</span>DirtyMaterial);
+     <span class="keyword">emit</span> textureChanged();
+ }
+</pre>
+<p>The application-provided <code translate="no">initialize</code> and <code translate="no">synchronize</code> steps are invoked from the <code translate="no">RhiItemNode</code>'s sync() function which in turn is called from <code translate="no">RhiItem</code>'s <code translate="no">updatePaintNode()</code>.</p>
+<p>Once the <a href="../qtgui/qrhi.html" translate="no">QRhi</a> is retrieved from the <a href="qquickwindow.html" translate="no">QQuickWindow</a>, the need for a new <a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a> is examined. If there is no texture yet, or it looks like the item's size (in pixels, note the multiplication with the device pixel ratio) has changed, a new texture is created. The <a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a> is then wrapped in a <a href="qsgtexture.html" translate="no">QSGTexture</a>, which also involves passing ownership. The wrapping <a href="qsgtexture.html" translate="no">QSGTexture</a> is created using a <a href="qquickwindow.html" translate="no">QQuickWindow</a> helper function, <a href="qquickwindow.html#createTextureFromRhiTexture" translate="no">createTextureFromRhiTexture</a>(). In spirit this is similar to the <a href="qquickwindow.html#createTextureFromImage" translate="no">createTextureFromImage</a>(), but while the traditional <a href="../qtgui/qimage.html" translate="no">QImage</a>-based function creates a new <a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a> under the hood, this variant takes an existing <a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a>.</p>
+<p>Finally, the application-provided <code translate="no">synchronize()</code> function is invoked.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> RhiItemNode<span class="operator">::</span>sync()
+ {
+     <span class="keyword">if</span> (<span class="operator">!</span>m_rhi) {
+         m_rhi <span class="operator">=</span> m_window<span class="operator">-</span><span class="operator">&gt;</span>rhi();
+         <span class="keyword">if</span> (<span class="operator">!</span>m_rhi) {
+             <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>(<span class="string">&quot;No QRhi found for window %p, RhiItem will not be functional&quot;</span><span class="operator">,</span> m_window);
+             <span class="keyword">return</span>;
+         }
+     }
+
+     m_dpr <span class="operator">=</span> m_window<span class="operator">-</span><span class="operator">&gt;</span>effectiveDevicePixelRatio();
+     <span class="keyword">const</span> <span class="type">int</span> minTexSize <span class="operator">=</span> m_rhi<span class="operator">-</span><span class="operator">&gt;</span>resourceLimit(<span class="type"><a href="../qtgui/qrhi.html" translate="no">QRhi</a></span><span class="operator">::</span>TextureSizeMin);
+     <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> newSize <span class="operator">=</span> <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(qMax<span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>(minTexSize<span class="operator">,</span> m_item<span class="operator">-</span><span class="operator">&gt;</span>width())<span class="operator">,</span>
+                           qMax<span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span>(minTexSize<span class="operator">,</span> m_item<span class="operator">-</span><span class="operator">&gt;</span>height())) <span class="operator">*</span> m_dpr;
+
+     <span class="type">bool</span> needsNew <span class="operator">=</span> <span class="operator">!</span>m_sgTexture;
+     <span class="keyword">if</span> (newSize <span class="operator">!</span><span class="operator">=</span> m_pixelSize) {
+         needsNew <span class="operator">=</span> <span class="keyword">true</span>;
+         m_pixelSize <span class="operator">=</span> newSize;
+     }
+
+     <span class="keyword">if</span> (needsNew) {
+         <span class="type"><a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a></span> <span class="operator">*</span>texture <span class="operator">=</span> m_rhi<span class="operator">-</span><span class="operator">&gt;</span>newTexture(<span class="type"><a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a></span><span class="operator">::</span>RGBA8<span class="operator">,</span> m_pixelSize<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="type"><a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a></span><span class="operator">::</span>RenderTarget);
+         <span class="keyword">if</span> (texture<span class="operator">-</span><span class="operator">&gt;</span>create()) {
+             m_sgTexture<span class="operator">.</span>reset(m_window<span class="operator">-</span><span class="operator">&gt;</span>createTextureFromRhiTexture(texture));
+             setTexture(m_sgTexture<span class="operator">.</span>get());
+             m_renderer<span class="operator">-</span><span class="operator">&gt;</span>initialize(m_rhi<span class="operator">,</span> texture);
+         } <span class="keyword">else</span> {
+             <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>(<span class="string">&quot;Failed to create RhiItem texture of size %dx%d&quot;</span><span class="operator">,</span> m_pixelSize<span class="operator">.</span>width()<span class="operator">,</span> m_pixelSize<span class="operator">.</span>height());
+             <span class="keyword">delete</span> texture;
+         }
+     }
+
+     m_renderer<span class="operator">-</span><span class="operator">&gt;</span>synchronize(m_item);
+ }
+</pre>
+<p>The example's implementation makes a copy of the angle value, meaning the renderer's copy of the value is updated based on the current value of the property in <code translate="no">ExampleRhiItem</code>.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ExampleRhiItemRenderer<span class="operator">::</span>synchronize(RhiItem <span class="operator">*</span>rhiItem)
+ {
+     <span class="comment">// called on the render thread (if there is one), while the main (gui) thread is blocked</span>
+
+     ExampleRhiItem <span class="operator">*</span>item <span class="operator">=</span> <span class="keyword">static_cast</span><span class="operator">&lt;</span>ExampleRhiItem <span class="operator">*</span><span class="operator">&gt;</span>(rhiItem);
+     <span class="keyword">if</span> (item<span class="operator">-</span><span class="operator">&gt;</span>angle() <span class="operator">!</span><span class="operator">=</span> scene<span class="operator">.</span>logoAngle)
+         scene<span class="operator">.</span>logoAngle <span class="operator">=</span> item<span class="operator">-</span><span class="operator">&gt;</span>angle();
+ }
+</pre>
+<p>The example's implementation of the initialization step stores the <a href="../qtgui/qrhi.html" translate="no">QRhi</a> for future use. This example does not handle the case of the <a href="../qtgui/qrhi.html" translate="no">QRhi</a> changing over the lifetime of the item. If moving (reparenting) the item between <a href="qquickwindow.html" translate="no">QQuickWindow</a> instances is involved, then that would need to be handled as well. What is handled however, is the case of the <code translate="no">outputTexture</code> changing. With the implementation of <code translate="no">RhiItem</code> and <code translate="no">RhiItemNode</code>, the <a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a> is different whenever the window, and so the item in the scene, is resized.</p>
+<p>If not yet done, a <a href="../qtgui/qrhitexturerendertarget.html" translate="no">QRhiTextureRenderTarget</a> is created. The example also demonstrates rendering with a depth buffer present. Care must be taken to correctly resize this buffer whenever its size no longer matches the <code translate="no">outputTexture</code>'s size in the previous invocation of the function.</p>
+<p>Finally, if not yet done, the resources needed for rendering the scene are prepared: vertex buffer, uniform buffer, graphics pipeline.</p>
+<p>The traditional Qt logo renderer, that has been ported from the OpenGL-based examples of Qt 4 and 5, provides vertex positions and normals in two separate chunks, hence using a non-interleaved layout for the vertex buffer.</p>
+<p>The vertex and fragment shaders are loaded from <code translate="no">.qsb</code> files generated at build time (if using CMake).</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ExampleRhiItemRenderer<span class="operator">::</span>initialize(<span class="type"><a href="../qtgui/qrhi.html" translate="no">QRhi</a></span> <span class="operator">*</span>rhi<span class="operator">,</span> <span class="type"><a href="../qtgui/qrhitexture.html" translate="no">QRhiTexture</a></span> <span class="operator">*</span>outputTexture)
+ {
+     m_rhi <span class="operator">=</span> rhi;
+
+     <span class="keyword">if</span> (m_output <span class="operator">&amp;</span><span class="operator">&amp;</span> m_output <span class="operator">!</span><span class="operator">=</span> outputTexture) {
+         m_rt<span class="operator">.</span>reset();
+         m_rp<span class="operator">.</span>reset();
+     }
+
+     m_output <span class="operator">=</span> outputTexture;
+
+     <span class="keyword">if</span> (<span class="operator">!</span>m_ds) {
+         m_ds<span class="operator">.</span>reset(m_rhi<span class="operator">-</span><span class="operator">&gt;</span>newRenderBuffer(<span class="type"><a href="../qtgui/qrhirenderbuffer.html" translate="no">QRhiRenderBuffer</a></span><span class="operator">::</span>DepthStencil<span class="operator">,</span> m_output<span class="operator">-</span><span class="operator">&gt;</span>pixelSize()));
+         m_ds<span class="operator">-</span><span class="operator">&gt;</span>create();
+     } <span class="keyword">else</span> <span class="keyword">if</span> (m_ds<span class="operator">-</span><span class="operator">&gt;</span>pixelSize() <span class="operator">!</span><span class="operator">=</span> m_output<span class="operator">-</span><span class="operator">&gt;</span>pixelSize()) {
+         m_ds<span class="operator">-</span><span class="operator">&gt;</span>setPixelSize(m_output<span class="operator">-</span><span class="operator">&gt;</span>pixelSize());
+         m_ds<span class="operator">-</span><span class="operator">&gt;</span>create();
+     }
+
+     <span class="keyword">if</span> (<span class="operator">!</span>m_rt) {
+         m_rt<span class="operator">.</span>reset(m_rhi<span class="operator">-</span><span class="operator">&gt;</span>newTextureRenderTarget({ { m_output }<span class="operator">,</span> m_ds<span class="operator">.</span>get() }));
+         m_rp<span class="operator">.</span>reset(m_rt<span class="operator">-</span><span class="operator">&gt;</span>newCompatibleRenderPassDescriptor());
+         m_rt<span class="operator">-</span><span class="operator">&gt;</span>setRenderPassDescriptor(m_rp<span class="operator">.</span>get());
+         m_rt<span class="operator">-</span><span class="operator">&gt;</span>create();
+     }
+
+     <span class="keyword">if</span> (<span class="operator">!</span>scene<span class="operator">.</span>vbuf) {
+         createGeometry();
+
+         <span class="keyword">const</span> <span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span> vsize <span class="operator">=</span> m_vertices<span class="operator">.</span>size() <span class="operator">*</span> <span class="number">3</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>);
+         <span class="keyword">const</span> <span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span> nsize <span class="operator">=</span> m_normals<span class="operator">.</span>size() <span class="operator">*</span> <span class="number">3</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>);
+         <span class="keyword">const</span> <span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span> vbufSize <span class="operator">=</span> vsize <span class="operator">+</span> nsize;
+         scene<span class="operator">.</span>vbuf<span class="operator">.</span>reset(m_rhi<span class="operator">-</span><span class="operator">&gt;</span>newBuffer(<span class="type"><a href="../qtgui/qrhibuffer.html" translate="no">QRhiBuffer</a></span><span class="operator">::</span>Immutable<span class="operator">,</span> <span class="type"><a href="../qtgui/qrhibuffer.html" translate="no">QRhiBuffer</a></span><span class="operator">::</span>VertexBuffer<span class="operator">,</span> vbufSize));
+         scene<span class="operator">.</span>vbuf<span class="operator">-</span><span class="operator">&gt;</span>create();
+</pre>
+<p>In the <code translate="no">render</code> step, the uniform buffer is updated. Note how the <a href="../qtgui/qrhi.html#clipSpaceCorrMatrix" translate="no">QRhi-provided correction matrix</a> is multiplied in. This allows ignoring the 3D API specific differences when it comes to coordinate systems, and continuing to work with OpenGL-style vertices and normals.</p>
+<p>A single render pass is recorded, containing a single draw call.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ExampleRhiItemRenderer<span class="operator">::</span>render(<span class="type"><a href="../qtgui/qrhicommandbuffer.html" translate="no">QRhiCommandBuffer</a></span> <span class="operator">*</span>cb)
+ {
+     <span class="type"><a href="../qtgui/qrhiresourceupdatebatch.html" translate="no">QRhiResourceUpdateBatch</a></span> <span class="operator">*</span>rub <span class="operator">=</span> scene<span class="operator">.</span>resourceUpdates;
+     <span class="keyword">if</span> (rub)
+         scene<span class="operator">.</span>resourceUpdates <span class="operator">=</span> nullptr;
+     <span class="keyword">else</span>
+         rub <span class="operator">=</span> m_rhi<span class="operator">-</span><span class="operator">&gt;</span>nextResourceUpdateBatch();
+
+     <span class="keyword">const</span> QMatrix4x4 matrix <span class="operator">=</span> m_rhi<span class="operator">-</span><span class="operator">&gt;</span>clipSpaceCorrMatrix() <span class="operator">*</span> calculateModelViewMatrix();
+     rub<span class="operator">-</span><span class="operator">&gt;</span>updateDynamicBuffer(scene<span class="operator">.</span>ubuf<span class="operator">.</span>get()<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">64</span><span class="operator">,</span> matrix<span class="operator">.</span>constData());
+
+     <span class="keyword">const</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> clearColor <span class="operator">=</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span><span class="operator">::</span>fromRgbF(<span class="number">0.5f</span><span class="operator">,</span> <span class="number">0.5f</span><span class="operator">,</span> <span class="number">0.7f</span><span class="operator">,</span> <span class="number">1.0f</span>);
+     cb<span class="operator">-</span><span class="operator">&gt;</span>beginPass(m_rt<span class="operator">.</span>get()<span class="operator">,</span> clearColor<span class="operator">,</span> { <span class="number">1.0f</span><span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span> rub);
+
+     cb<span class="operator">-</span><span class="operator">&gt;</span>setGraphicsPipeline(scene<span class="operator">.</span>ps<span class="operator">.</span>get());
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> outputSize <span class="operator">=</span> m_output<span class="operator">-</span><span class="operator">&gt;</span>pixelSize();
+     cb<span class="operator">-</span><span class="operator">&gt;</span>setViewport(<span class="type"><a href="../qtgui/qrhiviewport.html" translate="no">QRhiViewport</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> outputSize<span class="operator">.</span>width()<span class="operator">,</span> outputSize<span class="operator">.</span>height()));
+     cb<span class="operator">-</span><span class="operator">&gt;</span>setShaderResources();
+     <span class="keyword">const</span> <span class="type"><a href="../qtgui/qrhicommandbuffer.html" translate="no">QRhiCommandBuffer</a></span><span class="operator">::</span>VertexInput vbufBindings<span class="operator">[</span><span class="operator">]</span> <span class="operator">=</span> {
+         { scene<span class="operator">.</span>vbuf<span class="operator">.</span>get()<span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span>
+         { scene<span class="operator">.</span>vbuf<span class="operator">.</span>get()<span class="operator">,</span> <span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span>(m_vertices<span class="operator">.</span>size() <span class="operator">*</span> <span class="number">3</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>)) }
+     };
+     cb<span class="operator">-</span><span class="operator">&gt;</span>setVertexInput(<span class="number">0</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> vbufBindings);
+     cb<span class="operator">-</span><span class="operator">&gt;</span>draw(m_vertices<span class="operator">.</span>size());
+
+     cb<span class="operator">-</span><span class="operator">&gt;</span>endPass();
+ }
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtdeclarative.git/tree/examples/quick/scenegraph/rhitextureitem?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<p><b>See also </b><a href="qtquick-scenegraph-rhiunderqml-example.html" translate="no">Scene Graph - RHI Under QML</a> and <a href="qtquick-scenegraph-customrendernode-example.html" translate="no">Scene Graph - Custom QSGRenderNode</a>.</p>
+<!-- @@@scenegraph/rhitextureitem -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

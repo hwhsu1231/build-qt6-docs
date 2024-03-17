@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qsensor.cpp -->
+  <meta name="description" content="The QSensorFilter class provides an efficient callback facility for asynchronous notifications of sensor changes.">
+  <title>QSensorFilter Class | Qt Sensors 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtsensors-index.html" translate="no">Qt Sensors</a></li>
+<li><a href="qtsensors-module.html" translate="no">C++ Classes</a></li>
+<li>QSensorFilter</li>
+<li id="buildversion"><a href="qtsensors-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#protected-functions">Protected Functions</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">QSensorFilter Class</h1>
+<!-- $$$QSensorFilter-brief -->
+<p>The QSensorFilter class provides an efficient callback facility for asynchronous notifications of sensor changes. <a href="#details">More...</a></p>
+<!-- @@@QSensorFilter -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign">  <span class="preprocessor">#include &lt;QSensorFilter&gt;</span></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> CMake:</td><td class="memItemRight bottomAlign"> find_package(Qt6 REQUIRED COMPONENTS Sensors) <br/>
+target_link_libraries(mytarget PRIVATE Qt6::Sensors)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> qmake:</td><td class="memItemRight bottomAlign"> QT += sensors</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Inherited By:</td><td class="memItemRight bottomAlign"> <p><a href="qaccelerometerfilter.html" translate="no">QAccelerometerFilter</a>, <a href="qambientlightfilter.html" translate="no">QAmbientLightFilter</a>, <a href="qambienttemperaturefilter.html" translate="no">QAmbientTemperatureFilter</a>, <a href="qcompassfilter.html" translate="no">QCompassFilter</a>, <a href="qgyroscopefilter.html" translate="no">QGyroscopeFilter</a>, <a href="qhumidityfilter.html" translate="no">QHumidityFilter</a>, <a href="qlightfilter.html" translate="no">QLightFilter</a>, <a href="qmagnetometerfilter.html" translate="no">QMagnetometerFilter</a>, <a href="qorientationfilter.html" translate="no">QOrientationFilter</a>, <a href="qpressurefilter.html" translate="no">QPressureFilter</a>, <a href="qproximityfilter.html" translate="no">QProximityFilter</a>, <a href="qrotationfilter.html" translate="no">QRotationFilter</a>, and <a href="qtiltfilter.html" translate="no">QTiltFilter</a></p>
+</td></tr>
+</table></div>
+<ul>
+<li><a href="qsensorfilter-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="public-functions">Public Functions</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> virtual bool </td><td class="memItemRight bottomAlign"><b><a href="qsensorfilter.html#filter" translate="no">filter</a></b>(QSensorReading *<i>reading</i>) = 0</td></tr>
+</table></div>
+<h2 id="protected-functions">Protected Functions</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> virtual </td><td class="memItemRight bottomAlign"><b><a href="qsensorfilter.html#dtor.QSensorFilter" translate="no">~QSensorFilter</a></b>()</td></tr>
+</table></div>
+<!-- $$$QSensorFilter-description -->
+<div class="descr">
+<h2 id="details">Detailed Description</h2>
+<p>Some sensors (eg. the accelerometer) are often accessed very frequently. This may be slowed down by the use of signals and slots. The QSensorFilter interface provides a more efficient way for the sensor to notify your class that the sensor has changed.</p>
+<p>Additionally, multiple filters can be added to a sensor. They are called in order and each filter has the option to modify the values in the reading or to suppress the reading altogether.</p>
+<p>Note that the values in the class returned by <a href="qsensor.html#reading-prop" translate="no">QSensor::reading</a>() will not be updated until after the filters have been run.</p>
+</div>
+<p><b>See also </b><a href="qsensorfilter.html#filter" translate="no">filter</a>().</p>
+<!-- @@@QSensorFilter -->
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$~QSensorFilter[overload1]$$$~QSensorFilter -->
+<h3 class="fn" translate="no" id="dtor.QSensorFilter"><code translate="no">[virtual noexcept protected] </code>QSensorFilter::<span class="name">~QSensorFilter</span>()</h3>
+<p>Notifies the attached sensor (if any) that the filter is being destroyed.</p>
+<!-- @@@~QSensorFilter -->
+<!-- $$$filter[overload1]$$$filterQSensorReading* -->
+<h3 class="fn" translate="no" id="filter"><code translate="no">[pure virtual] </code><span class="type">bool</span> QSensorFilter::<span class="name">filter</span>(<span class="type"><a href="qsensorreading.html" translate="no">QSensorReading</a></span> *<i>reading</i>)</h3>
+<p>This function is called when the sensor <i translate="no">reading</i> changes.</p>
+<p>The filter can modify the reading.</p>
+<p>Returns true to allow the next filter to receive the value. If this is the last filter, returning true causes the signal to be emitted and the value is stored in the sensor.</p>
+<p>Returns false to drop the reading.</p>
+<!-- @@@filter -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

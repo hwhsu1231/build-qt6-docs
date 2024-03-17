@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- KeyboardLayoutLoader.qml -->
+  <meta name="description" content="Allows dynamic loading of keyboard layout.">
+  <title>KeyboardLayoutLoader QML Type | Qt Virtual Keyboard 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtvirtualkeyboard-index.html" translate="no">Qt Virtual Keyboard</a></li>
+<li><a href="qtvirtualkeyboard-qmltypes.html" translate="no">QML Types</a></li>
+<li><a href="qtquick-virtualkeyboard-components-qmlmodule.html" translate="no">QtQuick.VirtualKeyboard.Components</a></li>
+<li>KeyboardLayoutLoader</li>
+<li id="buildversion"><a href="qtvirtualkeyboard-index.html" translate="no">Qt Virtual Keyboard | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#methods">Methods</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">KeyboardLayoutLoader QML Type</h1>
+<!-- $$$KeyboardLayoutLoader-brief -->
+<p>Allows dynamic loading of keyboard layout. <a href="#details">More...</a></p>
+<!-- @@@KeyboardLayoutLoader -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtQuick.VirtualKeyboard.Components</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> QtQuick.VirtualKeyboard 1.1</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <p><a href="../qtquick/qml-qtquick-loader.html" translate="no">Loader</a></p>
+</td></tr></table></div><ul>
+<li><a href="qml-qtquick-virtualkeyboard-components-keyboardlayoutloader-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtquick-virtualkeyboard-components-keyboardlayoutloader.html#inputMethod-prop" translate="no">inputMethod</a></b> : var</li>
+<li class="fn" translate="no"><b><a href="qml-qtquick-virtualkeyboard-components-keyboardlayoutloader.html#inputMode-prop" translate="no">inputMode</a></b> : int</li>
+<li class="fn" translate="no"><b><a href="qml-qtquick-virtualkeyboard-components-keyboardlayoutloader.html#sharedLayouts-prop" translate="no">sharedLayouts</a></b> : var</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtquick-virtualkeyboard-components-keyboardlayoutloader.html#createInputMethod-method" translate="no">createInputMethod</a></b>()</li>
+</ul>
+<!-- $$$KeyboardLayoutLoader-description -->
+<h2 id="details">Detailed Description</h2>
+<p>This type is useful for keyboard layouts consisting of multiple pages of keys.</p>
+<p>A single keyboard layout (a page) is defined by using the Component as a container. The active keyboard layout can then be changed by setting the sourceComponent property to a different value.</p>
+<p>Example:</p>
+<pre class="cpp" translate="no">
+ import QtQuick
+ import QtQuick.Layouts
+ import QtQuick.VirtualKeyboard
+
+ <span class="comment">// file: layouts/en_GB/symbols.qml</span>
+
+ <span class="type"><a href="qml-qtquick-virtualkeyboard-components-keyboardlayoutloader.html" translate="no">KeyboardLayoutLoader</a></span> {
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">secondPage</span>
+     <span class="name">onVisibleChanged</span>: <span class="keyword">if</span> (!<span class="name">visible</span>) <span class="name">secondPage</span> <span class="operator">=</span> <span class="number">false</span>
+     <span class="name">sourceComponent</span>: <span class="name">secondPage</span> ? <span class="name">page2</span> : <span class="name">page1</span>
+     <span class="type"><a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a></span> {
+         <span class="name">id</span>: <span class="name">page1</span>
+         <span class="type"><a href="qml-qtquick-virtualkeyboard-components-keyboardlayout.html" translate="no">KeyboardLayout</a></span> {
+             <span class="comment">// Keyboard layout definition for page 1</span>
+         }
+     }
+     <span class="type"><a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a></span> {
+         <span class="name">id</span>: <span class="name">page2</span>
+         <span class="type"><a href="qml-qtquick-virtualkeyboard-components-keyboardlayout.html" translate="no">KeyboardLayout</a></span> {
+             <span class="comment">// Keyboard layout definition for page 2</span>
+         }
+     }
+ }
+</pre>
+<!-- @@@KeyboardLayoutLoader -->
+<h2>Property Documentation</h2>
+<!-- $$$inputMethod -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="inputMethod-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">inputMethod</span> : <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Sets the input method for all the keyboard layouts loaded in this context.</p>
+<p>The input method can either be set separately for each keyboard layout, or commonly at this context. If set separately, then this property should not be modified.</p>
+</div></div><!-- @@@inputMethod -->
+<br/>
+<!-- $$$inputMode -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="inputMode-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">inputMode</span> : <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Sets the input mode for all the keyboard layouts loaded in this context.</p>
+<p>The input mode can either be set separately for each keyboard layout, or commonly at this context. If set separately, then this property should not be modified.</p>
+</div></div><!-- @@@inputMode -->
+<br/>
+<!-- $$$sharedLayouts -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="sharedLayouts-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">sharedLayouts</span> : <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>List of layout names which share the input method created by the <a href="qml-qtquick-virtualkeyboard-components-keyboardlayoutloader.html#createInputMethod-method" translate="no">createInputMethod</a>() function.</p>
+<p>If the list is empty (the default) the input method is not shared with any other layout and will be destroyed when the layout changes.</p>
+<p>The list should contain only the name of the layout type, e.g&#x2e;, ['symbols']. The current layout does not have to be included in the list.</p>
+</div></div><!-- @@@sharedLayouts -->
+<br/>
+<h2>Method Documentation</h2>
+<!-- $$$createInputMethod[overload1]$$$createInputMethod -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="createInputMethod-method">
+<td class="tblQmlFuncNode"><p>
+<span class="name">createInputMethod</span>()</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This function may be overridden by the keyboard layout to create the input method object dynamically. The default implementation forwards the call to the child keyboard layout.</p>
+<p>The input method object created by this function can outlive keyboard layout transitions in certain cases. In particular, this applies to the transitions between the layouts listed in the <a href="qml-qtquick-virtualkeyboard-components-keyboardlayoutloader.html#sharedLayouts-prop" translate="no">sharedLayouts</a> property.</p>
+</div></div><!-- @@@createInputMethod -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

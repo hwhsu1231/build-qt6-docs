@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtgraphs.qdoc -->
+  <title>Qt Graphs Migration from Qt DataVisualization | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Qt Graphs Migration from Qt DataVisualization</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#qml-import-statement">QML Import Statement</a></li>
+<li class="level1"><a href="#cmake-module-inclusion">CMake Module Inclusion</a></li>
+<li class="level1"><a href="#qmake-module-inclusion">Qmake Module Inclusion</a></li>
+<li class="level1"><a href="#widget-application-creation">Widget Application Creation</a></li>
+<li class="level1"><a href="#requirement-to-use-opengl-backend">Requirement to Use OpenGL Backend</a></li>
+<li class="level1"><a href="#removed-apis">Removed APIs</a></li>
+<li class="level1"><a href="#changed-apis">Changed APIs</a></li>
+<li class="level2"><a href="#optimizationhints">optimizationHints</a></li>
+<li class="level2"><a href="#renderingmode">renderingMode</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt Graphs Migration from Qt DataVisualization</h1>
+<!-- $$$qtgraphs_migration_guide.html-description -->
+<div class="descr" id="details">
+<p>The API and functionality between Qt DataVisualization and Qt Graphs has been kept mostly unchanged. However, there are some differences that need to be taken into consideration when migrating your application from Qt DataVisualization to Qt Graphs:</p>
+<ul>
+<li>QML import statement</li>
+<li>CMake module inclusion</li>
+<li>qmake module inclusion</li>
+<li>Widget application creation</li>
+<li>Requirement to use OpenGL backend</li>
+<li>Removed APIs</li>
+<li>Changed APIs</li>
+</ul>
+<h2 id="qml-import-statement">QML Import Statement</h2>
+<p>The import statement in Qt DataVisualization:</p>
+<pre class="cpp" translate="no">
+ import <span class="type">QtDataVisualization</span>
+</pre>
+<p>has to be changed to:</p>
+<pre class="cpp" translate="no">
+ import <span class="type"><a href="qtgraphs-qmlmodule.html" translate="no">QtGraphs</a></span>
+</pre>
+<p>for Qt Graphs.</p>
+<h2 id="cmake-module-inclusion">CMake Module Inclusion</h2>
+<p>The inclusion in Qt DataVisualization:</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS DataVisualization)
+ target_link_libraries(mytarget PRIVATE Qt6<span class="operator">::</span>DataVisualization)
+</pre>
+<p>has to be changed to:</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS Graphs)
+ target_link_libraries(mytarget PRIVATE Qt6<span class="operator">::</span>Graphs)
+</pre>
+<p>for Qt Graphs.</p>
+<h2 id="qmake-module-inclusion">Qmake Module Inclusion</h2>
+<p>The inclusion in Qt DataVisualization:</p>
+<pre class="cpp" translate="no">
+ QT <span class="operator">+</span><span class="operator">=</span> datavisualization
+</pre>
+<p>has to be changed to:</p>
+<pre class="cpp" translate="no">
+ QT <span class="operator">+</span><span class="operator">=</span> graphs
+</pre>
+<p>for Qt Graphs.</p>
+<h2 id="widget-application-creation">Widget Application Creation</h2>
+<p>Instead of creating your widget application like this:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a></span> app(argc<span class="operator">,</span> argv);
+ <span class="type"><a href="q3dscatter.html" translate="no">Q3DScatter</a></span> scatter;
+ scatter<span class="operator">.</span>setFlags(scatter<span class="operator">.</span>flags() <span class="operator">^</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>FramelessWindowHint);
+</pre>
+<p>you should create it like this:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span> app(argc<span class="operator">,</span> argv);
+ <span class="type"><a href="q3dscatter.html" translate="no">Q3DScatter</a></span> scatter;
+ scatter<span class="operator">.</span>setMinimumSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(<span class="number">256</span><span class="operator">,</span> <span class="number">256</span>));
+ scatter<span class="operator">.</span>setResizeMode(<span class="type"><a href="../qtquick/qquickwidget.html" translate="no">QQuickWidget</a></span><span class="operator">::</span>SizeRootObjectToView);
+</pre>
+<h2 id="requirement-to-use-opengl-backend">Requirement to Use OpenGL Backend</h2>
+<p>Adding the forced OpenGL backend usage:</p>
+<pre class="cpp" translate="no">
+ qputenv(<span class="string">&quot;QSG_RHI_BACKEND&quot;</span><span class="operator">,</span> <span class="string">&quot;opengl&quot;</span>);
+</pre>
+<p>is no longer required. Qt Graphs uses Qt Quick 3D for rendering, and as such supports the rendering backends native to the platform it is being run on.</p>
+<h2 id="removed-apis">Removed APIs</h2>
+<ul>
+<li>hasContext</li>
+<li>shadowsSupported</li>
+</ul>
+<h2 id="changed-apis">Changed APIs</h2>
+<ul>
+<li>optimizationHints</li>
+<li>renderingMode</li>
+</ul>
+<h3 id="optimizationhints">optimizationHints</h3>
+<p><code translate="no">OptimizationLegacy</code> is now the mode that was <code translate="no">OptimizationDefault</code> in QtDataVisualization. <code translate="no">OptimizationDefault</code> uses instancing, and should be used for all targets that support it.</p>
+<h3 id="renderingmode">renderingMode</h3>
+<p><code translate="no">RenderDirectToBackground_NoClear</code> has been removed, as it was already obsolete in QtDataVisualization in Qt 6.</p>
+</div>
+<!-- @@@qtgraphs_migration_guide.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

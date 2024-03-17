@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-dynamiccreation.qdoc -->
+  <meta name="description" content="Demonstrates dynamic model creation.">
+  <title>Qt Quick 3D - Dynamic Model Creation Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Dynamic Model Creation Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Dynamic Model Creation Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2019 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick3D
+
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">1280</span>
+     <span class="name">height</span>: <span class="number">720</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+     <span class="name">color</span>: <span class="string">&quot;black&quot;</span>
+     <span class="name">title</span>: <span class="string">&quot;Dynamic Model Creation example&quot;</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-column.html" translate="no">Column</a></span> {
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+         <span class="name">anchors</span>.margins: <span class="number">20</span>
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+             <span class="name">id</span>: <span class="name">countLabel</span>
+             <span class="name">font</span>.pointSize: <span class="number">20</span>
+             <span class="name">font</span>.bold: <span class="number">true</span>
+             <span class="name">color</span>: <span class="string">&quot;slategrey&quot;</span>
+             <span class="name">text</span>: <span class="string">&quot;No. models: &quot;</span> <span class="operator">+</span> <span class="name">shapeSpawner</span>.<span class="name">count</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+             <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+             <span class="name">spacing</span>: <span class="number">10</span>
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-roundbutton.html" translate="no">RoundButton</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;-&quot;</span>
+                 <span class="name">font</span>.bold: <span class="number">true</span>
+                 <span class="name">palette</span>.button: <span class="string">&quot;slategrey&quot;</span>
+
+                 <span class="name">onClicked</span>: <span class="name">shapeSpawner</span>.<span class="name">removeShape</span>()
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-roundbutton.html" translate="no">RoundButton</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;+&quot;</span>
+                 <span class="name">font</span>.bold: <span class="number">true</span>
+                 <span class="name">palette</span>.button: <span class="string">&quot;slategrey&quot;</span>
+
+                 <span class="name">onClicked</span>: <span class="name">shapeSpawner</span>.<span class="name">addShape</span>()
+             }
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">camera</span>: <span class="name">camera</span>
+         <span class="name">renderMode</span>: <span class="name">View3D</span>.<span class="name">Underlay</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">clearColor</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+             <span class="name">antialiasingMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">MSAA</span>
+             <span class="name">antialiasingQuality</span>: <span class="name">SceneEnvironment</span>.<span class="name">High</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-pointlight.html" translate="no">PointLight</a></span> {
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);
+             <span class="name">brightness</span>: <span class="number">2.5</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);
+
+             <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+                 <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">600</span>)
+             }
+
+             SequentialAnimation on <span class="name">eulerRotation</span>.y {
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-propertyanimation.html" translate="no">PropertyAnimation</a></span> {
+                     <span class="name">duration</span>: <span class="number">5000</span>
+                     <span class="name">to</span>: <span class="number">360</span>
+                     <span class="name">from</span>: <span class="number">0</span>
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">shapeSpawner</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">range</span>: <span class="number">300</span>
+             property <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span> <span class="name">instances</span>: []
+             property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">count</span>
+
+             <span class="keyword">function </span><span class="name">addShape</span>()
+             {
+                 var xPos = (<span class="number">2</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">random</span>() <span class="operator">*</span> <span class="name">range</span>) <span class="operator">-</span> <span class="name">range</span>;
+                 var yPos = (<span class="number">2</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">random</span>() <span class="operator">*</span> <span class="name">range</span>) <span class="operator">-</span> <span class="name">range</span>;
+                 var zPos = (<span class="number">2</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">random</span>() <span class="operator">*</span> <span class="name">range</span>) <span class="operator">-</span> <span class="name">range</span>;
+                 var shapeComponent = <span class="name">Qt</span>.<span class="name">createComponent</span>(<span class="string">&quot;WeirdShape.qml&quot;</span>);
+                 let instance = <span class="name">shapeComponent</span>.<span class="name">createObject</span>(<span class="name">shapeSpawner</span>,
+                     { &quot;x&quot;: <span class="name">xPos</span>, &quot;y&quot;: <span class="name">yPos</span>, &quot;z&quot;: <span class="name">zPos</span>, &quot;scale&quot;: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.25</span>, <span class="number">0.25</span>, <span class="number">0.25</span>)});
+                 <span class="name">instances</span>.<span class="name">push</span>(<span class="name">instance</span>);
+                 <span class="name">count</span> <span class="operator">=</span> <span class="name">instances</span>.<span class="name">length</span>
+             }
+
+             <span class="keyword">function </span><span class="name">removeShape</span>()
+             {
+                 <span class="keyword">if</span> (<span class="name">instances</span>.<span class="name">length</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
+                     let instance = <span class="name">instances</span>.<span class="name">pop</span>();
+                     <span class="name">instance</span>.<span class="name">destroy</span>();
+                     <span class="name">count</span> <span class="operator">=</span> <span class="name">instances</span>.<span class="name">length</span>
+                 }
+             }
+         }
+
+         <span class="name">Component</span>.onCompleted: {
+             <span class="keyword">for</span> (var i = 0; <span class="name">i</span> <span class="operator">&lt;</span> <span class="number">10</span>; ++<span class="name">i</span>)
+                 <span class="name">shapeSpawner</span>.<span class="name">addShape</span>()
+         }
+     }
+ }
+</pre>

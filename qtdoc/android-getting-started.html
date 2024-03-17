@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- android.qdoc -->
+  <meta name="description" content="Provides instructions to install and configure your development environment.">
+  <title>Getting Started with Qt for Android | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Getting Started with Qt for Android</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="android.html" />
+  <link rel="next" href="android-building.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="android.html">Qt for Android</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-building.html">Qt for Android - Building from Source</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#android-development-prerequisites">Android Development Prerequisites</a></li>
+<li class="level2"><a href="#manually-installing-the-prerequisites">Manually Installing the Prerequisites</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Getting Started with Qt for Android</h1>
+<!-- $$$android-getting-started.html-description -->
+<div class="descr" id="details">
+<p>The video below is a beginner's guide to using the Qt for Android toolchain, including the Qt Creator IDE, to get you started developing Android apps.</p>
+<div class="video">
+<a href="https://www.youtube.com/watch/?v=5OiIqFTjUZI">
+<img src="images/5OiIqFTjUZI.jpg" title="Click to play in a browser" /></a>
+</div>
+<p>The rest of this page has more detailed getting started information.</p>
+<p>To download and install Qt for Android, follow the instructions on the <a href="gettingstarted.html" translate="no">Getting Started with Qt</a> page.</p>
+<h2 id="android-development-prerequisites">Android Development Prerequisites</h2>
+<p>In order to develop with <a href="android.html" translate="no">Qt for Android</a>, you will also need the following prerequisites:</p>
+<ul>
+<li>Java Development Kit (JDK) for Java development</li>
+<li><a href="https://developer.android.com/studio/#command-tools" translate="no">Android SDK Command Line Tools</a> for managing dependencies required for developing with Qt for Android, including:<ul>
+<li><a href="https://developer.android.com/studio/releases/platforms" translate="no">Android SDK Platform</a></li>
+<li><a href="https://developer.android.com/studio/releases/platform-tools" translate="no">Android SDK Platform Tools</a></li>
+<li><a href="https://developer.android.com/studio/releases/build-tools" translate="no">Android SDK Build Tools</a></li>
+<li><a href="http://developer.android.com/tools/sdk/ndk/index.html" translate="no">Android NDK</a></li>
+</ul>
+</li>
+</ul>
+<p>The easiest way to manage these dependencies is by using Qt Creator's built in Android development setup. For more information, see <a href="http://doc.qt.io/qtcreator/creator-developing-android.html#specifying-android-device-settings" translate="no">Qt Creator: Specifying Android Device Settings</a>.</p>
+<h3 id="manually-installing-the-prerequisites">Manually Installing the Prerequisites</h3>
+<p>If you prefer to manually install the prerequisites please follow these next steps.</p>
+<h4 id="java-development-kit-jdk">Java Development Kit (JDK)</h4>
+<p>Qt for Android development requires JDK 11 or above, provided by any of the following supported distributions:</p>
+<ul>
+<li><a href="https://adoptopenjdk.net/?variant=openjdk8&jvmVariant=hotspot" translate="no">AdoptOpenJDK</a></li>
+<li><a href="http://openjdk.java.net" translate="no">OpenJDK</a></li>
+<li><a href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html" translate="no">Java SE Development Kit</a></li>
+</ul>
+<p>Please install your preferred JDK, and then make sure the <code translate="no">JAVA_HOME</code> environment variable is pointing to the location of the installed JDK.</p>
+<p>For example for Linux:</p>
+<pre class="cpp plain" translate="no">
+ sudo apt-get install openjdk-11-jdk
+ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+</pre>
+<p>Or for macOS:</p>
+<pre class="cpp plain" translate="no">
+ brew install openjdk@11
+ sudo ln -sfn &quot;$(brew --prefix openjdk@11)/libexec/openjdk.jdk&quot; &quot;/Library/Java/JavaVirtualMachines/openjdk-11.jdk&quot;
+ export JAVA_HOME=&quot;$(/usr/libexec/java_home -v 11)&quot;
+</pre>
+<h4 id="android-sdk-command-line-tools">Android SDK Command Line Tools</h4>
+<p>Install the latest version of the <a href="https://developer.android.com/studio/#command-tools" translate="no">Android SDK Command Line Tools</a> for your operating system, and verify that the installation succeeded by running the <a href="https://developer.android.com/studio/command-line/sdkmanager" translate="no">sdkmanager</a> binary:</p>
+<pre class="cpp plain" translate="no">
+ sdkmanager --version
+</pre>
+<p>Then make sure the <code translate="no">ANDROID_SDK_ROOT</code> environment variable is pointing to the location of the installed command line tools.</p>
+<p>For example for macOS:</p>
+<pre class="cpp plain" translate="no">
+ brew install android-commandlinetool
+ export ANDROID_SDK_ROOT=&quot;$(brew --prefix)/share/android-commandlinetools&quot;
+</pre>
+<h4 id="android-sdk">Android SDK</h4>
+<p>The required version of the Platform, Platform Tools, and Build Tools for 6.6 is 33.</p>
+<p>To install all of these run the following command:</p>
+<pre class="cpp plain" translate="no">
+ sdkmanager &quot;platforms;android-33&quot; &quot;platform-tools&quot; &quot;build-tools;33.0&#x2e;0&quot;
+</pre>
+<h4 id="android-ndk">Android NDK</h4>
+<p>The required version of the Android NDK for 6.6 is 25.1&#x2e;8937393.</p>
+<p>To install the NDK run the following command:</p>
+<pre class="cpp plain" translate="no">
+ sdkmanager &quot;ndk;25.1&#x2e;8937393&quot;
+</pre>
+<p>Then make sure the <code translate="no">ANDROID_NDK_ROOT</code> environment variable is pointing to the location of the installed NDK.</p>
+<p>For example for macOS:</p>
+<pre class="cpp plain" translate="no">
+ export ANDROID_NDK_ROOT=&quot;$(brew --prefix)/share/android-commandlinetools/ndk/25.1&#x2e;8937393/&quot;
+</pre>
+<h4 id="emulator">Emulator</h4>
+<p>If you wish to use the <a href="https://developer.android.com/studio/run/emulator" translate="no">Android Emulator</a>, you can install it by running:</p>
+<pre class="cpp plain" translate="no">
+ sdkmanager &quot;emulator&quot; &quot;patcher;v4&quot;
+</pre>
+<h4 id="platform-specific-configurations">Platform Specific Configurations</h4>
+<h5 id="windows">Windows</h5>
+<p>The default USB driver on Windows does not allow debugging using Android Debug Bridge (ADB) tool. You must install the additional USB driver provided by the <i>extras</i> Android SDK package. To install it, run the following:</p>
+<pre class="cpp plain" translate="no">
+ sdkmanager.bat &quot;extras;google;usb_driver&quot;
+</pre>
+<p>After the package installation is complete, install the driver from <code translate="no">&lt;ANDROID_SDK_ROOT&gt;/extras/google/usb_driver</code>. Try running a few basic <a href="http://developer.android.com/tools/help/adb.html" translate="no">adb</a> commands now and check whether your Android device responds to them.</p>
+<h5 id="linux">Linux</h5>
+<p>The following dependencies are needed for using tools such as <code translate="no">adb</code> or <code translate="no">gdb</code> which can be used by Qt Creator:</p>
+<pre class="cpp plain" translate="no">
+ sudo apt-get install libstdc++6 libncurses5
+</pre>
+<span id="emulator-dependencies"></span><p>To run the Android emulator, the following dependencies are also necessary:</p>
+<pre class="cpp plain" translate="no">
+ sudo apt-get install libsdl1.2debian
+</pre>
+<h4 id="testing-your-setup">Testing Your Setup</h4>
+<p>Now you can test your development setup by running the examples shipped with the Qt installation. For more information, see <a href="wasm.html#mobile" translate="no">Mobile Examples</a>.</p>
+<p>To develop a simple application from scratch, see <a href="https://doc.qt.io/qtcreator/qtcreator-accelbubble-example.html" translate="no">Qt Creator: Creating a Mobile Application</a>.</p>
+</div>
+<!-- @@@android-getting-started.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="android.html">Qt for Android</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-building.html">Qt for Android - Building from Source</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

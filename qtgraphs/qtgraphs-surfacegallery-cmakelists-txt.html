@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- surfacegallery.qdoc -->
+  <meta name="description" content="Gallery with three different ways to use a Surface3D graph.">
+  <title>Surface Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Surface Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Surface Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ # Copyright (C) 2023 The Qt Company Ltd.
+ # SPDX-License-Identifier: BSD-3-Clause
+
+ cmake_minimum_required(VERSION 3.16)
+ project(surfacegallery LANGUAGES CXX)
+
+ set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+ set(CMAKE_AUTOMOC ON)
+ set(CMAKE_AUTORCC ON)
+ set(CMAKE_AUTOUIC ON)
+
+ if(NOT DEFINED INSTALL_EXAMPLESDIR)
+   set(INSTALL_EXAMPLESDIR &quot;examples&quot;)
+ endif()
+
+ set(INSTALL_EXAMPLEDIR &quot;${INSTALL_EXAMPLESDIR}&quot;)
+
+ find_package(Qt6 COMPONENTS Core)
+ find_package(Qt6 COMPONENTS Gui)
+ find_package(Qt6 COMPONENTS Quick)
+ find_package(Qt6 COMPONENTS Quick3D)
+ find_package(Qt6 COMPONENTS Graphs)
+
+ qt_add_executable(surfacegallery
+     main.cpp
+ )
+ set_target_properties(surfacegallery PROPERTIES
+     WIN32_EXECUTABLE TRUE
+     MACOSX_BUNDLE TRUE
+ )
+ target_link_libraries(surfacegallery PUBLIC
+     Qt::Core
+     Qt::Gui
+     Qt::Quick
+     Qt::Quick3D
+     Qt::Graphs
+ )
+
+ qt6_add_qml_module(surfacegallery
+     URI SurfaceGallery
+     NO_RESOURCE_TARGET_PATH
+     SOURCES
+         datasource.cpp datasource.h
+     QML_FILES
+         qml/surfacegallery/main.qml
+         qml/surfacegallery/SpectrogramData.qml
+         qml/surfacegallery/SurfaceHeightMap.qml
+         qml/surfacegallery/SurfaceOscilloscope.qml
+         qml/surfacegallery/SurfaceSpectrogram.qml
+     RESOURCES
+         qml/surfacegallery/heightmap.png
+ )
+
+ install(TARGETS surfacegallery
+     RUNTIME DESTINATION &quot;${INSTALL_EXAMPLEDIR}&quot;
+     BUNDLE DESTINATION &quot;${INSTALL_EXAMPLEDIR}&quot;
+     LIBRARY DESTINATION &quot;${INSTALL_EXAMPLEDIR}&quot;
+ )
+</pre>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-particles3d.qdoc -->
+  <meta name="description" content="Demonstrates how to use the Qt Quick 3D Particles3D module.">
+  <title>Qt Quick 3D - Particles 3D Testbed Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Particles 3D Testbed Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Particles 3D Testbed Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Particles3D
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">mainWindow</span>
+
+     readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">meterTicksAngle</span>: <span class="number">300</span>
+     readonly property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">particleNeedle</span>: <span class="name">checkBoxParticlesNeedle</span>.<span class="name">checked</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">separation</span>: <span class="name">sliderElementSeparation</span>.<span class="name">sliderValue</span>
+
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+     Behavior on <span class="name">separation</span> {
+         <span class="type"><a href="../qtquick/qml-qtquick-smoothedanimation.html" translate="no">SmoothedAnimation</a></span> {
+             <span class="name">velocity</span>: <span class="number">0.2</span>
+             <span class="name">duration</span>: <span class="number">1000</span>
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">view3D</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">clearColor</span>: <span class="string">&quot;#161610&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+             <span class="name">antialiasingMode</span>: <span class="name">AppSettings</span>.<span class="name">antialiasingMode</span>
+             <span class="name">antialiasingQuality</span>: <span class="name">AppSettings</span>.<span class="name">antialiasingQuality</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">100</span>, <span class="number">600</span> <span class="operator">-</span> <span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">100</span>)
+         }
+
+         <span class="type"><a href="qml-qtquick3d-pointlight.html" translate="no">PointLight</a></span> {
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">200</span>, <span class="number">400</span>, <span class="number">300</span>)
+             <span class="name">brightness</span>: <span class="number">5</span>
+             <span class="name">ambientColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.3</span>, <span class="number">0.3</span>, <span class="number">0.3</span>, <span class="number">1.0</span>)
+         }
+
+         <span class="comment">// Background</span>
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">25</span>, <span class="number">15</span>, <span class="number">0</span>)
+             <span class="name">z</span>: -<span class="number">300</span>
+             <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                 <span class="name">baseColor</span>: <span class="string">&quot;#505040&quot;</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">speedometerComponent</span>
+
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">100</span>, <span class="number">0</span>)
+             <span class="name">eulerRotation</span>.x: <span class="number">90</span> <span class="operator">-</span> <span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">75</span>
+
+             <span class="comment">// Light which follows the needle</span>
+             <span class="type"><a href="qml-qtquick3d-pointlight.html" translate="no">PointLight</a></span> {
+                 <span class="comment">// Calculates the direction of the needle</span>
+                 <span class="keyword">function </span><span class="name">getNeedleAngle</span>(startAngle) {
+                     <span class="keyword">return</span> <span class="name">Math</span>.<span class="name">sin</span>(<span class="name">startAngle</span> <span class="operator">+</span>
+                                     (-(<span class="number">180</span> <span class="operator">/</span> <span class="number">360</span>) <span class="operator">+</span>
+                                      (-<span class="name">gaugeItem</span>.<span class="name">value</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">meterTicksAngle</span> <span class="operator">/</span> <span class="number">360</span>) <span class="operator">+</span>
+                                      (<span class="name">mainWindow</span>.<span class="name">meterTicksAngle</span> <span class="operator">/</span> <span class="number">2</span> <span class="operator">+</span> <span class="number">180</span>) <span class="operator">/</span> <span class="number">360</span>) <span class="operator">*</span> <span class="number">2</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">PI</span>);
+                 }
+
+                 readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">lightRadius</span>: <span class="number">120</span>
+                 readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">posX</span>: <span class="name">getNeedleAngle</span>(<span class="name">Math</span>.<span class="name">PI</span>) <span class="operator">*</span> <span class="name">lightRadius</span>
+                 readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">posY</span>: <span class="name">getNeedleAngle</span>(<span class="name">Math</span>.<span class="name">PI</span> <span class="operator">/</span> <span class="number">2</span>) <span class="operator">*</span> <span class="name">lightRadius</span>
+
+                 <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">posX</span>, <span class="number">40</span>, -<span class="name">posY</span>)
+                 <span class="name">color</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">1.0</span>, <span class="number">0.8</span>, <span class="number">0.4</span>, <span class="number">1.0</span>)
+                 <span class="name">brightness</span>: <span class="name">sliderNeedleBrightness</span>.<span class="name">sliderValue</span>
+                 <span class="name">quadraticFade</span>: <span class="number">4.0</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">y</span>: -<span class="number">4</span> <span class="operator">-</span> <span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">100</span>
+                 <span class="name">source</span>: <span class="string">&quot;meshes/meter_background.mesh&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>)
+                 <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                     <span class="name">baseColor</span>: <span class="string">&quot;#505050&quot;</span>
+                     <span class="name">metalness</span>: <span class="number">1.0</span>
+                     <span class="name">roughness</span>: <span class="number">0.6</span>
+                     <span class="name">normalMap</span>: <span class="name">Texture</span> {
+                         <span class="name">source</span>: <span class="string">&quot;images/leather_n.png&quot;</span>
+                     }
+                     <span class="name">normalStrength</span>: <span class="number">0.4</span>
+                 }
+             }
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">y</span>: -<span class="number">35</span> <span class="operator">-</span> <span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">100</span>
+                 <span class="name">source</span>: <span class="string">&quot;#Sphere&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.6</span>, <span class="number">0.2</span>, <span class="number">1.6</span>)
+                 <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                     <span class="name">baseColor</span>: <span class="string">&quot;#606060&quot;</span>
+                 }
+             }
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">y</span>: -<span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">60</span>
+                 <span class="name">source</span>: <span class="string">&quot;#Cylinder&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.2</span>, <span class="number">0.8</span>, <span class="number">0.2</span>)
+                 <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                     <span class="name">baseColor</span>: <span class="string">&quot;#606060&quot;</span>
+                 }
+             }
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">y</span>: <span class="number">30</span> <span class="operator">-</span> <span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">60</span>
+                 <span class="name">source</span>: <span class="string">&quot;#Sphere&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.4</span>, <span class="number">0.1</span>, <span class="number">0.4</span>)
+                 <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                     <span class="name">baseColor</span>: <span class="string">&quot;#f0f0f0&quot;</span>
+                 }
+             }
+
+             <span class="comment">// Speedometer labels</span>
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">y</span>: <span class="number">25</span> <span class="operator">+</span> <span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">20</span>
+                 <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">4</span>, <span class="number">4</span>, <span class="number">4</span>)
+                 <span class="name">eulerRotation</span>.x: -<span class="number">90</span>
+                 <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                     <span class="name">alphaMode</span>: <span class="name">PrincipledMaterial</span>.<span class="name">Blend</span>
+                     <span class="name">baseColorMap</span>: <span class="name">Texture</span> {
+                         <span class="name">source</span>: <span class="string">&quot;images/speedometer_labels.png&quot;</span>
+                     }
+                 }
+             }
+
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">y</span>: <span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">60</span>
+                 <span class="name">source</span>: <span class="string">&quot;meshes/meter_edge.mesh&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">30</span>, <span class="number">30</span>, <span class="number">30</span>)
+                 <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                     <span class="name">baseColor</span>: <span class="string">&quot;#b0b0b0&quot;</span>
+                 }
+             }
+
+             <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                 <span class="name">id</span>: <span class="name">gaugeItem</span>
+
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">value</span>: <span class="number">0</span>
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">needleSize</span>: <span class="number">180</span>
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+                     <span class="name">running</span>: <span class="name">checkBoxAnimateSpeed</span>.<span class="name">checked</span>
+                     <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">target</span>: <span class="name">gaugeItem</span>
+                         <span class="name">property</span>: <span class="string">&quot;value&quot;</span>
+                         <span class="name">duration</span>: <span class="number">8000</span>
+                         <span class="name">to</span>: <span class="number">1</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">target</span>: <span class="name">gaugeItem</span>
+                         <span class="name">property</span>: <span class="string">&quot;value&quot;</span>
+                         <span class="name">duration</span>: <span class="number">8000</span>
+                         <span class="name">to</span>: <span class="number">0</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                     }
+                 }
+
+                 <span class="name">y</span>: <span class="number">20</span> <span class="operator">-</span> <span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">60</span>
+                 <span class="name">eulerRotation</span>.z: <span class="number">90</span>
+                 <span class="name">eulerRotation</span>.y: -<span class="name">mainWindow</span>.<span class="name">meterTicksAngle</span> <span class="operator">*</span> <span class="name">value</span> <span class="operator">+</span> (<span class="name">mainWindow</span>.<span class="name">meterTicksAngle</span><span class="operator">/</span><span class="number">2</span> <span class="operator">-</span> <span class="number">90</span>)
+
+                 <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                     <span class="name">position</span>.y: <span class="name">gaugeItem</span>.<span class="name">needleSize</span> <span class="operator">/</span> <span class="number">2</span>
+                     <span class="name">source</span>: <span class="string">&quot;#Cylinder&quot;</span>
+                     <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.05</span>, <span class="name">gaugeItem</span>.<span class="name">needleSize</span> <span class="operator">*</span> <span class="number">0.01</span>, <span class="number">0.2</span>)
+                     <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                         <span class="name">baseColor</span>: <span class="string">&quot;#606060&quot;</span>
+                         <span class="name">opacity</span>: <span class="name">mainWindow</span>.<span class="name">particleNeedle</span> ? <span class="number">0.0</span> : <span class="number">1.0</span>
+                     }
+
+                     <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                         <span class="name">system</span>: <span class="name">psystemGauge</span>
+                         <span class="name">particle</span>: <span class="name">particleSpark</span>
+                         <span class="name">y</span>: <span class="number">10</span>
+                         <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.1</span>, <span class="number">0.8</span>, <span class="number">0.1</span>)
+                         <span class="name">shape</span>: <span class="name">ParticleShape3D</span> {
+                             <span class="name">type</span>: <span class="name">ParticleShape3D</span>.<span class="name">Cube</span>
+                         }
+                         <span class="name">particleScale</span>: <span class="number">2.0</span>
+                         <span class="name">particleScaleVariation</span>: <span class="number">1.0</span>
+                         <span class="name">particleRotationVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">180</span>)
+                         <span class="name">particleRotationVelocityVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">20</span>, <span class="number">20</span>, <span class="number">200</span>);
+                         <span class="name">emitRate</span>: <span class="number">500</span>
+                         <span class="name">lifeSpan</span>: <span class="number">2000</span>
+                         <span class="name">lifeSpanVariation</span>: <span class="number">1000</span>
+                     }
+
+                     <span class="comment">// Needle particle system</span>
+                     <span class="comment">// This system rotates together with the needle</span>
+                     <span class="type"><a href="qml-qtquick3d-particles3d-particlesystem3d.html" translate="no">ParticleSystem3D</a></span> {
+                         <span class="name">id</span>: <span class="name">psystemNeedle</span>
+                         <span class="name">running</span>: <span class="name">mainWindow</span>.<span class="name">particleNeedle</span>
+                         <span class="name">visible</span>: <span class="name">running</span>
+                         <span class="type"><a href="qml-qtquick3d-particles3d-spriteparticle3d.html" translate="no">SpriteParticle3D</a></span> {
+                             <span class="name">id</span>: <span class="name">needleParticle</span>
+                             <span class="name">sprite</span>: <span class="name">Texture</span> {
+                                 <span class="name">source</span>: <span class="string">&quot;images/dot.png&quot;</span>
+                             }
+                             <span class="name">maxAmount</span>: <span class="number">500</span>
+                             <span class="name">fadeInDuration</span>: <span class="number">50</span>
+                             <span class="name">fadeOutDuration</span>: <span class="number">200</span>
+                             <span class="name">color</span>: <span class="string">&quot;#40808020&quot;</span>
+                             <span class="name">colorVariation</span>: <span class="name">Qt</span>.<span class="name">vector4d</span>(<span class="number">0.2</span>, <span class="number">0.2</span>, <span class="number">0.0</span>, <span class="number">0.2</span>)
+                             <span class="name">blendMode</span>: <span class="name">SpriteParticle3D</span>.<span class="name">Screen</span>
+                         }
+
+                         <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                             <span class="name">particle</span>: <span class="name">needleParticle</span>
+                             <span class="name">y</span>: -<span class="number">50</span>
+                             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.2</span>, <span class="number">0.0</span>, <span class="number">0.2</span>)
+                             <span class="name">shape</span>: <span class="name">ParticleShape3D</span> {
+                                 <span class="name">type</span>: <span class="name">ParticleShape3D</span>.<span class="name">Cube</span>
+                             }
+
+                             <span class="name">particleScale</span>: <span class="number">4.0</span>
+                             <span class="name">particleScaleVariation</span>: <span class="number">2.0</span>
+                             <span class="name">particleEndScale</span>: <span class="number">1.0</span>
+                             <span class="name">particleEndScaleVariation</span>: <span class="number">0.5</span>
+                             <span class="name">velocity</span>: <span class="name">VectorDirection3D</span> {
+                                 <span class="name">direction</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">110</span>, <span class="number">0</span>)
+                                 <span class="name">directionVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>)
+                             }
+                             <span class="name">emitRate</span>: <span class="name">sliderNeedleEmitrate</span>.<span class="name">sliderValue</span>
+                             <span class="name">lifeSpan</span>: <span class="number">1000</span>
+                         }
+                     }
+                 }
+             }
+             <span class="comment">// Gauge particle system</span>
+             <span class="type"><a href="qml-qtquick3d-particles3d-particlesystem3d.html" translate="no">ParticleSystem3D</a></span> {
+                 <span class="name">id</span>: <span class="name">psystemGauge</span>
+                 <span class="comment">// Particles coming under the needle</span>
+                 <span class="type"><a href="qml-qtquick3d-particles3d-spriteparticle3d.html" translate="no">SpriteParticle3D</a></span> {
+                     <span class="name">id</span>: <span class="name">particleSpark</span>
+                     <span class="name">sprite</span>: <span class="name">Texture</span> {
+                         <span class="name">source</span>: <span class="string">&quot;images/star3.png&quot;</span>
+                     }
+                     <span class="name">maxAmount</span>: <span class="number">1500</span>
+                     <span class="name">fadeInEffect</span>: <span class="name">SpriteParticle3D</span>.<span class="name">FadeNone</span>
+                     <span class="name">fadeOutDuration</span>: <span class="number">200</span>
+                     <span class="name">color</span>: <span class="string">&quot;#40ff0000&quot;</span>
+                     <span class="name">colorVariation</span>: <span class="name">Qt</span>.<span class="name">vector4d</span>(<span class="number">0.4</span>, <span class="number">0.2</span>, <span class="number">0.2</span>, <span class="number">0.2</span>)
+                     <span class="name">unifiedColorVariation</span>: <span class="number">true</span>
+                     <span class="name">blendMode</span>: <span class="name">SpriteParticle3D</span>.<span class="name">Screen</span>
+                 }
+                 <span class="comment">// Particles rotating the gauge</span>
+                 <span class="type"><a href="qml-qtquick3d-particles3d-spriteparticle3d.html" translate="no">SpriteParticle3D</a></span> {
+                     <span class="name">id</span>: <span class="name">particleSpark2</span>
+                     <span class="name">sprite</span>: <span class="name">Texture</span> {
+                         <span class="name">source</span>: <span class="string">&quot;images/star3.png&quot;</span>
+                     }
+                     <span class="name">maxAmount</span>: <span class="number">30</span>
+                     <span class="name">fadeInDuration</span>: <span class="number">1000</span>
+                     <span class="name">fadeOutDuration</span>: <span class="number">1000</span>
+                     <span class="name">color</span>: <span class="string">&quot;#20ffffff&quot;</span>
+                     <span class="name">colorVariation</span>: <span class="name">Qt</span>.<span class="name">vector4d</span>(<span class="number">0.2</span>, <span class="number">0.2</span>, <span class="number">0.5</span>, <span class="number">0.1</span>)
+                     <span class="name">blendMode</span>: <span class="name">SpriteParticle3D</span>.<span class="name">Screen</span>
+                 }
+                 <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                     <span class="name">y</span>: <span class="number">40</span> <span class="operator">+</span> <span class="name">mainWindow</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">60</span>
+                     <span class="name">particle</span>: <span class="name">particleSpark2</span>
+                     <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">3.8</span>, <span class="number">0</span>, <span class="number">3.8</span>)
+                     <span class="name">shape</span>: <span class="name">ParticleShape3D</span> {
+                         <span class="name">type</span>: <span class="name">ParticleShape3D</span>.<span class="name">Cylinder</span>
+                     }
+                     <span class="name">emitRate</span>: <span class="number">10</span>
+                     <span class="name">lifeSpan</span>: <span class="number">3000</span>
+                     <span class="name">particleScale</span>: <span class="number">4.0</span>
+                     <span class="name">particleScaleVariation</span>: <span class="number">3.0</span>
+                     <span class="name">particleRotationVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">20</span>, <span class="number">20</span>, <span class="number">180</span>)
+                     <span class="name">particleRotationVelocityVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">50</span>)
+                 }
+                 <span class="type"><a href="qml-qtquick3d-particles3d-wander3d.html" translate="no">Wander3D</a></span> {
+                     <span class="name">uniqueAmount</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">10</span>, <span class="number">0</span>, <span class="number">10</span>)
+                     <span class="name">uniquePace</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span>)
+                     <span class="name">fadeInDuration</span>: <span class="number">2000</span>
+                 }
+                 <span class="type"><a href="qml-qtquick3d-particles3d-pointrotator3d.html" translate="no">PointRotator3D</a></span> {
+                     <span class="name">particles</span>: [ <span class="name">particleSpark2</span> ]
+                     <span class="name">magnitude</span>: -<span class="number">20</span>
+                 }
+             }
+         }
+     }
+
+     <span class="type">SettingsView</span> {
+         <span class="type">CustomCheckBox</span> {
+             <span class="name">id</span>: <span class="name">checkBoxAnimateSpeed</span>
+             <span class="name">text</span>: <span class="string">&quot;Animate Speed&quot;</span>
+             <span class="name">checked</span>: <span class="number">true</span>
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="string">&quot;Speed&quot;</span>
+             <span class="name">opacity</span>: !<span class="name">checkBoxAnimateSpeed</span>.<span class="name">checked</span> ? <span class="number">1.0</span> : <span class="number">0.4</span>
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderSpeedValue</span>
+             <span class="name">sliderValue</span>: <span class="name">gaugeItem</span>.<span class="name">value</span>
+             <span class="name">sliderEnabled</span>: !<span class="name">checkBoxAnimateSpeed</span>.<span class="name">checked</span>
+             <span class="name">fromValue</span>: <span class="number">0</span>
+             <span class="name">toValue</span>: <span class="number">1</span>
+             <span class="name">onSliderValueChanged</span>: <span class="name">gaugeItem</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">sliderValue</span>;
+         }
+         <span class="type">CustomCheckBox</span> {
+             <span class="name">id</span>: <span class="name">checkBoxParticlesNeedle</span>
+             <span class="name">text</span>: <span class="string">&quot;Particles Needle&quot;</span>
+             <span class="name">checked</span>: <span class="number">true</span>
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="string">&quot;Needle emitRate&quot;</span>
+             <span class="name">opacity</span>: <span class="name">checkBoxParticlesNeedle</span>.<span class="name">checked</span> ? <span class="number">1.0</span> : <span class="number">0.4</span>
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderNeedleEmitrate</span>
+             <span class="name">sliderValue</span>: <span class="number">200</span>
+             <span class="name">sliderEnabled</span>: <span class="name">checkBoxParticlesNeedle</span>.<span class="name">checked</span>
+             <span class="name">fromValue</span>: <span class="number">50</span>
+             <span class="name">toValue</span>: <span class="number">500</span>
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="string">&quot;Needle Brightness&quot;</span>
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderNeedleBrightness</span>
+             <span class="name">sliderValue</span>: <span class="number">10</span>
+             <span class="name">fromValue</span>: <span class="number">0</span>
+             <span class="name">toValue</span>: <span class="number">50</span>
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="string">&quot;Elements Separation&quot;</span>
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderElementSeparation</span>
+             <span class="name">sliderValue</span>: <span class="number">0</span>
+             <span class="name">fromValue</span>: <span class="number">0</span>
+             <span class="name">toValue</span>: <span class="number">1</span>
+         }
+     }
+
+     <span class="type">LoggingView</span> {
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">particleSystems</span>: [<span class="name">psystemGauge</span>, <span class="name">psystemNeedle</span>]
+     }
+ }
+</pre>

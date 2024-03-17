@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- whatsnew62.qdoc -->
+  <meta name="description" content="Lists the new features in Qt 6.2&#x2e;">
+  <title>What's New in Qt 6.2 | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li><a href="whatsnewqt6.html" translate="no">What's new in Qt 6</a></li>
+<li>What's New in Qt 6.2</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#new-and-restored-modules-in-qt-6-2">New and Restored Modules in Qt 6.2</a></li>
+<li class="level1"><a href="#new-features-in-qt-6-2">New Features in Qt 6.2</a></li>
+<li class="level2"><a href="#qt-core-module">Qt Core Module</a></li>
+<li class="level2"><a href="#qt-gui-module">Qt GUI Module</a></li>
+<li class="level2"><a href="#qt-quick-module">Qt Quick Module</a></li>
+<li class="level2"><a href="#qt-quick-controls-module">Qt Quick Controls Module</a></li>
+<li class="level2"><a href="#qt-widgets-module">Qt Widgets Module</a></li>
+<li class="level2"><a href="#qt-network-module">Qt Network Module</a></li>
+<li class="level2"><a href="#qt-qml-module">Qt QML Module</a></li>
+<li class="level2"><a href="#qt-quick-3d-module">Qt Quick 3D Module</a></li>
+<li class="level2"><a href="#qt-data-visualization-module">Qt Data Visualization Module</a></li>
+<li class="level2"><a href="#qt-charts-module">Qt Charts Module</a></li>
+<li class="level2"><a href="#qt-for-python">Qt for Python</a></li>
+<li class="level1"><a href="#platform-changes">Platform Changes</a></li>
+<li class="level2"><a href="#technology-preview-platforms">Technology Preview Platforms</a></li>
+<li class="level2"><a href="#desktop-platforms">Desktop Platforms</a></li>
+<li class="level2"><a href="#mobile-platforms">Mobile Platforms</a></li>
+<li class="level2"><a href="#embedded-platforms">Embedded Platforms</a></li>
+<li class="level1"><a href="#list-of-api-changes">List of API Changes</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">What's New in Qt 6.2</h1>
+<!-- $$$whatsnew62.html-description -->
+<div class="descr" id="details">
+<h2 id="new-and-restored-modules-in-qt-6-2">New and Restored Modules in Qt 6.2</h2>
+<p>Qt 6.2 adds the following module:</p>
+<ul>
+<li><a href="../qtquickdialogs/qtquick-dialogs-qmlmodule.html" translate="no">QtQuick.Dialogs</a> - A QML module that provides native dialogs with a Qt Quick fallback on platforms where Qt does not provide a native one. <a href="../qtquickdialogs/qml-qtquick-dialogs-filedialog.html" translate="no">FileDialog</a> and <a href="../qtquickdialogs/qml-qtquick-dialogs-fontdialog.html" translate="no">FontDialog</a> are available in this release.</li>
+</ul>
+<p>Qt 6.2 reintroduces the following modules that were not present in Qt 6.1&#x2e; All listed modules were ported to Qt 6 and the CMake build system.</p>
+<p>A more detailed list of changes to each module can be found in <a href="modulechanges.html" translate="no">Changes to Qt Modules in Qt 6</a>.</p>
+<ul>
+<li><a href="../qtbluetooth/qtbluetooth-index.html" translate="no">Qt Bluetooth</a><ul>
+<li>BlueZ 4 support was removed.</li>
+<li>Win32 backend was removed. As a consequence, there is no longer support for Qt Bluetooth using MinGW.</li>
+<li>The QML API was removed.</li>
+<li>QBluetoothTransferManager and related classes were removed.</li>
+<li>Functionality related to pairing agents was removed from <a href="../qtbluetooth/qbluetoothlocaldevice.html" translate="no">QBluetoothLocalDevice</a>.</li>
+</ul>
+</li>
+<li><a href="../qtmultimedia/qtmultimedia-index.html" translate="no">Qt Multimedia</a><ul>
+<li>Qt Multimedia public API consists of five large functional blocks. Each API has undergone significant changes compared to Qt 5:<ul>
+<li>Device discovery</li>
+<li>Low level audio</li>
+<li>Playback and decoding</li>
+<li>Capture and recording</li>
+<li>Video output pipeline</li>
+</ul>
+</li>
+<li>Currently supported backends:<ul>
+<li>Linux: GStreamer</li>
+<li>Windows: WMF</li>
+<li>macOS/iOS: AVFoundation</li>
+<li>Android: <a href="../qtmultimedia/qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a> and Camera APIs</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="../qtnfc/qtnfc-index.html" translate="no">Qt NFC</a><ul>
+<li>Removed support for Linux/NearD.</li>
+<li>Added support for iOS.</li>
+</ul>
+</li>
+<li><a href="../qtpositioning/qtpositioning-index.html" translate="no">Qt Positioning</a><ul>
+<li>Many of the properties were made bindable.</li>
+<li>Renamed QGeoPolygon::path() to <a href="../qtpositioning/qgeopolygon.html#perimeter" translate="no">QGeoPolygon::perimeter</a>.</li>
+<li><a href="../qtpositioning/qgeolocation.html" translate="no">QGeoLocation</a> now uses <a href="../qtpositioning/qgeoshape.html" translate="no">QGeoShape</a> instead of <a href="../qtpositioning/qgeorectangle.html" translate="no">QGeoRectangle</a> as a bounding area.</li>
+<li>The <code translate="no">error()</code> signal in multiple positioning classes was renamed to <code translate="no">errorOccurred()</code>.</li>
+<li>QGeoPositionInfoSourceFactoryV2 was removed, and <a href="../qtpositioning/qgeopositioninfosourcefactory.html" translate="no">QGeoPositionInfoSourceFactory</a> now supports custom parameters for the created objects.</li>
+<li>NMEA support was redesigned. The <i>serialnmea</i> plugin was renamed to <i>nmea</i> and now supports reading the input stream from a TCP socket or a raw file. The <code translate="no">nmeaSource</code> property was removed.</li>
+</ul>
+</li>
+<li><a href="../qtremoteobjects/qtremoteobjects-index.html#qt-remote-objects" translate="no">Qt Remote Objects</a><ul>
+<li>The local connection backend now supports abstract namespaces (this is a Linux-specific extension), achieved by using the new <code translate="no">localabstract</code> schema in the URL.</li>
+<li><code translate="no">.rep</code>-files now support:<ul>
+<li>Class enums.</li>
+<li><a href="../qtcore/qflags.html" translate="no">QFlags</a>.</li>
+<li>Multiline comments (C-style).</li>
+</ul>
+</li>
+<li>Enums and <a href="../qtcore/qflags.html" translate="no">flags</a> are now supported in POD-types and as keys for <a href="../qtcore/qmap.html" translate="no">QMap</a> and <a href="../qtcore/qhash.html#qhash" translate="no">QHash</a> properties in <code translate="no">.rep</code> files.</li>
+</ul>
+</li>
+<li><a href="../qtsensors/qtsensors-index.html" translate="no">Qt Sensors</a><ul>
+<li>Most QML facing properties are now bindable.</li>
+<li><a href="../qtsensors/qml-qtsensors-sensor.html#type-prop" translate="no">Sensor::type</a> and <a href="../qtsensors/qsensor.html#type-prop" translate="no">QSensor::type</a> properties are now marked as constant.</li>
+<li>Added parameter to <a href="../qtsensors/qsensorbackend.html#sensorBusy" translate="no">QSensorBackend::sensorBusy</a>() to be able to also clear the busy state.</li>
+<li>Deleted typedef for qtimestamp.</li>
+<li>Renamed sensor <code translate="no">type</code> string to <code translate="no">sensorType</code>.</li>
+<li>Windows: We can now require Windows 10 API, thereby extending the number of sensors supported.</li>
+<li>TI Sensor Tag as supported platform has been removed.</li>
+<li>The Linux <code translate="no">sysfs</code> backend has been removed.</li>
+<li>The sensor gesture support has been removed (input welcomed here: <a href="https://bugreports.qt.io/projects/QTBUG/issues/QTBUG-97066" translate="no">QTBUG-97066</a>).</li>
+<li>Sensorfw as a platform was removed due to Sensorfw itself not yet ported to Qt 6.</li>
+<li>Sensor types that had only Sensorfw backend (IRProximity, Lid, and Tap) are not listed as supported anymore.</li>
+<li>Sensor types without any backend have been removed (Altimeter, Distance, and Holster).</li>
+</ul>
+</li>
+<li><a href="../qtserialbus/qtserialbus-index.html" translate="no">Qt Serial Bus</a><ul>
+<li><a href="../qtserialbus/qcanbusfactory.html" translate="no">QCanBusFactory</a> was removed and QCanBusFactoryV2 was renamed to <a href="../qtserialbus/qcanbusfactory.html" translate="no">QCanBusFactory</a>.</li>
+<li>QModbusRtuSerialSlave and QModbusRtuSerialMaster were renamed to <a href="../qtserialbus/qmodbusrtuserialserver.html" translate="no">QModbusRtuSerialServer</a> and <a href="../qtserialbus/qmodbusrtuserialclient.html" translate="no">QModbusRtuSerialClient</a>.</li>
+</ul>
+</li>
+<li><a href="../qtserialport/qtserialport-index.html" translate="no">Qt Serial Port</a></li>
+<li><a href="../qtwebchannel/qtwebchannel-index.html" translate="no">Qt WebChannel</a><ul>
+<li><a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a> properties were made bindable.</li>
+<li>The property update interval of <a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a> can now be configured. 50ms update interval remains the default.</li>
+<li><a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a> now supports property updates for BINDABLE properties. However, the client side does not provide a generic callback mechanism if the host property does not have a NOTIFY signal.</li>
+<li>Signals from objects living in a different thread are now handled correctly (<a href="https://bugreports.qt.io/browse/QTBUG-51366" translate="no">QTBUG-51366</a>).</li>
+</ul>
+</li>
+<li><a href="../qtwebengine/qtwebengine-index.html" translate="no">Qt WebEngine</a><ul>
+<li>The submodule for Qt Quick has been renamed from QtWebEngine to <a href="../qtwebengine/qtwebenginequick.html" translate="no">QtWebEngineQuick</a>.</li>
+<li>Several classes were moved from <a href="../qtwebengine/qtwebenginewidgets-module.html" translate="no">QtWebEngineWidgets</a> to <a href="../qtwebengine/qtwebenginecore-module.html" translate="no">QtWebEngineCore</a>, including <a href="../qtwebengine/qwebenginepage.html" translate="no">QWebEnginePage</a>.</li>
+<li>Some functionality previously only accessible by deriving from <a href="../qtwebengine/qwebenginepage.html" translate="no">QWebEnginePage</a> are now accessible using synchronous signals.</li>
+<li>Favicon API added to <a href="../qtwebengine/qwebengineprofile.html" translate="no">QWebEngineProfile</a> to look up icons for specific URLs.</li>
+<li>The new <a href="../qtwebengine/qwebengineloadinginfo.html" translate="no">QWebEngineLoadingInfo</a> class provides more detail about loading success or failure.</li>
+</ul>
+</li>
+<li><a href="../qtwebsockets/qtwebsockets-index.html" translate="no">Qt WebSockets</a></li>
+<li><a href="../qtwebview/qtwebview-index.html" translate="no">Qt WebView</a></li>
+</ul>
+<h2 id="new-features-in-qt-6-2">New Features in Qt 6.2</h2>
+<h3 id="qt-core-module">Qt Core Module</h3>
+<ul>
+<li>Added functionality:<ul>
+<li>Added <a href="../qtcore/qbytearrayview.html#compare" translate="no">QByteArrayView::compare</a>().</li>
+<li>Added methods QFlags::test(Any)Flag(s).</li>
+<li>Added <a href="../qtcore/qhashseed.html" translate="no">QHashSeed</a> to control hashing (seeds are now size_t); this shall replace qGlobalQHashSeed and qSetGlobalQHashSeed.</li>
+<li>Added PRIxQTDATATYPE macros to facilitate printf()-style formatting without casts or warnings.</li>
+</ul>
+</li>
+<li>Made many properties bindable.</li>
+<li>Grapheme clusters can now handle emojis.</li>
+<li>UNC paths and network shares on Windows are now handled consistently.</li>
+<li>The handling of the start-offset parameter, called <code translate="no">from</code>, in various <code translate="no">indexOf()</code> and <code translate="no">lastIndexOf()</code> methods of containers (principally <a href="../qtcore/qstring.html" translate="no">QString</a>, <a href="../qtcore/qbytearray.html" translate="no">QByteArray</a> and their views) is now more coherent.</li>
+<li>Like <a href="../qtcore/qstring.html#number" translate="no">QString::number</a>() has since the release of Qt 6.0, <a href="../qtcore/qbytearray.html#number" translate="no">QByteArray::number</a>()'s overloads for signed integral types now return a text with a minus sign followed by the number's absolute value instead of coercing to an unsigned type for all bases except ten, when passed a negative integer and any supported base.</li>
+<li><a href="../qtcore/qcalendar.html" translate="no">QCalendar</a> now supports construction from the ID of a custom backend.</li>
+<li><a href="../qtcore/qchar.html" translate="no">QChar</a>, <a href="../qtcore/qpoint.html" translate="no">QPoint</a>, and <a href="../qtcore/qpointf.html" translate="no">QPointF</a> are now primitive rather than merely relocatable.</li>
+<li><a href="../qtcore/qcoreapplication.html#exit" translate="no">QCoreApplication::exit</a>() is now, like quit(), a slot (as the documentation long claimed); same for <a href="../qtcore/qeventloop.html" translate="no">QEventLoop</a> and <a href="../qtcore/qthread.html" translate="no">QThread</a>.</li>
+<li><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a> now takes account of time-zones throughout time_t's range (in so far as the platform supplies such information), rather than artificially limiting the range to 1970 - 2037.</li>
+<li>Fleshed out the value-type behavior of <a href="../qtcore/qflags.html" translate="no">QFlags</a>, and it is now used more systematically.</li>
+<li>When building for C++20, <a href="../qtcore/qlist.html" translate="no">QList</a> (hence also <a href="../qtcore/qvector.html" translate="no">QVector</a>) is now a <code translate="no">contiguous_iterator</code>, satisfying <code translate="no">contiguous_range</code>.</li>
+<li>QLocalSocket::waitFor*() methods were made to support duplex operations on Windows (as they already did on Unix).</li>
+<li>Added std::chrono overloads to <a href="../qtcore/qlockfile.html" translate="no">QLockFile</a> methods, avoiding needless conversions between UTC and local time.</li>
+<li><a href="../qtcore/qstring.html" translate="no">QString</a> can now be built from char8_t (when available).</li>
+<li>Made <a href="../qtcore/qthreadpool.html" translate="no">QThreadPool</a>'s thread priority configurable; the threads share the pool's name if it has one.</li>
+<li>Lots of Bug-fixing, clean up, and documentation improvements.</li>
+</ul>
+<h3 id="qt-gui-module">Qt GUI Module</h3>
+<ul>
+<li>Added floating point image formats to <a href="../qtgui/qimage.html" translate="no">QImage</a> for both 16-bit and 32-bit floats.</li>
+<li>Converting RGB images to, or painting RGB colors onto, gray-scale images is now gamma corrected and produces the luminance values of the input color space.</li>
+<li>The CSS <i>text-decoration-color</i> attribute is now supported in rich text spans with underlines, overlines, and strikethrough.</li>
+</ul>
+<h3 id="qt-quick-module">Qt Quick Module</h3>
+<ul>
+<li>Added support for selecting cells in a <a href="../qtquick/qml-qtquick-tableview.html" translate="no">TableView</a> by assigning it a <a href="../qtqmlmodels/qml-qtqml-models-itemselectionmodel.html" translate="no">ItemSelectionModel</a>.</li>
+</ul>
+<h3 id="qt-quick-controls-module">Qt Quick Controls Module</h3>
+<ul>
+<li>Added a new control; <a href="../qtquickcontrols/qml-qtquick-controls-selectionrectangle.html" translate="no">SelectionRectangle</a>. This control can be used to select cells in a <a href="../qtquick/qml-qtquick-tableview.html" translate="no">TableView</a> by using a styled selection rectangle.</li>
+</ul>
+<h3 id="qt-widgets-module">Qt Widgets Module</h3>
+<ul>
+<li>Added PM_LineEditIconSize, a new <a href="../qtwidgets/qstyle.html#PixelMetric-enum" translate="no">QStyle::PixelMetric</a> enum value that allows styles to define a default size for icons in a <a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a>.</li>
+<li>The new <a href="../qtwidgets/qgraphicssceneevent.html#timestamp" translate="no">QGraphicsSceneEvent::timestamp</a> method returns the timestamp of the original event, if applicable.</li>
+<li><a href="../qtwidgets/qgraphicsscenewheelevent.html#phase" translate="no">QGraphicsSceneWheelEvent::phase</a>, <a href="../qtwidgets/qgraphicsscenewheelevent.html#pixelDelta" translate="no">QGraphicsSceneWheelEvent::pixelDelta</a>, and <a href="../qtwidgets/qgraphicsscenewheelevent.html#isInverted" translate="no">QGraphicsSceneWheelEvent::isInverted</a> return the respective attributes of the original <a href="../qtgui/qwheelevent.html" translate="no">QWheelEvent</a>.</li>
+</ul>
+<h3 id="qt-network-module">Qt Network Module</h3>
+<ul>
+<li><a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a><ul>
+<li>TLS backends that were previously (in Qt 6.1) converted into plugin-like classes, were moved out of QtNetwork and implemented as real plugins.</li>
+<li>Several TLS backends may now co-exist at runtime, for example, OpenSSL and Schannel, or OpenSSL and SecureTransport.</li>
+</ul>
+</li>
+<li><a href="../qtnetwork/qnetworkinformation.html" translate="no">QNetworkInformation</a><ul>
+<li>Introduced <a href="../qtnetwork/qnetworkinformation.html#isBehindCaptivePortal-prop" translate="no">isBehindCaptivePortal</a>, a new property that can be used to determine whether the user is connected to a network with a captive portal.</li>
+</ul>
+</li>
+</ul>
+<h3 id="qt-qml-module">Qt QML Module</h3>
+<ul>
+<li>Core language<ul>
+<li>Added support for optional chaining.</li>
+<li>Added <i>as</i> casts: these mostly help tooling but can also be used to replace code such as <code translate="no">return (obj instanceof Item) ? obj.width : 42</code> with <code translate="no">(obj as Item)?.width ?? 42</code>.</li>
+</ul>
+</li>
+<li>Added a public CMake API for QML modules: <code translate="no">qt_add_qml_module()</code>.<ul>
+<li>Takes care of generating <code translate="no">qmldir</code> and <code translate="no">qmltypes</code>.</li>
+<li>Can automatically create a plugin if a plugin only registers types.</li>
+<li>Has built-in support for a linting target.</li>
+</ul>
+</li>
+<li>QML tooling<ul>
+<li><code translate="no">qmllint</code><ul>
+<li>Added a granular setting for the warning severity; warnings can be disabled entirely, make them informational only, or make them lead to a non-zero exit code.</li>
+<li>Added a settings file (<i>.qmllint.ini</i>) for configuring warning levels on a directory-by-directory basis. A default settings file can be generated using <code translate="no">qmllint --write-defaults</code>.</li>
+<li>Warnings can now be disabled in blocks via comments; <code translate="no">//qmllint enable/disable &lt;warning-type1&gt; &lt;warning-type2..&#x2e;&gt;</code></li>
+<li>Greatly improved performance when linting files, especially when linting multiple files with lots of imports.</li>
+<li>Added support for JSON output for use in tooling.</li>
+</ul>
+</li>
+<li><code translate="no">qmlformat</code><ul>
+<li><code translate="no">qmlformat</code> now utilizes our new <i>qmldom</i> library and should generally produce better output.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="qt-quick-3d-module">Qt Quick 3D Module</h3>
+<ul>
+<li>Added support for <i>instanced rendering</i>, an optimized way of drawing multiple instances of the same objects with different transformations.</li>
+<li>Added 3D Particles, an API for adding particle effects to 3D scenes. This includes a technology preview of model blend particles.</li>
+<li>Added Qt Quick Input events for 2D items in 3D, both in scene and in textures.</li>
+<li>Added an API for ray-based picking from arbitrary points in the scene.</li>
+<li>Added <a href="../qtquick3d/qml-qtquick3d-assetutils-runtimeloader.html" translate="no">RuntimeLoader</a>, making it possible to load glTF2 files at runtime.</li>
+<li>Implemented <i>parallax occlusion mapping</i>: Enables the use of height maps without the cost of adding geometry.</li>
+<li>Implemented <i>depth draw mode</i> on materials: Enables fine control over depth rendering for a material.</li>
+</ul>
+<h3 id="qt-data-visualization-module">Qt Data Visualization Module</h3>
+<ul>
+<li>Fixed background rendering mode.</li>
+<li>RenderDirectToBackground_NoClear was deprecated as opting to not clear the window is no longer an option in Qt 6.</li>
+<li>Lots of minor bug fixes.</li>
+</ul>
+<h3 id="qt-charts-module">Qt Charts Module</h3>
+<ul>
+<li>Added more marker shapes to pick from in <a href="../qtcharts/qscatterseries.html" translate="no">QScatterSeries</a> and <a href="../qtcharts/qlegend.html" translate="no">QLegend</a>.</li>
+<li>Added a <i>light marker</i> feature to <a href="../qtcharts/qxyseries.html" translate="no">QXYSeries</a> and <a href="../qtcharts/qlegend.html" translate="no">QLegend</a>. This is a lighter weight rendering of points.</li>
+<li>Added an ability to select points in a series via method calls to <a href="../qtcharts/qxyseries.html" translate="no">QXYSeries</a> and <a href="../qtcharts/qbarset.html" translate="no">QBarSet</a>.</li>
+<li>Added an ability to set a color or use a custom light marker to be used for selected points in <a href="../qtcharts/qxyseries.html" translate="no">QXYSeries</a>.</li>
+<li>Added an ability to set a color to be used for selected bars in <a href="../qtcharts/qbarset.html" translate="no">QBarSet</a>.</li>
+<li>Added a feature to display a <i>best fit line</i> in a <a href="../qtcharts/qxyseries.html" translate="no">QXYSeries</a>.</li>
+<li>Added an ability to customize the look of individual points in a <a href="../qtcharts/qxyseries.html" translate="no">QXYSeries</a>. This feature allows setting the visibility, label visibility, and the size of each point.</li>
+<li>Added a method <a href="../qtcharts/qxyseries.html#sizeBy" translate="no">sizeBy</a>() to <a href="../qtcharts/qxyseries.html" translate="no">QXYSeries</a> that adjusts the size of the points in a series according to passed values.</li>
+<li>Added a method <a href="../qtcharts/qxyseries.html#colorBy" translate="no">colorBy</a>() to <a href="../qtcharts/qxyseries.html" translate="no">QXYSeries</a> that adjusts color of the points in a series according to passed values and a gradient.</li>
+<li>Added a new axis class <a href="../qtcharts/qcoloraxis.html" translate="no">QColorAxis</a> to support the colorBy() feature, displaying a color scale.</li>
+<li>Added an ability to disable label truncation in axes.</li>
+<li>Improved performance by caching recently used text bounds.</li>
+<li>Added interactive support to <a href="../qtcharts/qlegend.html" translate="no">QLegend</a> via a <a href="../qtcharts/qlegend.html#setInteractive" translate="no">setInteractive</a>() method. Once enabled, allows the legend to be detached with a double-click. Once detached, the legend can be dragged and resized, and reattached to a side of the chart by dragging it off the edge.</li>
+<li>Added <a href="../qtcharts/qlegend.html#attachedToChartChanged" translate="no">attachedToChartChanged</a>() signal to <a href="../qtcharts/qlegend.html" translate="no">QLegend</a>.</li>
+<li>Updated the legend example.</li>
+</ul>
+<h3 id="qt-for-python">Qt for Python</h3>
+<ul>
+<li>New examples, tutorials, and videos added to the <a href="https://doc.qt.io/qtforpython-6/" translate="no">Qt for Python documentation</a>.</li>
+<li>Compatible with Python 3.10rc2.</li>
+<li>Added the <a href="../qtdbus/qtdbus-module.html" translate="no">QtDBus</a>, <a href="../qtnetworkauth/qtnetworkauth-module.html" translate="no">QtNetworkAuth</a>, and <a href="../qtbluetooth/qtbluetooth-module.html" translate="no">QtBluetooth</a> modules.</li>
+<li>Added a new Shiboken feature, Opaque Containers, to avoid copying C++ containers into Python to use them.</li>
+<li>You can now use <code translate="no">qtpaths</code> instead of <code translate="no">qmake</code> when building PySide from source.</li>
+<li>Added support for std::function for some of <a href="../qtcore/qthreadpool.html" translate="no">QThreadPool</a>'s methods.</li>
+<li>Added new QML functions as well as support for <a href="../qtqml/qqmlengine.html#qmlRegisterSingletonInstance" translate="no">qmlRegisterSingletonInstance</a>.</li>
+</ul>
+<h2 id="platform-changes">Platform Changes</h2>
+<h3 id="technology-preview-platforms">Technology Preview Platforms</h3>
+<h4 id="windows-on-arm">Windows on ARM</h4>
+<ul>
+<li>Added Windows on ARM64 as a technology preview platform.</li>
+<li>Supported as a build target; no host support yet.</li>
+<li>Known limitations:<ul>
+<li>No support for Qt <a href="../qtwebengine/qml-qtwebengine-webengine.html" translate="no">WebEngine</a> yet; missing official support for Chromium.</li>
+<li>No support for SSL yet; missing official OpenSSL support.</li>
+</ul>
+</li>
+</ul>
+<h3 id="desktop-platforms">Desktop Platforms</h3>
+<h4 id="macos-on-apple-silicon">macOS on Apple Silicon</h4>
+<ul>
+<li>Added official support as both a target and a host platform.</li>
+<li>Libraries in the Qt SDK are built as universal binaries.</li>
+<li>Known limitations:<ul>
+<li>SSL support is missing.</li>
+<li><i>postgresql</i> and <i>odbc</i> database plugins are missing (<a href="https://bugreports.qt.io/browse/QTBUG-93204" translate="no">QTBUG-93204</a>).</li>
+<li>JIT support is missing (<a href="https://bugreports.qt.io/browse/QTBUG-93206" translate="no">QTBUG-93206</a>).</li>
+</ul>
+</li>
+</ul>
+<h4 id="wayland-client-on-linux">Wayland Client on Linux</h4>
+<ul>
+<li>A touchpad pinch gesture now generates Zoom and Rotate <a href="../qtgui/qnativegestureevent.html" translate="no">QNativeGestureEvent</a>s if the compositor sends them via the <i>pointer-gestures-unstable-v1</i> protocol. This allows a Qt Quick <a href="../qtquick/qml-qtquick-pinchhandler.html" translate="no">PinchHandler</a> to operate via touchpad pinch gestures. Two, three, or four-finger gestures are recognized. A gesture of type <a href="../qtcore/qt.html#NativeGestureType-enum" translate="no">Qt::PanNativeGesture</a> can be generated by swiping with three or four fingers. Two-finger flicking still generates <a href="../qtgui/qwheelevent.html" translate="no">QWheelEvent</a>s as before.</li>
+</ul>
+<h3 id="mobile-platforms">Mobile Platforms</h3>
+<h4 id="android">Android</h4>
+<ul>
+<li>Some of the methods previously under the QtAndroid namespace in QtAndroidExtras (for example, sdkVersion() and context()), were moved to <a href="../qtcore/qnativeinterface-qandroidapplication.html" translate="no">QNativeInterface::QAndroidApplication</a>.</li>
+<li>Implemented a new permissions API in <a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a>.</li>
+<li>The remaining QtAndroidExtras APIs were left as private APIs in qtbase until cross-platform alternatives (for Intents, Services, etc.) are in place.</li>
+<li>Removed obsolete Ministro code as it's now unsupported by Android.</li>
+<li>Simplified <i>AndroidManifest.xml</i> to only contain tags relevant to the user, helping maintainability and reducing clutter.</li>
+<li>QCDebug() and friends now use the category as a tag in Android <i>logcat</i>.</li>
+<li>Updated Android Gradle plugin to 4.1&#x2e;3&#x2e;</li>
+<li>Fixed a non-SDK API bug with style (<a href="https://bugreports.qt.io/browse/QTBUG-71590" translate="no">QTBUG-71590</a>), though Android Style for widgets on Android 9+ is still affected (<a href="https://bugreports.qt.io/browse/QTBUG-96149" translate="no">QTBUG-96149</a>).</li>
+<li>The default targetSdkVersion is set to 30 in accordance with Google Play Store requirements.</li>
+<li>The build-tools version and platform version used is bumped to 30.</li>
+<li><a href="../qtgui/qdesktopservices.html" translate="no">QDesktopServices</a> custom handlers are now enabled, and allow you to work with Android App Links, for example.</li>
+<li>Added information that allow applications to determine the source of an intent without creating an own extension of QtActivity.</li>
+<li>Fixed imports for QML modules and added the possibility of multiple QML root paths.</li>
+<li>Fixed Vulkan builds on Android.</li>
+</ul>
+<h4 id="ios">iOS</h4>
+<ul>
+<li>Improved CMake support.</li>
+<li>Known issues:<ul>
+<li>Missing default launch screen storyboard.</li>
+<li>Custom libraries fail to install (<a href="https://bugreports.qt.io/browse/QTBUG-95381" translate="no">QTBUG-95381</a>).</li>
+</ul>
+</li>
+</ul>
+<h3 id="embedded-platforms">Embedded Platforms</h3>
+<p>Available under the <a href="https://doc.qt.io/Boot2Qt/" translate="no">Qt for Device Creation</a> license.</p>
+<h4 id="boot-to-qt">Boot to Qt</h4>
+<ul>
+<li>The Boot to Qt stack was updated to use Yocto 3.3 (Hardknott).</li>
+<li>Added Intel NUC10 (64bit i5 x86) as a reference target.</li>
+<li>Added NVidia Jetson Tegra X2 as a target.</li>
+</ul>
+<h4 id="qnx">QNX</h4>
+<ul>
+<li>Added QNX version 7.1 and Ubuntu 20.04 as a host.</li>
+<li>Added NXP iMX8QM as a reference target.</li>
+</ul>
+<h4 id="integrity">INTEGRITY</h4>
+<ul>
+<li>Added INTEGRITY version 19.0&#x2e;13 and Ubuntu 20.04 as a host.</li>
+<li>Added Qualcomm Snapdragon 8155P as a reference target.</li>
+</ul>
+<h4 id="webos">WebOS</h4>
+<p>Qt 6.2 has been verified to work with LG webOS OSE 2.13.1 using Ubuntu 20.04 as development host and Raspberry Pi4 hardware.</p>
+<h2 id="list-of-api-changes">List of API Changes</h2>
+<p>These pages contain an overview of API changes in Qt 6.2:</p>
+<ul>
+<li><a href="newclasses62.html" translate="no">New Classes and Functions in Qt 6.2</a></li>
+<li><a href="obsoleteclasses.html" translate="no">Obsolete Classes</a></li>
+</ul>
+</div>
+<!-- @@@whatsnew62.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- todolist.qdoc -->
+  <meta name="description" content="A QML implementation of to do list application that demonstrates how to create application thats looks native on any platform.">
+  <title>To Do List Example | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>To Do List Example</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#selecting-application-style">Selecting Application Style</a></li>
+<li class="level1"><a href="#changing-theme">Changing theme</a></li>
+<li class="level1"><a href="#controlling-app-behavior-from-app-settings">Controlling app behavior from app settings</a></li>
+<li class="level1"><a href="#tasks-list-implementation">Tasks List Implementation</a></li>
+<li class="level1"><a href="#swipe-drag-and-drop-behavior">Swipe, Drag and Drop behavior</a></li>
+<li class="level1"><a href="#local-storage-usage">Local Storage usage</a></li>
+<li class="level1"><a href="#usage-of-xmlhttprequest-to-retrieve-data-from-public-api">Usage of XMLHttpRequest to retrieve data from public API</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">To Do List Example</h1>
+<!-- $$$demos/todolist-brief -->
+<p>A QML implementation of to do list application that demonstrates how to create application thats looks native on any platform.</p>
+<!-- @@@demos/todolist -->
+<!-- $$$demos/todolist-description -->
+<div class="descr" id="details">
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >CustomStyle</th><th >Material</th><th >iOS</th></tr></thead>
+<tr valign="top" class="odd"><td ><img src="images/CustomStyle_Light.png" alt="" /></td><td ><img src="images/Material_Light.png" alt="" /></td><td ><img src="images/iOS_Light.png" alt="" /></td></tr>
+<tr valign="top" class="even"><td ><img src="images/CustomStyle_Dark.png" alt="" /></td><td ><img src="images/Material_Dark.png" alt="" /></td><td ><img src="images/iOS_Dark.png" alt="" /></td></tr>
+<tr valign="top" class="odd"><td ><img src="images/Settings_CustomStyle.png" alt="" /></td><td ><img src="images/Settings_Material.png" alt="" /></td><td ><img src="images/Settings_iOS.png" alt="" /></td></tr>
+</table></div>
+<p><i>To Do List</i> demonstrates a sample to-do list application that looks native on any platform. The example can be run and edited in both QtDesignStudio and QtCreator. It shows how to create and use a custom style, how to use settings to control the appearance and behavior of the application. It also presents how to implement simple drag and drop behavior on delegates. The application uses local storage to store items on the device and <a href="../qtqml/qml-qtqml-xmlhttprequest.html" translate="no">XMLHttpRequest</a> to retrieve data from the public API (Random Tasks functionality). The views are controlled by <a href="../qtquickcontrols/qml-qtquick-controls-stackview.html" translate="no">StackView</a> component.</p>
+<h4 id="selecting-application-style">Selecting Application Style</h4>
+<p>The application supports different styles depending on the target platform. CustomStyle, Basic, Material and Universal are available on each platform (Windows, Android, iOS, macOS). The Windows style is available only on Windows and the iOS style is available only on iOS. The list of available styles is located in one of the subpages of the <code translate="no">SettingsView</code> called Style. The currently used style can be changed from the same place. A restart is required to apply the changes. The application will inform the user about this with the <a href="../qtquickcontrols/qml-qtquick-controls-tooltip.html" translate="no">ToolTip</a> information.</p>
+<h4 id="changing-theme">Changing theme</h4>
+<p>Dark and Light themes are also supported in each style. The theme can be changed from the Theme subpage of the <code translate="no">SettingsView</code>. Not every style allows the user to change the theme manually, e.g&#x2e; on iOS this option is not available. In this case the theme will be changed according to the default system settings. The first time the app is launched it will use the system theme.</p>
+<h4 id="controlling-app-behavior-from-app-settings">Controlling app behavior from app settings</h4>
+<p>The Behavior and style of the application can be changed from <code translate="no">SettingsView</code>. The settings allow the user to change:</p>
+<ul>
+<li>style</li>
+<li>theme</li>
+<li>font size</li>
+<li>maximum number of tasks</li>
+<li>if the finished tasks should be removed automatically</li>
+</ul>
+<h4 id="tasks-list-implementation">Tasks List Implementation</h4>
+<p>The application has three different lists:</p>
+<ul>
+<li>Today's tasks list → The tasks with today's date as due date.</li>
+<li>This week's tasks list → the tasks that are due in the next seven days.</li>
+<li>Later tasks → the tasks that do not fit into the above lists.</li>
+</ul>
+<p>The tasks are distributed between the list models at the start of the application. Of course, the tasks can migrate through the list models at runtime (when their due date changes). The definition of the single list is done in <code translate="no">TasksList.qml</code> and <code translate="no">TasksListForm.ui.qml</code>, the instances are created in <code translate="no">TasksListsView.qml/TasksListsViewForm.ui.qml</code>.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listmodel.html" translate="no">ListModel</a></span> {
+         <span class="name">id</span>: <span class="name">todayTasksListModel</span>
+     }
+
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listmodel.html" translate="no">ListModel</a></span> {
+         <span class="name">id</span>: <span class="name">thisWeekTasksListModel</span>
+     }
+
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listmodel.html" translate="no">ListModel</a></span> {
+         <span class="name">id</span>: <span class="name">laterTasksListModel</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-column.html" translate="no">Column</a></span> {
+         <span class="name">id</span>: <span class="name">column</span>
+
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">spacing</span>: <span class="number">14</span>
+
+         <span class="type">TasksList</span> {
+             <span class="name">id</span>: <span class="name">todayTasks</span>
+
+             <span class="name">width</span>: <span class="name">column</span>.<span class="name">width</span>
+             <span class="name">maxHeight</span>: <span class="number">180</span>
+             <span class="name">listModel</span>: <span class="name">todayTasksListModel</span>
+             <span class="name">headerText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Today&quot;</span>)
+             <span class="name">tasksCount</span>: <span class="name">todayTasksListModel</span>.<span class="name">count</span>
+         }
+
+         <span class="type">TasksList</span> {
+             <span class="name">id</span>: <span class="name">thisWeekTasks</span>
+
+             <span class="name">width</span>: <span class="name">column</span>.<span class="name">width</span>
+             <span class="name">maxHeight</span>: <span class="name">column</span>.<span class="name">height</span> <span class="operator">-</span> <span class="name">y</span> <span class="operator">-</span> <span class="number">60</span>
+             <span class="name">listModel</span>: <span class="name">thisWeekTasksListModel</span>
+             <span class="name">headerText</span>: <span class="name">qsTr</span>(<span class="string">&quot;This week&quot;</span>)
+             <span class="name">tasksCount</span>: <span class="name">thisWeekTasksListModel</span>.<span class="name">count</span>
+         }
+
+         <span class="type">TasksList</span> {
+             <span class="name">id</span>: <span class="name">laterTasks</span>
+
+             <span class="name">width</span>: <span class="name">column</span>.<span class="name">width</span>
+             <span class="name">maxHeight</span>: <span class="name">column</span>.<span class="name">height</span> <span class="operator">-</span> <span class="name">y</span>
+             <span class="name">listModel</span>: <span class="name">laterTasksListModel</span>
+             <span class="name">headerText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Later&quot;</span>)
+             <span class="name">tasksCount</span>: <span class="name">laterTasksListModel</span>.<span class="name">count</span>
+         }
+     }
+</pre>
+<p>Filling the list model with data is done in <code translate="no">TasksListsView.qml</code> in <code translate="no">Component.onCompleted</code>.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">function </span><span class="name">createTasksLists</span>() : void {
+         var tasks = <span class="name">Database</span>.<span class="name">getTasks</span>()
+         var currentDate = new <span class="name">Date</span>()
+         var format = <span class="name">Qt</span>.<span class="name">locale</span>().<span class="name">dateFormat</span>(<span class="name">Locale</span>.<span class="name">LongFormat</span>)
+         var dateStr = <span class="name">currentDate</span>.<span class="name">toLocaleDateString</span>(<span class="name">Qt</span>.<span class="name">locale</span>(),<span class="name">format</span>)
+         <span class="name">tasks</span>.<span class="name">forEach</span>( <span class="keyword">function</span>(task){
+             <span class="keyword">if</span> (<span class="name">task</span>.<span class="name">date</span> <span class="operator">===</span> <span class="name">dateStr</span>) {
+                 <span class="name">todayTasksModel</span>.<span class="name">append</span>(<span class="name">task</span>)
+             } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">checkThisWeekDate</span>(<span class="name">task</span>.<span class="name">date</span>)) {
+                 <span class="name">thisWeekTasksModel</span>.<span class="name">append</span>(<span class="name">task</span>)
+             } <span class="keyword">else</span> {
+                 <span class="name">laterTasksModel</span>.<span class="name">append</span>(<span class="name">task</span>)
+             }
+         })
+     }
+
+     <span class="name">Component</span>.onCompleted: <span class="name">createTasksLists</span>()
+</pre>
+<h4 id="swipe-drag-and-drop-behavior">Swipe, Drag and Drop behavior</h4>
+<p>The list view uses the <code translate="no">TasksListDelegate</code> as a delegate. The delegate is a <a href="../qtquickcontrols/qml-qtquick-controls-swipedelegate.html" translate="no">SwipeDelegate</a>, it allows the user to swipe the item to highlight it (the item is moved to the top of the list) or to remove it. It also allows the user to mark the task as done (the item is moved to the bottom) or drag and drop the item to move it to a specific position in the list. Implementation of these behaviors is done in <code translate="no">TasksListDelegate.qml</code>.</p>
+<h4 id="local-storage-usage">Local Storage usage</h4>
+<p>Local storage is used to read and write the task items to SQLite databases. The implementation of this and other helper functions is done in <code translate="no">Database.qml</code>, which is a singleton object.</p>
+<pre class="cpp" translate="no">
+     property <span class="type">var</span> <span class="name">_db</span>
+
+     <span class="keyword">function </span><span class="name">_database</span>() {
+         <span class="keyword">if</span> (<span class="name">_db</span>) <span class="keyword">return</span> <span class="name">_db</span>
+
+         <span class="keyword">try</span> {
+             let db = <span class="name">LocalStorage</span>.<span class="name">openDatabaseSync</span>(<span class="string">&quot;ToDoList&quot;</span>, <span class="string">&quot;1.0&quot;</span>, <span class="string">&quot;ToDoList app database&quot;</span>)
+
+             <span class="name">db</span>.<span class="name">transaction</span>(<span class="keyword">function </span>(tx) {
+                 <span class="name">tx</span>.<span class="name">executeSql</span>(<span class="string">'CREATE TABLE IF NOT EXISTS tasks (
+                     task_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                     task_name,
+                     task_dueDate TEXT,
+                     task_dueTime TEXT,
+                     task_notes TEXT,
+                     done INTEGER,
+                     highlighted INTEGER
+                 )'</span>);
+             })
+
+             <span class="name">_db</span> <span class="operator">=</span> <span class="name">db</span>
+         } <span class="keyword">catch</span> (<span class="name">error</span>) {
+             console.log(&quot;Error opening databse: &quot; + error)
+         };
+         <span class="keyword">return</span> <span class="name">_db</span>
+     }
+
+     <span class="keyword">function </span><span class="name">addTask</span>(taskName, taskDueDate, taskDueTime, taskNotes, taskDone, taskHighlighted) {
+         let results
+         <span class="name">root</span>.<span class="name">_database</span>().<span class="name">transaction</span>(<span class="keyword">function</span>(tx){
+             <span class="name">tx</span>.<span class="name">executeSql</span>(<span class="string">&quot;INSERT INTO tasks (task_name, task_dueDate, task_dueTime,
+                         task_notes, done, highlighted) VALUES(?,?,?,?,?,?);&quot;</span>,
+                         [<span class="name">taskName</span>, <span class="name">taskDueDate</span>, <span class="name">taskDueTime</span>, <span class="name">taskNotes</span>, <span class="name">taskDone</span>, <span class="name">taskHighlighted</span>])
+             <span class="name">results</span> <span class="operator">=</span> <span class="name">tx</span>.<span class="name">executeSql</span>(<span class="string">&quot;SELECT * FROM tasks ORDER BY task_id DESC LIMIT 1&quot;</span>)
+         })
+         <span class="keyword">return</span> <span class="name">results</span>.<span class="name">rows</span>.<span class="name">item</span>(<span class="number">0</span>).<span class="name">task_id</span>
+     }
+</pre>
+<h4 id="usage-of-xmlhttprequest-to-retrieve-data-from-public-api">Usage of XMLHttpRequest to retrieve data from public API</h4>
+<p>The <a href="../qtqml/qml-qtqml-xmlhttprequest.html" translate="no">XMLHttpRequest</a> is used to send request to some public API and retrieve the response data. The application uses <a href="http://www.boredapi.com/" translate="no">boredapi</a> which can return a random task to do. The task is then added to the list of today's tasks.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">function </span><span class="name">sendHttpRequest</span>() : void {
+         var http = new <span class="name">XMLHttpRequest</span>()
+         var url = <span class="string">&quot;https://www.boredapi.com/api/activity&quot;</span>;
+         <span class="name">http</span>.<span class="name">open</span>(<span class="string">&quot;GET&quot;</span>, <span class="name">url</span>, <span class="number">true</span>);
+
+         <span class="name">http</span>.<span class="name">setRequestHeader</span>(<span class="string">&quot;Content-type&quot;</span>, <span class="string">&quot;application/json&quot;</span>);
+         <span class="name">http</span>.<span class="name">setRequestHeader</span>(<span class="string">&quot;Connection&quot;</span>, <span class="string">&quot;close&quot;</span>);
+
+         <span class="name">http</span>.<span class="name">onreadystatechange</span> <span class="operator">=</span> <span class="keyword">function</span>() {
+             <span class="keyword">if</span> (<span class="name">http</span>.<span class="name">readyState</span> <span class="operator">==</span> <span class="number">4</span>) {
+                 <span class="keyword">if</span> (<span class="name">http</span>.<span class="name">status</span> <span class="operator">==</span> <span class="number">200</span>) {
+                     var object = <span class="name">JSON</span>.<span class="name">parse</span>(<span class="name">http</span>.<span class="name">responseText</span>.<span class="name">toString</span>());
+                     var currentDate = new <span class="name">Date</span>()
+                     var format = <span class="name">Qt</span>.<span class="name">locale</span>().<span class="name">dateFormat</span>(<span class="name">Locale</span>.<span class="name">LongFormat</span>)
+                     <span class="name">addTask</span>(<span class="name">todayTasksModel</span>, <span class="name">object</span>.<span class="name">activity</span>,
+                             <span class="name">currentDate</span>.<span class="name">toLocaleDateString</span>(<span class="name">Qt</span>.<span class="name">locale</span>(), <span class="name">format</span>), <span class="string">&quot;&quot;</span>,<span class="string">&quot;&quot;</span>)
+                 } <span class="keyword">else</span> {
+                     <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;error: &quot;</span> <span class="operator">+</span> <span class="name">http</span>.<span class="name">status</span>)
+                 }
+             }
+         }
+         <span class="name">http</span>.<span class="name">send</span>();
+     }
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtdoc.git/tree/examples/demos/todolist?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@demos/todolist -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

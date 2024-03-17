@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qdoc-manual-qdocconf.qdoc -->
+  <title>The QDoc Configuration File | QDoc Manual 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qdoc-index.html" translate="no">QDoc Manual</a></li>
+<li>The QDoc Configuration File</li>
+<li id="buildversion"><a href="qdoc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="12-0-qdoc-commands-miscellaneous.html" />
+  <link rel="next" href="22-qdoc-configuration-generalvariables.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="12-0-qdoc-commands-miscellaneous.html">Miscellaneous</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="22-qdoc-configuration-generalvariables.html">Generic Configuration Variables</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#general-description">General Description</a></li>
+<li class="level1"><a href="#expansion-of-configuration-values">Expansion of Configuration Values</a></li>
+<li class="level2"><a href="#expanding-environment-variables">Expanding Environment Variables</a></li>
+<li class="level1"><a href="#configuration-variables">Configuration Variables</a></li>
+<li class="level1"><a href="#variable-list">Variable List</a></li>
+<li class="level1"><a href="#categories">Categories</a></li>
+<li class="level1"><a href="#configuration-file-examples">Configuration File Examples</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">The QDoc Configuration File</h1>
+<!-- $$$21-0-qdoc-configuration.html-description -->
+<div class="descr" id="details">
+<p>Before running QDoc, you must create a QDoc configuration file to tell QDoc where to find the source files that contain the QDoc comments. The pathname to your configuration file is passed to QDoc on the command line:</p>
+<blockquote><p><code translate="no">/current/dir$ ../&#x2e;./bin/qdoc ./config.qdocconf</code></p>
+</blockquote>
+<h2 id="general-description">General Description</h2>
+<p>The configuration file is a list of entries of the form <i>&quot;variable = value&quot;</i>. Using the configuration variables, you can define where QDoc should find the various source files, images and examples, where to put generated documentation etc. The configuration file can also contain directives like <code translate="no">include</code>. For an example, see <a href="21-1-minimum-qdocconf.html" translate="no">minimum.qdocconf</a>.</p>
+<p>You can also use configuration variables to get QDoc to support <a href="25-qdoc-configuration-derivedprojects.html" translate="no">derived projects</a>, i.e QDoc can generate links in your project's documentation to elements in the Qt online documentation. See the <a href="25-qdoc-configuration-derivedprojects.html" translate="no">Supporting Derived projects</a> section.</p>
+<p>A valid configuration variable name can include upper and lower case letters, numbers, and an underscore, '_'.</p>
+<p>The value of a configuration variable can be set using either '=' or '+='. The difference is that '=' overrides the previous value, while '+=' adds a new value to the current one.</p>
+<p>Values of some configuration variables are interpreted as a list of strings, for example: <a href="22-qdoc-configuration-generalvariables.html#sourcedirs-variable" translate="no"><code translate="no">sourcedirs</code></a>, while others are treated as a single string. Double quotes around a value string are optional, but including them allows you to use special characters like '=' and ' &quot; ' within the value string, for example:</p>
+<pre class="cpp plain" translate="no">
+ HTML.postheader = &quot;&lt;a href=\&quot;index.html\&quot;&gt;Home&lt;/a&gt;&quot;
+</pre>
+<p>If an entry spans many lines, use a backslash at the end of every line but the last:</p>
+<pre class="cpp plain" translate="no">
+ sourcedirs = kernel tools widgets
+</pre>
+<p>This can be written as:</p>
+<pre class="cpp plain" translate="no">
+ sourcedirs = kernel \
+              tools \
+              widgets
+</pre>
+<p>If a value spans multiple lines but is interpreted as a single string, the lines are joined with spaces.</p>
+<h2 id="expansion-of-configuration-values">Expansion of Configuration Values</h2>
+<p>QDoc supports expanding environment variables within configuration files. For example, Qt modules rely on the environment variable QT_INSTALL_DOCS to include definitions related to all Qt module documentation projects:</p>
+<pre class="cpp plain" translate="no">
+ include($QT_INSTALL_DOCS/global/qt-module-defaults.qdocconf)
+</pre>
+<p>A variable to expand is prefixed with '$'. To use the literal character '$' within a value string, escape it with a backslash: '\$'.</p>
+<p>Since QDoc 6.0, values can be expanded also from other configuration variables. In addition to the <code translate="no">$variable</code> syntax, also <code translate="no">${variable}</code> is valid. The latter eliminates the need to separate the variable name with whitespace or non-variable characters. For example:</p>
+<pre class="cpp plain" translate="no">
+ baseurl = https://doc.qt.io/
+ ..&#x2e;
+ url = ${baseurl}qtcreator
+</pre>
+<p>If the target variable refers to a list of strings, they will be joined using spaces in the expanded value:</p>
+<pre class="cpp plain" translate="no">
+ vars = foo \
+        bar \
+        baz
+
+ items = &quot;Items: $vars&quot;          # Expands to &quot;Items: foo bar baz&quot;
+</pre>
+<p>Controlling which character is used for joining the string list is also possible:</p>
+<pre class="cpp plain" translate="no">
+ items = &quot;Items: ${vars,|}&quot;      # Expands to &quot;Items: foo|bar|baz&quot;
+ items = &quot;Items: ${vars,,}&quot;      # Expands to &quot;Items: foo,bar,baz&quot;
+ items = &quot;Items: ${vars,}&quot;       # Expands to &quot;Items: foobarbaz&quot;
+</pre>
+<p>As the expansion is performed after reading in all variables, the order in which they are defined does not matter.</p>
+<div class="admonition note">
+<p><b>Note: </b>Nested variable expansion is not supported.</p>
+</div>
+<h3 id="expanding-environment-variables">Expanding Environment Variables</h3>
+<p>When expanding environment variables, the <code translate="no">${variable}</code> syntax has different behavior compared to <code translate="no">$variable</code>. The former expands the content of the variable in place to be parsed as part of the configuration file, while the latter simply assigns the content as a value for the current configuration variable. This has implications if the environment variable contains a list of elements separated by whitespace, or other formatting recognized by QDoc.</p>
+<p>For example, if the value of an environment variable <code translate="no">SRCDIRS</code> is <code translate="no">&quot;../src/a ../src/b&quot;</code>, then</p>
+<pre class="cpp plain" translate="no">
+ sourcedirs  = $SRCDIRS      # Fail - value is interpreted as a single path.
+ sourcedirs  = ${SRCDIRS}    # Ok - whitespace is used as a delimiter.
+</pre>
+<h2 id="configuration-variables">Configuration Variables</h2>
+<h2 id="variable-list">Variable List</h2>
+<ul>
+<li><a href="22-qdoc-configuration-generalvariables.html#defines-variable" translate="no">defines</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#depends-variable" translate="no">depends</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#exampledirs-variable" translate="no">exampledirs</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#examples-variable" translate="no">examples</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#examplesinstallpath-variable" translate="no">examplesinstallpath</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#examples-fileextensions-variable" translate="no">examples.fileextensions</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#excludedirs-variable" translate="no">excludedirs</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#excludefiles-variable" translate="no">excludefiles</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#extraimages-variable" translate="no">extraimages</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#falsehoods-variable" translate="no">falsehoods</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#headerdirs-variable" translate="no">headerdirs</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#headers-variable" translate="no">headers</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#headers-fileextensions-variable" translate="no">headers.fileextensions</a></li>
+<li><a href="24-qdoc-configuration-htmlvariables.html#html-footer-variable" translate="no">HTML.footer</a></li>
+<li><a href="24-qdoc-configuration-htmlvariables.html#html-postheader-variable" translate="no">HTML.postheader</a></li>
+<li><a href="24-qdoc-configuration-htmlvariables.html#html-style-variable" translate="no">HTML.style</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#includepaths-variable" translate="no">includepaths</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#ignorewords-variable" translate="no">ignorewords</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#ignoresince-variable" translate="no">ignoresince</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#imagedirs-variable" translate="no">imagedirs</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#images-variable" translate="no">images</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#images-fileextensions-variable" translate="no">images.fileextensions</a></li>
+<li><a href="25-qdoc-configuration-derivedprojects.html#indexes-variable" translate="no">indexes</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#language-variable" translate="no">language</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#locationinfo-variable" translate="no">locationinfo</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#macro-variable" translate="no">macro</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#manifestmeta-variable" translate="no">manifestmeta</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#moduleheader-variable" translate="no">moduleheader</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#navigation-variable" translate="no">navigation</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#outputdir-variable" translate="no">outputdir</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#outputformats-variable" translate="no">outputformats</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#outputprefixes-variable" translate="no">outputprefixes</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#outputsuffixes-variable" translate="no">outputsuffixes</a></li>
+<li><a href="25-qdoc-configuration-derivedprojects.html#project-variable" translate="no">project</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#sourcedirs-variable" translate="no">sourcedirs</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#sources-variable" translate="no">sources</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#sources-fileextensions-variable" translate="no">sources.fileextensions</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#spurious-variable" translate="no">spurious</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#tabsize-variable" translate="no">tabsize</a></li>
+<li><a href="25-qdoc-configuration-derivedprojects.html#url-variable" translate="no">url</a></li>
+<li><a href="25-qdoc-configuration-derivedprojects.html#url-examples-variable" translate="no">url.examples</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#version-variable" translate="no">version</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#versionsym-variable" translate="no">versionsym</a></li>
+<li><a href="22-qdoc-configuration-generalvariables.html#warninglimit-variable" translate="no">warninglimit</a></li>
+</ul>
+<h2 id="categories">Categories</h2>
+<ul>
+<li><a href="22-qdoc-configuration-generalvariables.html" translate="no">Generic Configuration Variables</a></li>
+<li><a href="24-qdoc-configuration-htmlvariables.html" translate="no">Format-specific Configuration Variables</a></li>
+</ul>
+<h2 id="configuration-file-examples">Configuration File Examples</h2>
+<ul>
+<li>A minimum configuration file: <a href="21-1-minimum-qdocconf.html" translate="no">minimum.qdocconf</a></li>
+<li>The Qt configuration file: <a href="21-2-qtgui-qdocconf.html" translate="no">qtgui.qdocconf</a></li>
+</ul>
+</div>
+<!-- @@@21-0-qdoc-configuration.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="12-0-qdoc-commands-miscellaneous.html">Miscellaneous</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="22-qdoc-configuration-generalvariables.html">Generic Configuration Variables</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

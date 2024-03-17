@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- bars.qdoc -->
+  <meta name="description" content="Using Bars3D in a QML application.">
+  <title>Simple Bar Graph | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Simple Bar Graph</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Simple Bar Graph</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &lt;QtGui/qguiapplication.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtQuick/qquickview.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtQml/qqmlengine.h&gt;</span>
+
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
+ {
+     <span class="type"><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a></span> app(argc<span class="operator">,</span> argv);
+
+     <span class="type"><a href="../qtquick/qquickview.html" translate="no">QQuickView</a></span> viewer;
+
+     <span class="comment">// The following are needed to make examples run without having to install the module</span>
+     <span class="comment">// in desktop environments.</span>
+ <span class="preprocessor">#ifdef Q_OS_WIN</span>
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> extraImportPath(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;%1/../../../../%2&quot;</span>));
+ <span class="preprocessor">#else</span>
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> extraImportPath(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;%1/../../../%2&quot;</span>));
+ <span class="preprocessor">#endif</span>
+     viewer<span class="operator">.</span>engine()<span class="operator">-</span><span class="operator">&gt;</span>addImportPath(extraImportPath<span class="operator">.</span>arg(<span class="type"><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a></span><span class="operator">::</span>applicationDirPath()<span class="operator">,</span>
+                                                        <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;qml&quot;</span>)));
+
+     viewer<span class="operator">.</span>setTitle(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;Monthly income / expenses&quot;</span>));
+
+     viewer<span class="operator">.</span>setSource(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;qrc:/qml/bars/main.qml&quot;</span>));
+     viewer<span class="operator">.</span>setResizeMode(<span class="type"><a href="../qtquick/qquickview.html" translate="no">QQuickView</a></span><span class="operator">::</span>SizeRootObjectToView);
+     viewer<span class="operator">.</span>setColor(<span class="string">&quot;black&quot;</span>);
+     viewer<span class="operator">.</span>show();
+
+     <span class="keyword">return</span> app<span class="operator">.</span>exec();
+ }
+</pre>

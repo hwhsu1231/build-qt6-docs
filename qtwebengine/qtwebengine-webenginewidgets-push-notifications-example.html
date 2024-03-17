@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- push-notifications.qdoc -->
+  <meta name="description" content="Demonstrates how to subscribe to and unsubscribe from push notifications.">
+  <title>WebEngine Push Notifications Example | Qt WebEngine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtwebengine-index.html" translate="no">Qt WebEngine</a></li>
+<li><a href="webengine-widgetexamples.html" translate="no">Qt WebEngine Widgets Examples</a></li>
+<li>WebEngine Push Notifications Example</li>
+<li id="buildversion"><a href="qtwebengine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">WebEngine Push Notifications Example</h1>
+<!-- $$$webenginewidgets/push-notifications-brief -->
+<p>Demonstrates how to subscribe to and unsubscribe from push notifications.</p>
+<!-- @@@webenginewidgets/push-notifications -->
+<!-- $$$webenginewidgets/push-notifications-description -->
+<div class="descr" id="details">
+<p>In this example we are going to send push notifications from a web push service to the user. This is the typical scenario where messages are sent from the application server i.e&#x2e; website back-end through a 3rd-party push service, to finally arrive at the user's browser in form of notifications. To demonstrate this flow, we will implement a simple push service server application, to which the user can subscribe to receive <i>ping</i> messages.</p>
+<p>As already mentioned, in such a workflow there are three different parties involved:</p>
+<ul>
+<li>the user's web browser where they receive push notifications</li>
+<li>3rd-party push service, which is defined by a subscription endpoint and is a part of a browser's push service implementation</li>
+<li>application server, which will store user's subscriptions and initiate push messages using a subscription endpoint</li>
+</ul>
+<p>The user visits a website, where a JavaScript web application uses the JavaScript Push API to create a push notification subscription. The user is then asked to grant a permission to receive and display push notifications. Once accepted, the Push API establishes a push channel with a 3rd-party push service, which in case of <a href="qtwebengine-qmlmodule.html" translate="no">QtWebEngine</a> is <a href="https://firebase.google.com" translate="no">Firebase Cloud Messaging (FCM)</a>. The unique push subscription is created that includes the subscription endpoint URL. The browser then sends a subscription message to the application server forwarding the endpoint setup. The application server can now use the subscription endpoint to send notifications to the browser. The browser push service implementation will deliver a push message. However, to show it, a service worker must be registered. As the service worker runs in the background, it allows displaying notifications even if a website, which has installed it, is no longer opened.</p>
+<p class="centerAlign"><img src="images/push-notifications.png" alt="" /></p><p>Let's go more into implementation details. We start with implementing our custom push service using NodeJS with two modules:</p>
+<ul>
+<li><a href="https://github.com/web-push-libs/web-push" translate="no">web-push</a> - provides the web-push protocol implementation</li>
+<li><a href="https://github.com/expressjs/express" translate="no">express</a> - provides the web application framework</li>
+</ul>
+<p>Let's initialize a new project and install the required modules in the root directory of this example:</p>
+<pre class="cpp" translate="no">
+ npm init <span class="operator">-</span>y
+ npm install web<span class="operator">-</span>push express
+</pre>
+<p>These commands should create package.js, which defines the start command:</p>
+<pre class="cpp" translate="no">
+ <span class="string">&quot;start&quot;</span>: <span class="string">&quot;node server.js&quot;</span>
+</pre>
+<p>Now let's move on to the push service back-end implementation in server.js.</p>
+<p>We start by including the required modules and doing basic <i>express</i> framework setup, which we use to create our custom push server. For simplicity we are going to handle only one subscription at a time. To do that we need to create <i>VAPID</i> keys which we are going to generate with <i>web-push</i> libs. The public key is going to be used by the front-end and authenticate to the service.</p>
+<pre class="cpp" translate="no">
+ const express = require('express');
+ const webpush = require('web-push');
+
+ // setup server
+ const port = 5000;
+ const server = express();
+ server.use(express.json());
+ server.use(express.static('content'));
+
+ // we support only one subscription at the time
+ var subscription = null;
+
+ // setup vapid keys
+ const vapidKeys = {
+     publicKey :
+             &quot;BNO4fIv439RpvbReeABNlDNiiBD2Maykn7EVnwsPseH7-P5hjnzZLEfnejXVP7Zt6MFoKqKeHm4nV9BHvbgoRPg&quot;,
+     privateKey : &quot;HqhrzsRfG5-SB3j45lyUmV7cYZuy-71r2Bb0tgaOefk&quot;
+ };
+
+ // set vapid keys for webpush libs
+ webpush.setVapidDetails('mailto:push@qt.io', vapidKeys.publicKey, vapidKeys.privateKey);
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>We are not going to cover the encryption of messages in this example.</p>
+</div>
+<p>To generate keys, we can use the tool shipped with <i>web-push</i> lib, that is installed by <code translate="no">npm</code> in our example's root directory.</p>
+<pre class="cpp" translate="no">
+ <span class="operator">.</span><span class="operator">/</span>node_odules<span class="operator">/</span><span class="operator">.</span>bin<span class="operator">/</span>web<span class="operator">-</span>push generate<span class="operator">-</span>vapid<span class="operator">-</span>keys
+</pre>
+<p>Now we add two <code translate="no">routes</code> to the push server. One to <code translate="no">subscribe</code> and one to <code translate="no">unsubscribe</code>, so that our front-end can send an HTTP POST request to handle the push subscription. In the subscribe request we will get <code translate="no">subscription</code> in the request body and we also retrieve the custom header <code translate="no">ping-time</code> that defines how often the ping messages should be pushed to the user. We keep around the <code translate="no">subscription</code> to be able to send push notifications later. As a confirmation, we send the 201 status code and schedule the first push notification based on the <code translate="no">ping-time</code> value. The <code translate="no">unsubscribe</code> request simply removes a subscription.</p>
+<pre class="cpp" translate="no">
+ // add subscribe route
+ server.post('/subscribe', (req, res) =&gt; {
+
+     // subscription request
+     subscription = req.body;
+     const delay = req.headers['ping-time'];
+     console.log('Got subscription with endpoint: ' + subscription.endpoint);
+     console.log('Ping delay is at: ' + delay);
+
+     // confirm resource created
+     res.status(201).json({});
+
+     // schedule notification
+     setTimeout(() =&gt; { sendNotification(delay) }, delay * 1000);
+ });
+
+ // add unsubscribe route
+ server.post('/unsubscribe', (req, res) =&gt; {
+     console.log('Got unsubscribe with endpoint: ' + req.body.endpoint);
+     subscription = null;
+     res.status(201).json({});
+ });
+</pre>
+<p>The <code translate="no">sendNotication()</code> function sends push messages using the web-push lib. We create the payload with the message we want to present to a user and schedule the next push message.</p>
+<pre class="cpp" translate="no">
+ function sendNotification(delay)
+ {
+     if (!subscription)
+         return;
+
+     // create payload text
+     const payload = JSON.stringify({ title : 'Ping !', text : 'Visit qt.io', url : 'www.qt.io' });
+
+     // send notification
+     console.log('Sending notification !');
+     webpush.sendNotification(subscription, payload).catch(err =&gt; console.error(err));
+
+     // schedule next notification
+     setTimeout(() =&gt; { sendNotification(delay) }, delay * 1000);
+ }
+</pre>
+<p>In the end we start the server to listen on the given port.</p>
+<pre class="cpp" translate="no">
+ server.listen(port, () =&gt; console.log(`Push server started at port ${port}`));
+</pre>
+<p>Let's move now to our front-end. We create a simple page index.html, where the user can enter how often they want to receive ping notification messages. We will have two buttons: <i>Ping Me</i> to subscribe for push notifications and <i>Clear</i> to unsubscribe. In the end we load ping.js, which we cover next.</p>
+<pre class="cpp" translate="no">
+ &lt;body&gt;
+   &lt;h1&gt;Push Notification Using NodeJS and QtWebEngine&lt;/h1&gt;
+   &lt;div id=&quot;app&quot;&gt;
+     &lt;div id=&quot;ping-setup&quot;&gt;
+       &lt;form&gt;
+         &lt;div&gt;
+           Ping Me Every [sec]:
+         &lt;/div&gt;
+         &lt;div class=&quot;ping-input&quot;&gt;
+           &lt;input type=&quot;number&quot; name=&quot;seconds&quot; min=&quot;0&quot; max=&quot;3600&quot; required=&quot;&quot;&gt;
+         &lt;/div&gt;&lt;button&gt;Ping Me&lt;/button&gt;
+       &lt;/form&gt;
+     &lt;/div&gt;
+     &lt;div id=&quot;ping-clear&quot;&gt;
+       &lt;div id=&quot;ping-text&quot;&gt;&lt;/div&gt;&lt;button id=&quot;ping-clear-button&quot;&gt;Clear&lt;/button&gt;
+     &lt;/div&gt;
+   &lt;/div&gt;
+   &lt;script src=&quot;ping.js&quot;&gt;&lt;/script&gt;
+ &lt;/body&gt;
+</pre>
+<p>The last piece is creating the logic for the push subscription within the front-end. Here we have two functions, <code translate="no">setup</code> and <code translate="no">clear</code>, to handle subscriptions. When the user clicks on the <i>Ping Me</i> button, <code translate="no">setup</code> is called. To be able to receive notifications, the service worker is needed. This way the user can leave the website and still get notified as the service worker works in the background and handles incoming messages. To achieve that, we have to first register one with:</p>
+<pre class="cpp" translate="no">
+     const register = await navigator.serviceWorker.register('/worker.js', { scope : '/' });
+</pre>
+<p>The call to <code translate="no">cpushManager.subscribe()</code> will trigger a permission prompt, which is displayed to the user. If the permission is granted, the push subscription is returned. It includes a URL endpoint that allows sending notifications to the browser, where the registered service worker waits for push messages.</p>
+<pre class="cpp" translate="no">
+     var subscription = await register.pushManager.subscribe(
+             { userVisibleOnly : true, applicationServerKey : publicVapidKey });
+</pre>
+<p>As mentioned the subscription is created for FCM and should be now sent to our custom server with an HTTP POST request. In addition, we add to the post request the HTTP header with the <code translate="no">ping-time</code> the user entered on our website.</p>
+<pre class="cpp" translate="no">
+     await fetch('/subscribe', {
+         method : 'POST',
+         body : JSON.stringify(subscription),
+         headers : { 'content-type' : 'application/json', 'ping-time' : delay }
+     });
+</pre>
+<p>The function <code translate="no">clear</code> call unsubscribes first from our push server by sending an HTTP POST request and later from the 3rd-party push service (FCM).</p>
+<pre class="cpp" translate="no">
+     const register = await navigator.serviceWorker.getRegistration();
+     var subscription = await register.pushManager.getSubscription();
+     ...
+     await fetch('/unsubscribe', {
+         method : 'POST',
+         body : JSON.stringify(subscription),
+         headers : { 'content-type' : 'application/json' }
+     });
+     ...
+     await subscription.unsubscribe();
+</pre>
+<p>The rest of code in ping.js is just boilerplate code to read a user provided value and call <code translate="no">setup()</code> or <code translate="no">clear()</code>.</p>
+<p>As the last part of the front-end let's look inside a service worker script, where we simply register an event listener for <i>push</i> events.</p>
+<pre class="cpp" translate="no">
+ self.addEventListener('push', event =&gt; {
+     const data = event.data.json();
+     self.registration.showNotification(data.title, { body : data.text });
+ });
+</pre>
+<p>When a push event comes we simply use the Notification JavaScript API to display a notification.</p>
+<div class="admonition note">
+<p><b>Note: </b><a href="qtwebengine-qmlmodule.html" translate="no">QtWebEngine</a> Notification Example shows how to provide your own handler and customize the look and feel of a notification message.</p>
+</div>
+<p>Having the implementation in place, we can start the server on localhost at the port 5000. To do that, we can simply enter in the console in the project's root directory:</p>
+<pre class="cpp" translate="no">
+ npm start
+</pre>
+<p>Now we can look into the <i>push-notification</i> browser application, which is based on <a href="qtwebengine-webenginewidgets-notifications-example.html" translate="no">WebEngine Notifications Example</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
+ {
+     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>setOrganizationName(<span class="string">&quot;QtExamples&quot;</span>);
+     <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span> app(argc<span class="operator">,</span> argv);
+
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> name <span class="operator">=</span>
+             <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;push-notifications.%1&quot;</span>)<span class="operator">.</span>arg(<a href="qtwebenginecoreglobal-h.html#qWebEngineChromiumVersion" translate="no">qWebEngineChromiumVersion</a>());
+
+     <span class="type"><a href="../qtcore/qscopedpointer.html" translate="no">QScopedPointer</a></span><span class="operator">&lt;</span><span class="type"><a href="qwebengineprofile.html" translate="no">QWebEngineProfile</a></span><span class="operator">&gt;</span> profile(<span class="keyword">new</span> <span class="type"><a href="qwebengineprofile.html" translate="no">QWebEngineProfile</a></span>(name));
+     <span class="type"><a href="qwebengineview.html" translate="no">QWebEngineView</a></span> view(profile<span class="operator">.</span>data());
+     <span class="keyword">auto</span> popup <span class="operator">=</span> <span class="keyword">new</span> NotificationPopup(<span class="operator">&amp;</span>view);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(view<span class="operator">.</span>page()<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qwebenginepage.html" translate="no">QWebEnginePage</a></span><span class="operator">::</span>featurePermissionRequested<span class="operator">,</span>
+                      <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> <span class="operator">&amp;</span>origin<span class="operator">,</span> <span class="type"><a href="qwebenginepage.html" translate="no">QWebEnginePage</a></span><span class="operator">::</span>Feature feature) {
+                          <span class="keyword">if</span> (feature <span class="operator">!</span><span class="operator">=</span> <span class="type"><a href="qwebenginepage.html" translate="no">QWebEnginePage</a></span><span class="operator">::</span>Notifications)
+                              <span class="keyword">return</span>;
+
+                          view<span class="operator">.</span>page()<span class="operator">-</span><span class="operator">&gt;</span>setFeaturePermission(origin<span class="operator">,</span> feature<span class="operator">,</span>
+                                                            <span class="type"><a href="qwebenginepage.html" translate="no">QWebEnginePage</a></span><span class="operator">::</span>PermissionGrantedByUser);
+                      });
+
+     profile<span class="operator">-</span><span class="operator">&gt;</span>setPushServiceEnabled(<span class="keyword">true</span>);
+     profile<span class="operator">-</span><span class="operator">&gt;</span>setNotificationPresenter(<span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(std<span class="operator">::</span>unique_ptr<span class="operator">&lt;</span><span class="type"><a href="qwebenginenotification.html" translate="no">QWebEngineNotification</a></span><span class="operator">&gt;</span> notification) {
+         popup<span class="operator">-</span><span class="operator">&gt;</span>present(notification);
+     });
+
+     view<span class="operator">.</span>resize(<span class="number">640</span><span class="operator">,</span> <span class="number">480</span>);
+     view<span class="operator">.</span>setUrl(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;http://localhost:5000&quot;</span>));
+     view<span class="operator">.</span>show();
+     <span class="keyword">return</span> app<span class="operator">.</span>exec();
+ }
+</pre>
+<p>This application simply opens the page at <code translate="no">http:\\localhost:5000</code>. We are not going into detail about how to open a notification as it is documented <a href="qtwebengine-webenginewidgets-notifications-example.html" translate="no">here</a>. However, you need to modify the application in two ways. First, <code translate="no">QWebEngineProfile</code> cannot be set to <i>off-the-record</i> because push messaging would be disabled. Therefore, as you can see above, <code translate="no">QWebEngineProfile</code> is initialized with the name. Second, you need to enable push messaging with the call <a href="qwebengineprofile.html#setPushServiceEnabled" translate="no">QWebEngineProfile::setPushServiceEnabled</a> for the created <code translate="no">profile</code>.</p>
+<p>When the application runs it displays:</p>
+<p class="centerAlign"><img src="images/website.png" alt="" /></p><p>After granting the permission we can send our ping request:</p>
+<p class="centerAlign"><img src="images/permissions.png" alt="" /></p><p>We should see the coming push notification:</p>
+<p class="centerAlign"><img src="images/notification.png" alt="" /></p><p><a href="https://code.qt.io/cgit/qt/qtwebengine.git/tree/examples/webenginewidgets/push-notifications?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@webenginewidgets/push-notifications -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- integrity-build-monolith-app-tutorial.qdoc -->
+  <title>Building a monolith project | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Building a monolith project</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="integrity-building-qt-8155p-on-ubuntu.html" />
+  <link rel="next" href="integrity-flash-image-and-run.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="integrity-building-qt-8155p-on-ubuntu.html">Building Qt for Qualcomm Snapdragon 8155P Board on Ubuntu</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="integrity-flash-image-and-run.html">Flashing and Running an Image on the 8155P</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#building-the-qt-application">Building the Qt application</a></li>
+<li class="level1"><a href="#building-a-monolith-project">Building a monolith project</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Building a monolith project</h1>
+<!-- $$$integrity-building-monolith.html-description -->
+<div class="descr" id="details">
+<p>This tutorial will guide you through building a monolith INTEGRITY project for a Qt example application. You can select any Qt example application that uses the <a href="wasm.html#supported-qt-modules" translate="no">Supported Qt modules</a>.</p>
+<p>Before building the monolith INTEGRITY project, prepare your build environment by running the <code translate="no">setEnvironment.sh</code> script. For more information about the script, see <a href="integrity-building-qt-8155p-on-ubuntu.html#creating-a-set-environment-shell-script" translate="no">Creating a set environment shell script</a>.</p>
+<pre class="cpp plain" translate="no">
+ source ~/setEnvironment.sh
+</pre>
+<h2 id="building-the-qt-application">Building the Qt application</h2>
+<ul>
+<li><code translate="no">CMake</code> tool<p>To build the application against Qt6 using CMake, run the following commands in a terminal:</p>
+<pre class="cpp plain" translate="no">
+ &lt;Qt installation path&gt;/bin/qt-cmake &lt;Qt example application path&gt;/CMakeLists.txt
+ cmake --build .
+</pre>
+<p>Where, <code translate="no">qt-cmake</code> is the wrapper script that calls CMake to configure your project with appropriate include paths.</p>
+</li>
+<li><code translate="no">qmake</code> tool<p>To build the application against Qt6 using qmake, run the following commands in a terminal:</p>
+<pre class="cpp plain" translate="no">
+ &lt;Qt installation path&gt;/bin/qmake &lt;Qt example application path&gt;/application.pro
+ make
+</pre>
+</li>
+</ul>
+<h2 id="building-a-monolith-project">Building a monolith project</h2>
+<p>The board support package (BSP) for the Qualcomm Snapdragon 8155P board provides a build script to create a set of images for board partitions:</p>
+<pre class="cpp plain" translate="no">
+ /work/ghs/sa8155/es7/es7_dev_env/hlos_dev_boot/apps/ghs_apps_proc/build_ghs.sh
+</pre>
+<p>Add a Qt application to a build by adding it into the <i>monolith-service.int</i> file:</p>
+<ul>
+<li>Start MULTI Launcher.</li>
+<li>Select <b translate="no">Components</b> &gt; <b translate="no">Open Project Manager</b>.</li>
+<li>Select the project file <i>default.gpj</i> under the <i>/work/ghs/sa8155/es7/es7_dev_env/hlos_dev_boot/apps/ghs_apps_proc/qc_bsp</i> directory:<p class="centerAlign"><img src="images/open-project.png" alt="&quot;Select a project.&quot;" /></p><p>MULTI application shows a window with a list of project files from the chosen folder.</p>
+</li>
+<li>Select <b translate="no">Open</b>.</li>
+</ul>
+<p>In the MULTI Project Manager view, you should see a tree structure of the opened project.</p>
+<p>Go through the <code translate="no">default.gpj</code> sub projects:</p>
+<ul>
+<li>Select <i>target.auto</i> <i>vmm-adp-no-gvm-sa8155.gpj</i> &gt; <i>vvm-adp-gvm-ref.gpj</i> &gt; <i>monolith-service.gpj</i>. You can observe the project structure and edit a project's files.</li>
+<li>Select <i>monolith-service.int</i><p class="centerAlign"><img src="images/project-structure.png" alt="&quot;Project tree.&quot;" /></p><p>Selected <i>monolith-service.int</i> file is highlighted in the project tree.</p>
+</li>
+<li>Right-click on the file, then select <b translate="no">Edit</b> from the context menu.</li>
+<li>Add the following lines at the end of the file.<pre class="cpp plain" translate="no">
+ AddressSpace
+ Name    myappname
+ Filename    /path/to/your/app/executable
+ MemoryPoolSize 0x2700000
+ Language    C++
+ HeapSize    0x90000
+
+ Task Initial
+ StackSize    0x80000
+ StartIt    false
+ EndTask
+ Extendedmemorypoolsize 0x300000
+ EndAddressSpace
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Replace &lt;/path/to/your/app/executable&gt; with a path to your application executable.</p>
+</div>
+</li>
+<li>Run the build script.<pre class="cpp plain" translate="no">
+ bash /work/ghs/sa8155/es7/es7_dev_env/hlos_dev_boot/apps/ghs_apps_proc/build_ghs.sh
+</pre>
+</li>
+</ul>
+<p>Your monolith project is now ready to be flashed on to the board.</p>
+</div>
+<!-- @@@integrity-building-monolith.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="integrity-building-qt-8155p-on-ubuntu.html">Building Qt for Qualcomm Snapdragon 8155P Board on Ubuntu</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="integrity-flash-image-and-run.html">Flashing and Running an Image on the 8155P</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

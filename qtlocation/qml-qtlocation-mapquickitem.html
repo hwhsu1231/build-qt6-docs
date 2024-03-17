@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qdeclarativegeomapquickitem.cpp -->
+  <meta name="description" content="The MapQuickItem type displays an arbitrary Qt Quick object on a Map.">
+  <title>MapQuickItem QML Type | Qt Location 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtlocation-index.html" translate="no">Qt Location</a></li>
+<li><a href="qtlocation-qmlmodule.html" translate="no">QML Types</a></li>
+<li>MapQuickItem</li>
+<li id="buildversion"><a href="qtlocation-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+<li class="level2"><a href="#positioning-and-sizing">Positioning and Sizing</a></li>
+<li class="level2"><a href="#performance">Performance</a></li>
+<li class="level2"><a href="#limitations">Limitations</a></li>
+<li class="level2"><a href="#example-usage">Example Usage</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">MapQuickItem QML Type</h1>
+<!-- $$$MapQuickItem-brief -->
+<p>The MapQuickItem type displays an arbitrary Qt Quick object on a Map. <a href="#details">More...</a></p>
+<!-- @@@MapQuickItem -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtLocation 6.6</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> QtLocation 5.5</td></tr></table></div><ul>
+<li><a href="qml-qtlocation-mapquickitem-members.html">List of all members, including inherited members</a></li>
+<li>MapQuickItem is part of <a href="qml-qtlocation5-maps.html">QML Maps Plugin</a>.</li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-mapquickitem.html#anchorPoint-prop" translate="no">anchorPoint</a></b> : QPointF</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-mapquickitem.html#autoFadeIn-prop" translate="no">autoFadeIn</a></b> : bool</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-mapquickitem.html#coordinate-prop" translate="no">coordinate</a></b> : coordinate</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-mapquickitem.html#sourceItem-prop" translate="no">sourceItem</a></b> : object</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-mapquickitem.html#zoomLevel-prop" translate="no">zoomLevel</a></b> : real</li>
+</ul>
+<!-- $$$MapQuickItem-description -->
+<h2 id="details">Detailed Description</h2>
+<p>The MapQuickItem type is used to place an arbitrary Qt Quick object on a Map at a specified location and size. Compared to floating an item above the Map, a MapQuickItem will follow the panning (and optionally, the zooming) of the Map as if it is on the Map surface.</p>
+<p>The <a href="qml-qtlocation-mapquickitem.html#sourceItem-prop" translate="no">sourceItem</a> property contains the Qt Quick item to be drawn, which can be any kind of visible type.</p>
+<h3 id="positioning-and-sizing">Positioning and Sizing</h3>
+<p>The positioning of the MapQuickItem on the Map is controlled by two properties: <a href="qml-qtlocation-mapquickitem.html#coordinate-prop" translate="no">coordinate</a> and <a href="qml-qtlocation-mapquickitem.html#anchorPoint-prop" translate="no">anchorPoint</a>. If only <a href="qml-qtlocation-mapquickitem.html#coordinate-prop" translate="no">coordinate</a> is set, it specifies a longitude/latitude coordinate for the item to be placed at. The set coordinate will line up with the top-left corner of the contained item when shown on the screen.</p>
+<p>The <a href="qml-qtlocation-mapquickitem.html#anchorPoint-prop" translate="no">anchorPoint</a> property provides a way to line up the coordinate with other parts of the item than just the top-left corner, by setting a number of pixels the item will be offset by. A simple way to think about it is to note that the point given by <a href="qml-qtlocation-mapquickitem.html#anchorPoint-prop" translate="no">anchorPoint</a> on the item itself is the point that will line up with the given <a href="qml-qtlocation-mapquickitem.html#coordinate-prop" translate="no">coordinate</a> when displayed.</p>
+<p>In addition to being anchored to the map, the MapQuickItem can optionally follow the scale of the map, and change size when the Map is zoomed in or zoomed out. This behaviour is controlled by the <a href="qml-qtlocation-mapquickitem.html#zoomLevel-prop" translate="no">zoomLevel</a> property. The default behaviour if <a href="qml-qtlocation-mapquickitem.html#zoomLevel-prop" translate="no">zoomLevel</a> is not set is for the item to be drawn &quot;on the screen&quot; rather than &quot;on the map&quot;, so that its size remains the same regardless of the zoom level of the Map.</p>
+<h3 id="performance">Performance</h3>
+<p>Performance of a MapQuickItem is normally in the same ballpark as the contained Qt Quick item alone. Overheads added amount to a translation and (possibly) scaling of the original item, as well as a transformation from longitude and latitude to screen position.</p>
+<h3 id="limitations">Limitations</h3>
+<div class="admonition note">
+<p><b>Note: </b>Due to an implementation detail, items placed inside a MapQuickItem will have a <code translate="no">parent</code> item which is not the MapQuickItem. Refer to the MapQuickItem by its <code translate="no">id</code>, and avoid the use of <code translate="no">anchor</code> in the <code translate="no">sourceItem</code>.</p>
+</div>
+<h3 id="example-usage">Example Usage</h3>
+<p>The following snippet shows a MapQuickItem containing an Image object, to display a Marker on the Map. This strategy is used to show the map markers in the MapViewer example.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtlocation-mapquickitem.html" translate="no">MapQuickItem</a></span> {
+     <span class="name">id</span>: <span class="name">marker</span>
+     <span class="name">anchorPoint</span>.x: <span class="name">image</span>.<span class="name">width</span><span class="operator">/</span><span class="number">4</span>
+     <span class="name">anchorPoint</span>.y: <span class="name">image</span>.<span class="name">height</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-hoverhandler.html" translate="no">HoverHandler</a></span> {
+         <span class="name">id</span>: <span class="name">hoverHandler</span>
+     }
+     <span class="type"><a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+         <span class="name">id</span>: <span class="name">tapHandler</span>
+         <span class="name">acceptedButtons</span>: <span class="name">Qt</span>.<span class="name">RightButton</span>
+         <span class="name">gesturePolicy</span>: <span class="name">TapHandler</span>.<span class="name">WithinBounds</span>
+         <span class="name">onTapped</span>: {
+             <span class="name">mapview</span>.<span class="name">currentMarker</span> <span class="operator">=</span> -<span class="number">1</span>
+             <span class="keyword">for</span> (var i = 0; <span class="name">i</span><span class="operator">&lt;</span> <span class="name">mapview</span>.<span class="name">markers</span>.<span class="name">length</span>; i++){
+                 <span class="keyword">if</span> (<span class="name">marker</span> <span class="operator">==</span> <span class="name">mapview</span>.<span class="name">markers</span>[<span class="name">i</span>]){
+                     <span class="name">mapview</span>.<span class="name">currentMarker</span> <span class="operator">=</span> <span class="name">i</span>
+                     <span class="keyword">break</span>
+                 }
+             }
+             <span class="name">mapview</span>.<span class="name">showMarkerMenu</span>(<span class="name">marker</span>.<span class="name">coordinate</span>)
+         }
+     }
+     <span class="type"><a href="../qtquick/qml-qtquick-draghandler.html" translate="no">DragHandler</a></span> {
+         <span class="name">id</span>: <span class="name">dragHandler</span>
+         <span class="name">grabPermissions</span>: <span class="name">PointerHandler</span>.<span class="name">CanTakeOverFromItems</span> <span class="operator">|</span> <span class="name">PointerHandler</span>.<span class="name">CanTakeOverFromHandlersOfDifferentType</span>
+     }
+
+     <span class="name">sourceItem</span>: <span class="name">Image</span> {
+         <span class="name">id</span>: <span class="name">image</span>
+     }
+ }
+</pre>
+<p class="centerAlign"><img src="images/api-mapquickitem.png" alt="" /></p><!-- @@@MapQuickItem -->
+<h2>Property Documentation</h2>
+<!-- $$$anchorPoint -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="anchorPoint-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">anchorPoint</span> : <span class="type">QPointF</span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property determines which point on the <a href="qml-qtlocation-mapquickitem.html#sourceItem-prop" translate="no">sourceItem</a> that will be lined up with the coordinate on the map.</p>
+</div></div><!-- @@@anchorPoint -->
+<br/>
+<!-- $$$autoFadeIn -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="autoFadeIn-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">autoFadeIn</span> : <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds whether the item automatically fades in when zooming into the map starting from very low zoom levels. By default this is <code translate="no">true</code>. Setting this property to <code translate="no">false</code> causes the map item to always have the opacity specified with the <a href="../qtquick/qml-qtquick-item.html#opacity-prop" translate="no">QtQuick::Item::opacity</a> property, which is 1.0 by default.</p>
+</div></div><!-- @@@autoFadeIn -->
+<br/>
+<!-- $$$coordinate -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="coordinate-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">coordinate</span> : <span class="type"><a href="../qtpositioning/qml-coordinate.html" translate="no">coordinate</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds the anchor coordinate of the <a href="qml-qtlocation-mapquickitem.html" translate="no">MapQuickItem</a>. The point on the <a href="qml-qtlocation-mapquickitem.html#sourceItem-prop" translate="no">sourceItem</a> that is specified by <a href="qml-qtlocation-mapquickitem.html#anchorPoint-prop" translate="no">anchorPoint</a> is kept aligned with this coordinate when drawn on the map.</p>
+<p>In the image below, there are 3 MapQuickItems that are identical except for the value of their <a href="qml-qtlocation-mapquickitem.html#anchorPoint-prop" translate="no">anchorPoint</a> properties. The values of <a href="qml-qtlocation-mapquickitem.html#anchorPoint-prop" translate="no">anchorPoint</a> for each are written on top of the item.</p>
+<p class="centerAlign"><img src="images/api-mapquickitem-anchor.png" alt="" /></p></div></div><!-- @@@coordinate -->
+<br/>
+<!-- $$$sourceItem -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="sourceItem-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">sourceItem</span> : <span class="type">object</span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds the source item that will be drawn on the map.</p>
+</div></div><!-- @@@sourceItem -->
+<br/>
+<!-- $$$zoomLevel -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="zoomLevel-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">zoomLevel</span> : <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property controls the scaling behaviour of the contents of the <a href="qml-qtlocation-mapquickitem.html" translate="no">MapQuickItem</a>. In particular, by setting this property it is possible to choose between objects that are drawn on the screen (and sized in screen pixels), and those drawn on the map surface (which change size with the zoom level of the map).</p>
+<p>The default value for this property is 0.0, which corresponds to drawing the object on the screen surface. If set to another value, the object will be drawn on the map surface instead. The value (if not zero) specifies the zoomLevel at which the object will be visible at a scale of 1:1 (ie, where object pixels and screen pixels are the same). At zoom levels lower than this, the object will appear smaller, and at higher zoom levels, appear larger. This is in contrast to when this property is set to zero, where the object remains the same size on the screen at all zoom levels.</p>
+</div></div><!-- @@@zoomLevel -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

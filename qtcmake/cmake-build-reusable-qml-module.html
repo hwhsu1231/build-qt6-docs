@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- cmake-manual.qdoc -->
+  <title>Building a reusable QML module | Build with CMake 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="cmake-manual.html" translate="no">Build with CMake</a></li>
+<li>Building a reusable QML module</li>
+<li id="buildversion"><a href="cmake-manual.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="cmake-build-qml-application.html" />
+  <link rel="next" href="cmake-build-on-cmdline.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="cmake-build-qml-application.html">Building a QML application</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="cmake-build-on-cmdline.html">Building projects on the command line</a>
+</p>
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Building a reusable QML module</h1>
+<!-- $$$cmake-build-reusable-qml-module.html-description -->
+<div class="descr" id="details">
+<p>The example below demonstrates how to create a library which exposes C++ to QML. The directory structure for the example looks like this:</p>
+<pre class="cpp plain" translate="no">
+ ├── CMakeLists.txt
+ └── example
+     └── mylib
+         ├── CMakeLists.txt
+         ├── mytype.cpp
+         ├── mytype.h
+</pre>
+<p>The toplevel <code translate="no">CMakeLists.txt</code> file does some basic setup using <a href="../qtcore/qt-standard-project-setup.html" translate="no">qt_standard_project_setup</a>, and then uses <code translate="no">add_subdirectory</code> to include the one in mylib:</p>
+<pre class="cpp" translate="no">
+ cmake_minimum_required(VERSION <span class="number">3.16</span>)
+
+ project(qmlmodule VERSION <span class="number">1.0.0</span> LANGUAGES CXX)
+
+ set(CMAKE_CXX_STANDARD <span class="number">17</span>)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+ find_package(Qt6 REQUIRED COMPONENTS Qml)
+ qt_standard_project_setup(REQUIRES <span class="number">6.5</span>)
+
+ add_subdirectory(example<span class="operator">/</span>mylib)
+</pre>
+<p>The subdirectories are structured to correspond to the QML module’s URI, but with the dots replaced by slashes. That’s the same logic the engine uses when it searches for a module in the <a href="../qtqml/qtqml-syntax-imports.html" translate="no">import paths</a>. Following this subdirectory structure helps tooling.</p>
+<p><code translate="no">mytype.h</code> declares a class and uses the <a href="../qtqml/qtqml-cppintegration-definetypes.html#registering-c-types-with-the-qml-type-system" translate="no">declarative registration macros</a> to expose it to the engine.</p>
+<p>In the subdirectory’s <code translate="no">CMakeLists.txt</code> we call <a href="../qtqml/qt-add-qml-module.html#qt6-add-qml-module" translate="no">qt_add_qml_module</a>. Compared to <a href="cmake-build-qml-application.html" translate="no">Building a QML application</a>, the invocation is slightly different:</p>
+<pre class="cpp" translate="no">
+ qt_add_qml_module(mylib
+     URI example<span class="operator">.</span>mylib
+     VERSION <span class="number">1.0</span>
+     SOURCES
+         mytype<span class="operator">.</span>h mytype<span class="operator">.</span>cpp
+     QML_FILES
+         MyQmlType<span class="operator">.</span>qml
+ )
+</pre>
+<p>The target for <code translate="no">mylib</code> has not been created before. When the target passed to <code translate="no">qt6_add_qml_module</code> does not exist, it automatically creates a library target. This avoids a separate call to <a href="../qtcore/qt-add-library.html" translate="no">qt_add_library</a>. To register QML types defined in C++, add their header and source files as arguments to the SOURCES parameter.</p>
+<p>When the project is built, in addition to the library, a QML plugin is also built. The plugin's auto-generated class extends from <a href="../qtqml/qqmlengineextensionplugin.html" translate="no">QQmlEngineExtensionPlugin</a>. The mylib library itself already contains the code to register the types with the engine. However, that is only useful in cases where we can link against the library. To make the module usable in a QML file loaded by <code translate="no">qml</code>, the <a href="../qtdoc/qtquick-qml-runtime.html#qml-runtime-tool" translate="no">QML Runtime Tool</a>, a plugin is needed that can be loaded. The plugin is then responsible for actually linking against the library, and ensuring that the types get registered.</p>
+<p>Note that the automatic plugin generation is only possible if the module does not do anything besides registering the types. If it needs to do something more advanced like registering an image provider in <code translate="no">initializeEngine</code>, you still need to manually write the plugin. <a href="../qtqml/qt-add-qml-module.html#qt6-add-qml-module" translate="no">qt6_add_qml_module</a> has support for this with <code translate="no">NO_GENERATE_PLUGIN_SOURCE</code>.</p>
+<p>Also, following the directory layout convention helps tooling. That layout is mirrored in the build directory. Which means that you can pass the path to your build directory to the QML tool (via the <code translate="no">-I</code> flag), and it will find the plugin.</p>
+</div>
+<!-- @@@cmake-build-reusable-qml-module.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="cmake-build-qml-application.html">Building a QML application</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="cmake-build-on-cmdline.html">Building projects on the command line</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

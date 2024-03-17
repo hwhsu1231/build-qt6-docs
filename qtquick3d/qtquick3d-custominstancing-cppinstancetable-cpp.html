@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- custominstancing.qdoc -->
+  <meta name="description" content="Demonstrates instancing with custom materials and a C++ instance table.">
+  <title>Qt Quick 3D - Custom Instanced Rendering | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Custom Instanced Rendering</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Custom Instanced Rendering</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;cppinstancetable.h&quot;</span>
+ <span class="preprocessor">#include &lt;math.h&gt;</span>
+ <span class="preprocessor">#include &lt;QMatrix4x4&gt;</span>
+ <span class="preprocessor">#include &lt;QRandomGenerator&gt;</span>
+ <span class="preprocessor">#include &lt;QColor&gt;</span>
+
+ <span class="comment">// Quick-and-dirty smoothed out noise generation. Probably not suitable for general use.</span>
+ <span class="keyword">static</span> <span class="type"><a href="../qtcore/qvector.html" translate="no">QVector</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span> generateNoiseTable(<span class="type">int</span> dimension<span class="operator">,</span> <span class="type">int</span> randomSeed)
+ {
+     <span class="keyword">const</span> <span class="type">int</span> tableSize <span class="operator">=</span> dimension <span class="operator">*</span> dimension;
+     <span class="type"><a href="../qtcore/qvector.html" translate="no">QVector</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span> table(tableSize);
+     <span class="type"><a href="../qtcore/qrandomgenerator.html" translate="no">QRandomGenerator</a></span> rgen(randomSeed);
+
+     <span class="keyword">for</span> (<span class="type">float</span> <span class="operator">&amp;</span>f: table)
+         f <span class="operator">=</span> rgen<span class="operator">.</span>bounded(<span class="number">1.0</span>) <span class="operator">*</span> rgen<span class="operator">.</span>bounded(<span class="number">1.0</span>);
+
+     <span class="comment">// We select some initial points that will not be modified. This is the distance between them: (power of two)</span>
+     constexpr <span class="type">int</span> delta <span class="operator">=</span> <span class="number">16</span>;
+
+     <span class="comment">// Then we average out those points to the points half way between them,</span>
+     <span class="comment">// and continue with the points half way between those, and so on.</span>
+     <span class="comment">// Pattern:</span>
+     <span class="comment">// STS</span>
+     <span class="comment">// TTT</span>
+     <span class="comment">// STS</span>
+     <span class="comment">// where S = source and T = target</span>
+     <span class="keyword">auto</span> smooth <span class="operator">=</span> <span class="operator">[</span>dimension<span class="operator">,</span> <span class="operator">&amp;</span>table<span class="operator">]</span>(<span class="type">int</span> x<span class="operator">,</span> <span class="type">int</span> y<span class="operator">,</span> <span class="type">int</span> d) {
+         <span class="keyword">auto</span> lookup <span class="operator">=</span> <span class="operator">[</span><span class="operator">&amp;</span>table<span class="operator">,</span>dimension<span class="operator">]</span>(<span class="type">int</span> x<span class="operator">,</span> <span class="type">int</span> y) <span class="operator">-</span><span class="operator">&gt;</span> <span class="type">float</span> {
+             <span class="keyword">return</span> table<span class="operator">[</span>x <span class="operator">+</span> y<span class="operator">*</span>dimension<span class="operator">]</span>;
+         };
+         <span class="keyword">auto</span> assign <span class="operator">=</span> <span class="operator">[</span><span class="operator">&amp;</span>table<span class="operator">,</span>dimension<span class="operator">,</span>d<span class="operator">]</span>(<span class="type">int</span> x<span class="operator">,</span> <span class="type">int</span> y<span class="operator">,</span> <span class="type">float</span> v) {
+             <span class="keyword">if</span> (x <span class="operator">&lt;</span> dimension <span class="operator">&amp;</span><span class="operator">&amp;</span> y <span class="operator">&lt;</span> dimension) {
+                 <span class="type">float</span> e <span class="operator">=</span> d<span class="operator">*</span><span class="number">1.0</span><span class="operator">/</span>dimension;
+                 <span class="type">float</span> <span class="operator">&amp;</span>z <span class="operator">=</span> table<span class="operator">[</span>x <span class="operator">+</span> y<span class="operator">*</span>dimension<span class="operator">]</span>;
+                 z <span class="operator">=</span> (e<span class="operator">*</span>z <span class="operator">+</span> v)<span class="operator">/</span>(e<span class="operator">+</span><span class="number">1</span>);
+             }
+         };
+
+         <span class="type">int</span> x1 <span class="operator">=</span> x <span class="operator">+</span> d<span class="operator">/</span><span class="number">2</span>;
+         <span class="type">int</span> y1 <span class="operator">=</span> y <span class="operator">+</span> d<span class="operator">/</span><span class="number">2</span>;
+         <span class="type">int</span> x2 <span class="operator">=</span> qMin(dimension<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> x <span class="operator">+</span> d);
+         <span class="type">int</span> y2 <span class="operator">=</span> qMin(dimension<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> y <span class="operator">+</span> d);
+         <span class="type">float</span> z1 <span class="operator">=</span> lookup(x<span class="operator">,</span>y);
+         <span class="type">float</span> z2 <span class="operator">=</span> lookup(x2<span class="operator">,</span> y);
+         <span class="type">float</span> z3 <span class="operator">=</span> lookup(x<span class="operator">,</span> y2);
+         <span class="type">float</span> z4 <span class="operator">=</span> lookup(x2<span class="operator">,</span> y2);
+         assign(x1<span class="operator">,</span> y<span class="operator">,</span> (z1<span class="operator">+</span>z2)<span class="operator">/</span><span class="number">2</span>);
+         assign(x<span class="operator">,</span> y1<span class="operator">,</span> (z1<span class="operator">+</span>z3)<span class="operator">/</span><span class="number">2</span>);
+         assign(x1<span class="operator">,</span> y1<span class="operator">,</span> (z1<span class="operator">+</span>z2<span class="operator">+</span>z3<span class="operator">+</span>z4)<span class="operator">/</span><span class="number">4</span>);
+         assign(x1<span class="operator">,</span> y2<span class="operator">,</span> (z3<span class="operator">+</span>z4)<span class="operator">/</span><span class="number">2</span>);
+         assign(x2<span class="operator">,</span> y1<span class="operator">,</span> (z2<span class="operator">+</span>z4)<span class="operator">/</span><span class="number">2</span>);
+     };
+
+     <span class="type">int</span> d <span class="operator">=</span> delta;
+     <span class="keyword">while</span> (d <span class="operator">&gt;</span> <span class="number">1</span>) {
+         <span class="keyword">for</span> (<span class="type">int</span> ix <span class="operator">=</span> <span class="number">0</span>; ix <span class="operator">&lt;</span> dimension; ix <span class="operator">+</span><span class="operator">=</span> d) {
+             <span class="keyword">for</span> (<span class="type">int</span> iy <span class="operator">=</span> <span class="number">0</span>; iy <span class="operator">&lt;</span> dimension; iy <span class="operator">+</span><span class="operator">=</span> d) {
+                 smooth(ix<span class="operator">,</span> iy<span class="operator">,</span> d);
+             }
+         }
+         d <span class="operator">=</span> d<span class="operator">/</span><span class="number">2</span>;
+     }
+
+     <span class="comment">//low-pass filter</span>
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> dimension <span class="operator">+</span> <span class="number">1</span>; i <span class="operator">&lt;</span> tableSize; <span class="operator">+</span><span class="operator">+</span>i)
+         table<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">=</span> (table<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">+</span> table<span class="operator">[</span>i<span class="operator">-</span><span class="number">1</span><span class="operator">]</span> <span class="operator">+</span> table<span class="operator">[</span>i<span class="operator">-</span>dimension<span class="operator">]</span>)<span class="operator">/</span><span class="number">3</span>;
+
+     <span class="comment">//normalize</span>
+     <span class="type">float</span> min <span class="operator">=</span> <span class="number">1.0</span>;
+     <span class="type">float</span> max <span class="operator">=</span> <span class="number">0.0</span>;
+     <span class="keyword">for</span> (<span class="keyword">auto</span> z : table) {
+         min <span class="operator">=</span> qMin(z<span class="operator">,</span> min);
+         max <span class="operator">=</span> qMax(z<span class="operator">,</span> max);
+     }
+     <span class="keyword">for</span> (<span class="keyword">auto</span> <span class="operator">&amp;</span>z : table)
+         z <span class="operator">=</span> (z <span class="operator">-</span> min) <span class="operator">/</span> (max <span class="operator">-</span> min);
+
+     <span class="keyword">return</span> table;
+ }
+
+ CppInstanceTable<span class="operator">::</span>CppInstanceTable(QQuick3DObject <span class="operator">*</span>parent) : QQuick3DInstancing(parent)
+ {
+     m_randomSeed <span class="operator">=</span> <span class="type"><a href="../qtcore/qrandomgenerator.html" translate="no">QRandomGenerator</a></span><span class="operator">::</span>global()<span class="operator">-</span><span class="operator">&gt;</span>generate();
+ }
+
+ CppInstanceTable<span class="operator">::</span><span class="operator">~</span>CppInstanceTable()
+ {
+ }
+
+ <span class="type">int</span> CppInstanceTable<span class="operator">::</span>gridSize() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_gridSize;
+ }
+
+ <span class="type">float</span> CppInstanceTable<span class="operator">::</span>gridSpacing() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_gridSpacing;
+ }
+
+ <span class="type">int</span> CppInstanceTable<span class="operator">::</span>randomSeed() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_randomSeed;
+ }
+
+ <span class="type">void</span> CppInstanceTable<span class="operator">::</span>setGridSize(<span class="type">int</span> gridSize)
+ {
+     <span class="keyword">if</span> (m_gridSize <span class="operator">=</span><span class="operator">=</span> gridSize)
+         <span class="keyword">return</span>;
+
+     m_gridSize <span class="operator">=</span> gridSize;
+     <span class="keyword">emit</span> gridSizeChanged();
+     markDirty();
+     m_dirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">void</span> CppInstanceTable<span class="operator">::</span>setGridSpacing(<span class="type">float</span> gridSpacing)
+ {
+     <span class="keyword">if</span> (<a href="../qtcore/qtnumeric.html#qFuzzyCompare-1" translate="no">qFuzzyCompare</a>(m_gridSpacing<span class="operator">,</span> gridSpacing))
+         <span class="keyword">return</span>;
+
+     m_gridSpacing <span class="operator">=</span> gridSpacing;
+     <span class="keyword">emit</span> gridSpacingChanged();
+     markDirty();
+     m_dirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">void</span> CppInstanceTable<span class="operator">::</span>setRandomSeed(<span class="type">int</span> randomSeed)
+ {
+     <span class="keyword">if</span> (m_randomSeed <span class="operator">=</span><span class="operator">=</span> randomSeed)
+         <span class="keyword">return</span>;
+
+     m_randomSeed <span class="operator">=</span> randomSeed;
+     <span class="keyword">emit</span> randomSeedChanged();
+     markDirty();
+     m_dirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="keyword">class</span> BlockTable
+ {
+ <span class="keyword">public</span>:
+     BlockTable(<span class="type">int</span> dimension<span class="operator">,</span> <span class="type">int</span> randomSeed) : gridSize(dimension)<span class="operator">,</span> seaLevel(gridSize <span class="operator">/</span> <span class="number">8</span>)
+     {
+         noiseTable <span class="operator">=</span> generateNoiseTable(gridSize<span class="operator">,</span> randomSeed);
+         lowestBlock<span class="operator">.</span>resize(gridSize <span class="operator">*</span> gridSize);
+
+         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> gridSize; <span class="operator">+</span><span class="operator">+</span>i) {
+             <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="number">0</span>; j <span class="operator">&lt;</span> gridSize; <span class="operator">+</span><span class="operator">+</span>j) {
+                 <span class="comment">// optimization: skip blocks that are obscured by neighbours</span>
+                 <span class="type">int</span> lowestVisible;
+                 <span class="keyword">if</span> (i <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> j <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> i <span class="operator">=</span><span class="operator">=</span> gridSize <span class="operator">-</span> <span class="number">1</span> <span class="operator">|</span><span class="operator">|</span> j <span class="operator">=</span><span class="operator">=</span> gridSize <span class="operator">-</span> <span class="number">1</span>) {
+                     lowestVisible <span class="operator">=</span> <span class="number">0</span>;
+                 } <span class="keyword">else</span> {
+                     lowestVisible <span class="operator">=</span> terrainHeight(i<span class="operator">,</span> j);
+                     lowestVisible <span class="operator">=</span> qMin(lowestVisible<span class="operator">,</span> terrainHeight(i <span class="operator">-</span> <span class="number">1</span><span class="operator">,</span> j));
+                     lowestVisible <span class="operator">=</span> qMin(lowestVisible<span class="operator">,</span> terrainHeight(i<span class="operator">,</span> j <span class="operator">-</span> <span class="number">1</span>));
+                     lowestVisible <span class="operator">=</span> qMin(lowestVisible<span class="operator">,</span> terrainHeight(i <span class="operator">+</span> <span class="number">1</span><span class="operator">,</span> j));
+                     lowestVisible <span class="operator">=</span> qMin(lowestVisible<span class="operator">,</span> terrainHeight(i<span class="operator">,</span> j <span class="operator">+</span> <span class="number">1</span>));
+                     lowestVisible <span class="operator">=</span> qMax(lowestVisible<span class="operator">,</span> seaLevel);
+                 }
+                 lowestBlock<span class="operator">[</span>idx(i<span class="operator">,</span> j)<span class="operator">]</span> <span class="operator">=</span> lowestVisible;
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> getBlockColor(<span class="type">int</span> i<span class="operator">,</span> <span class="type">int</span> j<span class="operator">,</span> <span class="type">int</span> k) <span class="keyword">const</span>
+     {
+         <span class="keyword">const</span> <span class="type">int</span> maxHeight <span class="operator">=</span> gridSize <span class="operator">/</span> <span class="number">2</span>;
+         <span class="type">int</span> snowLine <span class="operator">=</span> maxHeight <span class="operator">*</span> <span class="number">4</span> <span class="operator">/</span> <span class="number">5</span> <span class="operator">-</span> <span class="type"><a href="../qtcore/qrandomgenerator.html" translate="no">QRandomGenerator</a></span><span class="operator">::</span>global()<span class="operator">-</span><span class="operator">&gt;</span>bounded(maxHeight <span class="operator">/</span> <span class="number">5</span>);
+         <span class="type">int</span> treeLine <span class="operator">=</span> maxHeight <span class="operator">*</span> <span class="number">3</span> <span class="operator">/</span> <span class="number">5</span> <span class="operator">-</span> <span class="type"><a href="../qtcore/qrandomgenerator.html" translate="no">QRandomGenerator</a></span><span class="operator">::</span>global()<span class="operator">-</span><span class="operator">&gt;</span>bounded(maxHeight <span class="operator">/</span> <span class="number">5</span>);
+         <span class="keyword">if</span> (k <span class="operator">&gt;</span> terrainHeight(i<span class="operator">,</span> j)) {
+             <span class="keyword">return</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>blue;
+         } <span class="keyword">else</span> <span class="keyword">if</span> (k <span class="operator">&gt;</span> snowLine) {
+             <span class="keyword">return</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>white;
+         } <span class="keyword">else</span> <span class="keyword">if</span> (k <span class="operator">&gt;</span> treeLine) {
+             <span class="keyword">return</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkGray;
+         } <span class="keyword">else</span> {
+             <span class="keyword">return</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span><span class="operator">::</span>fromHsvF(k <span class="operator">*</span> <span class="number">0.7f</span> <span class="operator">/</span> maxHeight<span class="operator">,</span> <span class="number">0.7f</span><span class="operator">,</span> <span class="number">0.5f</span><span class="operator">,</span> <span class="number">1.0f</span>);
+         }
+     }
+     <span class="type">bool</span> isWaterSurface(<span class="type">int</span> i<span class="operator">,</span> <span class="type">int</span> j<span class="operator">,</span> <span class="type">int</span> k) <span class="keyword">const</span> { <span class="keyword">return</span> k <span class="operator">=</span><span class="operator">=</span> seaLevel <span class="operator">&amp;</span><span class="operator">&amp;</span> k <span class="operator">&gt;</span> terrainHeight(i<span class="operator">,</span> j); }
+     <span class="type">int</span> lowestVisible(<span class="type">int</span> i<span class="operator">,</span> <span class="type">int</span> j) { <span class="keyword">return</span> lowestBlock<span class="operator">[</span>idx(i<span class="operator">,</span> j)<span class="operator">]</span>; }
+     <span class="type">int</span> highestBlock(<span class="type">int</span> i<span class="operator">,</span> <span class="type">int</span> j) { <span class="keyword">return</span> qMax(seaLevel<span class="operator">,</span> terrainHeight(i<span class="operator">,</span> j)); }
+
+ <span class="keyword">private</span>:
+     <span class="type">int</span> idx(<span class="type">int</span> i<span class="operator">,</span> <span class="type">int</span> j) <span class="keyword">const</span> { <span class="keyword">return</span> i <span class="operator">+</span> j <span class="operator">*</span> gridSize; }
+     <span class="type">int</span> terrainHeight(<span class="type">int</span> i<span class="operator">,</span> <span class="type">int</span> j) <span class="keyword">const</span>
+     {
+         <span class="keyword">const</span> <span class="type">int</span> maxHeight <span class="operator">=</span> gridSize <span class="operator">/</span> <span class="number">2</span>;
+         <span class="keyword">return</span> maxHeight <span class="operator">*</span> noiseTable<span class="operator">[</span>idx(i<span class="operator">,</span> j)<span class="operator">]</span>;
+     }
+
+     <span class="type"><a href="../qtcore/qvector.html" translate="no">QVector</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span> noiseTable;
+     <span class="type"><a href="../qtcore/qvector.html" translate="no">QVector</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> lowestBlock;
+     <span class="type">int</span> gridSize;
+     <span class="type">int</span> seaLevel;
+ };
+
+ <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> CppInstanceTable<span class="operator">::</span>getInstanceBuffer(<span class="type">int</span> <span class="operator">*</span>instanceCount)
+ {
+     <span class="keyword">if</span> (m_dirty) {
+         BlockTable blocks(m_gridSize<span class="operator">,</span> m_randomSeed);
+         m_instanceData<span class="operator">.</span>resize(<span class="number">0</span>);
+
+         <span class="keyword">auto</span> idxToPos <span class="operator">=</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>(<span class="type">int</span> i) <span class="operator">-</span><span class="operator">&gt;</span> <span class="type">float</span> { <span class="keyword">return</span> m_gridSpacing <span class="operator">*</span> (i <span class="operator">-</span> m_gridSize <span class="operator">/</span> <span class="number">2</span>); };
+
+         <span class="type">int</span> instanceNumber <span class="operator">=</span> <span class="number">0</span>;
+         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_gridSize; <span class="operator">+</span><span class="operator">+</span>i) {
+             <span class="type">float</span> xPos <span class="operator">=</span> idxToPos(i);
+             <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="number">0</span>; j <span class="operator">&lt;</span> m_gridSize; <span class="operator">+</span><span class="operator">+</span>j) {
+                 <span class="type">float</span> zPos <span class="operator">=</span> idxToPos(j);
+                 <span class="type">int</span> lowest <span class="operator">=</span> blocks<span class="operator">.</span>lowestVisible(i<span class="operator">,</span> j);
+                 <span class="type">int</span> highest <span class="operator">=</span> blocks<span class="operator">.</span>highestBlock(i<span class="operator">,</span> j);
+                 <span class="keyword">for</span> (<span class="type">int</span> k <span class="operator">=</span> lowest; k <span class="operator">&lt;</span><span class="operator">=</span> highest; <span class="operator">+</span><span class="operator">+</span>k) {
+                     <span class="type">float</span> yPos <span class="operator">=</span> idxToPos(k);
+                     <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> color <span class="operator">=</span> blocks<span class="operator">.</span>getBlockColor(i<span class="operator">,</span> j<span class="operator">,</span> k);
+                     <span class="type">float</span> waterAnimation <span class="operator">=</span> blocks<span class="operator">.</span>isWaterSurface(i<span class="operator">,</span> j<span class="operator">,</span> k) <span class="operator">?</span> <span class="number">1.0</span> : <span class="number">0.0</span>;
+                     <span class="keyword">auto</span> entry <span class="operator">=</span> calculateTableEntry({ xPos<span class="operator">,</span> yPos<span class="operator">,</span> zPos }<span class="operator">,</span> { <span class="number">1.0</span><span class="operator">,</span> <span class="number">1.0</span><span class="operator">,</span> <span class="number">1.0</span> }<span class="operator">,</span> {}<span class="operator">,</span> color<span class="operator">,</span> { waterAnimation<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span> });
+                     m_instanceData<span class="operator">.</span>append(<span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="keyword">const</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">&gt;</span>(<span class="operator">&amp;</span>entry)<span class="operator">,</span> <span class="keyword">sizeof</span>(entry));
+                     instanceNumber<span class="operator">+</span><span class="operator">+</span>;
+                 }
+             }
+         }
+         m_instanceCount <span class="operator">=</span> instanceNumber;
+         m_dirty <span class="operator">=</span> <span class="keyword">false</span>;
+     }
+     <span class="keyword">if</span> (instanceCount)
+         <span class="operator">*</span>instanceCount <span class="operator">=</span> m_instanceCount;
+
+     <span class="keyword">return</span> m_instanceData;
+ }
+</pre>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-proceduraltexture.qdoc -->
+  <meta name="description" content="Demonstrates how to provide custom texture data from C++ or QML.">
+  <title>Qt Quick 3D - Procedural Texture Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Procedural Texture Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Procedural Texture Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Helpers
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ import ProceduralTextureExample
+
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">480</span>
+     <span class="name">height</span>: <span class="number">320</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+     <span class="name">title</span>: <span class="string">&quot;Procedural Texture Example&quot;</span>
+
+     <span class="type"><a href="../qtqml/qml-qtqml-qtobject.html" translate="no">QtObject</a></span> {
+         <span class="name">id</span>: <span class="name">applicationState</span>
+         property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">size</span>: <span class="name">size256</span>.<span class="name">checked</span> ? <span class="number">256</span> : <span class="number">16</span>
+         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">startColor</span>: <span class="string">&quot;#00dbde&quot;</span>
+         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">endColor</span>: <span class="string">&quot;#fc00ff&quot;</span>
+         property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">filterMode</span>: <span class="name">size</span> <span class="operator">===</span> <span class="number">256</span> ? <span class="name">Texture</span>.<span class="name">Linear</span> : <span class="name">Texture</span>.<span class="name">Nearest</span>
+         property <span class="type"><a href="qml-qtquick3d-texture.html" translate="no">Texture</a></span> <span class="name">texture</span>: <span class="name">cppModeRadio</span>.<span class="name">checked</span> ? <span class="name">textureFromCpp</span> : <span class="name">textureFromQML</span>
+
+         <span class="keyword">function </span><span class="name">randomColor</span>() : color {
+             <span class="keyword">return</span> <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="name">Math</span>.<span class="name">random</span>(),
+                            <span class="name">Math</span>.<span class="name">random</span>(),
+                            <span class="name">Math</span>.<span class="name">random</span>(),
+                            <span class="number">1.0</span>);
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">z</span>: <span class="number">300</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-texture.html" translate="no">Texture</a></span> {
+             <span class="name">id</span>: <span class="name">textureFromCpp</span>
+
+             <span class="name">minFilter</span>: <span class="name">applicationState</span>.<span class="name">filterMode</span>
+             <span class="name">magFilter</span>: <span class="name">applicationState</span>.<span class="name">filterMode</span>
+             <span class="name">textureData</span>: <span class="name">gradientTexture</span>
+
+             <span class="type">GradientTexture</span> {
+                 <span class="name">id</span>: <span class="name">gradientTexture</span>
+                 <span class="name">startColor</span>: <span class="name">applicationState</span>.<span class="name">startColor</span>
+                 <span class="name">endColor</span>: <span class="name">applicationState</span>.<span class="name">endColor</span>
+                 <span class="name">width</span>: <span class="name">applicationState</span>.<span class="name">size</span>
+                 <span class="name">height</span>: <span class="name">width</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-texture.html" translate="no">Texture</a></span> {
+             <span class="name">id</span>: <span class="name">textureFromQML</span>
+             <span class="name">minFilter</span>: <span class="name">applicationState</span>.<span class="name">filterMode</span>
+             <span class="name">magFilter</span>: <span class="name">applicationState</span>.<span class="name">filterMode</span>
+             <span class="name">textureData</span>: <span class="name">gradientTextureDataQML</span>
+
+             <span class="type">ProceduralTextureData</span> {
+                 <span class="name">id</span>: <span class="name">gradientTextureDataQML</span>
+
+                 property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">startColor</span>: <span class="name">applicationState</span>.<span class="name">startColor</span>
+                 property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">endColor</span>: <span class="name">applicationState</span>.<span class="name">endColor</span>
+                 <span class="name">width</span>: <span class="name">applicationState</span>.<span class="name">size</span>
+                 <span class="name">height</span>: <span class="name">width</span>
+                 <span class="name">textureData</span>: <span class="name">generateTextureData</span>()
+
+                 <span class="keyword">function </span><span class="name">linearInterpolate</span>(startColor : <span class="name">color</span>, endColor : color, fraction : real) : color{
+                     <span class="keyword">return</span> <span class="name">Qt</span>.<span class="name">rgba</span>(
+                                 <span class="name">startColor</span>.<span class="name">r</span> <span class="operator">+</span> (<span class="name">endColor</span>.<span class="name">r</span> <span class="operator">-</span> <span class="name">startColor</span>.<span class="name">r</span>) <span class="operator">*</span> <span class="name">fraction</span>,
+                                 <span class="name">startColor</span>.<span class="name">g</span> <span class="operator">+</span> (<span class="name">endColor</span>.<span class="name">g</span> <span class="operator">-</span> <span class="name">startColor</span>.<span class="name">g</span>) <span class="operator">*</span> <span class="name">fraction</span>,
+                                 <span class="name">startColor</span>.<span class="name">b</span> <span class="operator">+</span> (<span class="name">endColor</span>.<span class="name">b</span> <span class="operator">-</span> <span class="name">startColor</span>.<span class="name">b</span>) <span class="operator">*</span> <span class="name">fraction</span>,
+                                 <span class="name">startColor</span>.<span class="name">a</span> <span class="operator">+</span> (<span class="name">endColor</span>.<span class="name">a</span> <span class="operator">-</span> <span class="name">startColor</span>.<span class="name">a</span>) <span class="operator">*</span> <span class="name">fraction</span>
+                                 );
+                 }
+
+                 <span class="keyword">function </span><span class="name">generateTextureData</span>() : ArrayBuffer {
+                     let dataBuffer = new <span class="name">ArrayBuffer</span>(<span class="name">width</span> <span class="operator">*</span> <span class="name">height</span> <span class="operator">*</span> <span class="number">4</span>)
+                     let data = new <span class="name">Uint8Array</span>(<span class="name">dataBuffer</span>)
+
+                     let gradientScanline = new <span class="name">Uint8Array</span>(<span class="name">width</span> <span class="operator">*</span> <span class="number">4</span>);
+
+                     <span class="keyword">for</span> (let x = 0; <span class="name">x</span> <span class="operator">&lt;</span> <span class="name">width</span>; ++<span class="name">x</span>) {
+                         let color = <span class="name">linearInterpolate</span>(<span class="name">startColor</span>, <span class="name">endColor</span>, <span class="name">x</span> <span class="operator">/</span> <span class="name">width</span>);
+                         let offset = <span class="name">x</span> <span class="operator">*</span> <span class="number">4</span>;
+                         <span class="name">gradientScanline</span>[<span class="name">offset</span> <span class="operator">+</span> <span class="number">0</span>] <span class="operator">=</span> <span class="name">color</span>.<span class="name">r</span> <span class="operator">*</span> <span class="number">255</span>;
+                         <span class="name">gradientScanline</span>[<span class="name">offset</span> <span class="operator">+</span> <span class="number">1</span>] <span class="operator">=</span> <span class="name">color</span>.<span class="name">g</span> <span class="operator">*</span> <span class="number">255</span>;
+                         <span class="name">gradientScanline</span>[<span class="name">offset</span> <span class="operator">+</span> <span class="number">2</span>] <span class="operator">=</span> <span class="name">color</span>.<span class="name">b</span> <span class="operator">*</span> <span class="number">255</span>;
+                         <span class="name">gradientScanline</span>[<span class="name">offset</span> <span class="operator">+</span> <span class="number">3</span>] <span class="operator">=</span> <span class="name">color</span>.<span class="name">a</span> <span class="operator">*</span> <span class="number">255</span>;
+                     }
+
+                     <span class="keyword">for</span> (let y = 0; <span class="name">y</span> <span class="operator">&lt;</span> <span class="name">height</span>; ++<span class="name">y</span>) {
+                         <span class="name">data</span>.<span class="name">set</span>(<span class="name">gradientScanline</span>, <span class="name">y</span> <span class="operator">*</span> <span class="name">width</span> <span class="operator">*</span> <span class="number">4</span>);
+                     }
+
+                     <span class="keyword">return</span> <span class="name">dataBuffer</span>;
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Cube&quot;</span>
+
+             <span class="name">materials</span>: [
+                 <span class="type"><a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a></span> {
+                     <span class="name">baseColorMap</span>: <span class="name">applicationState</span>.<span class="name">texture</span>
+                 }
+             ]
+
+             PropertyAnimation on <span class="name">eulerRotation</span>.y {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">duration</span>: <span class="number">5000</span>
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="name">running</span>: <span class="number">true</span>
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-pane.html" translate="no">Pane</a></span> {
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-groupbox.html" translate="no">GroupBox</a></span> {
+                 <span class="name">title</span>: <span class="string">&quot;Size:&quot;</span>
+
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-buttongroup.html" translate="no">ButtonGroup</a></span>  {
+                     <span class="name">id</span>: <span class="name">sizeGroup</span>
+                 }
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+                         <span class="name">id</span>: <span class="name">size256</span>
+                         <span class="name">text</span>: <span class="string">&quot;256x256&quot;</span>
+                         <span class="name">checked</span>: <span class="number">true</span>
+                         <span class="name">ButtonGroup</span>.group: <span class="name">sizeGroup</span>
+                     }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+                         <span class="name">id</span>: <span class="name">size512</span>
+                         <span class="name">text</span>: <span class="string">&quot;16x16&quot;</span>
+                         <span class="name">checked</span>: <span class="number">false</span>
+                         <span class="name">ButtonGroup</span>.group: <span class="name">sizeGroup</span>
+                     }
+                 }
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-groupbox.html" translate="no">GroupBox</a></span> {
+                 <span class="name">title</span>: <span class="string">&quot;Backend:&quot;</span>
+
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-buttongroup.html" translate="no">ButtonGroup</a></span> {
+                     <span class="name">id</span>: <span class="name">backendGroup</span>
+                 }
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+                         <span class="name">id</span>: <span class="name">cppModeRadio</span>
+                         <span class="name">text</span>: <span class="string">&quot;C++&quot;</span>
+                         <span class="name">checked</span>: <span class="number">true</span>
+                         <span class="name">ButtonGroup</span>.group: <span class="name">backendGroup</span>
+                     }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+                         <span class="name">id</span>: <span class="name">qmlModeRadio</span>
+                         <span class="name">text</span>: <span class="string">&quot;QML&quot;</span>
+                         <span class="name">checked</span>: <span class="number">false</span>
+                         <span class="name">ButtonGroup</span>.group: <span class="name">backendGroup</span>
+                     }
+                 }
+
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Random Start Color&quot;</span>
+                 <span class="name">onClicked</span>: <span class="name">applicationState</span>.<span class="name">startColor</span> <span class="operator">=</span> <span class="name">applicationState</span>.<span class="name">randomColor</span>();
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Random End Color&quot;</span>
+                 <span class="name">onClicked</span>: <span class="name">applicationState</span>.<span class="name">endColor</span> <span class="operator">=</span> <span class="name">applicationState</span>.<span class="name">randomColor</span>();
+             }
+         }
+     }
+ }
+</pre>

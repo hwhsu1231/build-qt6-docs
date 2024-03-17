@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-principledmaterial.qdoc -->
+  <meta name="description" content="Demonstrates the use of Principled Material.">
+  <title>Qt Quick 3D - Principled Material Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Principled Material Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Principled Material Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2022 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Effects
+ import QtQuick3D.Helpers
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">1280</span>
+     <span class="name">height</span>: <span class="number">720</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+     <span class="name">title</span>: <span class="string">&quot;Principled Materials Example&quot;</span>
+     <span class="comment">//color: &quot;black&quot;</span>
+     <span class="name">color</span>: <span class="string">&quot;#848895&quot;</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">source</span>: <span class="string">&quot;maps/grid.png&quot;</span>
+         <span class="name">fillMode</span>: <span class="name">Image</span>.<span class="name">Tile</span>
+         <span class="name">horizontalAlignment</span>: <span class="name">Image</span>.<span class="name">AlignLeft</span>
+         <span class="name">verticalAlignment</span>: <span class="name">Image</span>.<span class="name">AlignTop</span>
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-splitview.html" translate="no">SplitView</a></span> {
+         <span class="name">id</span>: <span class="name">splitView</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-page.html" translate="no">Page</a></span> {
+             <span class="name">id</span>: <span class="name">toolPage</span>
+             <span class="name">SplitView</span>.fillHeight: <span class="number">true</span>
+             <span class="name">SplitView</span>.preferredWidth: <span class="number">420</span>
+             <span class="name">SplitView</span>.minimumWidth: <span class="number">300</span>
+             <span class="name">header</span>: <span class="name">TabBar</span> {
+                <span class="name">id</span>: <span class="name">tabBar</span>
+                <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                    <span class="name">text</span>: <span class="string">&quot;Basics&quot;</span>
+                }
+                <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                    <span class="name">text</span>: <span class="string">&quot;Alpha&quot;</span>
+                }
+                <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                    <span class="name">text</span>: <span class="string">&quot;Details&quot;</span>
+                }
+                <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                    <span class="name">text</span>: <span class="string">&quot;Clearcoat&quot;</span>
+                }
+                <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                    <span class="name">text</span>: <span class="string">&quot;Refraction&quot;</span>
+                }
+                <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                    <span class="name">text</span>: <span class="string">&quot;Special&quot;</span>
+                }
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-layouts-stacklayout.html" translate="no">StackLayout</a></span> {
+                 <span class="name">id</span>: <span class="name">toolPageSwipeView</span>
+                 <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                 <span class="name">anchors</span>.margins: <span class="number">10</span>
+                 <span class="name">currentIndex</span>: <span class="name">tabBar</span>.<span class="name">currentIndex</span>
+
+                 <span class="type">BasicsPane</span> {
+                     <span class="name">id</span>: <span class="name">basicsPane</span>
+                     <span class="name">principledMaterial</span>: <span class="name">basicMaterial</span>
+                     <span class="name">specularGlossyMaterial</span>: <span class="name">specularGlossyMaterial</span>
+                 }
+
+                 <span class="type">AlphaPane</span> {
+                     <span class="name">targetMaterial</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? <span class="name">specularGlossyMaterial</span> : <span class="name">basicMaterial</span>
+                     <span class="name">specularGlossyMode</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span>
+                 }
+
+                 <span class="type">DetailsPane</span> {
+                     <span class="name">targetMaterial</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? <span class="name">specularGlossyMaterial</span> : <span class="name">basicMaterial</span>
+                     <span class="name">view3D</span>: <span class="name">viewport</span>
+                 }
+
+                 <span class="type">ClearcoatPane</span> {
+                     <span class="name">targetMaterial</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? <span class="name">specularGlossyMaterial</span> : <span class="name">basicMaterial</span>
+                 }
+
+                 <span class="type">RefractionPane</span> {
+                     <span class="name">targetMaterial</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? <span class="name">specularGlossyMaterial</span> : <span class="name">basicMaterial</span>
+                     <span class="name">specularGlossyMode</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span>
+                 }
+
+                 <span class="type">SpecialPane</span> {
+                     <span class="name">targetMaterial</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? <span class="name">specularGlossyMaterial</span> : <span class="name">basicMaterial</span>
+                     <span class="name">linesModel</span>: <span class="name">linesLogo</span>
+                     <span class="name">pointsModel</span>: <span class="name">pointsLogo</span>
+                     <span class="name">specularGlossyMode</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span>
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+             <span class="name">id</span>: <span class="name">viewport</span>
+             <span class="name">SplitView</span>.fillHeight: <span class="number">true</span>
+             <span class="name">SplitView</span>.fillWidth: <span class="number">true</span>
+             <span class="name">SplitView</span>.minimumWidth: <span class="name">splitView</span>.<span class="name">width</span> <span class="operator">*</span> <span class="number">0.5</span>
+             <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+                 property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">enableEffects</span>: <span class="number">false</span>
+                 <span class="name">antialiasingMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">MSAA</span>
+                 <span class="name">antialiasingQuality</span>: <span class="name">SceneEnvironment</span>.<span class="name">High</span>
+                 <span class="name">lightProbe</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;maps/OpenfootageNET_garage-1024.hdr&quot;</span>
+                 }
+                 <span class="name">effects</span>: <span class="name">enableEffects</span> ? [<span class="name">bloom</span>, <span class="name">scurveTonemap</span>] : []
+                 <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">SkyBox</span>
+
+                 <span class="type"><a href="qml-qtquick3d-effects-scurvetonemap.html" translate="no">SCurveTonemap</a></span> {
+                     <span class="name">id</span>: <span class="name">scurveTonemap</span>
+                 }
+                 <span class="type"><a href="qml-qtquick3d-effects-hdrbloomtonemap.html" translate="no">HDRBloomTonemap</a></span> {
+                     <span class="name">id</span>: <span class="name">bloom</span>
+                 }
+             }
+             <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                 <span class="name">id</span>: <span class="name">originNode</span>
+                 <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+                     <span class="name">id</span>: <span class="name">cameraNode</span>
+                     <span class="name">z</span>: <span class="number">600</span>
+                     <span class="name">clipNear</span>: <span class="number">1</span>
+                     <span class="name">clipFar</span>: <span class="number">10000</span>
+                 }
+             }
+
+             property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">specularGlossyMode</span>: <span class="name">basicsPane</span>.<span class="name">specularGlossyMode</span>
+
+             <span class="type"><a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a></span> {
+                 <span class="name">id</span>: <span class="name">basicMaterial</span>
+                 <span class="name">baseColor</span>: <span class="string">&quot;red&quot;</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-specularglossymaterial.html" translate="no">SpecularGlossyMaterial</a></span> {
+                 <span class="name">id</span>: <span class="name">specularGlossyMaterial</span>
+                 property <span class="type">alias</span> <span class="name">baseColor</span>: <span class="name">specularGlossyMaterial</span>.<span class="name">albedoColor</span>
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">specularAmount</span>: <span class="number">1.0</span>
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">specularTint</span>: <span class="number">1.0</span>
+
+                 <span class="name">specularColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.22</span>, <span class="number">0.22</span>, <span class="number">0.22</span>, <span class="number">1.0</span>)
+                 <span class="name">albedoColor</span>: <span class="string">&quot;red&quot;</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">id</span>: <span class="name">cube</span>
+                 <span class="name">source</span>: <span class="string">&quot;#Cube&quot;</span>
+                 <span class="name">materials</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? [ <span class="name">specularGlossyMaterial</span> ] : [ <span class="name">basicMaterial</span> ]
+                 <span class="name">pickable</span>: <span class="number">true</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">id</span>: <span class="name">sphereModel</span>
+                 <span class="name">x</span>: -<span class="number">200</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.5</span>, <span class="number">1.5</span>, <span class="number">1.5</span>)
+                 <span class="name">source</span>: <span class="string">&quot;#Sphere&quot;</span>
+                 <span class="name">materials</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? [ <span class="name">specularGlossyMaterial</span> ] : [ <span class="name">basicMaterial</span> ]
+                 <span class="name">pickable</span>: <span class="number">true</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">id</span>: <span class="name">monkeyMesh</span>
+                 <span class="name">x</span>: <span class="number">250</span>
+                 <span class="name">source</span>: <span class="string">&quot;meshes/suzanne.mesh&quot;</span>
+                 <span class="name">materials</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? [ <span class="name">specularGlossyMaterial</span> ] : [ <span class="name">basicMaterial</span> ]
+                 <span class="name">pickable</span>: <span class="number">true</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">id</span>: <span class="name">linesLogo</span>
+                 <span class="name">y</span>: <span class="number">200</span>
+                 <span class="name">x</span>: -<span class="number">100</span>
+                 <span class="name">source</span>: <span class="string">&quot;meshes/logo_lines.mesh&quot;</span>
+                 <span class="name">materials</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? [ <span class="name">specularGlossyMaterial</span> ] : [ <span class="name">basicMaterial</span> ]
+                 <span class="name">pickable</span>: <span class="number">true</span>
+                 <span class="name">visible</span>: <span class="number">false</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">id</span>: <span class="name">pointsLogo</span>
+                 <span class="name">y</span>: <span class="number">200</span>
+                 <span class="name">x</span>: <span class="number">100</span>
+                 <span class="name">source</span>: <span class="string">&quot;meshes/logo_points.mesh&quot;</span>
+                 <span class="name">materials</span>: <span class="name">viewport</span>.<span class="name">specularGlossyMode</span> ? [ <span class="name">specularGlossyMaterial</span> ] : [ <span class="name">basicMaterial</span> ]
+                 <span class="name">pickable</span>: <span class="number">true</span>
+                 <span class="name">visible</span>: <span class="number">false</span>
+             }
+             <span class="type"><a href="qml-qtquick3d-resourceloader.html" translate="no">ResourceLoader</a></span> {
+                 <span class="name">meshSources</span>: [
+                     <span class="string">&quot;meshes/logo_lines.mesh&quot;</span>,
+                     <span class="string">&quot;meshes/logo_points.mesh&quot;</span>
+                 ]
+             }
+
+             <span class="type">BackgroundCurtain</span> {
+                 <span class="name">visible</span>: <span class="name">curtainToggleButton</span>.<span class="name">checked</span>
+                 <span class="name">y</span>: -<span class="number">150</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-helpers-orbitcameracontroller.html" translate="no">OrbitCameraController</a></span> {
+                 <span class="name">origin</span>: <span class="name">originNode</span>
+                 <span class="name">camera</span>: <span class="name">cameraNode</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+                 <span class="name">id</span>: <span class="name">pickController</span>
+                 <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                 <span class="name">onClicked</span>: <span class="keyword">function</span>(mouse) {
+                     let pickResult = <span class="name">viewport</span>.<span class="name">pick</span>(<span class="name">mouse</span>.<span class="name">x</span>, <span class="name">mouse</span>.<span class="name">y</span>);
+                     <span class="keyword">if</span> (<span class="name">pickResult</span>.<span class="name">objectHit</span>) {
+                         let pickedObject = <span class="name">pickResult</span>.<span class="name">objectHit</span>;
+                         <span class="comment">// Move the camera orbit origin to be the clicked object</span>
+                         <span class="name">originNode</span>.<span class="name">position</span> <span class="operator">=</span> <span class="name">pickedObject</span>.<span class="name">position</span>
+                     }
+                 }
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">id</span>: <span class="name">curtainToggleButton</span>
+                 <span class="name">text</span>: <span class="name">checked</span> ? <span class="string">&quot;Hide Curtain&quot;</span> : <span class="string">&quot;Show Curtain&quot;</span>
+                 <span class="name">checkable</span>: <span class="number">true</span>
+                 <span class="name">checked</span>: <span class="number">true</span>
+                 <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+                 <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                 <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                     <span class="name">text</span>: <span class="string">&quot;Drag Background to Orbit Camera, Touch/Click a Model to Center Camera&quot;</span>
+                     <span class="name">color</span>: <span class="string">&quot;#dddddd&quot;</span>
+                 }
+             }
+         }
+     }
+ }
+</pre>

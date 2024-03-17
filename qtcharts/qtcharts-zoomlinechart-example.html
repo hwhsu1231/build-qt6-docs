@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- examples-zoomlinechart.qdoc -->
+  <meta name="description" content="The example shows how to create your own custom zooming effect.">
+  <title>Zoom Line Example | Qt Charts 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtcharts-index.html" translate="no">Qt Charts</a></li>
+<li><a href="qtcharts-examples.html" translate="no">Qt Charts Examples</a></li>
+<li>Zoom Line Example</li>
+<li id="buildversion"><a href="qtcharts-index.html" translate="no">Qt Charts | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#customizing-zooming-effects">Customizing Zooming Effects</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Zoom Line Example</h1>
+<!-- $$$zoomlinechart-brief -->
+<p>The example shows how to create your own custom zooming effect.</p>
+<!-- @@@zoomlinechart -->
+<!-- $$$zoomlinechart-description -->
+<div class="descr" id="details">
+<p>The example shows how to create your own custom zooming effect with <a href="../qtwidgets/qrubberband.html" translate="no">QRubberBand</a> by using a mouse and how to use touch gestures for paning and zooming.</p>
+<p class="centerAlign"><img src="images/examples_zoomlinechart1.png" alt="" /></p><p class="centerAlign"><img src="images/examples_zoomlinechart2.png" alt="" /></p><h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="customizing-zooming-effects">Customizing Zooming Effects</h4>
+<p>Let's first create a line series with some example data.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">auto</span> series <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qlineseries.html" translate="no">QLineSeries</a></span>;
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">500</span>; i<span class="operator">+</span><span class="operator">+</span>) {
+         <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span> p((<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>) i<span class="operator">,</span> <a href="../qtcore/qtmath.html#qSin" translate="no">qSin</a>(M_PI <span class="operator">/</span> <span class="number">50</span> <span class="operator">*</span> i) <span class="operator">*</span> <span class="number">100</span>);
+         p<span class="operator">.</span>ry() <span class="operator">+</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qrandomgenerator.html" translate="no">QRandomGenerator</a></span><span class="operator">::</span>global()<span class="operator">-</span><span class="operator">&gt;</span>bounded(<span class="number">20</span>);
+         <span class="operator">*</span>series <span class="operator">&lt;</span><span class="operator">&lt;</span> p;
+     }
+</pre>
+<p>Then we create a custom chart view by deriving from <a href="qchartview.html" translate="no">QChartView</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> ChartView : <span class="keyword">public</span> <span class="type"><a href="qchartview.html" translate="no">QChartView</a></span>
+</pre>
+<p>We override mouse and key event handling</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">protected</span>:
+     <span class="type">bool</span> viewportEvent(<span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span> <span class="operator">*</span>event);
+     <span class="type">void</span> mousePressEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event);
+     <span class="type">void</span> mouseMoveEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event);
+     <span class="type">void</span> mouseReleaseEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event);
+     <span class="type">void</span> keyPressEvent(<span class="type"><a href="../qtgui/qkeyevent.html" translate="no">QKeyEvent</a></span> <span class="operator">*</span>event);
+</pre>
+<p>Then we implement a custom logic for mouse and key events. For example pressing the '+' key will zoom in and pressing the '-' key will zoom out.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ChartView<span class="operator">::</span>keyPressEvent(<span class="type"><a href="../qtgui/qkeyevent.html" translate="no">QKeyEvent</a></span> <span class="operator">*</span>event)
+ {
+     <span class="keyword">switch</span> (event<span class="operator">-</span><span class="operator">&gt;</span>key()) {
+     <span class="keyword">case</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Key_Plus:
+         chart()<span class="operator">-</span><span class="operator">&gt;</span>zoomIn();
+         <span class="keyword">break</span>;
+     <span class="keyword">case</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Key_Minus:
+         chart()<span class="operator">-</span><span class="operator">&gt;</span>zoomOut();
+         <span class="keyword">break</span>;
+</pre>
+<p>We also create our own <a href="qchart.html" translate="no">QChart</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> Chart : <span class="keyword">public</span> <span class="type"><a href="qchart.html" translate="no">QChart</a></span>
+</pre>
+<p>Where we can handle the gestures:</p>
+<pre class="cpp" translate="no">
+ <span class="type">bool</span> Chart<span class="operator">::</span>sceneEvent(<span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span> <span class="operator">*</span>event)
+ {
+     <span class="keyword">if</span> (event<span class="operator">-</span><span class="operator">&gt;</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span><span class="operator">::</span>Gesture)
+         <span class="keyword">return</span> gestureEvent(<span class="keyword">static_cast</span><span class="operator">&lt;</span><span class="type"><a href="../qtwidgets/qgestureevent.html" translate="no">QGestureEvent</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(event));
+     <span class="keyword">return</span> <span class="type"><a href="qchart.html" translate="no">QChart</a></span><span class="operator">::</span>event(event);
+ }
+
+ <span class="type">bool</span> Chart<span class="operator">::</span>gestureEvent(<span class="type"><a href="../qtwidgets/qgestureevent.html" translate="no">QGestureEvent</a></span> <span class="operator">*</span>event)
+ {
+     <span class="keyword">if</span> (<span class="type"><a href="../qtwidgets/qgesture.html" translate="no">QGesture</a></span> <span class="operator">*</span>gesture <span class="operator">=</span> event<span class="operator">-</span><span class="operator">&gt;</span>gesture(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>PanGesture)) {
+         <span class="keyword">auto</span> pan <span class="operator">=</span> <span class="keyword">static_cast</span><span class="operator">&lt;</span><span class="type"><a href="../qtwidgets/qpangesture.html" translate="no">QPanGesture</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(gesture);
+         <span class="type"><a href="qchart.html" translate="no">QChart</a></span><span class="operator">::</span>scroll(<span class="operator">-</span>(pan<span class="operator">-</span><span class="operator">&gt;</span>delta()<span class="operator">.</span>x())<span class="operator">,</span> pan<span class="operator">-</span><span class="operator">&gt;</span>delta()<span class="operator">.</span>y());
+     }
+
+     <span class="keyword">if</span> (<span class="type"><a href="../qtwidgets/qgesture.html" translate="no">QGesture</a></span> <span class="operator">*</span>gesture <span class="operator">=</span> event<span class="operator">-</span><span class="operator">&gt;</span>gesture(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>PinchGesture)) {
+         <span class="keyword">auto</span> pinch <span class="operator">=</span> <span class="keyword">static_cast</span><span class="operator">&lt;</span><span class="type"><a href="../qtwidgets/qpinchgesture.html" translate="no">QPinchGesture</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(gesture);
+         <span class="keyword">if</span> (pinch<span class="operator">-</span><span class="operator">&gt;</span>changeFlags() <span class="operator">&amp;</span> <span class="type"><a href="../qtwidgets/qpinchgesture.html" translate="no">QPinchGesture</a></span><span class="operator">::</span>ScaleFactorChanged)
+             <span class="type"><a href="qchart.html" translate="no">QChart</a></span><span class="operator">::</span>zoom(pinch<span class="operator">-</span><span class="operator">&gt;</span>scaleFactor());
+     }
+
+     <span class="keyword">return</span> <span class="keyword">true</span>;
+ }
+</pre>
+<p>Note that you will need to call grabGesture() to both <a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a> and <a href="qchart.html" translate="no">QChart</a>.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtcharts.git/tree/examples/charts/zoomlinechart?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@zoomlinechart -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

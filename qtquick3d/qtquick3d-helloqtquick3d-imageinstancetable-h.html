@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- helloqtquick3d.qdoc -->
+  <meta name="description" content="Demonstrates simple instanced drawing.">
+  <title>Hello Qt Quick 3D Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Hello Qt Quick 3D Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Hello Qt Quick 3D Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &lt;QtQuick3D/qquick3dinstancing.h&gt;</span>
+
+ <span class="keyword">class</span> ImageInstanceTable : <span class="keyword">public</span> QQuick3DInstancing
+ {
+     Q_OBJECT
+     QML_ELEMENT
+
+     Q_PROPERTY(<span class="type">int</span> gridSize READ gridSize WRITE setGridSize NOTIFY gridSizeChanged)
+     Q_PROPERTY(<span class="type">float</span> gridSpacing READ gridSpacing WRITE setGridSpacing NOTIFY gridSpacingChanged)
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> image READ image WRITE setImage NOTIFY imageChanged)
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> ImageInstanceTable(QQuick3DObject <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+     <span class="operator">~</span>ImageInstanceTable() override;
+
+     <span class="type">int</span> gridSize() <span class="keyword">const</span>;
+     <span class="type">float</span> gridSpacing() <span class="keyword">const</span>;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> image() <span class="keyword">const</span>;
+
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> setGridSize(<span class="type">int</span> gridSize);
+     <span class="type">void</span> setGridSpacing(<span class="type">float</span> gridSpacing);
+     <span class="type">void</span> setImage(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> image);
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> gridSizeChanged(<span class="type">int</span> gridSize);
+     <span class="type">void</span> gridSpacingChanged(<span class="type">float</span> gridSpacing);
+     <span class="type">void</span> imageChanged(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> image);
+
+ <span class="keyword">protected</span>:
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> getInstanceBuffer(<span class="type">int</span> <span class="operator">*</span>instanceCount) override;
+
+ <span class="keyword">private</span>:
+     <span class="type">int</span> m_instanceCount <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> m_instanceData;
+     <span class="type">bool</span> m_dirty <span class="operator">=</span> <span class="keyword">true</span>;
+     <span class="type">int</span> m_gridSize <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">float</span> m_gridSpacing <span class="operator">=</span> <span class="number">100</span>;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> m_imageSource;
+ };
+</pre>

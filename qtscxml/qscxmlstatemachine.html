@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qscxmlstatemachine.cpp -->
+  <meta name="description" content="The QScxmlStateMachine class provides an interface to the state machines created from SCXML files.">
+  <title>QScxmlStateMachine Class | Qt SCXML 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtscxml-index.html" translate="no">Qt SCXML</a></li>
+<li><a href="qtscxml-module.html" translate="no">C++ Classes</a></li>
+<li>QScxmlStateMachine</li>
+<li id="buildversion"><a href="qtscxml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#public-slots">Public Slots</a></li>
+<li class="level1"><a href="#signals">Signals</a></li>
+<li class="level1"><a href="#static-public-members">Static Public Members</a></li>
+<li class="level1"><a href="#protected-functions">Protected Functions</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">QScxmlStateMachine Class</h1>
+<!-- $$$QScxmlStateMachine-brief -->
+<p>The QScxmlStateMachine class provides an interface to the state machines created from SCXML files. <a href="#details">More...</a></p>
+<!-- @@@QScxmlStateMachine -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign">  <span class="preprocessor">#include &lt;QScxmlStateMachine&gt;</span></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> CMake:</td><td class="memItemRight bottomAlign"> find_package(Qt6 REQUIRED COMPONENTS Scxml) <br/>
+target_link_libraries(mytarget PRIVATE Qt6::Scxml)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> qmake:</td><td class="memItemRight bottomAlign"> QT += scxml</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Instantiated By:</td><td class="memItemRight bottomAlign"> <a href="qml-qtscxml-scxmlstatemachine.html" translate="no">ScxmlStateMachine</a></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <a href="../qtcore/qobject.html" translate="no">QObject</a></td></tr>
+</table></div>
+<ul>
+<li><a href="qscxmlstatemachine-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<div class="table"><table class="propsummary" translate="no">
+<tr><td class="topAlign"><ul>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#dataModel-prop" translate="no">dataModel</a></b> : QScxmlDataModel*</li>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#initialValues-prop" translate="no">initialValues</a></b> : QVariantMap</li>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#initialized-prop" translate="no">initialized</a></b> : bool</li>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#invoked-prop" translate="no">invoked</a></b> : const bool</li>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#invokedServices-prop" translate="no">invokedServices</a></b> : QList&lt;QScxmlInvokableService*&gt;</li>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#loader-prop" translate="no">loader</a></b> : QScxmlCompiler::Loader*</li>
+</ul></td><td class="topAlign"><ul>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#name-prop" translate="no">name</a></b> : const QString</li>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#parseErrors-prop" translate="no">parseErrors</a></b> : const QList&lt;QScxmlError&gt;</li>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#running-prop" translate="no">running</a></b> : bool</li>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#sessionId-prop" translate="no">sessionId</a></b> : const QString</li>
+<li class="fn" translate="no"><b><a href="qscxmlstatemachine.html#tableData-prop" translate="no">tableData</a></b> : QScxmlTableData*</li>
+</ul>
+</td></tr>
+</table></div>
+<h2 id="public-functions">Public Functions</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> QStringList </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#activeStateNames" translate="no">activeStateNames</a></b>(bool <i>compress</i> = true) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QBindable&lt;QScxmlDataModel *&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#dataModel-prop" translate="no">bindableDataModel</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QBindable&lt;QVariantMap&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#initialValues-prop" translate="no">bindableInitialValues</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QBindable&lt;bool&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#initialized-prop" translate="no">bindableInitialized</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QBindable&lt;QList&lt;QScxmlInvokableService *&gt;&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#invokedServices-prop" translate="no">bindableInvokedServices</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QBindable&lt;QScxmlCompiler::Loader *&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#loader-prop" translate="no">bindableLoader</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QBindable&lt;QScxmlTableData *&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#tableData-prop" translate="no">bindableTableData</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#cancelDelayedEvent" translate="no">cancelDelayedEvent</a></b>(const QString &amp;<i>sendId</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QMetaObject::Connection </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#connectToEvent" translate="no">connectToEvent</a></b>(const QString &amp;<i>scxmlEventSpec</i>, const QObject *<i>receiver</i>, const char *<i>method</i>, Qt::ConnectionType <i>type</i> = Qt::AutoConnection)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QMetaObject::Connection </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#connectToEvent-1" translate="no">connectToEvent</a></b>(const QString &amp;<i>scxmlEventSpec</i>, const QObject *<i>context</i>, Functor &amp;&amp;<i>functor</i>, Qt::ConnectionType <i>type</i> = Qt::AutoConnection)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QMetaObject::Connection </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#connectToEvent-2" translate="no">connectToEvent</a></b>(const QString &amp;<i>scxmlEventSpec</i>, Functor &amp;&amp;<i>functor</i>, Qt::ConnectionType <i>type</i> = Qt::AutoConnection)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QMetaObject::Connection </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#connectToState" translate="no">connectToState</a></b>(const QString &amp;<i>scxmlStateName</i>, const QObject *<i>receiver</i>, const char *<i>method</i>, Qt::ConnectionType <i>type</i> = Qt::AutoConnection)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QMetaObject::Connection </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#connectToState-1" translate="no">connectToState</a></b>(const QString &amp;<i>scxmlStateName</i>, const QObject *<i>context</i>, Functor &amp;&amp;<i>functor</i>, Qt::ConnectionType <i>type</i> = Qt::AutoConnection)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QMetaObject::Connection </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#connectToState-2" translate="no">connectToState</a></b>(const QString &amp;<i>scxmlStateName</i>, Functor &amp;&amp;<i>functor</i>, Qt::ConnectionType <i>type</i> = Qt::AutoConnection)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QScxmlDataModel *</td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#dataModel" translate="no">dataModel</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QVariantMap </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#initialValues-prop" translate="no">initialValues</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QList&lt;QScxmlInvokableService *&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#invokedServices-prop" translate="no">invokedServices</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#isActive" translate="no">isActive</a></b>(const QString &amp;<i>scxmlStateName</i>) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#isDispatchableTarget" translate="no">isDispatchableTarget</a></b>(const QString &amp;<i>target</i>) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#initialized-prop" translate="no">isInitialized</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#invoked-prop" translate="no">isInvoked</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#isRunning" translate="no">isRunning</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QScxmlCompiler::Loader *</td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#loader-prop" translate="no">loader</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#name-prop" translate="no">name</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QList&lt;QScxmlError&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#parseErrors-prop" translate="no">parseErrors</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#sessionId-prop" translate="no">sessionId</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#setDataModel" translate="no">setDataModel</a></b>(QScxmlDataModel *<i>model</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#initialValues-prop" translate="no">setInitialValues</a></b>(const QVariantMap &amp;<i>initialValues</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#loader-prop" translate="no">setLoader</a></b>(QScxmlCompiler::Loader *<i>loader</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#setRunning" translate="no">setRunning</a></b>(bool <i>running</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#tableData-prop" translate="no">setTableData</a></b>(QScxmlTableData *<i>tableData</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QStringList </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#stateNames" translate="no">stateNames</a></b>(bool <i>compress</i> = true) const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#submitEvent" translate="no">submitEvent</a></b>(QScxmlEvent *<i>event</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#submitEvent-1" translate="no">submitEvent</a></b>(const QString &amp;<i>eventName</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#submitEvent-2" translate="no">submitEvent</a></b>(const QString &amp;<i>eventName</i>, const QVariant &amp;<i>data</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QScxmlTableData *</td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#tableData-prop" translate="no">tableData</a></b>() const</td></tr>
+</table></div>
+<h2 id="public-slots">Public Slots</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#init" translate="no">init</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#start" translate="no">start</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#stop" translate="no">stop</a></b>()</td></tr>
+</table></div>
+<h2 id="signals">Signals</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#dataModel-prop" translate="no">dataModelChanged</a></b>(QScxmlDataModel *<i>model</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#finished" translate="no">finished</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#initialValues-prop" translate="no">initialValuesChanged</a></b>(const QVariantMap &amp;<i>initialValues</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#initialized-prop" translate="no">initializedChanged</a></b>(bool <i>initialized</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#invokedServices-prop" translate="no">invokedServicesChanged</a></b>(const QList&lt;QScxmlInvokableService *&gt; &amp;<i>invokedServices</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#loader-prop" translate="no">loaderChanged</a></b>(QScxmlCompiler::Loader *<i>loader</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#log" translate="no">log</a></b>(const QString &amp;<i>label</i>, const QString &amp;<i>msg</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#reachedStableState" translate="no">reachedStableState</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#runningChanged" translate="no">runningChanged</a></b>(bool <i>running</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#tableData-prop" translate="no">tableDataChanged</a></b>(QScxmlTableData *<i>tableData</i>)</td></tr>
+</table></div>
+<h2 id="static-public-members">Static Public Members</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> QScxmlStateMachine *</td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#fromData" translate="no">fromData</a></b>(QIODevice *<i>data</i>, const QString &amp;<i>fileName</i> = QString())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QScxmlStateMachine *</td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#fromFile" translate="no">fromFile</a></b>(const QString &amp;<i>fileName</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::function&lt;void (bool)&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#onEntry" translate="no">onEntry</a></b>(const QObject *<i>receiver</i>, const char *<i>method</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::function&lt;void (bool)&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#onEntry-1" translate="no">onEntry</a></b>(Functor <i>functor</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::function&lt;void (bool)&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#onEntry-2" translate="no">onEntry</a></b>(const typename QtPrivate::FunctionPointer&lt;PointerToMemberFunction&gt;::Object *<i>receiver</i>, PointerToMemberFunction <i>method</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::function&lt;void (bool)&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#onExit" translate="no">onExit</a></b>(const QObject *<i>receiver</i>, const char *<i>method</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::function&lt;void (bool)&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#onExit-1" translate="no">onExit</a></b>(Functor <i>functor</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::function&lt;void (bool)&gt; </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#onExit-2" translate="no">onExit</a></b>(const typename QtPrivate::FunctionPointer&lt;PointerToMemberFunction&gt;::Object *<i>receiver</i>, PointerToMemberFunction <i>method</i>)</td></tr>
+</table></div>
+<h2 id="protected-functions">Protected Functions</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qscxmlstatemachine.html#isActive-1" translate="no">isActive</a></b>(int <i>stateIndex</i>) const</td></tr>
+</table></div>
+<!-- $$$QScxmlStateMachine-description -->
+<div class="descr">
+<h2 id="details">Detailed Description</h2>
+<p>QScxmlStateMachine is an implementation of the <a href="http://www.w3.org/TR/scxml/" translate="no">State Chart XML (SCXML)</a>.</p>
+<p>All states that are defined in the SCXML file are accessible as properties of QScxmlStateMachine. These properties are boolean values and indicate whether the state is active or inactive.</p>
+<div class="admonition note">
+<p><b>Note: </b>The QScxmlStateMachine needs a <a href="../qtcore/qeventloop.html" translate="no">QEventLoop</a> to work correctly. The event loop is used to implement the <code translate="no">delay</code> attribute for events and to schedule the processing of a state machine when events are received from nested (or parent) state machines.</p>
+</div>
+</div>
+<!-- @@@QScxmlStateMachine -->
+<div class="prop">
+<h2>Property Documentation</h2>
+<!-- $$$dataModel-prop$$$dataModel$$$setDataModelQScxmlDataModel*$$$dataModelChangedQScxmlDataModel*$$$bindableDataModel -->
+<h3 class="fn" translate="no" id="dataModel-prop"><code translate="no">[bindable] </code><span class="name">dataModel</span> : <span class="type"><a href="qscxmldatamodel.html" translate="no">QScxmlDataModel</a></span>*</h3>
+<div class="admonition note"><p><b>Note: </b>This property supports <a href="../qtcore/qproperty.html" translate="no">QProperty</a> bindings.</p>
+</div><p>This property holds the data model to be used for this state machine.</p>
+<p>SCXML data models are described in <a href="https://www.w3.org/TR/scxml/#data-module" translate="no">SCXML Specification - 5 Data Model and Data Manipulation</a>. For more information about supported data models, see <a href="qtscxml-scxml-compliance.html" translate="no">SCXML Compliance</a>.</p>
+<p>Changing the data model when the state machine has been <code translate="no">initialized</code> is not specified in the SCXML standard and leads to undefined behavior.</p>
+<p><b>See also </b><a href="qscxmldatamodel.html" translate="no">QScxmlDataModel</a>, <a href="qscxmlnulldatamodel.html" translate="no">QScxmlNullDataModel</a>, and <a href="qscxmlcppdatamodel.html" translate="no">QScxmlCppDataModel</a>.</p>
+<!-- @@@dataModel -->
+<!-- $$$initialValues-prop$$$initialValues$$$setInitialValuesconstQVariantMap&$$$initialValuesChangedconstQVariantMap&$$$bindableInitialValues -->
+<h3 class="fn" translate="no" id="initialValues-prop"><code translate="no">[bindable] </code><span class="name">initialValues</span> : <span class="type"><a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMap</a></span></h3>
+<div class="admonition note"><p><b>Note: </b>This property supports <a href="../qtcore/qproperty.html" translate="no">QProperty</a> bindings.</p>
+</div><p>This property holds the initial values to be used for setting up the data model.</p>
+<p><b>See also </b><a href="qscxmlstatemachine.html#init" translate="no">QScxmlStateMachine::init</a>() and <a href="qscxmldatamodel.html" translate="no">QScxmlDataModel</a>.</p>
+<!-- @@@initialValues -->
+<!-- $$$initialized-prop$$$isInitialized$$$initializedChangedbool$$$bindableInitialized -->
+<h3 class="fn" translate="no" id="initialized-prop"><code translate="no">[bindable read-only] </code><span class="name">initialized</span> : <span class="type">bool</span></h3>
+<div class="admonition note"><p><b>Note: </b>This property supports <a href="../qtcore/qproperty.html" translate="no">QProperty</a> bindings.</p>
+</div><p>This property holds whether the state machine has been initialized.</p>
+<p>It is <code translate="no">true</code> if the state machine has been initialized, <code translate="no">false</code> otherwise.</p>
+<p><b>See also </b><a href="qscxmlstatemachine.html#init" translate="no">QScxmlStateMachine::init</a>() and <a href="qscxmldatamodel.html" translate="no">QScxmlDataModel</a>.</p>
+<!-- @@@initialized -->
+<!-- $$$invoked-prop$$$isInvoked -->
+<h3 class="fn" translate="no" id="invoked-prop"><code translate="no">[read-only] </code><span class="name">invoked</span> : const <span class="type">bool</span></h3>
+<p>This property holds whether the state machine was invoked from an outer state machine.</p>
+<p><code translate="no">true</code> when the state machine was started as a service with the <code translate="no">&lt;invoke&gt;</code> element, <code translate="no">false</code> otherwise.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> bool </td><td class="memItemRight bottomAlign"><span class="name"><b>isInvoked</b></span>() const</td></tr>
+</table></div>
+<!-- @@@invoked -->
+<!-- $$$invokedServices-prop$$$invokedServices$$$invokedServicesChangedconstQList<QScxmlInvokableService*>&$$$bindableInvokedServices -->
+<h3 class="fn" translate="no" id="invokedServices-prop"><code translate="no">[bindable read-only] </code><span class="name">invokedServices</span> : <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span>&lt;<span class="type"><a href="qscxmlinvokableservice.html" translate="no">QScxmlInvokableService</a></span>*&gt;</h3>
+<div class="admonition note"><p><b>Note: </b>This property supports <a href="../qtcore/qproperty.html" translate="no">QProperty</a> bindings.</p>
+</div><p>This property holds a list of SCXML services that were invoked from the main state machine (possibly recursively).</p>
+<!-- @@@invokedServices -->
+<!-- $$$loader-prop$$$loader$$$setLoaderQScxmlCompiler::Loader*$$$loaderChangedQScxmlCompiler::Loader*$$$bindableLoader -->
+<h3 class="fn" translate="no" id="loader-prop"><code translate="no">[bindable] </code><span class="name">loader</span> : <span class="type"><a href="qscxmlcompiler-loader.html" translate="no">QScxmlCompiler::Loader</a></span>*</h3>
+<div class="admonition note"><p><b>Note: </b>This property supports <a href="../qtcore/qproperty.html" translate="no">QProperty</a> bindings.</p>
+</div><p>This property holds the loader that is currently used to resolve and load URIs for the state machine.</p>
+<!-- @@@loader -->
+<!-- $$$name-prop$$$name -->
+<h3 class="fn" translate="no" id="name-prop"><code translate="no">[read-only] </code><span class="name">name</span> : const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span></h3>
+<p>This property holds the name of the state machine as set by the <i>name</i> attribute of the <code translate="no">&lt;scxml&gt;</code> tag.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QString </td><td class="memItemRight bottomAlign"><span class="name"><b>name</b></span>() const</td></tr>
+</table></div>
+<!-- @@@name -->
+<!-- $$$parseErrors-prop$$$parseErrors -->
+<h3 class="fn" translate="no" id="parseErrors-prop"><code translate="no">[read-only] </code><span class="name">parseErrors</span> : const <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span>&lt;<span class="type"><a href="qscxmlerror.html" translate="no">QScxmlError</a></span>&gt;</h3>
+<p>This property holds the list of parse errors that occurred while creating a state machine from an SCXML file.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QList&lt;QScxmlError&gt; </td><td class="memItemRight bottomAlign"><span class="name"><b>parseErrors</b></span>() const</td></tr>
+</table></div>
+<!-- @@@parseErrors -->
+<!-- $$$running-prop$$$isRunning$$$setRunningbool$$$runningChangedbool -->
+<h3 class="fn" translate="no" id="running-prop"><span class="name">running</span> : <span class="type">bool</span></h3>
+<p>This property holds the running state of this state machine</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> bool </td><td class="memItemRight bottomAlign"><span class="name"><b><a href="qscxmlstatemachine.html#isRunning" translate="no">isRunning</a></b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b><a href="qscxmlstatemachine.html#setRunning" translate="no">setRunning</a></b></span>(bool <i>running</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b><a href="qscxmlstatemachine.html#runningChanged" translate="no">runningChanged</a></b></span>(bool <i>running</i>)</td></tr>
+</table></div>
+<p><b>See also </b><a href="qscxmlstatemachine.html#start" translate="no">start</a>().</p>
+<!-- @@@running -->
+<!-- $$$sessionId-prop$$$sessionId -->
+<h3 class="fn" translate="no" id="sessionId-prop"><code translate="no">[read-only] </code><span class="name">sessionId</span> : const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span></h3>
+<p>This property holds the session ID of the current state machine.</p>
+<p>The session ID is used for message routing between parent and child state machines. If a state machine is started by an <code translate="no">&lt;invoke&gt;</code> element, any event it sends will have the <code translate="no">invokeid</code> field set to the session ID. The state machine will use the origin of an event (which is set by the <i>target</i> or <i>targetexpr</i> attribute in a <code translate="no">&lt;send&gt;</code> element) to dispatch messages to the correct child state machine.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QString </td><td class="memItemRight bottomAlign"><span class="name"><b>sessionId</b></span>() const</td></tr>
+</table></div>
+<p><b>See also </b><a href="qscxmlevent.html#invokeId" translate="no">QScxmlEvent::invokeId</a>().</p>
+<!-- @@@sessionId -->
+<!-- $$$tableData-prop$$$tableData$$$setTableDataQScxmlTableData*$$$tableDataChangedQScxmlTableData*$$$bindableTableData -->
+<h3 class="fn" translate="no" id="tableData-prop"><code translate="no">[bindable] </code><span class="name">tableData</span> : <span class="type"><a href="qscxmltabledata.html" translate="no">QScxmlTableData</a></span>*</h3>
+<div class="admonition note"><p><b>Note: </b>This property supports <a href="../qtcore/qproperty.html" translate="no">QProperty</a> bindings.</p>
+</div><p>This property holds the table data that is used when generating C++ from an SCXML file.</p>
+<p>The class implementing the state machine will use this property to assign the generated table data. The state machine does not assume ownership of the table data.</p>
+<!-- @@@tableData -->
+</div>
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$ -->
+<div class="fngroup">
+<h3 class="fn fngroupitem" translate="no" id="connectToEvent-2">template &lt;typename Functor&gt; <span class="type"><a href="../qtcore/qmetaobject-connection.html" translate="no">QMetaObject::Connection</a></span> QScxmlStateMachine::<span class="name">connectToEvent</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>scxmlEventSpec</i>, <span class="type">Functor</span> &amp;&amp;<i>functor</i>, <span class="type"><a href="../qtcore/qt.html#ConnectionType-enum" translate="no">Qt::ConnectionType</a></span> <i>type</i> = Qt::AutoConnection)</h3><h3 class="fn fngroupitem" translate="no" id="connectToEvent-1">template &lt;typename Functor&gt; <span class="type"><a href="../qtcore/qmetaobject-connection.html" translate="no">QMetaObject::Connection</a></span> QScxmlStateMachine::<span class="name">connectToEvent</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>scxmlEventSpec</i>, const <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>context</i>, <span class="type">Functor</span> &amp;&amp;<i>functor</i>, <span class="type"><a href="../qtcore/qt.html#ConnectionType-enum" translate="no">Qt::ConnectionType</a></span> <i>type</i> = Qt::AutoConnection)</h3></div>
+<p>Creates a connection of the given <i translate="no">type</i> from the event specified by <i translate="no">scxmlEventSpec</i> to <i translate="no">functor</i>, which can be a functor or a member function of the optional <i translate="no">context</i> object.</p>
+<p>The receiver's <i translate="no">functor</i> must take a <a href="qscxmlevent.html" translate="no">QScxmlEvent</a> as a parameter.</p>
+<p>In contrast to event specifications in SCXML documents, spaces are not allowed in the <i translate="no">scxmlEventSpec</i> here. In order to connect to multiple events with different prefixes, <a href="qscxmlstatemachine.html#connectToEvent" translate="no">connectToEvent</a>() has to be called multiple times.</p>
+<p>Returns a handle to the connection, which can be used later to disconnect.</p>
+<!-- @@@ -->
+<!-- $$$ -->
+<div class="fngroup">
+<h3 class="fn fngroupitem" translate="no" id="connectToState-2">template &lt;typename Functor&gt; <span class="type"><a href="../qtcore/qmetaobject-connection.html" translate="no">QMetaObject::Connection</a></span> QScxmlStateMachine::<span class="name">connectToState</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>scxmlStateName</i>, <span class="type">Functor</span> &amp;&amp;<i>functor</i>, <span class="type"><a href="../qtcore/qt.html#ConnectionType-enum" translate="no">Qt::ConnectionType</a></span> <i>type</i> = Qt::AutoConnection)</h3><h3 class="fn fngroupitem" translate="no" id="connectToState-1">template &lt;typename Functor&gt; <span class="type"><a href="../qtcore/qmetaobject-connection.html" translate="no">QMetaObject::Connection</a></span> QScxmlStateMachine::<span class="name">connectToState</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>scxmlStateName</i>, const <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>context</i>, <span class="type">Functor</span> &amp;&amp;<i>functor</i>, <span class="type"><a href="../qtcore/qt.html#ConnectionType-enum" translate="no">Qt::ConnectionType</a></span> <i>type</i> = Qt::AutoConnection)</h3></div>
+<p>Creates a connection of the given <i translate="no">type</i> from the state specified by <i translate="no">scxmlStateName</i> to <i translate="no">functor</i>, which can be a functor or a member function of the optional <i translate="no">context</i> object.</p>
+<p>The receiver's <i translate="no">functor</i> must take a boolean argument that indicates whether the state connected became active or inactive.</p>
+<p>Returns a handle to the connection, which can be used later to disconnect.</p>
+<!-- @@@ -->
+<!-- $$$activeStateNames[overload1]$$$activeStateNamesbool -->
+<h3 class="fn" translate="no" id="activeStateNames"><code translate="no">[invokable] </code><span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> QScxmlStateMachine::<span class="name">activeStateNames</span>(<span class="type">bool</span> <i>compress</i> = true) const</h3>
+<p>Retrieves a list of state names of all active states.</p>
+<p>When a state is active, all its parent states are active by definition. When <i translate="no">compress</i> is <code translate="no">true</code> (the default), the parent states will be filtered out and only the <i>leaf states</i> will be returned. When it is <code translate="no">false</code>, the full list of active states will be returned.</p>
+<div class="admonition note"><p><b>Note: </b>This function can be invoked via the meta-object system and from QML. See <a href="../qtcore/qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>.</p>
+</div><!-- @@@activeStateNames -->
+<!-- $$$cancelDelayedEvent[overload1]$$$cancelDelayedEventconstQString& -->
+<h3 class="fn" translate="no" id="cancelDelayedEvent"><code translate="no">[invokable] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">cancelDelayedEvent</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>sendId</i>)</h3>
+<p>Cancels a delayed event with the specified <i translate="no">sendId</i>.</p>
+<div class="admonition note"><p><b>Note: </b>This function can be invoked via the meta-object system and from QML. See <a href="../qtcore/qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>.</p>
+</div><!-- @@@cancelDelayedEvent -->
+<!-- $$$connectToEvent[overload1]$$$connectToEventconstQString&constQObject*constchar*Qt::ConnectionType -->
+<h3 class="fn" translate="no" id="connectToEvent"><span class="type"><a href="../qtcore/qmetaobject-connection.html" translate="no">QMetaObject::Connection</a></span> QScxmlStateMachine::<span class="name">connectToEvent</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>scxmlEventSpec</i>, const <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>receiver</i>, const <span class="type">char</span> *<i>method</i>, <span class="type"><a href="../qtcore/qt.html#ConnectionType-enum" translate="no">Qt::ConnectionType</a></span> <i>type</i> = Qt::AutoConnection)</h3>
+<p>Creates a connection of the specified <i translate="no">type</i> from the event specified by <i translate="no">scxmlEventSpec</i> to the <i translate="no">method</i> in the <i translate="no">receiver</i> object. The receiver's <i translate="no">method</i> may take a <a href="qscxmlevent.html" translate="no">QScxmlEvent</a> as a parameter. For example:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> mySlot(<span class="keyword">const</span> <span class="type"><a href="qscxmlevent.html" translate="no">QScxmlEvent</a></span> <span class="operator">&amp;</span>event);
+</pre>
+<p>In contrast to event specifications in SCXML documents, spaces are not allowed in the <i translate="no">scxmlEventSpec</i> here. In order to connect to multiple events with different prefixes, connectToEvent() has to be called multiple times.</p>
+<p>Returns a handle to the connection, which can be used later to disconnect.</p>
+<!-- @@@connectToEvent -->
+<!-- $$$connectToState[overload1]$$$connectToStateconstQString&constQObject*constchar*Qt::ConnectionType -->
+<h3 class="fn" translate="no" id="connectToState"><span class="type"><a href="../qtcore/qmetaobject-connection.html" translate="no">QMetaObject::Connection</a></span> QScxmlStateMachine::<span class="name">connectToState</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>scxmlStateName</i>, const <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>receiver</i>, const <span class="type">char</span> *<i>method</i>, <span class="type"><a href="../qtcore/qt.html#ConnectionType-enum" translate="no">Qt::ConnectionType</a></span> <i>type</i> = Qt::AutoConnection)</h3>
+<p>Creates a connection of the given <i translate="no">type</i> from the state identified by <i translate="no">scxmlStateName</i> to the <i translate="no">method</i> in the <i translate="no">receiver</i> object. The receiver's <i translate="no">method</i> may take a boolean argument that indicates whether the state connected became active or inactive. For example:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> mySlot(<span class="type">bool</span> active);
+</pre>
+<p>Returns a handle to the connection, which can be used later to disconnect.</p>
+<!-- @@@connectToState -->
+<!-- $$$dataModel -->
+<h3 class="fn" translate="no" id="dataModel"><span class="type"><a href="qscxmldatamodel.html" translate="no">QScxmlDataModel</a></span> *QScxmlStateMachine::<span class="name">dataModel</span>() const</h3>
+<p>Returns the data model used by the state machine.</p>
+<div class="admonition note"><p><b>Note: </b>Getter function for property dataModel. </p>
+</div><p><b>See also </b><a href="qscxmlstatemachine.html#setDataModel" translate="no">setDataModel</a>().</p>
+<!-- @@@dataModel -->
+<!-- $$$finished[overload1]$$$finished -->
+<h3 class="fn" translate="no" id="finished"><code translate="no">[signal] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">finished</span>()</h3>
+<p>This signal is emitted when the state machine reaches a top-level final state.</p>
+<p><b>See also </b><a href="qscxmlstatemachine.html#running-prop" translate="no">running</a>.</p>
+<!-- @@@finished -->
+<!-- $$$fromData[overload1]$$$fromDataQIODevice*constQString& -->
+<h3 class="fn" translate="no" id="fromData"><code translate="no">[static] </code><span class="type">QScxmlStateMachine</span> *QScxmlStateMachine::<span class="name">fromData</span>(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span> *<i>data</i>, const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i> = QString())</h3>
+<p>Creates a state machine by reading from the <a href="../qtcore/qiodevice.html" translate="no">QIODevice</a> specified by <i translate="no">data</i>.</p>
+<p>This method will always return a state machine. If errors occur while reading the SCXML file, <i translate="no">fileName</i>, the state machine cannot be started. The errors can be retrieved by calling the <a href="qscxmlstatemachine.html#parseErrors-prop" translate="no">parseErrors</a>() method.</p>
+<p><b>See also </b><a href="qscxmlstatemachine.html#parseErrors-prop" translate="no">parseErrors</a>().</p>
+<!-- @@@fromData -->
+<!-- $$$fromFile[overload1]$$$fromFileconstQString& -->
+<h3 class="fn" translate="no" id="fromFile"><code translate="no">[static] </code><span class="type">QScxmlStateMachine</span> *QScxmlStateMachine::<span class="name">fromFile</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>)</h3>
+<p>Creates a state machine from the SCXML file specified by <i translate="no">fileName</i>.</p>
+<p>This method will always return a state machine. If errors occur while reading the SCXML file, the state machine cannot be started. The errors can be retrieved by calling the <a href="qscxmlstatemachine.html#parseErrors-prop" translate="no">parseErrors</a>() method.</p>
+<p><b>See also </b><a href="qscxmlstatemachine.html#parseErrors-prop" translate="no">parseErrors</a>().</p>
+<!-- @@@fromFile -->
+<!-- $$$init[overload1]$$$init -->
+<h3 class="fn" translate="no" id="init"><code translate="no">[slot] </code><span class="type">bool</span> QScxmlStateMachine::<span class="name">init</span>()</h3>
+<p>Initializes the state machine.</p>
+<p>State machine initialization consists of calling <a href="qscxmldatamodel.html#setup" translate="no">QScxmlDataModel::setup</a>(), setting the initial values for <code translate="no">&lt;data&gt;</code> elements, and executing any <code translate="no">&lt;script&gt;</code> tags of the <code translate="no">&lt;scxml&gt;</code> tag. The initial data values are taken from the <code translate="no">initialValues</code> property.</p>
+<p>Returns <code translate="no">false</code> if parse errors occur or if any of the initialization steps fail. Returns <code translate="no">true</code> otherwise.</p>
+<!-- @@@init -->
+<!-- $$$isActive[overload1]$$$isActiveconstQString& -->
+<h3 class="fn" translate="no" id="isActive"><code translate="no">[invokable] </code><span class="type">bool</span> QScxmlStateMachine::<span class="name">isActive</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>scxmlStateName</i>) const</h3>
+<p>Returns <code translate="no">true</code> if the state specified by <i translate="no">scxmlStateName</i> is active, <code translate="no">false</code> otherwise.</p>
+<div class="admonition note"><p><b>Note: </b>This function can be invoked via the meta-object system and from QML. See <a href="../qtcore/qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>.</p>
+</div><!-- @@@isActive -->
+<!-- $$$isActive$$$isActiveint -->
+<h3 class="fn" translate="no" id="isActive-1"><code translate="no">[protected] </code><span class="type">bool</span> QScxmlStateMachine::<span class="name">isActive</span>(<span class="type">int</span> <i>stateIndex</i>) const</h3>
+<p>Returns <code translate="no">true</code> if the state with the ID <i translate="no">stateIndex</i> is active.</p>
+<p>This method is part of the interface to the compiled representation of SCXML state machines. It should only be used internally and by state machines compiled from SCXML documents.</p>
+<!-- @@@isActive -->
+<!-- $$$isDispatchableTarget[overload1]$$$isDispatchableTargetconstQString& -->
+<h3 class="fn" translate="no" id="isDispatchableTarget"><code translate="no">[invokable] </code><span class="type">bool</span> QScxmlStateMachine::<span class="name">isDispatchableTarget</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>target</i>) const</h3>
+<p>Returns <code translate="no">true</code> if a message to <i translate="no">target</i> can be dispatched by this state machine.</p>
+<p>Valid targets are:</p>
+<ul>
+<li><code translate="no">#_parent</code> for the parent state machine if the current state machine is started by <code translate="no">&lt;invoke&gt;</code></li>
+<li><code translate="no">#_internal</code> for the current state machine</li>
+<li><code translate="no">#_scxml_sessionid</code>, where <code translate="no">sessionid</code> is the session ID of the current state machine</li>
+<li><code translate="no">#_servicename</code>, where <code translate="no">servicename</code> is the ID or name of a service started with <code translate="no">&lt;invoke&gt;</code> by this state machine</li>
+</ul>
+<div class="admonition note"><p><b>Note: </b>This function can be invoked via the meta-object system and from QML. See <a href="../qtcore/qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>.</p>
+</div><!-- @@@isDispatchableTarget -->
+<!-- $$$isRunning -->
+<h3 class="fn" translate="no" id="isRunning"><span class="type">bool</span> QScxmlStateMachine::<span class="name">isRunning</span>() const</h3>
+<p>Returns <code translate="no">true</code> if the state machine is running, <code translate="no">false</code> otherwise.</p>
+<div class="admonition note"><p><b>Note: </b>Getter function for property <a href="qscxmlstatemachine.html#running-prop" translate="no">running</a>. </p>
+</div><p><b>See also </b><a href="qscxmlstatemachine.html#setRunning" translate="no">setRunning</a>() and <a href="qscxmlstatemachine.html#runningChanged" translate="no">runningChanged</a>().</p>
+<!-- @@@isRunning -->
+<!-- $$$log[overload1]$$$logconstQString&constQString& -->
+<h3 class="fn" translate="no" id="log"><code translate="no">[signal] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">log</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>label</i>, const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>msg</i>)</h3>
+<p>This signal is emitted if a <code translate="no">&lt;log&gt;</code> tag is used in the SCXML. <i translate="no">label</i> is the value of the <i>label</i> attribute of the <code translate="no">&lt;log&gt;</code> tag. <i translate="no">msg</i> is the value of the evaluated <i>expr</i> attribute of the <code translate="no">&lt;log&gt;</code> tag. If there is no <i>expr</i> attribute, a null string will be returned.</p>
+<!-- @@@log -->
+<!-- $$$onEntry[overload1]$$$onEntryconstQObject*constchar* -->
+<h3 class="fn" translate="no" id="onEntry"><code translate="no">[static] </code><span class="type">std::function</span>&lt;<span class="type">void</span> (<span class="type">bool</span>)&gt; QScxmlStateMachine::<span class="name">onEntry</span>(const <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>receiver</i>, const <span class="type">char</span> *<i>method</i>)</h3>
+<p>Returns a functor that accepts a boolean argument and calls the given <i translate="no">method</i> on <i translate="no">receiver</i> using <a href="../qtcore/qmetaobject.html#invokeMethod" translate="no">QMetaObject::invokeMethod</a>() if that argument is <code translate="no">true</code> and <i translate="no">receiver</i> has not been deleted, yet.</p>
+<p>The given <i translate="no">method</i> must not accept any arguments. <i translate="no">method</i> is the plain method name, not enclosed in <code translate="no">SIGNAL()</code> or <code translate="no">SLOT()</code>.</p>
+<p>This is useful to wrap handlers for <a href="qscxmlstatemachine.html#connectToState" translate="no">connectToState</a>() that should only be executed when the state is entered.</p>
+<!-- @@@onEntry -->
+<!-- $$$onEntry$$$onEntryFunctor -->
+<h3 class="fn" translate="no" id="onEntry-1"><code translate="no">[static] </code>template &lt;typename Functor&gt; <span class="type">std::function</span>&lt;<span class="type">void</span> (<span class="type">bool</span>)&gt; QScxmlStateMachine::<span class="name">onEntry</span>(<span class="type">Functor</span> <i>functor</i>)</h3>
+<p>Returns a functor that accepts a boolean argument and calls the given <i translate="no">functor</i> if that argument is <code translate="no">true</code>. The given <i translate="no">functor</i> must not accept any arguments.</p>
+<p>This is useful to wrap handlers for <a href="qscxmlstatemachine.html#connectToState" translate="no">connectToState</a>() that should only be executed when the state is entered.</p>
+<!-- @@@onEntry -->
+<!-- $$$onEntry$$$onEntryconsttypenameQtPrivate::FunctionPointer<PointerToMemberFunction>::Object*PointerToMemberFunction -->
+<h3 class="fn" translate="no" id="onEntry-2"><code translate="no">[static] </code>template &lt;typename PointerToMemberFunction&gt; <span class="type">std::function</span>&lt;<span class="type">void</span> (<span class="type">bool</span>)&gt; QScxmlStateMachine::<span class="name">onEntry</span>(const <span class="type">typename</span> <span class="type">QtPrivate::FunctionPointer</span>&lt;<span class="type">PointerToMemberFunction</span>&gt;<span class="type">::Object</span> *<i>receiver</i>, <span class="type">PointerToMemberFunction</span> <i>method</i>)</h3>
+<p>Returns a functor that accepts a boolean argument and calls the given <i translate="no">method</i> on <i translate="no">receiver</i> if that argument is <code translate="no">true</code> and the <i translate="no">receiver</i> has not been deleted, yet. The given <i translate="no">method</i> must not accept any arguments.</p>
+<p>This is useful to wrap handlers for <a href="qscxmlstatemachine.html#connectToState" translate="no">connectToState</a>() that should only be executed when the state is entered.</p>
+<!-- @@@onEntry -->
+<!-- $$$onExit[overload1]$$$onExitconstQObject*constchar* -->
+<h3 class="fn" translate="no" id="onExit"><code translate="no">[static] </code><span class="type">std::function</span>&lt;<span class="type">void</span> (<span class="type">bool</span>)&gt; QScxmlStateMachine::<span class="name">onExit</span>(const <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>receiver</i>, const <span class="type">char</span> *<i>method</i>)</h3>
+<p>Returns a functor that accepts a boolean argument and calls the given <i translate="no">method</i> on <i translate="no">receiver</i> using <a href="../qtcore/qmetaobject.html#invokeMethod" translate="no">QMetaObject::invokeMethod</a>() if that argument is <code translate="no">false</code> and <i translate="no">receiver</i> has not been deleted, yet.</p>
+<p>The given <i translate="no">method</i> must not accept any arguments. <i translate="no">method</i> is the plain method name, not enclosed in SIGNAL(..&#x2e;) or SLOT(..&#x2e;)&#x2e;</p>
+<p>This is useful to wrap handlers for <a href="qscxmlstatemachine.html#connectToState" translate="no">connectToState</a>() that should only be executed when the state is left.</p>
+<!-- @@@onExit -->
+<!-- $$$onExit$$$onExitFunctor -->
+<h3 class="fn" translate="no" id="onExit-1"><code translate="no">[static] </code>template &lt;typename Functor&gt; <span class="type">std::function</span>&lt;<span class="type">void</span> (<span class="type">bool</span>)&gt; QScxmlStateMachine::<span class="name">onExit</span>(<span class="type">Functor</span> <i>functor</i>)</h3>
+<p>Returns a functor that accepts a boolean argument and calls the given <i translate="no">functor</i> if that argument is <code translate="no">false</code>. The given <i translate="no">functor</i> must not accept any arguments.</p>
+<p>This is useful to wrap handlers for <a href="qscxmlstatemachine.html#connectToState" translate="no">connectToState</a>() that should only be executed when the state is left.</p>
+<!-- @@@onExit -->
+<!-- $$$onExit$$$onExitconsttypenameQtPrivate::FunctionPointer<PointerToMemberFunction>::Object*PointerToMemberFunction -->
+<h3 class="fn" translate="no" id="onExit-2"><code translate="no">[static] </code>template &lt;typename PointerToMemberFunction&gt; <span class="type">std::function</span>&lt;<span class="type">void</span> (<span class="type">bool</span>)&gt; QScxmlStateMachine::<span class="name">onExit</span>(const <span class="type">typename</span> <span class="type">QtPrivate::FunctionPointer</span>&lt;<span class="type">PointerToMemberFunction</span>&gt;<span class="type">::Object</span> *<i>receiver</i>, <span class="type">PointerToMemberFunction</span> <i>method</i>)</h3>
+<p>Returns a functor that accepts a boolean argument and calls the given <i translate="no">method</i> on <i translate="no">receiver</i> if that argument is <code translate="no">false</code> and the <i translate="no">receiver</i> has not been deleted, yet. The given <i translate="no">method</i> must not accept any arguments.</p>
+<p>This is useful to wrap handlers for <a href="qscxmlstatemachine.html#connectToState" translate="no">connectToState</a>() that should only be executed when the state is left.</p>
+<!-- @@@onExit -->
+<!-- $$$reachedStableState[overload1]$$$reachedStableState -->
+<h3 class="fn" translate="no" id="reachedStableState"><code translate="no">[signal] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">reachedStableState</span>()</h3>
+<p>This signal is emitted when the event queue is empty at the end of a macro step or when a final state is reached.</p>
+<!-- @@@reachedStableState -->
+<!-- $$$runningChanged -->
+<h3 class="fn" translate="no" id="runningChanged"><code translate="no">[signal] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">runningChanged</span>(<span class="type">bool</span> <i>running</i>)</h3>
+<p>This signal is emitted when the <code translate="no">running</code> property is changed with <i translate="no">running</i> as argument.</p>
+<div class="admonition note"><p><b>Note: </b>Notifier signal for property <a href="qscxmlstatemachine.html#running-prop" translate="no">running</a>. </p>
+</div><!-- @@@runningChanged -->
+<!-- $$$setDataModel -->
+<h3 class="fn" translate="no" id="setDataModel"><span class="type">void</span> QScxmlStateMachine::<span class="name">setDataModel</span>(<span class="type"><a href="qscxmldatamodel.html" translate="no">QScxmlDataModel</a></span> *<i>model</i>)</h3>
+<p>Sets the data model for this state machine to <i translate="no">model</i>. There is a 1:1 relation between state machines and models. After setting the model once you cannot change it anymore. Any further attempts to set the model using this method will be ignored.</p>
+<div class="admonition note"><p><b>Note: </b>Setter function for property <a href="qscxmlstatemachine.html#dataModel" translate="no">dataModel</a>. </p>
+</div><p><b>See also </b><a href="qscxmlstatemachine.html#dataModel" translate="no">dataModel</a>().</p>
+<!-- @@@setDataModel -->
+<!-- $$$setRunning -->
+<h3 class="fn" translate="no" id="setRunning"><span class="type">void</span> QScxmlStateMachine::<span class="name">setRunning</span>(<span class="type">bool</span> <i>running</i>)</h3>
+<p>Starts the state machine if <i translate="no">running</i> is <code translate="no">true</code>, or stops it otherwise.</p>
+<div class="admonition note"><p><b>Note: </b>Setter function for property <a href="qscxmlstatemachine.html#running-prop" translate="no">running</a>. </p>
+</div><p><b>See also </b><a href="qscxmlstatemachine.html#start" translate="no">start</a>(), <a href="qscxmlstatemachine.html#stop" translate="no">stop</a>(), <a href="qscxmlstatemachine.html#isRunning" translate="no">isRunning</a>(), and <a href="qscxmlstatemachine.html#runningChanged" translate="no">runningChanged</a>().</p>
+<!-- @@@setRunning -->
+<!-- $$$start[overload1]$$$start -->
+<h3 class="fn" translate="no" id="start"><code translate="no">[slot] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">start</span>()</h3>
+<p>Starts this state machine. The machine will reset its configuration and transition to the initial state. When a final top-level state is entered, the machine will emit the <a href="qscxmlstatemachine.html#finished" translate="no">finished</a>() signal.</p>
+<div class="admonition note">
+<p><b>Note: </b>A state machine will not run without a running event loop, such as the main application event loop started with <a href="../qtcore/qcoreapplication.html#exec" translate="no">QCoreApplication::exec</a>() or <a href="../qtwidgets/qapplication.html#exec" translate="no">QApplication::exec</a>().</p>
+</div>
+<p><b>See also </b><a href="qscxmlstatemachine.html#runningChanged" translate="no">runningChanged</a>(), <a href="qscxmlstatemachine.html#setRunning" translate="no">setRunning</a>(), <a href="qscxmlstatemachine.html#stop" translate="no">stop</a>(), and <a href="qscxmlstatemachine.html#finished" translate="no">finished</a>().</p>
+<!-- @@@start -->
+<!-- $$$stateNames[overload1]$$$stateNamesbool -->
+<h3 class="fn" translate="no" id="stateNames"><code translate="no">[invokable] </code><span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> QScxmlStateMachine::<span class="name">stateNames</span>(<span class="type">bool</span> <i>compress</i> = true) const</h3>
+<p>Retrieves a list of state names of all states.</p>
+<p>When <i translate="no">compress</i> is <code translate="no">true</code> (the default), the states that contain child states will be filtered out and only the <i>leaf states</i> will be returned. When it is <code translate="no">false</code>, the full list of all states will be returned.</p>
+<p>The returned list does not contain the states of possible nested state machines.</p>
+<div class="admonition note">
+<p><b>Note: </b>The order of the state names in the list is the order in which the states occurred in the SCXML document.</p>
+</div>
+<div class="admonition note"><p><b>Note: </b>This function can be invoked via the meta-object system and from QML. See <a href="../qtcore/qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>.</p>
+</div><!-- @@@stateNames -->
+<!-- $$$stop[overload1]$$$stop -->
+<h3 class="fn" translate="no" id="stop"><code translate="no">[slot] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">stop</span>()</h3>
+<p>Stops this state machine. The machine will not execute any further state transitions. Its <code translate="no">running</code> property is set to <code translate="no">false</code>.</p>
+<p><b>See also </b><a href="qscxmlstatemachine.html#runningChanged" translate="no">runningChanged</a>(), <a href="qscxmlstatemachine.html#start" translate="no">start</a>(), and <a href="qscxmlstatemachine.html#setRunning" translate="no">setRunning</a>().</p>
+<!-- @@@stop -->
+<!-- $$$submitEvent[overload1]$$$submitEventQScxmlEvent* -->
+<h3 class="fn" translate="no" id="submitEvent"><code translate="no">[invokable] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">submitEvent</span>(<span class="type"><a href="qscxmlevent.html" translate="no">QScxmlEvent</a></span> *<i>event</i>)</h3>
+<p>Submits the SCXML event <i translate="no">event</i> to the internal or external event queue depending on the priority of the event.</p>
+<p>When a delay is set, the event will be queued for delivery after the timeout has passed. The state machine takes ownership of <i translate="no">event</i> and deletes it after processing.</p>
+<div class="admonition note"><p><b>Note: </b>This function can be invoked via the meta-object system and from QML. See <a href="../qtcore/qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>.</p>
+</div><!-- @@@submitEvent -->
+<!-- $$$submitEvent$$$submitEventconstQString& -->
+<h3 class="fn" translate="no" id="submitEvent-1"><code translate="no">[invokable] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">submitEvent</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>eventName</i>)</h3>
+<p>A utility method to create and submit an external event with the specified <i translate="no">eventName</i> as the name.</p>
+<div class="admonition note"><p><b>Note: </b>This function can be invoked via the meta-object system and from QML. See <a href="../qtcore/qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>.</p>
+</div><!-- @@@submitEvent -->
+<!-- $$$submitEvent$$$submitEventconstQString&constQVariant& -->
+<h3 class="fn" translate="no" id="submitEvent-2"><code translate="no">[invokable] </code><span class="type">void</span> QScxmlStateMachine::<span class="name">submitEvent</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>eventName</i>, const <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span> &amp;<i>data</i>)</h3>
+<p>A utility method to create and submit an external event with the specified <i translate="no">eventName</i> as the name and <i translate="no">data</i> as the payload data.</p>
+<div class="admonition note"><p><b>Note: </b>This function can be invoked via the meta-object system and from QML. See <a href="../qtcore/qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>.</p>
+</div><!-- @@@submitEvent -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

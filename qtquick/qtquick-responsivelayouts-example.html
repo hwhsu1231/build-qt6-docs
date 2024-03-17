@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquickresponsiveLayouts-examples.qdoc -->
+  <meta name="description" content="Demonstrates how to use LayoutItemProxy to make a responsive UI.">
+  <title>Qt Quick Layouts - Responsive Layout Example | Qt Quick 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick-index.html" translate="no">Qt Quick</a></li>
+<li>Qt Quick Layouts - Responsive Layout Example</li>
+<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#creating-items">Creating items</a></li>
+<li class="level1"><a href="#creating-layouts">Creating layouts</a></li>
+<li class="level1"><a href="#setting-the-layout">Setting the layout</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt Quick Layouts - Responsive Layout Example</h1>
+<!-- $$$responsivelayouts-brief -->
+<p>Demonstrates how to use <a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a> to make a responsive UI.</p>
+<!-- @@@responsivelayouts -->
+<!-- $$$responsivelayouts-description -->
+<div class="descr" id="details">
+<p>This example shows how to use LayoutProxyItems in combination with <a href="qtquicklayouts-index.html" translate="no">layouts</a> to create responsive layouts.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="creating-items">Creating items</h4>
+<p>The <a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a> type allows to use the same item in different layouts, although only one layout can be visible at the same time. This can be used to create responsive layouts that adapt to the window or screen size.</p>
+<p class="centerAlign"><img src="images/qtquicklayouts-example-responsivelayouts.png" alt="" /></p><p>First we need to define all items that should appear in or UI at some point. We use a AnnotatedRect, which is a simple Rectangle with some added text.</p>
+<pre class="qml" translate="no">
+ <span class="type">AnnotatedRect</span> {
+     <span class="name">id</span>: <span class="name">contentItem</span>
+     <span class="name">text</span>: <span class="string">&quot;Content Item&quot;</span>
+     <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+     <span class="name">implicitHeight</span>: <span class="number">1000</span>
+     <span class="name">implicitWidth</span>: <span class="number">500</span>
+     <span class="name">gradient</span>: <span class="name">Gradient</span> {
+         <span class="type"><a href="qml-qtquick-gradientstop.html" translate="no">GradientStop</a></span> { <span class="name">position</span>: <span class="number">0.0</span>; <span class="name">color</span>: <span class="string">&quot;tomato&quot;</span> }
+         <span class="type"><a href="qml-qtquick-gradientstop.html" translate="no">GradientStop</a></span> { <span class="name">position</span>: <span class="number">0.5</span>; <span class="name">color</span>: <span class="string">&quot;navajowhite&quot;</span> }
+         <span class="type"><a href="qml-qtquick-gradientstop.html" translate="no">GradientStop</a></span> { <span class="name">position</span>: <span class="number">1.0</span>; <span class="name">color</span>: <span class="string">&quot;darkseagreen&quot;</span> }
+     }
+ }
+
+ <span class="type">AnnotatedRect</span> {
+     <span class="name">id</span>: <span class="name">a</span>
+     <span class="name">text</span>: <span class="string">&quot;A&quot;</span>
+     <span class="name">color</span>: <span class="string">&quot;lightskyblue&quot;</span>
+     <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+ }
+
+ <span class="type">AnnotatedRect</span> {
+     <span class="name">id</span>: <span class="name">b</span>
+     <span class="name">text</span>: <span class="string">&quot;B&quot;</span>
+     <span class="name">color</span>: <span class="string">&quot;lightskyblue&quot;</span>
+     <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+ }
+
+ <span class="type">AnnotatedRect</span> {
+     <span class="name">id</span>: <span class="name">c</span>
+     <span class="name">text</span>: <span class="string">&quot;C&quot;</span>
+     <span class="name">color</span>: <span class="string">&quot;lightskyblue&quot;</span>
+     <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+ }
+
+ <span class="type">AnnotatedRect</span> {
+     <span class="name">id</span>: <span class="name">d</span>
+     <span class="name">text</span>: <span class="string">&quot;D&quot;</span>
+     <span class="name">color</span>: <span class="string">&quot;lightskyblue&quot;</span>
+     <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+ }
+</pre>
+<h4 id="creating-layouts">Creating layouts</h4>
+<p>We can now declare various layouts using <a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxies</a>, targeting the previously declare items. A single layout can be defined as follows.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+     <span class="name">id</span>: <span class="name">smallLayout</span>
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+     <span class="type"><a href="qml-qtquick-flickable.html" translate="no">Flickable</a></span> {
+         <span class="name">Layout</span>.fillHeight: <span class="number">true</span>
+         <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+         <span class="name">contentWidth</span>: <span class="name">width</span>
+         <span class="name">contentHeight</span>: <span class="name">gl</span>.<span class="name">implicitHeight</span>
+         <span class="name">clip</span>: <span class="number">true</span>
+         <span class="name">ScrollIndicator</span>.vertical: <span class="name">ScrollIndicator</span> { }
+         <span class="type"><a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a></span> {
+             <span class="name">id</span>: <span class="name">gl</span>
+             <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+             <span class="name">height</span>: <span class="name">implicitHeight</span>
+             <span class="name">target</span>: <span class="name">contentItem</span>
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+         <span class="name">Layout</span>.fillHeight: <span class="number">false</span>
+         <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+         <span class="type"><a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a></span>{ <span class="name">target</span>: <span class="name">a</span>; <span class="name">Layout</span>.bottomMargin: <span class="number">5</span> }
+         <span class="type"><a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a></span>{ <span class="name">target</span>: <span class="name">b</span>; <span class="name">Layout</span>.bottomMargin: <span class="number">5</span> }
+         <span class="type"><a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a></span>{ <span class="name">target</span>: <span class="name">c</span>; <span class="name">Layout</span>.bottomMargin: <span class="number">5</span> }
+     }
+ }
+</pre>
+<p>This snippet shows multiple ways to use the <a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a>. The simplest method is to add <a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxies</a> to a Layout like the <a href="qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a> here. In addition we set an additional <a href="qml-qtquick-layouts-layout.html" translate="no">Layout</a> attached property to the LayoutProxyItem that will affect the target item only in this particular layout. Further, we see that the item <code translate="no">d</code> is not used in the first layout. Then it is automatically hidden by the <a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a> in the second layout. Another way of using it is shown by setting a <a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a> as the content of a <a href="qml-qtquick-flickable.html" translate="no">Flickable</a>.</p>
+<p>Another layout is declared as follows.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+     <span class="name">id</span>: <span class="name">largeLayout</span>
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+     <span class="type"><a href="qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">Layout</span>.minimumWidth: <span class="number">100</span>
+         <span class="name">Layout</span>.margins: <span class="number">2</span>
+         <span class="type"><a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a></span>{ <span class="name">target</span>: <span class="name">a</span> }
+         <span class="type"><a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a></span>{ <span class="name">target</span>: <span class="name">b</span> }
+         <span class="type"><a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a></span>{ <span class="name">target</span>: <span class="name">c</span> }
+         <span class="type"><a href="qml-qtquick-item.html" translate="no">Item</a></span> { <span class="name">Layout</span>.fillHeight: <span class="number">true</span> }
+         <span class="type"><a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a></span>{ <span class="name">target</span>: <span class="name">d</span> }
+     }
+
+     <span class="type"><a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a></span> {
+         <span class="name">Layout</span>.fillHeight: <span class="number">true</span>
+         <span class="name">target</span>: <span class="name">contentItem</span>
+     }
+ }
+</pre>
+<p>Here we show that <a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxies</a> can be used together with real <a href="qml-qtquick-item.html" translate="no">Items</a> on the same hierarchy level. Generally, the <a href="qml-qtquick-layouts-layoutitemproxy.html" translate="no">LayoutItemProxy</a> is flexible and allows nested structures of items and layouts.</p>
+<h4 id="setting-the-layout">Setting the layout</h4>
+<p>After two layouts, <code translate="no">smallLayout</code> and <code translate="no">largeLayout</code> are defined, we can continue with setting the layout that fits to the current size of the application. We define a new function for this code that we call when the window is initialized and whenever the width changes:</p>
+<pre class="qml" translate="no">
+ <span class="keyword">function </span><span class="name">setFittingLayout</span>() {
+     <span class="keyword">if</span> (<span class="name">width</span> <span class="operator">&lt;</span> <span class="number">450</span>) {
+         <span class="name">smallLayout</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
+         <span class="name">largeLayout</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+     } <span class="keyword">else</span> {
+         <span class="name">smallLayout</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+         <span class="name">largeLayout</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
+     }
+ }
+ <span class="name">onWidthChanged</span>: <span class="name">setFittingLayout</span>()
+ <span class="name">Component</span>.onCompleted: <span class="name">setFittingLayout</span>()
+</pre>
+<p>Alternatively to calling this function after initialization we can hide all but the correct layout for the initial size in the declarative code.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtdeclarative.git/tree/examples/quick/responsivelayouts?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@responsivelayouts -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

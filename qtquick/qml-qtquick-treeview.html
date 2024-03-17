@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qquicktreeview.cpp -->
+  <meta name="description" content="Provides a tree view to display data from a QAbstractItemModel.">
+  <title>TreeView QML Type | Qt Quick 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick-index.html" translate="no">Qt Quick</a></li>
+<li><a href="qtquick-qmlmodule.html" translate="no">QML Types</a></li>
+<li>TreeView</li>
+<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#signals">Signals</a></li>
+<li class="level1"><a href="#methods">Methods</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">TreeView QML Type</h1>
+<!-- $$$TreeView-brief -->
+<p>Provides a tree view to display data from a <a href="../qtcore/qabstractitemmodel.html" translate="no">QAbstractItemModel</a>. <a href="#details">More...</a></p>
+<!-- @@@TreeView -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtQuick</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> Qt 6.3</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <p><a href="qml-qtquick-tableview.html" translate="no">TableView</a></p>
+</td></tr></table></div><ul>
+<li><a href="qml-qtquick-treeview-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtquick-treeview.html#rootIndex-prop" translate="no">rootIndex</a></b> : QModelIndex</li>
+</ul>
+<h2 id="signals">Signals</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtquick-treeview.html#collapsed-signal" translate="no">collapsed</a></b>(<i>row</i>, <i>recursively</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtquick-treeview.html#expanded-signal" translate="no">expanded</a></b>(<i>row</i>, <i>depth</i>)</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtquick-treeview.html#collapse-method" translate="no">collapse</a></b>(<i>row</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtquick-treeview.html#collapseRecursively-method" translate="no">collapseRecursively</a></b>(<i>row</i>)</li>
+<li class="fn" translate="no">int <b><a href="qml-qtquick-treeview.html#depth-method" translate="no">depth</a></b>(<i>row</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtquick-treeview.html#expand-method" translate="no">expand</a></b>(<i>row</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtquick-treeview.html#expandRecursively-method" translate="no">expandRecursively</a></b>(<i>row</i>, <i>depth</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtquick-treeview.html#expandToIndex-method" translate="no">expandToIndex</a></b>(QModelIndex <i>index</i>)</li>
+<li class="fn" translate="no">bool <b><a href="qml-qtquick-treeview.html#isExpanded-method" translate="no">isExpanded</a></b>(<i>row</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtquick-treeview.html#toggleExpanded-method" translate="no">toggleExpanded</a></b>(<i>row</i>)</li>
+</ul>
+<!-- $$$TreeView-description -->
+<h2 id="details">Detailed Description</h2>
+<p>A TreeView has a <a href="../qtquickcontrols/qtquickcontrols-chattutorial-example.html#model" translate="no">model</a> that defines the data to be displayed, and a <a href="../qtquickcontrols/qtquickcontrols-chattutorial-example.html#delegate" translate="no">delegate</a> that defines how the data should be displayed.</p>
+<p>TreeView inherits <a href="qml-qtquick-tableview.html" translate="no">TableView</a>. This means that even if the model has a parent-child tree structure, TreeView is internally using a proxy model that converts that structure into a flat table model that can be rendered by <a href="qml-qtquick-tableview.html" translate="no">TableView</a>. Each node in the tree ends up occupying one row in the table, where the first column renders the tree itself. By indenting each delegate item in that column according to its parent-child depth in the model, it will end up looking like a tree, even if it's technically still just a flat list of items.</p>
+<p>To allow for maximum flexibility, TreeView itself will not position the delegate items into a tree structure. This burden is placed on the delegate. <a href="../qtquickcontrols/qtquickcontrols-index.html" translate="no">Qt Quick Controls</a> offers a ready-made <a href="../qtquickcontrols/qml-qtquick-controls-treeviewdelegate.html" translate="no">TreeViewDelegate</a> that can be used for this, which has the advantage that it works out-of-the-box and renders a tree which follows the style of the platform where the application runs.</p>
+<p>Even if <a href="../qtquickcontrols/qml-qtquick-controls-treeviewdelegate.html" translate="no">TreeViewDelegate</a> is customizable, there might be situations where you want to render the tree in a different way, or ensure that the delegate ends up as minimal as possible, perhaps for performance reasons. Creating your own delegate from scratch is easy, since TreeView offers a set of properties that can be used to position and render each node in the tree correctly.</p>
+<p>An example of a custom delegate is shown below:</p>
+<pre class="qml" translate="no">
+ import QtQuick
+
+ <span class="type"><a href="qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">width</span>: <span class="number">600</span>
+     <span class="name">height</span>: <span class="number">400</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+
+     <span class="type"><a href="qml-qtquick-treeview.html" translate="no">TreeView</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="comment">// The model needs to be a QAbstractItemModel</span>
+         <span class="comment">// model: yourTreeModel</span>
+
+         <span class="name">delegate</span>: <span class="name">Item</span> {
+             <span class="name">id</span>: <span class="name">treeDelegate</span>
+
+             <span class="name">implicitWidth</span>: <span class="name">padding</span> <span class="operator">+</span> <span class="name">label</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">label</span>.<span class="name">implicitWidth</span> <span class="operator">+</span> <span class="name">padding</span>
+             <span class="name">implicitHeight</span>: <span class="name">label</span>.<span class="name">implicitHeight</span> <span class="operator">*</span> <span class="number">1.5</span>
+
+             readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">indent</span>: <span class="number">20</span>
+             readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">padding</span>: <span class="number">5</span>
+
+             <span class="comment">// Assigned to by TreeView:</span>
+             required property <span class="type"><a href="qml-qtquick-treeview.html" translate="no">TreeView</a></span> <span class="name">treeView</span>
+             required property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">isTreeNode</span>
+             required property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">expanded</span>
+             required property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">hasChildren</span>
+             required property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">depth</span>
+
+             <span class="type"><a href="qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+                 <span class="name">onTapped</span>: <span class="name">treeView</span>.<span class="name">toggleExpanded</span>(<span class="name">row</span>)
+             }
+
+             <span class="type"><a href="qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">id</span>: <span class="name">indicator</span>
+                 <span class="name">visible</span>: <span class="name">treeDelegate</span>.<span class="name">isTreeNode</span> <span class="operator">&amp;&amp;</span> <span class="name">treeDelegate</span>.<span class="name">hasChildren</span>
+                 <span class="name">x</span>: <span class="name">padding</span> <span class="operator">+</span> (<span class="name">treeDelegate</span>.<span class="name">depth</span> <span class="operator">*</span> <span class="name">treeDelegate</span>.<span class="name">indent</span>)
+                 <span class="name">anchors</span>.verticalCenter: <span class="name">label</span>.<span class="name">verticalCenter</span>
+                 <span class="name">text</span>: <span class="string">&quot;▸&quot;</span>
+                 <span class="name">rotation</span>: <span class="name">treeDelegate</span>.<span class="name">expanded</span> ? <span class="number">90</span> : <span class="number">0</span>
+             }
+
+             <span class="type"><a href="qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">id</span>: <span class="name">label</span>
+                 <span class="name">x</span>: <span class="name">padding</span> <span class="operator">+</span> (<span class="name">treeDelegate</span>.<span class="name">isTreeNode</span> ? (<span class="name">treeDelegate</span>.<span class="name">depth</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">*</span> <span class="name">treeDelegate</span>.<span class="name">indent</span> : <span class="number">0</span>)
+                 <span class="name">width</span>: <span class="name">treeDelegate</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">treeDelegate</span>.<span class="name">padding</span> <span class="operator">-</span> <span class="name">x</span>
+                 <span class="name">clip</span>: <span class="number">true</span>
+                 <span class="name">text</span>: <span class="name">model</span>.<span class="name">display</span>
+             }
+         }
+     }
+ }
+</pre>
+<p>The properties that are marked as <code translate="no">required</code> will be filled in by TreeView, and are similar to attached properties. By marking them as required, the delegate indirectly informs TreeView that it should take responsibility for assigning them values. The following required properties can be added to a delegate:</p>
+<ul>
+<li><code translate="no">required property TreeView treeView</code> - Points to the TreeView that contains the delegate item.</li>
+<li><code translate="no">required property bool isTreeNode</code> - Is <code translate="no">true</code> if the delegate item represents a node in the tree. Only one column in the view will be used to draw the tree, and therefore, only delegate items in that column will have this property set to <code translate="no">true</code>. A node in the tree should typically be indented according to its <code translate="no">depth</code>, and show an indicator if <code translate="no">hasChildren</code> is <code translate="no">true</code>. Delegate items in other columns will have this property set to <code translate="no">false</code>, and will show data from the remaining columns in the model (and typically not be indented).</li>
+<li><code translate="no">required property bool expanded</code> - Is <code translate="no">true</code> if the model item drawn by the delegate is expanded in the view.</li>
+<li><code translate="no">required property bool hasChildren</code> - Is <code translate="no">true</code> if the model item drawn by the delegate has children in the model.</li>
+<li><code translate="no">required property int depth</code> - Contains the depth of the model item drawn by the delegate. The depth of a model item is the same as the number of ancestors it has in the model.</li>
+</ul>
+<p>See also <a href="../qtqml/qtqml-syntax-objectattributes.html#required-properties" translate="no">Required Properties</a>.</p>
+<p>By default, TreeView <a href="qml-qtquick-treeview.html#toggleExpanded-method" translate="no">toggles</a> the expanded state of a row when you double tap on it. Since this is in conflict with double tapping to edit a cell, TreeView sets <a href="qml-qtquick-tableview.html#editTriggers-prop" translate="no">editTriggers</a> to <code translate="no">TableView.EditKeyPressed</code> by default (which is different from <a href="qml-qtquick-tableview.html" translate="no">TableView</a>, which uses <code translate="no">TableView.EditKeyPressed | TableView.DoubleTapped</code>. If you change <a href="qml-qtquick-tableview.html#editTriggers-prop" translate="no">editTriggers</a> to also contain <code translate="no">TableView.DoubleTapped</code>, toggling the expanded state with a double tap will be disabled.</p>
+<div class="admonition note">
+<p><b>Note: </b>A TreeView only accepts a model that inherits <a href="../qtcore/qabstractitemmodel.html" translate="no">QAbstractItemModel</a>.</p>
+</div>
+<!-- @@@TreeView -->
+<h2>Property Documentation</h2>
+<!-- $$$rootIndex -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="rootIndex-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[since 6.6] </span><span class="name">rootIndex</span> : <span class="type">QModelIndex</span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds the model index of the root item in the tree. By default, this is the same as the root index in the model, but you can set it to be a child index instead, to show only a branch of the tree. Set it to <code translate="no">undefined</code> to show the whole model.</p>
+<p>This property was introduced in Qt 6.6.</p>
+</div></div><!-- @@@rootIndex -->
+<br/>
+<h2>Signal Documentation</h2>
+<!-- $$$collapsed[overload1]$$$collapsed -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="collapsed-signal">
+<td class="tblQmlFuncNode"><p>
+<span class="name">collapsed</span>(<i>row</i>, <i>recursively</i>)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This signal is emitted when a <i translate="no">row</i> is collapsed in the view. <i translate="no">row</i> will be equal to the argument given to the call that caused the collapse to happen (<a href="qml-qtquick-treeview.html#collapse-method" translate="no">collapse</a>() or <a href="qml-qtquick-treeview.html#collapseRecursively-method" translate="no">collapseRecursively</a>()). If the row was collapsed recursively, <i translate="no">recursively</i> will be <code translate="no">true</code>.</p>
+<div class="admonition note">
+<p><b>Note: </b>when a row is collapsed recursively, the collapsed signal will only be emitted for that one row, and not for its descendants.</p>
+</div>
+<div class="admonition note"><p><b>Note: </b>The corresponding handler is <code translate="no">onCollapsed</code>.</p>
+</div><p><b>See also </b><a href="qml-qtquick-treeview.html#expanded-signal" translate="no">expanded</a>(), <a href="qml-qtquick-treeview.html#expand-method" translate="no">expand</a>(), <a href="qml-qtquick-treeview.html#collapse-method" translate="no">collapse</a>(), and <a href="qml-qtquick-treeview.html#toggleExpanded-method" translate="no">toggleExpanded</a>().</p>
+</div></div><!-- @@@collapsed -->
+<br/>
+<!-- $$$expanded[overload1]$$$expanded -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="expanded-signal">
+<td class="tblQmlFuncNode"><p>
+<span class="name">expanded</span>(<i>row</i>, <i>depth</i>)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This signal is emitted when a <i translate="no">row</i> is expanded in the view. <i translate="no">row</i> and <i translate="no">depth</i> will be equal to the arguments given to the call that caused the expansion to happen (<a href="qml-qtquick-treeview.html#expand-method" translate="no">expand</a>() or <a href="qml-qtquick-treeview.html#expandRecursively-method" translate="no">expandRecursively</a>()). In case of <a href="qml-qtquick-treeview.html#expand-method" translate="no">expand</a>(), <i translate="no">depth</i> will always be <code translate="no">1</code>. In case of <a href="qml-qtquick-treeview.html#expandToIndex-method" translate="no">expandToIndex</a>(), <i translate="no">depth</i> will be the depth of the target index.</p>
+<div class="admonition note">
+<p><b>Note: </b>when a row is expanded recursively, the expanded signal will only be emitted for that one row, and not for its descendants.</p>
+</div>
+<div class="admonition note"><p><b>Note: </b>The corresponding handler is <code translate="no">onExpanded</code>.</p>
+</div><p><b>See also </b><a href="qml-qtquick-treeview.html#collapsed-signal" translate="no">collapsed</a>(), <a href="qml-qtquick-treeview.html#expand-method" translate="no">expand</a>(), <a href="qml-qtquick-treeview.html#collapse-method" translate="no">collapse</a>(), and <a href="qml-qtquick-treeview.html#toggleExpanded-method" translate="no">toggleExpanded</a>().</p>
+</div></div><!-- @@@expanded -->
+<br/>
+<h2>Method Documentation</h2>
+<!-- $$$collapse[overload1]$$$collapse -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="collapse-method">
+<td class="tblQmlFuncNode"><p>
+<span class="name">collapse</span>(<i>row</i>)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Collapses the tree node at the given <i translate="no">row</i> in the view.</p>
+<p><i translate="no">row</i> should be the row in the view (table row), and not a row in the model.</p>
+<div class="admonition note">
+<p><b>Note: </b>this function will not affect the model, only the visual representation in the view.</p>
+</div>
+<p><b>See also </b><a href="qml-qtquick-treeview.html#expand-method" translate="no">expand</a>() and <a href="qml-qtquick-treeview.html#isExpanded-method" translate="no">isExpanded</a>().</p>
+</div></div><!-- @@@collapse -->
+<br/>
+<!-- $$$collapseRecursively[overload1]$$$collapseRecursively -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="collapseRecursively-method">
+<td class="tblQmlFuncNode"><p>
+<code translate="no">[since 6.4] </code><span class="name">collapseRecursively</span>(<i>row</i> = -1)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Collapses the tree node at the given <i translate="no">row</i> in the view recursively down to all leaves.</p>
+<p>For a model has more than one root, you can also call this function with <i translate="no">row</i> equal to <code translate="no">-1</code>. This will collapse all roots. Hence, calling collapseRecursively(-1), or simply collapseRecursively(), will collapse all nodes in the model.</p>
+<p><i translate="no">row</i> should be the row in the view (table row), and not a row in the model.</p>
+<div class="admonition note">
+<p><b>Note: </b>this function will not affect the model, only the visual representation in the view.</p>
+</div>
+<p>This method was introduced in Qt 6.4.</p>
+<p><b>See also </b><a href="qml-qtquick-treeview.html#expandRecursively-method" translate="no">expandRecursively</a>(), <a href="qml-qtquick-treeview.html#expand-method" translate="no">expand</a>(), <a href="qml-qtquick-treeview.html#collapse-method" translate="no">collapse</a>(), <a href="qml-qtquick-treeview.html#isExpanded-method" translate="no">isExpanded</a>(), and <a href="qml-qtquick-treeview.html#depth-method" translate="no">depth</a>().</p>
+</div></div><!-- @@@collapseRecursively -->
+<br/>
+<!-- $$$depth[overload1]$$$depth -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="depth-method">
+<td class="tblQmlFuncNode"><p>
+<span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">depth</span>(<i>row</i>)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Returns the depth (the number of parents up to the root) of the given <i translate="no">row</i>.</p>
+<p><i translate="no">row</i> should be the row in the view (table row), and not a row in the model. If <i translate="no">row</i> is not between <code translate="no">0</code> and <a href="qml-qtquick-tableview.html#rows-prop" translate="no">rows</a>, the return value will be <code translate="no">-1</code>.</p>
+<p><b>See also </b><a href="qml-qtquick-tableview-obsolete.html#modelIndex-method" translate="no">modelIndex</a>().</p>
+</div></div><!-- @@@depth -->
+<br/>
+<!-- $$$expand[overload1]$$$expand -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="expand-method">
+<td class="tblQmlFuncNode"><p>
+<span class="name">expand</span>(<i>row</i>)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Expands the tree node at the given <i translate="no">row</i> in the view.</p>
+<p><i translate="no">row</i> should be the row in the view (table row), and not a row in the model.</p>
+<div class="admonition note">
+<p><b>Note: </b>this function will not affect the model, only the visual representation in the view.</p>
+</div>
+<p><b>See also </b><a href="qml-qtquick-treeview.html#collapse-method" translate="no">collapse</a>(), <a href="qml-qtquick-treeview.html#isExpanded-method" translate="no">isExpanded</a>(), and <a href="qml-qtquick-treeview.html#expandRecursively-method" translate="no">expandRecursively</a>().</p>
+</div></div><!-- @@@expand -->
+<br/>
+<!-- $$$expandRecursively[overload1]$$$expandRecursively -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="expandRecursively-method">
+<td class="tblQmlFuncNode"><p>
+<code translate="no">[since 6.4] </code><span class="name">expandRecursively</span>(<i>row</i> = -1, <i>depth</i> = -1)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Expands the tree node at the given <i translate="no">row</i> in the view recursively down to <i translate="no">depth</i>. <i translate="no">depth</i> should be relative to the depth of <i translate="no">row</i>. If <i translate="no">depth</i> is <code translate="no">-1</code>, the tree will be expanded all the way down to all leaves.</p>
+<p>For a model that has more than one root, you can also call this function with <i translate="no">row</i> equal to <code translate="no">-1</code>. This will expand all roots. Hence, calling expandRecursively(-1, -1), or simply expandRecursively(), will expand all nodes in the model.</p>
+<p><i translate="no">row</i> should be the row in the view (table row), and not a row in the model.</p>
+<div class="admonition note">
+<p><b>Note: </b>This function will not try to <a href="../qtcore/qabstractitemmodel.html#fetchMore" translate="no">fetch more</a> data.</p>
+</div>
+<div class="admonition note">
+<p><b>Note: </b>This function will not affect the model, only the visual representation in the view.</p>
+</div>
+<div class="admonition warning">
+<p><b>Warning: </b>If the model contains a large number of items, this function will take some time to execute.</p>
+</div>
+<p>This method was introduced in Qt 6.4.</p>
+<p><b>See also </b><a href="qml-qtquick-treeview.html#collapseRecursively-method" translate="no">collapseRecursively</a>(), <a href="qml-qtquick-treeview.html#expand-method" translate="no">expand</a>(), <a href="qml-qtquick-treeview.html#collapse-method" translate="no">collapse</a>(), <a href="qml-qtquick-treeview.html#isExpanded-method" translate="no">isExpanded</a>(), and <a href="qml-qtquick-treeview.html#depth-method" translate="no">depth</a>().</p>
+</div></div><!-- @@@expandRecursively -->
+<br/>
+<!-- $$$expandToIndex[overload1]$$$expandToIndexQModelIndex -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="expandToIndex-method">
+<td class="tblQmlFuncNode"><p>
+<code translate="no">[since 6.4] </code><span class="name">expandToIndex</span>(<span class="type">QModelIndex</span> <i>index</i>)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Expands the tree from the given model <i translate="no">index</i>, and recursively all the way up to the root. The result will be that the delegate item that represents <i translate="no">index</i> becomes visible in the view (unless it ends up outside the viewport). To ensure that the row ends up visible in the viewport, you can do:</p>
+<pre class="cpp" translate="no">
+ expandToIndex(index)
+ forceLayout()
+ positionViewAtRow(rowAtIndex(index)<span class="operator">,</span> <span class="type"><a href="../qtqml/qml-qtqml-qt.html" translate="no">Qt</a></span><span class="operator">.</span>AlignVCenter)
+</pre>
+<p>This method was introduced in Qt 6.4.</p>
+<p><b>See also </b><a href="qml-qtquick-treeview.html#expand-method" translate="no">expand</a>() and <a href="qml-qtquick-treeview.html#expandRecursively-method" translate="no">expandRecursively</a>().</p>
+</div></div><!-- @@@expandToIndex -->
+<br/>
+<!-- $$$isExpanded[overload1]$$$isExpanded -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="isExpanded-method">
+<td class="tblQmlFuncNode"><p>
+<span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">isExpanded</span>(<i>row</i>)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Returns if the given <i translate="no">row</i> in the view is shown as expanded.</p>
+<p><i translate="no">row</i> should be the row in the view (table row), and not a row in the model. If <i translate="no">row</i> is not between <code translate="no">0</code> and <a href="qml-qtquick-tableview.html#rows-prop" translate="no">rows</a>, the return value will be <code translate="no">false</code>.</p>
+</div></div><!-- @@@isExpanded -->
+<br/>
+<!-- $$$toggleExpanded[overload1]$$$toggleExpanded -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="toggleExpanded-method">
+<td class="tblQmlFuncNode"><p>
+<span class="name">toggleExpanded</span>(<i>row</i>)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Toggles if the tree node at the given <i translate="no">row</i> should be expanded. This is a convenience for doing:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">if</span> (isExpanded(row))
+     collapse(row)
+ <span class="keyword">else</span>
+     expand(row)
+</pre>
+<p><i translate="no">row</i> should be the row in the view (table row), and not a row in the model.</p>
+</div></div><!-- @@@toggleExpanded -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

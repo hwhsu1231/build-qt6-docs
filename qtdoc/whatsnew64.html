@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- whatsnew64.qdoc -->
+  <meta name="description" content="Lists the new features in Qt 6.4&#x2e;">
+  <title>What's New in Qt 6.4 | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li><a href="whatsnewqt6.html" translate="no">What's new in Qt 6</a></li>
+<li>What's New in Qt 6.4</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#new-and-restored-modules-in-qt-6-4">New and Restored Modules in Qt 6.4</a></li>
+<li class="level1"><a href="#new-features-in-qt-6-4">New Features in Qt 6.4</a></li>
+<li class="level2"><a href="#qt-core-module">Qt Core Module</a></li>
+<li class="level2"><a href="#qt-gui-module">Qt GUI Module</a></li>
+<li class="level2"><a href="#qt-quick-module">Qt Quick Module</a></li>
+<li class="level2"><a href="#qt-quick-controls-module">Qt Quick Controls Module</a></li>
+<li class="level2"><a href="#qt-quick-dialogs-module">Qt Quick Dialogs Module</a></li>
+<li class="level2"><a href="#qt-widgets-module">Qt Widgets Module</a></li>
+<li class="level2"><a href="#qt-network-module">Qt Network Module</a></li>
+<li class="level2"><a href="#qt-test-module">Qt Test Module</a></li>
+<li class="level2"><a href="#qt-qml-module">Qt QML Module</a></li>
+<li class="level2"><a href="#qt-quick-3d-module">Qt Quick 3D Module</a></li>
+<li class="level2"><a href="#qt-connectivity-module">Qt Connectivity Module</a></li>
+<li class="level2"><a href="#qt-webengine-module">Qt WebEngine Module</a></li>
+<li class="level1"><a href="#platform-changes">Platform Changes</a></li>
+<li class="level2"><a href="#webassembly">WebAssembly</a></li>
+<li class="level2"><a href="#mobile-platforms">Mobile Platforms</a></li>
+<li class="level2"><a href="#embedded-platforms">Embedded Platforms</a></li>
+<li class="level1"><a href="#list-of-api-changes">List of API Changes</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">What's New in Qt 6.4</h1>
+<!-- $$$whatsnew64.html-description -->
+<div class="descr" id="details">
+<h2 id="new-and-restored-modules-in-qt-6-4">New and Restored Modules in Qt 6.4</h2>
+<p>Qt 6.4 adds the following modules:</p>
+<ul>
+<li><a href="../qthttpserver/qthttpserver-index.html" translate="no">Qt HTTP Server</a> - A module for embedding an HTTP server into Qt applications. This module is in technical preview, API and ABI stability is not guaranteed.</li>
+<li><a href="../qtquick3dphysics/qtquick3dphysics-index.html" translate="no">Qt Quick 3D Physics</a> - A high-level QML module adding physical simulation capabilities to Qt Quick 3D.</li>
+</ul>
+<p>Qt 6.4 reintroduces the <a href="../qttexttospeech/qttexttospeech-index.html" translate="no">Qt TextToSpeech</a> module from Qt 5. This module wasn't present in Qt 6.3&#x2e; It now uses the CMake build system and works with Qt 6.</p>
+<p>You'll find more details about changes to each module in <a href="modulechanges.html" translate="no">Changes to Qt Modules in Qt 6</a>.</p>
+<h2 id="new-features-in-qt-6-4">New Features in Qt 6.4</h2>
+<h3 id="qt-core-module">Qt Core Module</h3>
+<ul>
+<li>Added <a href="../qtcore/qlatin1stringview.html" translate="no">QLatin1StringView</a> as an alias for <a href="../qtcore/qlatin1string.html" translate="no">QLatin1String</a>. This is now the recommended name for referring to a Latin-1 string view.</li>
+<li>The <code translate="no">QLatin1StringView(const char *, qsizetype)</code> and <code translate="no">QLatin1StringView(const char *, const char *)</code> constructors are made non-explicit.</li>
+<li>Added literal operator <code translate="no">_L1</code> for creating Latin-1 string and char literals in the <a href="../qtcore/qt-literals-stringliterals.html" translate="no">Qt::Literals::StringLiterals</a> namespace.</li>
+<li>Added literal operators <code translate="no">_s</code> and <code translate="no">_ba</code> for creating <a href="../qtcore/qstring.html" translate="no">QString</a> and <a href="../qtcore/qbytearray.html" translate="no">QByteArray</a> literals respectively, in the <a href="../qtcore/qt-literals-stringliterals.html" translate="no">Qt::Literals::StringLiterals</a> namespace. Deprecated <code translate="no">_qs</code> and <code translate="no">_qba</code> in favor of <code translate="no">_s</code> and <code translate="no">_ba</code>.</li>
+<li>Deprecated QString::count() and QByteArray::count() that take no parameters, to avoid confusion with the algorithm overloads of the same name. They can be replaced by <code translate="no">size()</code> or <code translate="no">length()</code> methods.</li>
+<li><a href="../qtcore/qstringencoder.html" translate="no">QStringEncoder</a> and <a href="../qtcore/qstringdecoder.html" translate="no">QStringDecoder</a> support now all codecs supported by ICU when Qt is built with ICU support enabled.</li>
+<li>In the classes for Android and JNI development, <a href="../qtcore/qjniobject.html" translate="no">QJniObject</a> and <a href="../qtcore/qjnienvironment.html" translate="no">QJniEnvironment</a>, overloads have been added for <a href="../qtcore/qjniobject.html#callMethod" translate="no">callMethod</a>, <a href="../qtcore/qjnienvironment.html#findMethod" translate="no">findMethod</a> and similar methods. It is now possible to call Java functions and register native methods without specifying a signature string.</li>
+<li>The new template function <a href="../qtcore/qjniobject.html#construct" translate="no">QJniObject::construct</a>() allows instantiating of a Java class from C++ without specifying a type or signature string.</li>
+<li><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a> now has a percentDecoded() instance method as an alternative to calling the fromPercentEncoding() static method on the instance.</li>
+<li><a href="../qtcore/qtextstream.html" translate="no">QTextStream</a> now supports input and output of char16_t.</li>
+<li><a href="../qtcore/qstringview.html" translate="no">QStringView</a> now has a localeAwareCompare() method and can count() how many times a given sub-string appears.</li>
+<li><a href="../qtcore/qdate.html" translate="no">QDate</a> can now be constructed from various std::chrono year-month-day structure types, when available, and it has an addDuration() taking a std::chrono::days, when available.</li>
+<li><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a> likewise gains an addDuration(std::chrono::milliseconds), along with arithmetic to add or subtract the same type, a difference of <a href="../qtcore/qdatetime.html" translate="no">QDateTime</a> values returning it, and a few static pseudo-constructors taking various std::chrono types describing a moment in time.</li>
+<li>Added <a href="../qtcore/qtimezone.html#fromStdTimeZonePtr" translate="no">QTimeZone::fromStdTimeZonePtr</a>(const std::chrono::time_zone *).</li>
+<li><a href="../qtcore/qcalendar.html" translate="no">QCalendar</a>'s construction by name now accepts <a href="../qtcore/qanystringview.html" translate="no">QAnyStringView</a>.</li>
+</ul>
+<h3 id="qt-gui-module">Qt GUI Module</h3>
+<ul>
+<li>Added <a href="../qtgui/qtextdocumentfragment.html#toMarkdown" translate="no">QTextDocumentFragment::toMarkdown</a>(), <a href="../qtgui/qtextdocumentfragment.html#fromMarkdown" translate="no">QTextDocumentFragment::fromMarkdown</a>(), and <a href="../qtgui/qtextcursor.html#insertMarkdown" translate="no">QTextCursor::insertMarkdown</a>().</li>
+</ul>
+<h3 id="qt-quick-module">Qt Quick Module</h3>
+<ul>
+<li>Several new properties and functions has been added to <a href="../qtquick/qml-qtquick-tableview.html" translate="no">TableView</a> that improves support for keyboard navigation and selection, row- and column selections, animations, sub-cell positioning, and more.</li>
+<li><a href="../qtquick/qml-qtquick-treeview.html" translate="no">TreeView</a> now support selections, and has gained a broader API for expanding and collapsing nodes in the tree recursively.</li>
+<li><a href="../qtquick/qquickwidget.html" translate="no">QQuickWidget</a> is now functional with all supported 3D graphics APIs (Vulkan, Metal, Direct3D 11) in addition to OpenGL. Applications no longer have to enforce rendering with OpenGL when using <a href="../qtquick/qquickwidget.html" translate="no">QQuickWidget</a>.</li>
+<li>Added support for arrays of combined image samplers in shaders used with custom materials. This is supported by the new function <a href="../qtquick/qsgmaterialshader.html#combinedImageSamplerCount" translate="no">QSGMaterialShader::combinedImageSamplerCount</a>() and the enhanced semantics of the existing <code translate="no">texture</code> argument of <a href="../qtquick/qsgmaterialshader.html#updateSampledImage" translate="no">QSGMaterialShader::updateSampledImage</a>().</li>
+<li>Added support changing the polygon rasterization mode from <code translate="no">solid</code> to <code translate="no">line</code> in <a href="../qtquick/qsgmaterialshader-graphicspipelinestate.html" translate="no">QSGMaterialShader::GraphicsPipelineState</a>. (available only when the 3D API in use supports this)</li>
+<li><a href="../qtquick/qml-qtquick-shadereffectsource.html#format-prop" translate="no">ShaderEffectSource.format</a> and <a href="../qtquick/qml-qtquick-item.html#layer.format-prop" translate="no">layer.format</a> were not useful in previous Qt 6 releases, with the legacy values ignored in practice. This is now documented and new, actually useful values are introduced, in particular to enable requesting floating point (FP16 or FP32) textures instead of RGBA8, if desired.</li>
+<li>Added <a href="../qtquick/qquickrendertarget.html#fromPaintDevice" translate="no">QQuickRenderTarget::fromPaintDevice</a>(), enabling redirecting the output from a <a href="../qtquick/qquickwindow.html" translate="no">QQuickWindow</a> using the <code translate="no">software</code> backend as well.</li>
+<li>Added overloads in <a href="../qtquick/qquickrendertarget.html" translate="no">QQuickRenderTarget</a> that enable specifying the native format of the texture or image object. This is relevant in some advanced use cases when one has to work with native textures that are not RGBA8. Note that only native formats that are supported by Qt's rendering infrastructure are accepted.</li>
+<li>Added <a href="../qtquick/qquickrendertarget.html#setMirrorVertically" translate="no">setMirrorVertically</a>() to <a href="../qtquick/qquickrendertarget.html" translate="no">QQuickRenderTarget</a>, which allows requesting the Qt Quick renderer to alter its matrices to get vertically flipped results when redirecting the 3D API-based rendering into a texture.</li>
+<li>Qt Quick windows will now attempt to use the software rasterization platform of Direct 3D (WARP) in case the primary graphics device is not compatible with Qt, without having to resort to manually setting environment variables.</li>
+<li>Added simple heuristics to the <code translate="no">threaded</code> render loop of the Qt Quick scenegraph for recognizing broken vsync-based throttling. When frames are rendered/presented too fast, without blocking the render thread, it now switches automatically to the regular timer-based approach of running animations, thus preventing QML animations running too fast.</li>
+<li>Added <a href="../qtquick/qml-qtquick-frameanimation.html" translate="no">FrameAnimation</a> for custom animations. Allows running custom scripts in synchronization with the animation frames.</li>
+</ul>
+<h3 id="qt-quick-controls-module">Qt Quick Controls Module</h3>
+<ul>
+<li>Added a new native-looking style for iOS, <a href="../qtquickcontrols/qtquickcontrols-ios.html" translate="no">iOS Style</a>, as Tech Preview.</li>
+<li><a href="../qtquickcontrols/qml-qtquick-controls-treeviewdelegate.html" translate="no">TreeViewDelegate</a> has three new properties that describes if it's current, selected, or highlighted in the <a href="../qtquick/qml-qtquick-treeview.html" translate="no">TreeView</a>.</li>
+</ul>
+<h3 id="qt-quick-dialogs-module">Qt Quick Dialogs Module</h3>
+<ul>
+<li>Added <a href="../qtquickdialogs/qml-qtquick-dialogs-colordialog.html" translate="no">ColorDialog</a>. This is a native dialog on platforms that support it, and a non-native Qt Quick dialog on other platforms.<p>The non-native dialog supports all of the non-native styles: Basic, Fusion, Imagine, Material and Universal.</p>
+</li>
+</ul>
+<h3 id="qt-widgets-module">Qt Widgets Module</h3>
+<ul>
+<li><a href="../qtwidgets/qformlayout.html" translate="no">QFormLayout</a> has new <a href="../qtwidgets/qformlayout.html#isRowVisible" translate="no">isRowVisible</a>() and <a href="../qtwidgets/qformlayout.html#setRowVisible" translate="no">setRowVisible</a>() member functions, with overloads that allow hiding and showing rows by index, input widget, or row layout.</li>
+<li><a href="../qtwidgets/qkeysequenceedit.html" translate="no">QKeySequenceEdit</a> has a new <a href="../qtwidgets/qkeysequenceedit.html#clearButtonEnabled-prop" translate="no">clearButtonEnabled</a> property. Use it to control whether the widget shows a clear button that allows the user to clear the edit.</li>
+<li><a href="../qtwidgets/qwizard.html" translate="no">QWizard</a> has a new slot, <a href="../qtwidgets/qwizard.html#setCurrentId" translate="no">setCurrentId</a>, that allows applications to move to a page without visiting the pages between the current page and the target.</li>
+</ul>
+<h3 id="qt-network-module">Qt Network Module</h3>
+<ul>
+<li>Added <a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a>. This simplifies creation of a server which solely communicates over TLS.</li>
+<li><a href="../qtnetwork/qnetworkinformation.html" translate="no">QNetworkInformation</a> now has loadBackendByFeatures(Features) and loadBackendByName(<a href="../qtcore/qstringview.html" translate="no">QStringView</a>), meant to eventually replace the corresponding overloaded load(Features/<a href="../qtcore/qstringview.html" translate="no">QStringView</a>) functions which are now marked as deprecated.</li>
+</ul>
+<h3 id="qt-test-module">Qt Test Module</h3>
+<ul>
+<li>QTestEventLoop::enterLoopMSecs() now uses a PreciseTimer if the timeout is less than a second.</li>
+<li>Custom QTest::compare() implementations should now revise any calls to QTest::compare_helper() to use one of the two new overloads instead of the old one, which is now deprecated (so as to only generate the strings to represent values in a failure report if the check actually does fail).</li>
+<li>Added <a href="../qttestlib/qabstractitemmodeltester.html#setUseFetchMore" translate="no">QAbstractItemModelTester::setUseFetchMore</a>().</li>
+<li>New macros QCOMPARE_{EQ,NE,GT,GE,LT,LE}() support comparisons with reporting similar to that of <a href="../qttestlib/qtest.html#QCOMPARE" translate="no">QCOMPARE</a>(). The EQ one does exact comparisons, without <a href="../qttestlib/qtest.html#QCOMPARE" translate="no">QCOMPARE</a>()'s customizations. These also come with the usual QTRY_COMPARE_*() and QTRY_COMPARE_*_WITH_TIMEOUT() variants.</li>
+</ul>
+<h3 id="qt-qml-module">Qt QML Module</h3>
+<ul>
+<li>QML Language<ul>
+<li>You can register custom value types with names now. That is, the argument to <a href="../qtqml/qqmlengine.html#QML_VALUE_TYPE" translate="no">QML_VALUE_TYPE</a> is no longer ignored. It must be lower case. Once registered, you can declare properties of your own value types in QML.</li>
+<li>You can store any named value type in a list in QML now. For example list&lt;rect&gt; in QML is like a <a href="../qtcore/qlist.html" translate="no">QList</a>&lt;<a href="../qtcore/qrectf.html" translate="no">QRectF</a>&gt; in C++. This removes the need to use var for such properties or wrap their elements into objects.</li>
+<li>The new pragma ComponentBehavior lets you specify whether components defined in a QML file can be used outside of their creation context. If not (pragma ComponentBehavior: Bound), then Qt Quick Compiler can optimize your code better.</li>
+</ul>
+</li>
+<li>QML Type Compiler (qmltc)<ul>
+<li>Expanded QML language coverage</li>
+</ul>
+</li>
+<li>QML Script Compiler (qmlsc, qmlcachegen)<ul>
+<li>Various operations on lists of value types are now compiled to C++.</li>
+<li>Dead code and dead stores are optimized out more aggressively now.</li>
+<li>Type conversions now happen at the place where a value is written, not at the place where it's read. If the value is read multiple times, this is faster.</li>
+</ul>
+</li>
+<li>QML Linter (qmllint)<ul>
+<li>Added new warnings regarding proper use of <a href="../qtquick/qtquick-module.html" translate="no">QtQuick</a> and <a href="../qtquick/qtquick-module.html" translate="no">QtQuick</a>.Controls</li>
+</ul>
+</li>
+<li>QML Language Server (qmlls)<ul>
+<li>Added completions support</li>
+<li>Added code action fixing for some linter warnings/hints</li>
+<li>Moved executable to libexec</li>
+</ul>
+</li>
+<li>Cleaned up CMake API:<ul>
+<li><a href="../qtqml/qt-target-compile-qml-to-cpp.html" translate="no">qt_target_compile_qml_to_cpp()</a> used to invoke the QML type compiler is deprecated. Its functionality has been integrated into <a href="../qtqml/qt-add-qml-module.html" translate="no">qt_add_qml_module()</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="qt-quick-3d-module">Qt Quick 3D Module</h3>
+<ul>
+<li>Added a preview of lightmap baking support. This provides a static global illumination solution with lightmaps pre-generated using raytracing. See <a href="../qtquick3d/quick3d-lightmap.html" translate="no">Lightmaps and Global Illumination</a> for details.</li>
+<li>Added <a href="../qtquick3d/qml-qtquick3d-specularglossymaterial.html" translate="no">SpecularGlossyMaterial</a> to enable using the specular/glossiness workflow instead of metalness/roughness.</li>
+<li>Added the <a href="../qtquick3d/qml-qtquick3d-particles3d-lineparticle3d.html" translate="no">LineParticle3D</a> type that allows creating line shaped sprite particles.</li>
+<li>Added the <a href="../qtquick3d/qml-qtquick3d-model.html#castsReflections-prop" translate="no">Model.castsReflection</a> property to control if a model is rendered by reflection probes and if it can be seen in reflections. The same property is also introduced for <a href="../qtquick3d/qml-qtquick3d-particles3d-spriteparticle3d.html" translate="no">sprite particles</a>.</li>
+<li>Added the <a href="../qtquick3d/qml-qtquick3d-reflectionprobe.html#boxOffset-prop" translate="no">ReflectionProbe.boxOffset</a> property to move the box relative to the position of the probe without affecting the position of the capture point.</li>
+<li>Added the <a href="../qtquick3d/qml-qtquick3d-reflectionprobe.html#debugView-prop" translate="no">ReflectionProbe.debugView</a> property to display a cube visualizing the probe box.</li>
+<li>Added <a href="../qtquick3d/qml-qtquick3d-helpers-heightfieldgeometry.html" translate="no">HeightFieldGeometry</a> to enable creating a height-field geometry from an image file.</li>
+<li>Added <a href="../qtquick3d/qml-qtquick3d-cubemaptexture.html" translate="no">CubeMapTexture</a> to enable custom materials and post-processing effects to work with cube map textures in the shaders. The input is either a <code translate="no">.ktx</code> container with image data for all 6 faces, or 6 individual image files.</li>
+<li>Added support for rendering a skybox from a cubemap instead of the light probe. This can be requested by setting the background mode <a href="../qtquick3d/qml-qtquick3d-sceneenvironment.html#backgroundMode-prop" translate="no">SceneEnvironment.SkyBoxCubeMap</a>.</li>
+<li>Added <a href="../qtquick3d/qml-qtquick3d-helpers-proceduralskytexturedata.html" translate="no">ProceduralSkyTextureData</a> to procedurally generate a HDR light probe or sky box texture.</li>
+<li>Improved shadow rendering for point and spot lights.</li>
+<li>Added the <a href="../qtquick3d/qml-qtquick3d-view3d.html#renderFormat-prop" translate="no">renderFormat</a> property to <a href="../qtquick3d/qml-qtquick3d-view3d.html" translate="no">View3D</a> to allow specifying the backing texture format when the <a href="../qtquick3d/qml-qtquick3d-view3d.html" translate="no">View3D</a> is using its (default) Offscreen render mode. The available values are the same as with <a href="../qtquick/qml-qtquick-shadereffectsource.html#format-prop" translate="no">ShaderEffectSource.format</a> (which itself is also revised in 6.4). This enables using floating point textures instead of the default RGBA8.</li>
+<li>Support for importing UIP files was removed. The mapping from old Qt 3D Studio features to Qt Quick 3D was problematic in previous releases already. Therefore, Qt 6.4 removes support for <code translate="no">.uip</code> files from the <code translate="no">balsam</code> tool.</li>
+</ul>
+<h3 id="qt-connectivity-module">Qt Connectivity Module</h3>
+<ul>
+<li><a href="../qtnfc/qndefmessage.html" translate="no">QNdefMessage</a> is no longer exported. This class inherits <a href="../qtcore/qlist.html" translate="no">QList</a> publicly, but <a href="../qtcore/qlist.html" translate="no">QList</a> isn't designed to be inherited by an exported class.<div class="admonition warning">
+<p><b>Warning: </b>This is not backward compatible, but this will prevent future BC breaks going forward.</p>
+</div>
+</li>
+<li>In Qt Bluetooth various error enums are extended with new error codes that represent a missing permissions error. Currently these codes are used on Android and macOS/iOS. See <a href="../qtbluetooth/qbluetoothlocaldevice.html#Error-enum" translate="no">QBluetoothLocalDevice::MissingPermissionsError</a> as an example.</li>
+</ul>
+<h3 id="qt-webengine-module">Qt WebEngine Module</h3>
+<ul>
+<li>HTML5 file-system access API added, controlled by <a href="../qtwebengine/qwebenginefilesystemaccessrequest.html" translate="no">QWebEngineFileSystemAccessRequest</a></li>
+<li><a href="../qtwebengine/qwebengineloadinginfo.html" translate="no">QWebEngineLoadingInfo</a> improved error codes, in particular for HTTP errors</li>
+<li><a href="../qtwebengine/qwebengineview.html#setPage" translate="no">QWebEngineView::setPage</a>() now works on pages already loaded</li>
+<li>QWebEngineSettings::NavigateOnDrop added to allow disabling navigation on drag-an-drop of URLs</li>
+<li><a href="../qtwebengine/qwebengineurlrequestinfo.html#ResourceType-enum" translate="no">QWebEngineUrlRequestInfo::ResourceTypeWebSocket</a> added to allow interception of websocket connections</li>
+</ul>
+<h2 id="platform-changes">Platform Changes</h2>
+<h3 id="webassembly">WebAssembly</h3>
+<p>Qt is now fully supported on the WebAssembly platform. See the platform documentation at <a href="wasm.html" translate="no">Qt for WebAssembly</a> for details.</p>
+<h3 id="mobile-platforms">Mobile Platforms</h3>
+<h4 id="android">Android</h4>
+<ul>
+<li>Updated Gradle to 7.4&#x2e;2 and Android Gradle Plugin to 7.2&#x2e;1&#x2e;</li>
+<li>Updated NDK to r23b (23.1&#x2e;7779620).</li>
+<li>Added CMake variables <a href="../qtcore/cmake-variable-qt-android-sign-apk.html" translate="no">QT_ANDROID_SIGN_APK</a> and <a href="../qtcore/cmake-variable-qt-android-sign-aab.html" translate="no">QT_ANDROID_SIGN_AAB</a> to build signed packages directly from CMake.</li>
+<li>Android Accessibility is now aware of scroll events.</li>
+<li>Improved assets loading speed for Android apps.</li>
+</ul>
+<h3 id="embedded-platforms">Embedded Platforms</h3>
+<h4 id="boot-to-qt">Boot to Qt</h4>
+<ul>
+<li>Boot to Qt stack was updated to use Yocto 4.0&#x2e;3 (kirkstone).</li>
+<li>NXP i.MX8M Plus LPDDR4 EVK added as a new reference device.</li>
+</ul>
+<h4 id="qnx">QNX</h4>
+<ul>
+<li>Added support for <a href="../qtmultimedia/qtmultimedia-index.html" translate="no">Qt Multimedia</a>.</li>
+</ul>
+<h4 id="webos">WebOS</h4>
+<ul>
+<li>Qt 6.4 has been verified to work with LG webOS OSE 2.18.0 (<a href="webos.html" translate="no">Qt for webOS</a>).</li>
+</ul>
+<h2 id="list-of-api-changes">List of API Changes</h2>
+<p>These pages contain an overview of API changes in Qt 6.4:</p>
+<ul>
+<li><a href="newclasses64.html" translate="no">New Classes and Functions in Qt 6.4</a></li>
+<li><a href="obsoleteclasses.html" translate="no">Obsolete Classes</a></li>
+</ul>
+</div>
+<!-- @@@whatsnew64.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

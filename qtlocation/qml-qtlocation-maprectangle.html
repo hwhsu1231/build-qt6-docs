@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qdeclarativerectanglemapitem.cpp -->
+  <meta name="description" content="The MapRectangle type displays a rectangle on a Map.">
+  <title>MapRectangle QML Type | Qt Location 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtlocation-index.html" translate="no">Qt Location</a></li>
+<li><a href="qtlocation-qmlmodule.html" translate="no">QML Types</a></li>
+<li>MapRectangle</li>
+<li id="buildversion"><a href="qtlocation-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+<li class="level2"><a href="#example-usage">Example Usage</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">MapRectangle QML Type</h1>
+<!-- $$$MapRectangle-brief -->
+<p>The MapRectangle type displays a rectangle on a Map. <a href="#details">More...</a></p>
+<!-- @@@MapRectangle -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtLocation 6.6</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> QtLocation 5.5</td></tr></table></div><ul>
+<li><a href="qml-qtlocation-maprectangle-members.html">List of all members, including inherited members</a></li>
+<li>MapRectangle is part of <a href="qml-qtlocation5-maps.html">QML Maps Plugin</a>.</li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-maprectangle.html#autoFadeIn-prop" translate="no">autoFadeIn</a></b> : bool</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-maprectangle.html#border-prop" translate="no">border</a></b><ul>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-maprectangle.html#border.color-prop" translate="no">border.color</a></b> : color</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-maprectangle.html#border.width-prop" translate="no">border.width</a></b> : int</li>
+</ul>
+</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-maprectangle.html#bottomRight-prop" translate="no">bottomRight</a></b> : coordinate</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-maprectangle.html#color-prop" translate="no">color</a></b> : color</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-maprectangle.html#opacity-prop" translate="no">opacity</a></b> : real</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-maprectangle.html#referenceSurface-prop" translate="no">referenceSurface</a></b> : enum</li>
+<li class="fn" translate="no"><b><a href="qml-qtlocation-maprectangle.html#topLeft-prop" translate="no">topLeft</a></b> : coordinate</li>
+</ul>
+<!-- $$$MapRectangle-description -->
+<h2 id="details">Detailed Description</h2>
+<p>The MapRectangle type displays a rectangle on a Map. Rectangles are a special case of Polygon with exactly 4 vertices and 4 &quot;straight&quot; edges. In this case, &quot;straight&quot; means that the top-left point has the same latitude as the top-right point (the top edge), and the bottom-left point has the same latitude as the bottom-right point (the bottom edge). Similarly, the points on the left side have the same longitude, and the points on the right side have the same longitude.</p>
+<p>To specify the rectangle, it requires a <a href="qml-qtlocation-maprectangle.html#topLeft-prop" translate="no">topLeft</a> and <a href="qml-qtlocation-maprectangle.html#bottomRight-prop" translate="no">bottomRight</a> point, both given by a <a href="../qtpositioning/qml-coordinate.html" translate="no">coordinate</a>.</p>
+<p>By default, the rectangle is displayed with transparent fill and a 1-pixel thick black border. This can be changed using the <a href="qml-qtlocation-maprectangle.html#color-prop" translate="no">color</a>, <a href="qml-qtlocation-maprectangle.html#border.color-prop" translate="no">border.color</a> and <a href="qml-qtlocation-maprectangle.html#border.width-prop" translate="no">border.width</a> properties.</p>
+<div class="admonition note">
+<p><b>Note: </b>Similar to the <a href="qml-qtlocation-mappolygon.html" translate="no">MapPolygon</a> type, MapRectangles are geographic items, thus dragging a MapRectangle causes its vertices to be recalculated in the geographic coordinate space. Apparent stretching of the item occurs when dragged to the a different latitude, however, its edges remain straight.</p>
+</div>
+<h3 id="example-usage">Example Usage</h3>
+<p>The following snippet shows a map containing a MapRectangle, spanning from (-27, 153) to (-28, 153.5), near Brisbane, Australia. The rectangle is filled in green, with a 2 pixel black border.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qml-qtlocation-map.html" translate="no">Map</a></span> {
+     <span class="type"><a href="qml-qtlocation-maprectangle.html" translate="no">MapRectangle</a></span> {
+         <span class="name">color</span>: <span class="string">'green'</span>
+         <span class="name">border</span>.width: <span class="number">2</span>
+         <span class="type">topLeft</span> {
+             <span class="name">latitude</span>: -<span class="number">27</span>
+             <span class="name">longitude</span>: <span class="number">153</span>
+         }
+         <span class="type">bottomRight</span> {
+             <span class="name">latitude</span>: -<span class="number">28</span>
+             <span class="name">longitude</span>: <span class="number">153.5</span>
+         }
+     }
+ }
+</pre>
+<p class="centerAlign"><img src="images/api-maprectangle.png" alt="" /></p><!-- @@@MapRectangle -->
+<h2>Property Documentation</h2>
+<!-- $$$autoFadeIn -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="autoFadeIn-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">autoFadeIn</span> : <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds whether the item automatically fades in when zooming into the map starting from very low zoom levels. By default this is <code translate="no">true</code>. Setting this property to <code translate="no">false</code> causes the map item to always have the opacity specified with the <a href="../qtquick/qml-qtquick-item.html#opacity-prop" translate="no">QtQuick::Item::opacity</a> property, which is 1.0 by default.</p>
+</div></div><!-- @@@autoFadeIn -->
+<br/>
+<!-- $$$border -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="even" id="border-prop"><th class="centerAlign"><p><b>border group</b></p></th></tr>
+<tr valign="top" class="odd" id="border.color-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">border.color</span> : <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span></p></td></tr>
+<tr valign="top" class="odd" id="border.width-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">border.width</span> : <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property is part of the border property group. The border property group holds the width and color used to draw the border of the rectangle. The width is in pixels and is independent of the zoom level of the map.</p>
+<p>The default values correspond to a black border with a width of 1 pixel. For no line, use a width of 0 or a transparent color.</p>
+</div></div><!-- @@@border -->
+<br/>
+<!-- $$$bottomRight -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="bottomRight-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">bottomRight</span> : <span class="type"><a href="../qtpositioning/qml-coordinate.html" translate="no">coordinate</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds the bottom-right coordinate of the <a href="qml-qtlocation-maprectangle.html" translate="no">MapRectangle</a> which can be used to retrieve its longitude, latitude and altitude.</p>
+</div></div><!-- @@@bottomRight -->
+<br/>
+<!-- $$$color -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="color-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">color</span> : <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds the fill color of the rectangle. For no fill, use a transparent color.</p>
+</div></div><!-- @@@color -->
+<br/>
+<!-- $$$opacity -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="opacity-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">opacity</span> : <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds the opacity of the item. Opacity is specified as a number between 0 (fully transparent) and 1 (fully opaque). The default is 1.</p>
+<p>An item with 0 opacity will still receive mouse events. To stop mouse events, set the visible property of the item to false.</p>
+</div></div><!-- @@@opacity -->
+<br/>
+<!-- $$$referenceSurface -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="referenceSurface-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[since 6.5] </span><span class="name">referenceSurface</span> : <span class="type">enum</span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property determines the reference surface of the rectangle. If it is set to <a href="qlocation.html#ReferenceSurface-enum" translate="no">QLocation::ReferenceSurface::Map</a> the edge points are connected with straight lines on the map. If it is set to <a href="qlocation.html#ReferenceSurface-enum" translate="no">QLocation::ReferenceSurface::Globe</a>, the edge points are connected following the great circle path, describing the shortest connection of two points on a sphere. Default value is <a href="qlocation.html#ReferenceSurface-enum" translate="no">QLocation::ReferenceSurface::Map</a>.</p>
+<p>This property was introduced in Qt 6.5.</p>
+</div></div><!-- @@@referenceSurface -->
+<br/>
+<!-- $$$topLeft -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="topLeft-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">topLeft</span> : <span class="type"><a href="../qtpositioning/qml-coordinate.html" translate="no">coordinate</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds the top-left coordinate of the <a href="qml-qtlocation-maprectangle.html" translate="no">MapRectangle</a> which can be used to retrieve its longitude, latitude and altitude.</p>
+</div></div><!-- @@@topLeft -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

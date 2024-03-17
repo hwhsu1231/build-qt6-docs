@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- android-emoji-font.qdoc -->
+  <meta name="description" content="Guide for Supporting Google Emoji Font Policy using QML or C++.">
+  <title>Supporting Google Emoji Font Policy | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Supporting Google Emoji Font Policy</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="android-publishing-to-googleplay.html" />
+  <link rel="next" href="android-platform-notes.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="android-publishing-to-googleplay.html">Publishing to Google Play</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-platform-notes.html">Android Platform Notes</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#bundling-an-emoji-font-vs-google-downloadable-fonts">Bundling an Emoji Font VS Google Downloadable Fonts</a></li>
+<li class="level1"><a href="#how-to-bundle-a-font">How to bundle a font</a></li>
+<li class="level2"><a href="#obtaining-a-font">Obtaining a Font</a></li>
+<li class="level2"><a href="#adding-the-font">Adding the Font</a></li>
+<li class="level2"><a href="#loading-the-bundled-font-in-c">Loading the bundled font in C++</a></li>
+<li class="level2"><a href="#loading-the-bundled-font-in-qml">Loading the bundled font in QML</a></li>
+<li class="level1"><a href="#using-google-downloadable-fonts">Using Google downloadable fonts:</a></li>
+<li class="level2"><a href="#configuration">Configuration</a></li>
+<li class="level2"><a href="#java-code">Java Code</a></li>
+<li class="level2"><a href="#c-code">C++ Code</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Supporting Google Emoji Font Policy</h1>
+<!-- $$$android-emojis.html-description -->
+<div class="descr" id="details">
+<p>Google has introduced an <a href="https://support.google.com/googleplay/android-developer/answer/11190644?hl=en" translate="no">Android: Android Emoji Policy</a> which compels app developers to support the latest version of Unicode Emoji. The policy states:</p>
+<blockquote><p>Apps with custom emoji implementations, including those provided by third-party libraries, must fully support the latest Unicode version when running on Android 12+ within 4 months after new Unicode Emoji are released.</p>
+</blockquote>
+<p>This guide shows how to support this policy by either bundling an emoji font or using <a href="https://developer.android.com/guide/topics/ui/look-and-feel/downloadable-fonts" translate="no">Android: Google Downloadable Fonts</a>.</p>
+<h2 id="bundling-an-emoji-font-vs-google-downloadable-fonts">Bundling an Emoji Font VS Google Downloadable Fonts</h2>
+<p>There are some advantages and disadvantages of both methods for supporting the latest emojis The best option depends on each app. Here are some advantages and disadvantages of the two methods:</p>
+<p>Bundling font advantages:</p>
+<ul>
+<li>Faster loading of the font</li>
+<li>Works when the user does not have internet</li>
+<li>Works in all operating systems</li>
+<li>Independent (no other dependencies other from Qt)</li>
+<li>Simpler solution</li>
+</ul>
+<p>Bundling font disadvantages:</p>
+<ul>
+<li>Increases the application size (NotoColorEmoji is ~10 MB)</li>
+<li>Requires updating the font on newer releases</li>
+<li>Older apps will not update emojis automatically</li>
+</ul>
+<p>Google Downloadable Fonts advantages:</p>
+<ul>
+<li>Does not change the application size</li>
+<li>Updated automatically</li>
+<li>Multiple apps without any relationship share the same font</li>
+</ul>
+<p>Google Downloadable Fonts disadvantages:</p>
+<ul>
+<li>Depends on Google Mobile Services</li>
+<li>Android only</li>
+<li>Will download the font if not previously cached</li>
+<li>Does not work without internet when not previously cached</li>
+<li>More complex than bundling the font</li>
+</ul>
+<h2 id="how-to-bundle-a-font">How to bundle a font</h2>
+<p>It is necessary to obtain and bundle the font and later to load it either using QML or C++.</p>
+<h3 id="obtaining-a-font">Obtaining a Font</h3>
+<p>For this guide, we will be using the Google <a href="https://github.com/googlefonts/noto-emoji/" translate="no">NotoColorEmoji font</a>. NotoColorEmoji is a font licensed by <a href="https://github.com/googlefonts/noto-emoji/blob/main/fonts/LICENSE" translate="no">SIL OPEN FONT LICENSE</a>.</p>
+<div class="admonition note">
+<p><b>Note: </b>If downloading from the repository, download the NotoColorEmoji_WindowsCompatible.ttf font instead of NotoColorEmoji.ttf. NotoColorEmoji.ttf is built internally with a different format and it is well supported only by Android/Chrome/Chromium OS. Since Qt runs on other platforms, Qt font loader requires a standard formed TrueType/OpenType font.</p>
+</div>
+<h3 id="adding-the-font">Adding the Font</h3>
+<p>The proper way to bundle the font is to add it to <a href="../qtcore/resources.html" translate="no">The Qt Resource System</a> files. For example, you can make a separated resources file for the font - &quot;font.qrc&quot; with the NotoColorEmoji_WindowsCompatible.ttf. To embed the new resources file use the following code in CMakeLists.txt:</p>
+<pre class="cpp" translate="no">
+ qt_add_big_resources(PROJECT_SOURCES font<span class="operator">.</span>qrc)
+</pre>
+<h3 id="loading-the-bundled-font-in-c">Loading the bundled font in C++</h3>
+<p>To load the font using C++, use <a href="../qtgui/qfontdatabase.html" translate="no">QFontDatabase</a>.</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Loading NotoColorEmoji bundled using C++ QFontDatabase</span>
+ <span class="type"><a href="../qtgui/qfontdatabase.html" translate="no">QFontDatabase</a></span><span class="operator">::</span>addApplicationFont(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;:/NotoColorEmoji_WindowsCompatible.ttf&quot;</span>));
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>The above code should be used before <a href="../qtqml/qqmlapplicationengine.html" translate="no">QQmlApplicationEngine</a> loads the QML, so when the QML is loaded the font is already present and ready to use.</p>
+</div>
+<h3 id="loading-the-bundled-font-in-qml">Loading the bundled font in QML</h3>
+<p>To load the font in QML, use <a href="../qtquick/qml-qtquick-fontloader.html" translate="no">FontLoader</a>:</p>
+<pre class="qml" translate="no">
+ <span class="comment">// Loading NotoColorEmoji using QML FontLoader</span>
+ <span class="type"><a href="../qtquick/qml-qtquick-fontloader.html" translate="no">FontLoader</a></span> {
+    <span class="name">source</span>:<span class="string">&quot;NotoColorEmoji_WindowsCompatible.ttf&quot;</span>
+ }
+</pre>
+<h2 id="using-google-downloadable-fonts">Using Google downloadable fonts:</h2>
+<p>Using Google downloadable fonts for the emoji font provides an automatically updated emoji font without increasing application size. The process for downloading a font using the Downloadable Fonts feature can be seen in more detail in <a href="https://developer.android.com/guide/topics/ui/look-and-feel/downloadable-fonts#downloadable-fonts-process" translate="no">Android: Downloadable Fonts Process</a></p>
+<p>For this guide, the process will be:</p>
+<ol class="1" type="1"><li>C++ code starts</li>
+<li>C++ calls Java function</li>
+<li>Java calls GDF to fetch the font</li>
+<li>Java opens the font URI</li>
+<li>Java returns file descriptor to C++</li>
+<li>C++ loads the font using <a href="../qtgui/qfontdatabase.html" translate="no">QFontDatabase</a></li>
+</ol>
+<h3 id="configuration">Configuration</h3>
+<p>Google Downloadable Fonts is available for API level 26 (Android 8.0). But it is possible to support earlier APIs down to API 14 if the app uses AndroidX.</p>
+<div class="admonition note">
+<p><b>Note: </b>The Android documentation refers to the <a href="https://developer.android.com/reference/android/support/v4/provider/package-summary" translate="no">Android: Support Library</a> instead of AndroidX. But since the support library is no longer maintained and is superseded by AndroidX, we followed Google's recommendation to use AndroidX instead.</p>
+</div>
+<h4 id="customizing-the-android-packages-template">Customizing the Android packages template</h4>
+<p>First, it is necessary to customize the Android package templates. For that, in Qt Creator, go to the Projects tab, and then search in the Build Settings for &quot;Build Android APK&quot;. It should be inside &quot;Build Steps&quot;, expand the details and a button called &quot;Create Templates&quot; will appear.</p>
+<p class="centerAlign"><img src="images/qtcreator-create-templates.png" alt="&quot;Create Templates&quot;" /></p><p>Click on &quot;Create templates&quot;, follow the wizard, and in the end, a folder with several configuration files for Android will be created. By default, it will be a folder called <code translate="no">android</code> inside the project directory.</p>
+<p>See <a href="deployment-android.html#android-package-templates" translate="no">Android Package Templates</a> for information to how to customize the android templates using qmake.</p>
+<p>In case that you are using CMake and Qt 6, like in this guide, you need to set the <a href="../qtcore/cmake-target-property-qt-android-package-source-dir.html" translate="no">QT_ANDROID_PACKAGE_SOURCE_DIR</a> property. Ex:</p>
+<pre class="cpp" translate="no">
+ set_property(TARGET emojiremotefont PROPERTY
+          QT_ANDROID_PACKAGE_SOURCE_DIR
+          ${CMAKE_CURRENT_SOURCE_DIR}<span class="operator">/</span>android)
+</pre>
+<h4 id="adding-androidx">Adding AndroidX</h4>
+<p>To add AndroidX open the <code translate="no">build.gradle</code> file inside <a href="../qtcore/cmake-target-property-qt-android-package-source-dir.html" translate="no">QT_ANDROID_PACKAGE_SOURCE_DIR</a> folder added above and add the dependency there:</p>
+<pre class="cpp" translate="no">
+ dependencies {
+     implementation fileTree(dir: <span class="char">'libs'</span><span class="operator">,</span> <span class="keyword">include</span>: <span class="operator">[</span><span class="char">'*.jar'</span><span class="operator">,</span> <span class="char">'*.aar'</span><span class="operator">]</span>)
+     implementation <span class="char">'androidx.appcompat:appcompat:1.4.1'</span>
+ }
+</pre>
+<p>To use Androidx we need to set the according flag. For that create a file named <code translate="no">gradle.properties</code> inside <a href="../qtcore/cmake-target-property-qt-android-package-source-dir.html" translate="no">QT_ANDROID_PACKAGE_SOURCE_DIR</a> and add this line:</p>
+<pre class="cpp" translate="no">
+ android<span class="operator">.</span>useAndroidX<span class="operator">=</span><span class="keyword">true</span>
+</pre>
+<h4 id="adding-font-provider-certificates">Adding Font Provider Certificates</h4>
+<p>Since we are using AndroidX, there is another configuration required - adding <a href="https://developer.android.com/guide/topics/ui/look-and-feel/downloadable-fonts#adding-certificates" translate="no">Android: Font Provider Certificates</a>. To use the GMS font provider, download the <a href="https://github.com/android/user-interface-samples/blob/master/DownloadableFonts/app/src/main/res/values/font_certs.xml" translate="no">Android: GMS Font Provider Certificates</a>. If using other font providers, you need to obtain the certificates from the Provider itself.</p>
+<p>After downloading the file, add it to Android Resources (not the Qt Resource system) by copying it to the <code translate="no">values</code> folder in the android templates folder. The following image shows the correct folder on (1):</p>
+<p class="centerAlign"><img src="images/android-source-folder.png" alt="&quot;Android Templates Folder&quot;" /></p><h3 id="java-code">Java Code</h3>
+<p>Okay, let's dig into code now!</p>
+<p>We need to add <a href="deployment-android.html#custom-java-code" translate="no">Custom Java Code</a> to our Android templates. Place it under the <code translate="no">src</code> folder in the android templates folder. You may need to create the <code translate="no">src</code> folder and the folder structure for your java files. You can see this folder structure in the Android Templates Folder image in the previous section in (2).</p>
+<p>To obtain the font in C++, it is necessary for the Java code to:</p>
+<ul>
+<li>Create a Font Request</li>
+<li>Fetch the fonts from FontsContractCompat using the font request</li>
+<li>Get font Info and the font URI (content scheme file)</li>
+<li>Open the URI and obtain a File descriptor</li>
+<li>Return the file descriptor to C++ code</li>
+</ul>
+<p>To create a font request, you need the font provider information (authority, package, and certificates) and search query for the font. For the certificates use the GMS Font Provider Certificates file <code translate="no">fonts_cert.xml</code> added previously to the Android resources.</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// GMS fonts provider data</span>
+ <span class="keyword">private</span> <span class="keyword">static</span> final String PROVIDER_AUTHORITY <span class="operator">=</span> <span class="string">&quot;com.google.android.gms.fonts&quot;</span>;
+ <span class="keyword">private</span> <span class="keyword">static</span> final String PROVIDER_PACKAGE <span class="operator">=</span> <span class="string">&quot;com.google.android.gms&quot;</span>;
+
+ <span class="comment">// Emoji font search query (copied from EmojiCompat source)</span>
+ <span class="keyword">private</span> <span class="keyword">static</span> final String EMOJI_QUERY <span class="operator">=</span> <span class="string">&quot;emojicompat-emoji-font&quot;</span>;
+
+ <span class="comment">// Font Certificates resources strings (from fonts_certs.xml)</span>
+ <span class="keyword">private</span> <span class="keyword">static</span> final String FONT_CERTIFICATE_ID <span class="operator">=</span> <span class="string">&quot;com_google_android_gms_fonts_certs&quot;</span>;
+ <span class="keyword">private</span> <span class="keyword">static</span> final String FONT_CERTIFICATE_TYPE <span class="operator">=</span> <span class="string">&quot;array&quot;</span>;
+
+ (<span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>)
+
+ <span class="comment">// obtain id for the font_certs.xml</span>
+ <span class="type">int</span> certificateId <span class="operator">=</span> context<span class="operator">.</span>getResources()<span class="operator">.</span>getIdentifier(
+                               FONT_CERTIFICATE_ID<span class="operator">,</span>
+                               FONT_CERTIFICATE_TYPE<span class="operator">,</span>
+                               context<span class="operator">.</span>getPackageName());
+
+ <span class="comment">// creating the request</span>
+ FontRequest request <span class="operator">=</span> <span class="keyword">new</span> FontRequest(
+                               PROVIDER_AUTHORITY<span class="operator">,</span>
+                               PROVIDER_PACKAGE<span class="operator">,</span>
+                               EMOJI_QUERY<span class="operator">,</span>
+                               certificateId);
+</pre>
+<p>Now, use the request just made to fetch the font:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// fetch the font</span>
+ FontsContractCompat<span class="operator">.</span>FontFamilyResult result <span class="operator">=</span>
+      FontsContractCompat<span class="operator">.</span>fetchFonts(context<span class="operator">,</span> null<span class="operator">,</span> request);
+</pre>
+<p>Obtain the FontInfo and URI:</p>
+<pre class="cpp" translate="no">
+ final FontsContractCompat<span class="operator">.</span>FontInfo<span class="operator">[</span><span class="operator">]</span> fontInfos <span class="operator">=</span> result<span class="operator">.</span>getFonts();
+ final Uri emojiFontUri <span class="operator">=</span> fontInfos<span class="operator">[</span><span class="number">0</span><span class="operator">]</span><span class="operator">.</span>getUri();
+</pre>
+<p>Open a new native File Descriptor from the URI:</p>
+<pre class="cpp" translate="no">
+ final ContentResolver resolver <span class="operator">=</span> context<span class="operator">.</span>getContentResolver();
+ <span class="comment">// in this case the Font URI is always a content scheme file, made</span>
+ <span class="comment">// so the app requesting it has permissions to open</span>
+ final ParcelFileDescriptor fileDescriptor <span class="operator">=</span>
+             resolver<span class="operator">.</span>openFileDescriptor(fontInfos<span class="operator">[</span><span class="number">0</span><span class="operator">]</span><span class="operator">.</span>getUri()<span class="operator">,</span> <span class="string">&quot;r&quot;</span>);
+
+ <span class="comment">// the detachFd will return a native file descriptor that we must close</span>
+ <span class="comment">// later in C++ code</span>
+ <span class="type">int</span> fd <span class="operator">=</span> fileDescriptor<span class="operator">.</span>detachFd();
+
+ <span class="comment">// return fd to C++</span>
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Everything coded in Java could be done in C++ using JNI. The code presented in the guide is simplified. Production-ready code must be checked, with exception catches, etc..&#x2e;</p>
+</div>
+<h3 id="c-code">C++ Code</h3>
+<p>Ok all done on the java side. Let's go to the C++ side.</p>
+<p>C++ is responsible for calling the Java code and using the file descriptor to load the font into Qt.</p>
+<p>To get a deeper understanding of how communication between C++ and Java works in Qt 6 check the <a href="../qtcore/qtcore-platform-androidnotifier-example.html" translate="no">Qt Android Notifier</a> example.</p>
+<p>After obtaining the file descriptor from Java code, wrap the file descriptor into a <a href="../qtcore/qfile.html" translate="no">QFile</a> class and load the font file using <a href="../qtgui/qfontdatabase.html" translate="no">QFontDatabase</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> file;
+ file<span class="operator">.</span>open(fd<span class="operator">,</span> <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span><span class="operator">::</span>OpenModeFlag<span class="operator">::</span>ReadOnly<span class="operator">,</span> <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span><span class="operator">::</span>FileHandleFlag<span class="operator">::</span>AutoCloseHandle);
+
+ <span class="type"><a href="../qtgui/qfontdatabase.html" translate="no">QFontDatabase</a></span><span class="operator">::</span>addApplicationFontFromData(file<span class="operator">-</span><span class="operator">&gt;</span>readAll());
+</pre>
+</div>
+<!-- @@@android-emojis.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="android-publishing-to-googleplay.html">Publishing to Google Play</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-platform-notes.html">Android Platform Notes</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

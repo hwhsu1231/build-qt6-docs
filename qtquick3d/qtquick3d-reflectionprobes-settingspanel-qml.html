@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- reflectionprobes.qdoc -->
+  <meta name="description" content="Demonstrates the use of reflection probes in Qt Quick 3D.">
+  <title>Qt Quick 3D - Reflection Probes Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Reflection Probes Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Reflection Probes Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2021 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+     <span class="name">width</span>: <span class="name">settingsDrawer</span>.<span class="name">width</span>
+     <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span>
+
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">timeSlicingIndex</span>: <span class="name">timeSlicingComboBox</span>.<span class="name">currentIndex</span>
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">refreshModeIndex</span>: <span class="name">refreshModeComboBox</span>.<span class="name">currentIndex</span>
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">qualityIndex</span>: <span class="name">qualityComboBox</span>.<span class="name">currentIndex</span>
+     property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">probeSize</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">probeSizeXSlider</span>.<span class="name">value</span>, <span class="name">probeSizeYSlider</span>.<span class="name">value</span>, <span class="name">probeSizeZSlider</span>.<span class="name">value</span>)
+     property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">probePosition</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">probePositionXSlider</span>.<span class="name">value</span>, <span class="name">probePositionYSlider</span>.<span class="name">value</span>, <span class="name">probePositionZSlider</span>.<span class="name">value</span>)
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">probeParallaxCorrection</span>: <span class="name">parallaxCheckBox</span>.<span class="name">checked</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">sphereRoughness</span>: <span class="name">materialRoughnessSlider</span>.<span class="name">value</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">sphereReceivesReflection</span>: <span class="name">sphereReceivesReflectionsCheckBox</span>.<span class="name">checked</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">floorReceivesReflection</span>: <span class="name">floorReceivesReflectionsCheckBox</span>.<span class="name">checked</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">spriteParticlesEnabled</span>: <span class="name">particleSystemSpriteCheckBox</span>.<span class="name">checked</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">modelParticlesEnabled</span>: <span class="name">particleSystemModelCheckBox</span>.<span class="name">checked</span>
+
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">iconSize</span>: <span class="number">50</span>
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+         <span class="name">x</span>: <span class="name">settingsDrawer</span>.<span class="name">visible</span> ? (<span class="name">settingsDrawer</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">settingsDrawer</span>.<span class="name">width</span>) : <span class="number">0</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">width</span>: <span class="name">root</span>.<span class="name">iconSize</span>
+         <span class="name">height</span>: <span class="name">width</span>
+         <span class="name">icon</span>.width: <span class="name">width</span> <span class="operator">*</span> <span class="number">0.3</span>
+         <span class="name">icon</span>.height: <span class="name">height</span> <span class="operator">*</span> <span class="number">0.3</span>
+         <span class="name">icon</span>.source: <span class="string">&quot;res/icon_settings.png&quot;</span>
+         <span class="name">icon</span>.color: <span class="string">&quot;transparent&quot;</span>
+         <span class="name">background</span>: <span class="name">Rectangle</span> {
+             <span class="name">color</span>: <span class="string">&quot;transparent&quot;</span>
+         }
+         <span class="name">onClicked</span>: {
+             <span class="name">settingsDrawer</span>.<span class="name">visible</span> <span class="operator">=</span> !<span class="name">settingsDrawer</span>.<span class="name">visible</span>;
+         }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-drawer.html" translate="no">Drawer</a></span> {
+         <span class="name">id</span>: <span class="name">settingsDrawer</span>
+         <span class="name">edge</span>: <span class="name">Qt</span>.<span class="name">LeftEdge</span>
+         <span class="name">interactive</span>: <span class="number">false</span>
+         <span class="name">modal</span>: <span class="number">false</span>
+
+         <span class="name">enter</span>: <span class="name">Transition</span> {
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">to</span>: <span class="number">1.0</span>
+                 <span class="name">duration</span>: <span class="number">400</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         }
+
+         <span class="name">exit</span>: <span class="name">Transition</span> {
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">to</span>: <span class="number">0.0</span>
+                 <span class="name">duration</span>: <span class="number">400</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         }
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-scrollview.html" translate="no">ScrollView</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">ScrollBar</span>.vertical.policy: <span class="name">ScrollBar</span>.<span class="name">AlwaysOn</span>
+             <span class="name">padding</span>: <span class="number">10</span>
+             <span class="name">background</span>: <span class="name">Rectangle</span> {
+                 <span class="name">color</span>: <span class="string">&quot;white&quot;</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-flickable.html" translate="no">Flickable</a></span> {
+                 <span class="name">clip</span>: <span class="number">true</span>
+                 <span class="name">contentWidth</span>: <span class="name">settingsArea</span>.<span class="name">width</span>
+                 <span class="name">contentHeight</span>: <span class="name">settingsArea</span>.<span class="name">height</span>
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-column.html" translate="no">Column</a></span> {
+                     <span class="name">id</span>: <span class="name">settingsArea</span>
+                     <span class="name">spacing</span>: <span class="number">5</span>
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+                         <span class="name">text</span>: <span class="string">&quot;Reflection Map&quot;</span>
+                         <span class="name">font</span>.pixelSize: <span class="number">14</span>
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> { <span class="name">width</span>: <span class="number">1</span>; <span class="name">height</span>: <span class="number">10</span> }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">text</span>: <span class="string">&quot;Time Slicing&quot;</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                         <span class="name">id</span>: <span class="name">timeSlicingComboBox</span>
+                         <span class="name">width</span>: <span class="number">200</span>
+                         <span class="name">model</span>: [ <span class="string">&quot;None&quot;</span>, <span class="string">&quot;All Faces At Once&quot;</span>, <span class="string">&quot;Individual Faces&quot;</span> ]
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">text</span>: <span class="string">&quot;Refresh Mode&quot;</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                         <span class="name">id</span>: <span class="name">refreshModeComboBox</span>
+                         <span class="name">width</span>: <span class="number">200</span>
+                         <span class="name">model</span>: [ <span class="string">&quot;Every Frame&quot;</span>, <span class="string">&quot;First Frame&quot;</span> ]
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">text</span>: <span class="string">&quot;Reflection Map Quality&quot;</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                         <span class="name">id</span>: <span class="name">qualityComboBox</span>
+                         <span class="name">width</span>: <span class="number">200</span>
+                         <span class="name">model</span>: [ <span class="string">&quot;Very Low&quot;</span>, <span class="string">&quot;Low&quot;</span>, <span class="string">&quot;Medium&quot;</span>, <span class="string">&quot;High&quot;</span>, <span class="string">&quot;Very High&quot;</span> ]
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> { <span class="name">width</span>: <span class="number">1</span>; <span class="name">height</span>: <span class="number">10</span> }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+                         <span class="name">text</span>: <span class="string">&quot;Floor Reflection Probe&quot;</span>
+                         <span class="name">font</span>.pixelSize: <span class="number">14</span>
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> { <span class="name">width</span>: <span class="number">1</span>; <span class="name">height</span>: <span class="number">10</span> }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                         <span class="name">id</span>: <span class="name">parallaxCheckBox</span>
+                         <span class="name">checked</span>: <span class="number">true</span>
+                         <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Parallax Correction&quot;</span>)
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">text</span>: <span class="string">&quot;Box Size (&quot;</span> <span class="operator">+</span> <span class="name">probeSizeXSlider</span>.<span class="name">value</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">probeSizeYSlider</span>.<span class="name">value</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">probeSizeZSlider</span>.<span class="name">value</span> <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                         <span class="name">id</span>: <span class="name">probeSizeXSlider</span>
+                         <span class="name">from</span>: <span class="number">0</span>
+                         <span class="name">value</span>: <span class="number">1000</span>
+                         <span class="name">to</span>: <span class="number">1000</span>
+                         <span class="name">stepSize</span>: <span class="number">1</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                         <span class="name">id</span>: <span class="name">probeSizeYSlider</span>
+                         <span class="name">from</span>: <span class="number">0</span>
+                         <span class="name">value</span>: <span class="number">950</span>
+                         <span class="name">to</span>: <span class="number">1000</span>
+                         <span class="name">stepSize</span>: <span class="number">1</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                         <span class="name">id</span>: <span class="name">probeSizeZSlider</span>
+                         <span class="name">from</span>: <span class="number">0</span>
+                         <span class="name">value</span>: <span class="number">650</span>
+                         <span class="name">to</span>: <span class="number">1000</span>
+                         <span class="name">stepSize</span>: <span class="number">1</span>
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">text</span>: <span class="string">&quot;Position (&quot;</span> <span class="operator">+</span> <span class="name">probePositionXSlider</span>.<span class="name">value</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">probePositionYSlider</span>.<span class="name">value</span> <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span> <span class="name">probePositionZSlider</span>.<span class="name">value</span> <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                         <span class="name">id</span>: <span class="name">probePositionXSlider</span>
+                         <span class="name">from</span>: <span class="number">0</span>
+                         <span class="name">value</span>: <span class="number">0</span>
+                         <span class="name">to</span>: <span class="number">500</span>
+                         <span class="name">stepSize</span>: <span class="number">1</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                         <span class="name">id</span>: <span class="name">probePositionYSlider</span>
+                         <span class="name">from</span>: <span class="number">0</span>
+                         <span class="name">value</span>: <span class="number">0</span>
+                         <span class="name">to</span>: <span class="number">500</span>
+                         <span class="name">stepSize</span>: <span class="number">1</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                         <span class="name">id</span>: <span class="name">probePositionZSlider</span>
+                         <span class="name">from</span>: <span class="number">0</span>
+                         <span class="name">value</span>: <span class="number">0</span>
+                         <span class="name">to</span>: <span class="number">500</span>
+                         <span class="name">stepSize</span>: <span class="number">1</span>
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> { <span class="name">width</span>: <span class="number">1</span>; <span class="name">height</span>: <span class="number">10</span> }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+                         <span class="name">text</span>: <span class="string">&quot;Particles&quot;</span>
+                         <span class="name">font</span>.pixelSize: <span class="number">14</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                         <span class="name">id</span>: <span class="name">particleSystemSpriteCheckBox</span>
+                         <span class="name">checked</span>: <span class="number">false</span>
+                         <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Sprite Particles&quot;</span>)
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                         <span class="name">id</span>: <span class="name">particleSystemModelCheckBox</span>
+                         <span class="name">checked</span>: <span class="number">false</span>
+                         <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Model Particles&quot;</span>)
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> { <span class="name">width</span>: <span class="number">1</span>; <span class="name">height</span>: <span class="number">10</span> }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+                         <span class="name">text</span>: <span class="string">&quot;Model&quot;</span>
+                         <span class="name">font</span>.pixelSize: <span class="number">14</span>
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> { <span class="name">width</span>: <span class="number">1</span>; <span class="name">height</span>: <span class="number">10</span> }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                         <span class="name">text</span>: <span class="string">&quot;Sphere Roughness : &quot;</span> <span class="operator">+</span> <span class="name">materialRoughnessSlider</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>);
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                         <span class="name">id</span>: <span class="name">materialRoughnessSlider</span>
+                         <span class="name">from</span>: <span class="number">0</span>
+                         <span class="name">to</span>: <span class="number">1.0</span>
+                         <span class="name">value</span>: <span class="number">0.1</span>
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                         <span class="name">id</span>: <span class="name">sphereReceivesReflectionsCheckBox</span>
+                         <span class="name">checked</span>: <span class="number">true</span>
+                         <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Sphere receives reflections&quot;</span>)
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                         <span class="name">id</span>: <span class="name">floorReceivesReflectionsCheckBox</span>
+                         <span class="name">checked</span>: <span class="number">true</span>
+                         <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Floor receives reflections&quot;</span>)
+                     }
+                 }
+             }
+         }
+     }
+ }
+</pre>

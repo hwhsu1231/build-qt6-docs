@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qmlscatter.qdoc -->
+  <meta name="description" content="Using Scatter3D in a QML application.">
+  <title>Simple Scatter Graph | Qt Data Visualization 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtdatavisualization-index.html" translate="no">Qt Data Visualization</a></li>
+<li>Simple Scatter Graph</li>
+<li id="buildversion"><a href="qtdatavisualization-index.html" translate="no">Qt Data Visualization | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#application-basics">Application Basics</a></li>
+<li class="level1"><a href="#setting-up-the-graph">Setting up the Graph</a></li>
+<li class="level1"><a href="#adding-data-to-the-graph">Adding Data to the Graph</a></li>
+<li class="level1"><a href="#example-contents">Example Contents</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Simple Scatter Graph</h1>
+<!-- $$$qmlscatter-brief -->
+<p>Using <a href="qml-qtdatavisualization-scatter3d.html" translate="no">Scatter3D</a> in a QML application.</p>
+<!-- @@@qmlscatter -->
+<!-- $$$qmlscatter-description -->
+<div class="descr" id="details">
+<p><i>Simple Scatter Graph</i> shows how to make a simple scatter graph visualization using <a href="qml-qtdatavisualization-scatter3d.html" translate="no">Scatter3D</a> and QML.</p>
+<p>For instructions about how to interact with the graph, see <a href="qtdatavisualization-interacting-with-data.html" translate="no">this page</a>.</p>
+<p>For instructions on how to create a new Qt Quick application of your own, see Qt Creator help.</p>
+<p class="centerAlign"><img src="images/qmlscatter-example.png" alt="" /></p><h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="application-basics">Application Basics</h4>
+<p>Before diving into the QML code, take a look at the application <code translate="no">main.cpp</code>.</p>
+<p>This application implements a 'Quit' button in the UI, so you want to connect the <a href="../qtqml/qqmlengine.html#quit" translate="no">QQmlEngine::quit</a>() signal to the application's <a href="../qtgui/qwindow.html#close" translate="no">QWindow::close</a>() slot:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(viewer<span class="operator">.</span>engine()<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtqml/qqmlengine.html" translate="no">QQmlEngine</a></span><span class="operator">::</span>quit<span class="operator">,</span> <span class="operator">&amp;</span>viewer<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qwindow.html" translate="no">QWindow</a></span><span class="operator">::</span>close);
+</pre>
+<p>To make deployment a little simpler, gather all of the application's <code translate="no">.qml</code> files to a resource file (<code translate="no">qmlscatter.qrc</code>):</p>
+<pre class="cpp plain" translate="no">
+ &lt;RCC&gt;
+     &lt;qresource prefix=&quot;/&quot;&gt;
+         &lt;file&gt;qml/qmlscatter/Data.qml&lt;/file&gt;
+         &lt;file&gt;qml/qmlscatter/main.qml&lt;/file&gt;
+     &lt;/qresource&gt;
+ &lt;/RCC&gt;
+</pre>
+<p>This also requires setting the <code translate="no">main.qml</code> to be read from the resource (<code translate="no">qrc:</code>):</p>
+<pre class="cpp" translate="no">
+ viewer<span class="operator">.</span>setSource(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;qrc:/qml/qmlscatter/main.qml&quot;</span>));
+</pre>
+<p>When using cmake instead of qmake, the <code translate="no">.qml</code> files are added into a QML module in the <code translate="no">CMakeLists.txt</code> instead:</p>
+<pre class="cpp plain" translate="no">
+ qt6_add_qml_module(qmlscatter
+     URI Scatter
+     VERSION 1.0
+     NO_RESOURCE_TARGET_PATH
+     QML_FILES
+         qml/qmlscatter/Data.qml
+         qml/qmlscatter/main.qml
+ )
+</pre>
+<p>Finally, make the application run in a maximized window:</p>
+<pre class="cpp" translate="no">
+ viewer<span class="operator">.</span>showMaximized();
+</pre>
+<h4 id="setting-up-the-graph">Setting up the Graph</h4>
+<p>First, import all the needed QML modules:</p>
+<pre class="qml" translate="no">
+ import QtQuick
+ import QtQuick.Controls
+ import QtDataVisualization
+</pre>
+<p>Then, create the main <code translate="no">Item</code> and call it <code translate="no">mainView</code>:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">mainView</span>
+</pre>
+<p>Then, add another <code translate="no">Item</code> inside the main <code translate="no">Item</code>, and call it <code translate="no">dataView</code>. This will be the item to hold the <a href="qml-qtdatavisualization-scatter3d.html" translate="no">Scatter3D</a> graph. Anchor it to the parent bottom:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">dataView</span>
+     <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+</pre>
+<p>Next, add the <a href="qml-qtdatavisualization-scatter3d.html" translate="no">Scatter3D</a> graph itself. Add it inside the <code translate="no">dataView</code> and name it <code translate="no">scatterGraph</code>. Make it fill the <code translate="no">dataView</code>:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtdatavisualization-scatter3d.html" translate="no">Scatter3D</a></span> {
+     <span class="name">id</span>: <span class="name">scatterGraph</span>
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+</pre>
+<p>Now the graph is ready for use, but has no data. It also has the default axes and visual properties.</p>
+<p>Next, modify some visual properties first by adding the following inside <code translate="no">scatterGraph</code>:</p>
+<pre class="qml" translate="no">
+ <span class="name">theme</span>: <span class="name">themeQt</span>
+ <span class="name">shadowQuality</span>: <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityHigh</span>
+ <span class="name">scene</span>.activeCamera.cameraPreset: <span class="name">Camera3D</span>.<span class="name">CameraPresetFront</span>
+</pre>
+<p>A customized theme was added, the shadow quality changed, and the camera position adjusted. The other visual properties are fine, so there is no need to change them.</p>
+<p>The custom theme is based on a predefined theme, <code translate="no">Theme3D.ThemeQt</code>, but the font in it is changed:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtdatavisualization-theme3d.html" translate="no">Theme3D</a></span> {
+     <span class="name">id</span>: <span class="name">themeQt</span>
+     <span class="name">type</span>: <span class="name">Theme3D</span>.<span class="name">ThemeQt</span>
+     <span class="name">font</span>.pointSize: <span class="number">40</span>
+ }
+</pre>
+<p>Then, start feeding the graph some data.</p>
+<h4 id="adding-data-to-the-graph">Adding Data to the Graph</h4>
+<p>Create a <code translate="no">Data</code> item inside the <code translate="no">mainView</code> and name it <code translate="no">seriesData</code>:</p>
+<pre class="qml" translate="no">
+ <span class="type">Data</span> {
+     <span class="name">id</span>: <span class="name">seriesData</span>
+ }
+</pre>
+<p>The <code translate="no">seriesData</code> item contains the data models for all three series used in this example.</p>
+<p>This is the component that holds the data in <code translate="no">Data.qml</code>. It has an <code translate="no">Item</code> as the main component.</p>
+<p>In the main component, add the data itself to a <code translate="no">ListModel</code> and name it <code translate="no">dataModel</code>:</p>
+<pre class="qml" translate="no">
+ <span class="type">ListModel</span> {
+     <span class="name">id</span>: <span class="name">dataModel</span>
+     <span class="type">ListElement</span>{ <span class="name">xPos</span>: -<span class="number">10.0</span>; <span class="name">yPos</span>: <span class="number">5.0</span>; <span class="name">zPos</span>: -<span class="number">5.0</span> }
+     ...
+</pre>
+<p>Add two more of these to the other two series, and name them <code translate="no">dataModelTwo</code> and <code translate="no">dataModelThree</code>.</p>
+<p>Then, expose the data models to be usable from <code translate="no">main.qml</code>. Do this by defining them as aliases in the main data component:</p>
+<pre class="qml" translate="no">
+ property <span class="type">alias</span> <span class="name">model</span>: <span class="name">dataModel</span>
+ property <span class="type">alias</span> <span class="name">modelTwo</span>: <span class="name">dataModelTwo</span>
+ property <span class="type">alias</span> <span class="name">modelThree</span>: <span class="name">dataModelThree</span>
+</pre>
+<p>Now you can use the data from <code translate="no">Data.qml</code> with <code translate="no">scatterGraph</code> in <code translate="no">main.qml</code>. First, add a <a href="qml-qtdatavisualization-scatter3dseries.html" translate="no">Scatter3DSeries</a> and call it <code translate="no">scatterSeries</code>:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtdatavisualization-scatter3dseries.html" translate="no">Scatter3DSeries</a></span> {
+     <span class="name">id</span>: <span class="name">scatterSeries</span>
+</pre>
+<p>Then, set up selection label format for the series:</p>
+<pre class="qml" translate="no">
+ <span class="name">itemLabelFormat</span>: <span class="string">&quot;Series 1: X:@xLabel Y:@yLabel Z:@zLabel&quot;</span>
+</pre>
+<p>And finally, add the data for series one in a <a href="qml-qtdatavisualization-itemmodelscatterdataproxy.html" translate="no">ItemModelScatterDataProxy</a>. Set the data itself as the <code translate="no">itemModel</code> for the proxy:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtdatavisualization-itemmodelscatterdataproxy.html" translate="no">ItemModelScatterDataProxy</a></span> {
+     <span class="name">itemModel</span>: <span class="name">seriesData</span>.<span class="name">model</span>
+     <span class="name">xPosRole</span>: <span class="string">&quot;xPos&quot;</span>
+     <span class="name">yPosRole</span>: <span class="string">&quot;yPos&quot;</span>
+     <span class="name">zPosRole</span>: <span class="string">&quot;zPos&quot;</span>
+ }
+</pre>
+<p>Add the other two series in the same way, but modify some series-specific details a bit:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtdatavisualization-scatter3dseries.html" translate="no">Scatter3DSeries</a></span> {
+     <span class="name">id</span>: <span class="name">scatterSeriesTwo</span>
+     <span class="name">itemLabelFormat</span>: <span class="string">&quot;Series 2: X:@xLabel Y:@yLabel Z:@zLabel&quot;</span>
+     <span class="name">itemSize</span>: <span class="number">0.05</span>
+     <span class="name">mesh</span>: <span class="name">Abstract3DSeries</span>.<span class="name">MeshCube</span>
+     ...
+</pre>
+<p>Then, modify the properties of the default axes in <code translate="no">scatterGraph</code> a bit:</p>
+<pre class="qml" translate="no">
+ <span class="name">axisX</span>.segmentCount: <span class="number">3</span>
+ <span class="name">axisX</span>.subSegmentCount: <span class="number">2</span>
+ <span class="name">axisX</span>.labelFormat: <span class="string">&quot;%.2f&quot;</span>
+ <span class="name">axisZ</span>.segmentCount: <span class="number">2</span>
+ <span class="name">axisZ</span>.subSegmentCount: <span class="number">2</span>
+ <span class="name">axisZ</span>.labelFormat: <span class="string">&quot;%.2f&quot;</span>
+ <span class="name">axisY</span>.segmentCount: <span class="number">2</span>
+ <span class="name">axisY</span>.subSegmentCount: <span class="number">2</span>
+ <span class="name">axisY</span>.labelFormat: <span class="string">&quot;%.2f&quot;</span>
+</pre>
+<p>After that, add a few buttons to the <code translate="no">mainView</code> to control the graph, one of which is shown as an example:</p>
+<pre class="qml" translate="no">
+ <span class="type">Button</span> {
+     <span class="name">id</span>: <span class="name">shadowToggle</span>
+     <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">buttonWidth</span> <span class="comment">// Calculated elsewhere based on screen orientation</span>
+     <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+     <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+     <span class="name">anchors</span>.margins: <span class="number">5</span>
+     <span class="name">text</span>: <span class="name">scatterGraph</span>.<span class="name">shadowsSupported</span> ? <span class="string">&quot;Hide Shadows&quot;</span> : <span class="string">&quot;Shadows not supported&quot;</span>
+     <span class="name">enabled</span>: <span class="name">scatterGraph</span>.<span class="name">shadowsSupported</span>
+     <span class="name">onClicked</span>: {
+         <span class="keyword">if</span> (<span class="name">scatterGraph</span>.<span class="name">shadowQuality</span> <span class="operator">===</span> <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityNone</span>) {
+             <span class="name">scatterGraph</span>.<span class="name">shadowQuality</span> <span class="operator">=</span> <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityHigh</span>;
+             <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Hide Shadows&quot;</span>;
+         } <span class="keyword">else</span> {
+             <span class="name">scatterGraph</span>.<span class="name">shadowQuality</span> <span class="operator">=</span> <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityNone</span>;
+             <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show Shadows&quot;</span>;
+         }
+     }
+ }
+</pre>
+<p>Then, modify <code translate="no">dataView</code> to make some room for the buttons at the top:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">dataView</span>
+     <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+     <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+     <span class="comment">// Adjust the space based on screen orientation:</span>
+     <span class="comment">// If we're in portrait mode, we have 3 rows of buttons, otherwise they are all in one row.</span>
+     <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span> <span class="operator">-</span> (<span class="name">mainView</span>.<span class="name">portraitMode</span> ? <span class="name">shadowToggle</span>.<span class="name">implicitHeight</span> <span class="operator">*</span> <span class="number">3</span> <span class="operator">+</span> <span class="number">25</span>
+                                                    : <span class="name">shadowToggle</span>.<span class="name">implicitHeight</span> <span class="operator">+</span> <span class="number">10</span>)
+     ...
+</pre>
+<p>And you're done!</p>
+<h4 id="example-contents">Example Contents</h4>
+<p><a href="https://code.qt.io/cgit/qt/qtdatavis3d.git/tree/examples/datavisualization/qmlscatter?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@qmlscatter -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

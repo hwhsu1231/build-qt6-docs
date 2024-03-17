@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;scatterdatamodifier.h&quot;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qscatterdataproxy.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qvalue3daxis.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/q3dscene.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/q3dcamera.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qscatter3dseries.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/q3dtheme.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/qmath.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/qrandom.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qcombobox.h&gt;</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
+
+ <span class="comment">//#define RANDOM_SCATTER // Uncomment this to switch to random scatter</span>
+
+ <span class="keyword">const</span> <span class="type">int</span> numberOfItems <span class="operator">=</span> <span class="number">10000</span>;
+ <span class="keyword">const</span> <span class="type">float</span> curveDivider <span class="operator">=</span> <span class="number">7.5f</span>;
+ <span class="keyword">const</span> <span class="type">int</span> lowerNumberOfItems <span class="operator">=</span> <span class="number">900</span>;
+ <span class="keyword">const</span> <span class="type">float</span> lowerCurveDivider <span class="operator">=</span> <span class="number">0.75f</span>;
+
+ ScatterDataModifier<span class="operator">::</span>ScatterDataModifier(<span class="type"><a href="q3dscatter.html" translate="no">Q3DScatter</a></span> <span class="operator">*</span>scatter<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent) :
+       <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>(parent)<span class="operator">,</span>
+       m_graph(scatter)<span class="operator">,</span>
+       m_itemCount(lowerNumberOfItems)<span class="operator">,</span>
+       m_curveDivider(lowerCurveDivider)<span class="operator">,</span>
+       m_inputHandler(<span class="keyword">new</span> AxesInputHandler(scatter))
+ {
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>activeTheme()<span class="operator">-</span><span class="operator">&gt;</span>setType(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ThemeStoneMoss);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>setShadowQuality(QAbstract3DGraph<span class="operator">::</span>ShadowQualitySoftHigh);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>setCameraPreset(<span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPresetFront);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>setZoomLevel(<span class="number">80.f</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>proxy <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qscatterdataproxy.html" translate="no">QScatterDataProxy</a></span>;
+     <span class="keyword">auto</span> <span class="operator">*</span>series <span class="operator">=</span> <span class="keyword">new</span> QScatter3DSeries(proxy);
+     series<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;@xTitle: @xLabel @yTitle: @yLabel @zTitle: @zLabel&quot;</span>_s);
+     series<span class="operator">-</span><span class="operator">&gt;</span>setMeshSmooth(m_smooth);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(series);
+
+     <span class="comment">// Give ownership of the handler to the graph and make it the active handler</span>
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>setActiveInputHandler(m_inputHandler);
+
+     <span class="comment">// Give our axes to the input handler</span>
+     m_inputHandler<span class="operator">-</span><span class="operator">&gt;</span>setAxes(m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">,</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">,</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY());
+
+     addData();
+ }
+
+ ScatterDataModifier<span class="operator">::</span><span class="operator">~</span>ScatterDataModifier()
+ {
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>addData()
+ {
+     <span class="comment">// Configure the axes according to the data</span>
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;X&quot;</span>);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Y&quot;</span>);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Z&quot;</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>dataArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qscatterdataproxy.html#QScatterDataArray-typedef" translate="no">QScatterDataArray</a></span>;
+     dataArray<span class="operator">-</span><span class="operator">&gt;</span>reserve(m_itemCount);
+
+ <span class="preprocessor">#ifdef RANDOM_SCATTER</span>
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> m_itemCount; <span class="operator">+</span><span class="operator">+</span>i)
+         dataArray<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="type"><a href="qscatterdataitem.html" translate="no">QScatterDataItem</a></span>(randVector()));
+ <span class="preprocessor">#else</span>
+     <span class="keyword">const</span> <span class="type">float</span> limit <span class="operator">=</span> qSqrt(m_itemCount) <span class="operator">/</span> <span class="number">2.0f</span>;
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="operator">-</span>limit; i <span class="operator">&lt;</span> limit; <span class="operator">+</span><span class="operator">+</span>i) {
+         <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="operator">-</span>limit; j <span class="operator">&lt;</span> limit; <span class="operator">+</span><span class="operator">+</span>j) {
+             <span class="keyword">const</span> <span class="type">float</span> x <span class="operator">=</span> <span class="type">float</span>(i) <span class="operator">+</span> <span class="number">0.5f</span>;
+             <span class="keyword">const</span> <span class="type">float</span> y <span class="operator">=</span> <a href="../qtcore/qtmath.html#qCos" translate="no">qCos</a>(qDegreesToRadians(<span class="type">float</span>(i <span class="operator">*</span> j) <span class="operator">/</span> m_curveDivider));
+             <span class="keyword">const</span> <span class="type">float</span> z <span class="operator">=</span> <span class="type">float</span>(j) <span class="operator">+</span> <span class="number">0.5f</span>;
+             dataArray<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="type"><a href="qscatterdataitem.html" translate="no">QScatterDataItem</a></span>({x<span class="operator">,</span> y<span class="operator">,</span> z}));
+         }
+     }
+ <span class="preprocessor">#endif</span>
+
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataArray);
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>changeStyle(<span class="type">int</span> style)
+ {
+     <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span> <span class="operator">*</span>comboBox <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(sender());
+     <span class="keyword">if</span> (comboBox) {
+         m_style <span class="operator">=</span> comboBox<span class="operator">-</span><span class="operator">&gt;</span>itemData(style)<span class="operator">.</span>value<span class="operator">&lt;</span>QAbstract3DSeries<span class="operator">::</span>Mesh<span class="operator">&gt;</span>();
+         <span class="keyword">if</span> (<span class="operator">!</span>m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>isEmpty())
+             m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">-</span><span class="operator">&gt;</span>setMesh(m_style);
+     }
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>setSmoothDots(<span class="type">int</span> smooth)
+ {
+     m_smooth <span class="operator">=</span> <span class="type">bool</span>(smooth);
+     QScatter3DSeries <span class="operator">*</span>series <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">0</span>);
+     series<span class="operator">-</span><span class="operator">&gt;</span>setMeshSmooth(m_smooth);
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>changeTheme(<span class="type">int</span> theme)
+ {
+     <span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span> <span class="operator">*</span>currentTheme <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>activeTheme();
+     currentTheme<span class="operator">-</span><span class="operator">&gt;</span>setType(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>Theme(theme));
+     <span class="keyword">emit</span> backgroundEnabledChanged(currentTheme<span class="operator">-</span><span class="operator">&gt;</span>isBackgroundEnabled());
+     <span class="keyword">emit</span> gridEnabledChanged(currentTheme<span class="operator">-</span><span class="operator">&gt;</span>isGridEnabled());
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>changePresetCamera()
+ {
+     <span class="keyword">static</span> <span class="type">int</span> preset <span class="operator">=</span> <span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPresetFrontLow;
+
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>setCameraPreset((<span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPreset)preset);
+
+     <span class="keyword">if</span> (<span class="operator">+</span><span class="operator">+</span>preset <span class="operator">&gt;</span> <span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPresetDirectlyBelow)
+         preset <span class="operator">=</span> <span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPresetFrontLow;
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>shadowQualityUpdatedByVisual(QAbstract3DGraph<span class="operator">::</span>ShadowQuality sq)
+ {
+     <span class="type">int</span> quality <span class="operator">=</span> <span class="type">int</span>(sq);
+     <span class="keyword">emit</span> shadowQualityChanged(quality); <span class="comment">// connected to a checkbox in scattergraph.cpp</span>
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>changeShadowQuality(<span class="type">int</span> quality)
+ {
+     QAbstract3DGraph<span class="operator">::</span>ShadowQuality sq <span class="operator">=</span> QAbstract3DGraph<span class="operator">::</span>ShadowQuality(quality);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>setShadowQuality(sq);
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>setBackgroundEnabled(<span class="type">int</span> enabled)
+ {
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>activeTheme()<span class="operator">-</span><span class="operator">&gt;</span>setBackgroundEnabled((<span class="type">bool</span>)enabled);
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>setGridEnabled(<span class="type">int</span> enabled)
+ {
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>activeTheme()<span class="operator">-</span><span class="operator">&gt;</span>setGridEnabled((<span class="type">bool</span>)enabled);
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>toggleItemCount()
+ {
+     <span class="keyword">if</span> (m_itemCount <span class="operator">=</span><span class="operator">=</span> numberOfItems) {
+         m_itemCount <span class="operator">=</span> lowerNumberOfItems;
+         m_curveDivider <span class="operator">=</span> lowerCurveDivider;
+     } <span class="keyword">else</span> {
+         m_itemCount <span class="operator">=</span> numberOfItems;
+         m_curveDivider <span class="operator">=</span> curveDivider;
+     }
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>resetArray(<span class="number">0</span>);
+     addData();
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>toggleRanges()
+ {
+     <span class="keyword">if</span> (<span class="operator">!</span>m_autoAdjust) {
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setAutoAdjustRange(<span class="keyword">true</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setAutoAdjustRange(<span class="keyword">true</span>);
+         m_inputHandler<span class="operator">-</span><span class="operator">&gt;</span>setDragSpeedModifier(<span class="number">1.5f</span>);
+         m_autoAdjust <span class="operator">=</span> <span class="keyword">true</span>;
+     } <span class="keyword">else</span> {
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="operator">-</span><span class="number">10.0f</span><span class="operator">,</span> <span class="number">10.0f</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="operator">-</span><span class="number">10.0f</span><span class="operator">,</span> <span class="number">10.0f</span>);
+         m_inputHandler<span class="operator">-</span><span class="operator">&gt;</span>setDragSpeedModifier(<span class="number">15.0f</span>);
+         m_autoAdjust <span class="operator">=</span> <span class="keyword">false</span>;
+     }
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>adjustMinimumRange(<span class="type">float</span> range)
+ {
+     <span class="keyword">if</span> (m_itemCount <span class="operator">=</span><span class="operator">=</span> lowerNumberOfItems)
+         range <span class="operator">*</span><span class="operator">=</span> <span class="number">1.45f</span>;
+     <span class="keyword">else</span>
+         range <span class="operator">*</span><span class="operator">=</span> <span class="number">4.95f</span>;
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setMin(range);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setMin(range);
+     m_autoAdjust <span class="operator">=</span> <span class="keyword">false</span>;
+ }
+
+ <span class="type">void</span> ScatterDataModifier<span class="operator">::</span>adjustMaximumRange(<span class="type">float</span> range)
+ {
+     <span class="keyword">if</span> (m_itemCount <span class="operator">=</span><span class="operator">=</span> lowerNumberOfItems)
+         range <span class="operator">*</span><span class="operator">=</span> <span class="number">1.45f</span>;
+     <span class="keyword">else</span>
+         range <span class="operator">*</span><span class="operator">=</span> <span class="number">4.95f</span>;
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setMax(range);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setMax(range);
+     m_autoAdjust <span class="operator">=</span> <span class="keyword">false</span>;
+ }
+
+ QVector3D ScatterDataModifier<span class="operator">::</span>randVector()
+ {
+     <span class="keyword">auto</span> <span class="operator">*</span>generator <span class="operator">=</span> <span class="type"><a href="../qtcore/qrandomgenerator.html" translate="no">QRandomGenerator</a></span><span class="operator">::</span>global();
+     <span class="keyword">const</span> <span class="keyword">auto</span> x <span class="operator">=</span> <span class="type">float</span>(generator<span class="operator">-</span><span class="operator">&gt;</span>bounded(<span class="number">100</span>)) <span class="operator">/</span> <span class="number">2.0f</span> <span class="operator">-</span> <span class="type">float</span>(generator<span class="operator">-</span><span class="operator">&gt;</span>bounded(<span class="number">100</span>)) <span class="operator">/</span> <span class="number">2.0f</span>;
+     <span class="keyword">const</span> <span class="keyword">auto</span> y <span class="operator">=</span> <span class="type">float</span>(generator<span class="operator">-</span><span class="operator">&gt;</span>bounded(<span class="number">100</span>)) <span class="operator">/</span> <span class="number">100.0f</span> <span class="operator">-</span> <span class="type">float</span>(generator<span class="operator">-</span><span class="operator">&gt;</span>bounded(<span class="number">100</span>)) <span class="operator">/</span> <span class="number">100.0f</span>;
+     <span class="keyword">const</span> <span class="keyword">auto</span> z <span class="operator">=</span> <span class="type">float</span>(generator<span class="operator">-</span><span class="operator">&gt;</span>bounded(<span class="number">100</span>)) <span class="operator">/</span> <span class="number">2.0f</span> <span class="operator">-</span> <span class="type">float</span>(generator<span class="operator">-</span><span class="operator">&gt;</span>bounded(<span class="number">100</span>)) <span class="operator">/</span> <span class="number">2.0f</span>;
+     <span class="keyword">return</span> {x<span class="operator">,</span> y<span class="operator">,</span> z};
+ }
+</pre>

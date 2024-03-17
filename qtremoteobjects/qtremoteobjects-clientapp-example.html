@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- clientapp.qdoc -->
+  <meta name="description" content="A client who holds a replica of a time object from a server and displays the time in a clock.">
+  <title>Time Client Application | Qt Remote Objects 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtremoteobjects-index.html" translate="no">Qt Remote Objects</a></li>
+<li><a href="qtremoteobjects-examples.html" translate="no">Qt Remote Objects Examples</a></li>
+<li>Time Client Application</li>
+<li id="buildversion"><a href="qtremoteobjects-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#before-running-the-time-client-application">Before Running the Time Client Application</a></li>
+<li class="level1"><a href="#defining-remote-objects-using-a-rep-file">Defining Remote Objects using a REP-file</a></li>
+<li class="level1"><a href="#the-timemodel-class">The TimeModel Class</a></li>
+<li class="level1"><a href="#the-qml-types">The QML Types</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Time Client Application</h1>
+<!-- $$$clientapp-brief -->
+<p>A client who holds a replica of a time object from a server and displays the time in a clock.</p>
+<!-- @@@clientapp -->
+<!-- $$$clientapp-description -->
+<div class="descr" id="details">
+<p>The Time Client Application opens a blue window with a message. When you click once, it displays a clock. When you click again, two clocks, then it repeats. The clock is defined in Clock.qml and uses the <code translate="no">Time</code> QML-type, implemented in C++, to set the time of the clock using the time on the server.</p>
+<p class="centerAlign"><img src="images/clientapp-example.webp" alt="" /></p><h4 id="before-running-the-time-client-application">Before Running the Time Client Application</h4>
+<p>To run this example, <a href="qtremoteobjects-remoteobjects-server-example.html" translate="no">Time Server Application</a> must already be running on the same host as this application. It sets up a registry server and hosts an instance of a subclass of the <code translate="no">MinuteTimerSimpleSource</code> class. If it is not running, there will be an error message in the window.</p>
+<h4 id="defining-remote-objects-using-a-rep-file">Defining Remote Objects using a REP-file</h4>
+<p>The REP-file &quot;timemodel.rep&quot; in the parent directory of this application is used to generate the header-files used by both applications. For this application, the generated &quot;rep_timemodel_replica.h&quot; file defines <code translate="no">MinuteTimerReplica</code>, the replica of <code translate="no">MinuteTimer</code>, and other related classes.</p>
+<h4 id="the-timemodel-class">The TimeModel Class</h4>
+<p>The <code translate="no">TimeModel</code> class in plugin.h and plugin.cpp implements the QML-type <code translate="no">Time</code>. It contacts the registry server on localhost using the URL &quot;local:registry&quot;, acquires a replica, <code translate="no">MinuteTimerReplica</code>, and connects to its signals. The properties are automatically updated.</p>
+<h4 id="the-qml-types">The QML Types</h4>
+<p>The QML defined in &quot;Clock.qml&quot; draws a watch using the properties hours and minutes.</p>
+<p>The application opens a window with the contents &quot;plugins.qml&quot;. It changes between displaying different content using a Loader, cycling for each click between &quot;plugins0.qml&quot;, &quot;plugins1.qml&quot;, and &quot;plugins2.qml&quot;.</p>
+<p>While &quot;plugins0.qml&quot; displays a blue screen with a message, the custom QML-type <code translate="no">Clock</code> is used in &quot;plugins1.qml&quot;, with the properties hours and minutes set to the hour and minute properties of <code translate="no">Time</code>. The &quot;plugins2.qml&quot; file is similar but displays two clocks.</p>
+<pre class="qml" translate="no">
+ import QtQuick
+ import TimeExample <span class="comment">// import types from the plugin</span>
+
+ <span class="type">Rectangle</span> {
+     <span class="name">width</span>: <span class="number">200</span>
+     <span class="name">height</span>: <span class="number">400</span>
+     <span class="name">color</span>: <span class="string">&quot;blue&quot;</span>
+     <span class="type">Clock</span> {
+         <span class="name">id</span>: <span class="name">clock1</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="type">Time</span> { <span class="comment">// this class is defined in C++ (plugin.cpp)</span>
+             <span class="name">id</span>: <span class="name">time</span>
+         }
+
+         <span class="name">hours</span>: <span class="name">time</span>.<span class="name">hour</span>
+         <span class="name">minutes</span>: <span class="name">time</span>.<span class="name">minute</span>
+         <span class="name">valid</span>: <span class="name">time</span>.<span class="name">isValid</span>
+
+     }
+ }
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtremoteobjects.git/tree/examples/remoteobjects/clientapp?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<p><b>See also </b><a href="qtremoteobjects-remoteobjects-server-example.html" translate="no">Time Server Application</a>.</p>
+<!-- @@@clientapp -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

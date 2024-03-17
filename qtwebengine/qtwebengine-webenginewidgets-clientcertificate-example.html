@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- clientcertificate.qdoc -->
+  <meta name="description" content="A simple client certificate authentication scenario using Qt WebEngine and QSslServer.">
+  <title>WebEngine Widgets Client Certificate Example | Qt WebEngine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtwebengine-index.html" translate="no">Qt WebEngine</a></li>
+<li><a href="webengine-widgetexamples.html" translate="no">Qt WebEngine Widgets Examples</a></li>
+<li>WebEngine Widgets Client Certificate Example</li>
+<li id="buildversion"><a href="qtwebengine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#creating-certificates">Creating Certificates</a></li>
+<li class="level1"><a href="#implementing-the-client">Implementing the Client</a></li>
+<li class="level1"><a href="#implementing-the-server">Implementing the Server</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">WebEngine Widgets Client Certificate Example</h1>
+<!-- $$$webenginewidgets/clientcertificate-brief -->
+<p>A simple client certificate authentication scenario using Qt WebEngine and <a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a>.</p>
+<!-- @@@webenginewidgets/clientcertificate -->
+<!-- $$$webenginewidgets/clientcertificate-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/selection.png" alt="" /></p><p>In this example we are going to show a client certificate authentication workflow. The presented authentication scenario can be for example implemented for an embedded device, which provides a web interface to handle its functionality. The administrator uses the Qt WebEngine powered client to maintain the embedded device and has a custom SSL certificate to authenticate. The connection is encrypted with SSL sockets. The embedded device uses a <code translate="no">QSslSocket</code> to handle the authentication and the encryption. This way the administrator does not have to enter any credentials and just needs to select a proper certificate that is recognized by the device.</p>
+<p>In the example we focus on a very simple and minimalistic approach to demonstrate the workflow. Note that <a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a> is a low level solution as we do not have to run a full-blown HTTPS server on the resource limited embedded device.</p>
+<h4 id="creating-certificates">Creating Certificates</h4>
+<p>The example comes with certificates already generated, but let's see how to generate new ones. We create certificates for the server and the client using <a href="https://www.openssl.org" translate="no">OpenSSL tooling</a>.</p>
+<p>First, we create the certificate signing request <code translate="no">CSR</code> and sign it. We will use a CA private key to sign and issue both local certificates for the client and the server.</p>
+<pre class="cpp plain" translate="no">
+ openssl req -out ca.pem -new -x509 -nodes -keyout ca.key
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Specify the <code translate="no">-days</code> option to override the default certificate validity of 30 days.</p>
+</div>
+<p>Now, let's create two private keys for our client and a server:</p>
+<pre class="cpp plain" translate="no">
+ openssl genrsa -out client.key 2048
+</pre>
+<pre class="cpp plain" translate="no">
+ openssl genrsa -out server.key 2048
+</pre>
+<p>Next we need two certificate signing requests:</p>
+<pre class="cpp plain" translate="no">
+ openssl req -key client.key -new -out client.req
+</pre>
+<pre class="cpp plain" translate="no">
+ openssl req -key server.key -new -out server.req
+</pre>
+<p>Let's issue now both certificates from CSRs:</p>
+<pre class="cpp plain" translate="no">
+ openssl x509 -req -in client.req -out client.pem -CA ca.pem -CAkey ca.key
+</pre>
+<pre class="cpp plain" translate="no">
+ openssl x509 -req -in server.req -out server.pem -CA ca.pem -CAkey ca.key
+</pre>
+<p>The client certificate subject and the serial number will be displayed for selection during authentication. The serial number can be printed with:</p>
+<pre class="cpp plain" translate="no">
+ openssl x509 -serial -noout -in client.pem
+</pre>
+<h4 id="implementing-the-client">Implementing the Client</h4>
+<p>Now we can implement our web browser client.</p>
+<p>We start by loading our certificate and its private key and creating <a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a> and <a href="../qtnetwork/qsslkey.html" translate="no">QSslKey</a> instances.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> certFile(<span class="string">&quot;:/resources/client.pem&quot;</span>);
+     certFile<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly);
+     <span class="keyword">const</span> <span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span> cert(certFile<span class="operator">.</span>readAll()<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>Pem);
+
+     <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> keyFile(<span class="string">&quot;:/resources/client.key&quot;</span>);
+     keyFile<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly);
+     <span class="keyword">const</span> <span class="type"><a href="../qtnetwork/qsslkey.html" translate="no">QSslKey</a></span> sslKey(keyFile<span class="operator">.</span>readAll()<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>Rsa<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>Pem<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>PrivateKey<span class="operator">,</span> <span class="string">&quot;&quot;</span>);
+</pre>
+<p>Now we add the certificate and its private key to <a href="qwebengineclientcertificatestore.html" translate="no">QWebEngineClientCertificateStore</a>.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="qwebengineprofile.html" translate="no">QWebEngineProfile</a></span><span class="operator">::</span>defaultProfile()<span class="operator">-</span><span class="operator">&gt;</span>clientCertificateStore()<span class="operator">-</span><span class="operator">&gt;</span>add(cert<span class="operator">,</span> sslKey);
+</pre>
+<p>To handle certificates we need to create an instance of <a href="qwebenginepage.html" translate="no">QWebEnginePage</a> and connect to two singals <a href="qwebenginepage.html#certificateError" translate="no">QWebEnginePage::certificateError</a> and <a href="qwebenginepage.html#selectClientCertificate" translate="no">QWebEnginePage::selectClientCertificate</a>. The first one is only needed as our self-signed server certificate will trigger a certificate error, which has to be accepted to proceed with the authentication. In production environments self-signed certificates are not used, therefore in this example we handle <a href="qwebenginecertificateerror.html" translate="no">QWebEngineCertificateError</a> just to avoid providing proper certificates. Note the private key is a secret and should never be published.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="qwebenginepage.html" translate="no">QWebEnginePage</a></span> page;
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(<span class="operator">&amp;</span>page<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qwebenginepage.html" translate="no">QWebEnginePage</a></span><span class="operator">::</span>certificateError<span class="operator">,</span>
+                      <span class="operator">[</span><span class="operator">]</span>(<span class="type"><a href="qwebenginecertificateerror.html" translate="no">QWebEngineCertificateError</a></span> e) { e<span class="operator">.</span>acceptCertificate(); });
+</pre>
+<p>The handling for <a href="qwebenginepage.html#selectClientCertificate" translate="no">QWebEnginePage::selectClientCertificate</a> simply displays <a href="../qtwidgets/qdialog.html" translate="no">QDialog</a> with <a href="../qtwidgets/qlistwidget.html" translate="no">QListWidget</a> showing a list of client certificates to choose from. The user selected certificate is then passed to the <a href="qwebengineclientcertificateselection.html#select" translate="no">QWebEngineClientCertificateSelection::select</a> call.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(
+             <span class="operator">&amp;</span>page<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qwebenginepage.html" translate="no">QWebEnginePage</a></span><span class="operator">::</span>selectClientCertificate<span class="operator">,</span> <span class="operator">&amp;</span>page<span class="operator">,</span>
+             <span class="operator">[</span><span class="operator">&amp;</span>cert<span class="operator">]</span>(<span class="type"><a href="qwebengineclientcertificateselection.html" translate="no">QWebEngineClientCertificateSelection</a></span> selection) {
+                 <span class="type"><a href="../qtwidgets/qdialog.html" translate="no">QDialog</a></span> dialog;
+                 <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span> <span class="operator">*</span>layout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>;
+                 <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>label <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(QLatin1String(<span class="string">&quot;Select certificate&quot;</span>));
+                 <span class="type"><a href="../qtwidgets/qlistwidget.html" translate="no">QListWidget</a></span> <span class="operator">*</span>listWidget <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlistwidget.html" translate="no">QListWidget</a></span>;
+                 listWidget<span class="operator">-</span><span class="operator">&gt;</span>setSelectionMode(<span class="type"><a href="../qtwidgets/qabstractitemview.html" translate="no">QAbstractItemView</a></span><span class="operator">::</span>SingleSelection);
+                 <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span> <span class="operator">*</span>button <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span>(QLatin1String(<span class="string">&quot;Select&quot;</span>));
+                 layout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(label);
+                 layout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(listWidget);
+                 layout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(button);
+                 <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(button<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span>dialog<span class="operator">]</span>() { dialog<span class="operator">.</span>accept(); });
+                 <span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span><span class="operator">&gt;</span> <span class="operator">&amp;</span>list <span class="operator">=</span> selection<span class="operator">.</span>certificates();
+                 <span class="keyword">for</span> (<span class="keyword">const</span> <span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span> <span class="operator">&amp;</span>cert : list) {
+                     listWidget<span class="operator">-</span><span class="operator">&gt;</span>addItem(cert<span class="operator">.</span>subjectDisplayName() <span class="operator">+</span> <span class="string">&quot; : &quot;</span> <span class="operator">+</span> cert<span class="operator">.</span>serialNumber());
+                 }
+                 dialog<span class="operator">.</span>setLayout(layout);
+                 <span class="keyword">if</span> (dialog<span class="operator">.</span>exec() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtwidgets/qdialog.html" translate="no">QDialog</a></span><span class="operator">::</span>Accepted)
+                     selection<span class="operator">.</span>select(list<span class="operator">[</span>listWidget<span class="operator">-</span><span class="operator">&gt;</span>currentRow()<span class="operator">]</span>);
+                 <span class="keyword">else</span>
+                     selection<span class="operator">.</span>selectNone();
+             });
+</pre>
+<p>Finally, we create a <a href="qwebengineview.html" translate="no">QWebEngineView</a> for our <a href="qwebenginepage.html" translate="no">QWebEnginePage</a>, load the server URL, and show the page.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="qwebengineview.html" translate="no">QWebEngineView</a></span> view(<span class="operator">&amp;</span>page);
+     view<span class="operator">.</span>setUrl(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;https://localhost:5555&quot;</span>));
+     view<span class="operator">.</span>resize(<span class="number">800</span><span class="operator">,</span> <span class="number">600</span>);
+     view<span class="operator">.</span>show();
+</pre>
+<h4 id="implementing-the-server">Implementing the Server</h4>
+<p>For our embedded device we will develop a minimalistic HTTPS server. We can use <a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a> to handle incoming connections and to provide an <a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a> instance. To do that, we create an instance of a <a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a> and, similarly to our client setup, we load a server certificate and its private key. Next, we create <a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a> and <a href="../qtnetwork/qsslkey.html" translate="no">QSslKey</a> objects accordingly. Additionally, we need a CA certificate so the server can validate the certificate presented by the client. The CA and local certificate are set to <a href="../qtnetwork/qsslconfiguration.html" translate="no">QSslConfiguration</a> and used later by the server.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a></span> server;
+     <span class="type"><a href="../qtnetwork/qsslconfiguration.html" translate="no">QSslConfiguration</a></span> configuration(<span class="type"><a href="../qtnetwork/qsslconfiguration.html" translate="no">QSslConfiguration</a></span><span class="operator">::</span>defaultConfiguration());
+     configuration<span class="operator">.</span>setPeerVerifyMode(<span class="type"><a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a></span><span class="operator">::</span>VerifyPeer);
+
+     <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> keyFile(<span class="string">&quot;:/resources/server.key&quot;</span>);
+     keyFile<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly);
+
+     <span class="type"><a href="../qtnetwork/qsslkey.html" translate="no">QSslKey</a></span> key(keyFile<span class="operator">.</span>readAll()<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>Rsa<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>Pem<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>PrivateKey);
+     configuration<span class="operator">.</span>setPrivateKey(key);
+
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span><span class="operator">&gt;</span> localCerts <span class="operator">=</span> <span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span><span class="operator">::</span>fromPath(<span class="string">&quot;:/resources/server.pem&quot;</span>);
+     configuration<span class="operator">.</span>setLocalCertificateChain(localCerts);
+
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span><span class="operator">&gt;</span> caCerts <span class="operator">=</span> <span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span><span class="operator">::</span>fromPath(<span class="string">&quot;:resources/ca.pem&quot;</span>);
+     configuration<span class="operator">.</span>addCaCertificates(caCerts);
+
+     server<span class="operator">.</span>setSslConfiguration(configuration);
+</pre>
+<p>Next, we set the server to listen for incoming connections on port <code translate="no">5555</code></p>
+<pre class="cpp" translate="no">
+     <span class="keyword">if</span> (<span class="operator">!</span>server<span class="operator">.</span>listen(<span class="type"><a href="../qtnetwork/qhostaddress.html" translate="no">QHostAddress</a></span><span class="operator">::</span>LocalHost<span class="operator">,</span> <span class="number">5555</span>))
+         <a href="../qtcore/qtlogging.html#qFatal" translate="no">qFatal</a>(<span class="string">&quot;Could not start server on localhost:5555&quot;</span>);
+     <span class="keyword">else</span>
+         <a href="../qtcore/qtlogging.html#qInfo" translate="no">qInfo</a>(<span class="string">&quot;Server started on localhost:5555&quot;</span>);
+</pre>
+<p>We provide a lambda function for the <a href="../qtnetwork/qtcpserver.html#pendingConnectionAvailable" translate="no">QTcpServer::pendingConnectionAvailable</a> signal, where we implement handling for incoming connections. This signal is triggered after authentication has succeeded and <code translate="no">socket</code> TLS encryption has started.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(<span class="operator">&amp;</span>server<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtnetwork/qtcpserver.html" translate="no">QTcpServer</a></span><span class="operator">::</span>pendingConnectionAvailable<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span>server<span class="operator">]</span>() {
+         <span class="type"><a href="../qtnetwork/qtcpsocket.html" translate="no">QTcpSocket</a></span> <span class="operator">*</span>socket <span class="operator">=</span> server<span class="operator">.</span>nextPendingConnection();
+         Q_ASSERT(socket);
+
+         <span class="type"><a href="../qtcore/qpointer.html" translate="no">QPointer</a></span><span class="operator">&lt;</span>Request<span class="operator">&gt;</span> request(<span class="keyword">new</span> Request);
+
+         <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtnetwork/qabstractsocket.html" translate="no">QAbstractSocket</a></span><span class="operator">::</span>disconnected<span class="operator">,</span> socket<span class="operator">,</span>
+                          <span class="operator">[</span>socket<span class="operator">,</span> request<span class="operator">]</span>() <span class="keyword">mutable</span> {
+                              <span class="keyword">delete</span> request;
+                              socket<span class="operator">-</span><span class="operator">&gt;</span>deleteLater();
+                          });
+</pre>
+<p>The <code translate="no">Request</code> object used above is a simple wrapper around <a href="../qtcore/qbytearray.html" translate="no">QByteArray</a> as we use <a href="../qtcore/qpointer.html" translate="no">QPointer</a> to help with memory management. This object gathers incoming HTTP data. It is deleted when the request has completed or a socket has been terminated.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">struct</span> Request : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> m_data;
+ };
+</pre>
+<p>The reply for the request depends on the requested URL, and it is sent back through the socket in form of a HTML page. For the <code translate="no">GET</code> root request the administrator sees the <code translate="no">Access Granted</code> message and an <code translate="no">Exit</code> HTML button. If the administrator clicks it, the client sends another request. This time with the <code translate="no">/exit</code> relative URL, which it turn triggers the server termination.</p>
+<pre class="cpp" translate="no">
+         <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtnetwork/qtcpsocket.html" translate="no">QTcpSocket</a></span><span class="operator">::</span>readyRead<span class="operator">,</span> socket<span class="operator">,</span> <span class="operator">[</span>socket<span class="operator">,</span> request<span class="operator">]</span>() <span class="keyword">mutable</span> {
+             request<span class="operator">-</span><span class="operator">&gt;</span>m_data<span class="operator">.</span>append(socket<span class="operator">-</span><span class="operator">&gt;</span>readAll());
+
+             <span class="keyword">if</span> (<span class="operator">!</span>request<span class="operator">-</span><span class="operator">&gt;</span>m_data<span class="operator">.</span>endsWith(<span class="string">&quot;\r\n\r\n&quot;</span>))
+                 <span class="keyword">return</span>;
+
+             socket<span class="operator">-</span><span class="operator">&gt;</span>write(http_ok);
+             socket<span class="operator">-</span><span class="operator">&gt;</span>write(html_start);
+
+             <span class="keyword">if</span> (request<span class="operator">-</span><span class="operator">&gt;</span>m_data<span class="operator">.</span>startsWith(<span class="string">&quot;GET / &quot;</span>)) {
+                 socket<span class="operator">-</span><span class="operator">&gt;</span>write(<span class="string">&quot;&lt;p&gt;ACCESS GRANTED !&lt;/p&gt;&quot;</span>);
+                 socket<span class="operator">-</span><span class="operator">&gt;</span>write(<span class="string">&quot;&lt;p&gt;You reached the place, where no one has gone before.&lt;/p&gt;&quot;</span>);
+                 socket<span class="operator">-</span><span class="operator">&gt;</span>write(<span class="string">&quot;&lt;button onclick=\&quot;window.location.href='/exit'\&quot;&gt;Exit&lt;/button&gt;&quot;</span>);
+             } <span class="keyword">else</span> <span class="keyword">if</span> (request<span class="operator">-</span><span class="operator">&gt;</span>m_data<span class="operator">.</span>startsWith(<span class="string">&quot;GET /exit &quot;</span>)) {
+                 socket<span class="operator">-</span><span class="operator">&gt;</span>write(<span class="string">&quot;&lt;p&gt;BYE !&lt;/p&gt;&quot;</span>);
+                 socket<span class="operator">-</span><span class="operator">&gt;</span>write(<span class="string">&quot;&lt;p&gt;Have good day ...&lt;/p&gt;&quot;</span>);
+                 <span class="type"><a href="../qtcore/qtimer.html" translate="no">QTimer</a></span><span class="operator">::</span>singleShot(<span class="number">0</span><span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>quit);
+             } <span class="keyword">else</span> {
+                 socket<span class="operator">-</span><span class="operator">&gt;</span>write(<span class="string">&quot;&lt;p&gt;There is nothing to see here.&lt;/p&gt;&quot;</span>);
+             }
+
+             socket<span class="operator">-</span><span class="operator">&gt;</span>write(html_end);
+             <span class="keyword">delete</span> request;
+             socket<span class="operator">-</span><span class="operator">&gt;</span>disconnectFromHost();
+         });
+</pre>
+<p>To run the example, start the <code translate="no">server</code> and then the <code translate="no">client</code>. After you select the certificate, the <code translate="no">Access Granted</code> page is displayed.</p>
+<p class="centerAlign"><img src="images/granted.png" alt="" /></p><p><a href="https://code.qt.io/cgit/qt/qtwebengine.git/tree/examples/webenginewidgets/clientcertificate?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@webenginewidgets/clientcertificate -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

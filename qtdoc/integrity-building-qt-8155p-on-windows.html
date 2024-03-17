@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- integrity-build-monolith-app-tutorial.qdoc -->
+  <title>Building Qt for Qualcomm Snapdragon 8155P Board on Windows 10 | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Building Qt for Qualcomm Snapdragon 8155P Board on Windows 10</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="integrity-win-monolith.html" />
+  <link rel="next" href="integrity-building-and-flashing-dd-project.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="integrity-win-monolith.html">Build Qt with Windows 10 host</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="integrity-building-and-flashing-dd-project.html">Building and flashing a Dynamic Download Project</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#creating-a-batch-script-for-windows-10">Creating a batch script for Windows 10</a></li>
+<li class="level1"><a href="#getting-qt-sources">Getting Qt sources</a></li>
+<li class="level1"><a href="#building-qt-desktop-for-cross-compiling-tools-usage">Building Qt Desktop for cross-compiling tools usage</a></li>
+<li class="level1"><a href="#creating-a-toolchain-file-for-integrity">Creating a toolchain file for INTEGRITY</a></li>
+<li class="level1"><a href="#configuring-qt-for-integrity">Configuring Qt for INTEGRITY</a></li>
+<li class="level1"><a href="#building-qt-for-integrity">Building Qt for INTEGRITY</a></li>
+<li class="level1"><a href="#installing-qt">Installing Qt</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Building Qt for Qualcomm Snapdragon 8155P Board on Windows 10</h1>
+<!-- $$$integrity-building-qt-8155p-on-windows.html-description -->
+<div class="descr" id="details">
+<p>Having Green Hills INTEGRITY and Qualcomm development environments setup is a required before proceeding. See <a href="integrity-installing-dependencies.html" translate="no">Installing Platform Dependencies</a>.</p>
+<h2 id="creating-a-batch-script-for-windows-10">Creating a batch script for Windows 10</h2>
+<p>To set up the development environment for Qt for INTEGRITY, build Qt from the sources for the Qualcomm Snapdragon 8155P board. Before building Qt for INTEGRITY, set up build environment. Here a batch script to automate that, as it needs to be done before each build.</p>
+<p>For Windows 10 create a new batch script <i>setEnvironment.bat</i>, and save it under your home folder. Add the following export variables to the script:</p>
+<pre class="cpp plain" translate="no">
+ @echo off
+ set PATH=%PATH%;C:\ghs\comp_202014
+ set INTEGRITY_DIR=C:\Users\user\ghs_pack\es7_dev_env\hlos_dev_boot\apps\ghs_apps_proc\integrity
+ set INTEGRITY_BSP=platform-sa8155
+ set INTEGRITY_BUILD_TARGET=chk
+ set QC_MULTIMEDIA_INC_DIR=C:\Users\user\ghs_pack\es7_dev_env\hlos_dev_boot\apps\ghs_apps_proc\qc_bsp\include\amss\multimedia
+ set GL_INC_DIR=C:\Users\user\ghs_pack\es7_dev_env\hlos_dev_boot\apps\ghs_apps_proc\qc_bsp\AMSS\multimedia\graphics\include\public
+ set GL_LIB_DIR=C:\Users\user\ghs_pack\es7_dev_env\hlos_dev_boot\apps\ghs_apps_proc\qc_bsp\out\rel\libs\base;C:\Users\user\ghs_pack\es7_dev_env\hlos_dev_boot\apps\ghs_apps_proc\qc_bsp\out\rel\libs\multimedia\display;C:\Users\user\ghs_pack\es7_dev_env\hlos_dev_boot\apps\ghs_apps_proc\qc_bsp\out\rel\libs\multimedia\graphics;C:\Users\user\ghs_pack\es7_dev_env\hlos_dev_boot\apps\ghs_apps_proc\qc_bsp\out\rel\libs\platform\;C:\Users\user\ghs_pack\es7_dev_env\hlos_dev_boot\apps\ghs_apps_proc\qc_bsp\AMSS\multimedia\graphics\opengl\esx\build\integrity\prebuilt\
+ set TARGET_ROOT_PATH=&quot;C:\Users\user\ghs_pack\es7_dev_env\hlos_dev_boot&quot;
+</pre>
+<p>These export paths assume you have used the <code translate="no">C:\ghs\comp_202014 and C:\Users\user\ghs_pack\*</code> installation directories while installing the MULTI IDE and INTEGRITY (see <a href="integrity-installing-dependencies.html" translate="no">Installing Platform Dependencies</a>). If you have not used the default directories, adjust the export paths accordingly.</p>
+<p>To initialize your build environment, run the following command in a Windows CMD terminal:</p>
+<pre class="cpp plain" translate="no">
+ setEnvironment.bat
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Run this command in the Windows CMD terminal every time you build Qt, or use the <code translate="no">qmake</code> or <code translate="no">CMake</code> build systems.</p>
+</div>
+<h2 id="getting-qt-sources">Getting Qt sources</h2>
+<p>You can download the Qt source code from your <a href="https://login.qt.io/login" translate="no">Qt Account</a>.</p>
+<p>You can also get the Qt sources from the Git repo. Qt Wiki has instructions for getting Qt sources from Git, see <a href="https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code" translate="no">Getting source code</a>.</p>
+<div class="admonition note">
+<p><b>Note: </b>Qt sources version must be 6.2 or later.</p>
+</div>
+<div class="admonition note">
+<p><b>Note: </b>The init-repository script initializes the Qt 6 repository and clones various Qt 6 sub-modules (see <a href="https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_submodule_source_code" translate="no">Getting the submodule source code</a>). Qt modules supported by Qt for INTEGRITY are listed in <a href="wasm.html#supported-qt-modules" translate="no">Supported Qt Modules</a>.</p>
+</div>
+<h2 id="building-qt-desktop-for-cross-compiling-tools-usage">Building Qt Desktop for cross-compiling tools usage</h2>
+<p>The cross-compiling Qt requires a host build of Qt being available. During the build, tools such as moc, rcc, qmlcachegen, qsb, and others, are invoked from there. For more detailed information please read <a href="https://www.qt.io/blog/qt-6-build-system" translate="no">Cross-compiling Qt</a>.</p>
+<p>Run the following commands for Windows 10 Host build:</p>
+<pre class="cpp plain" translate="no">
+ mkdir hostbuild
+ cd hostbuild/
+ C:/Users/user/qt5/configure -nomake tests -nomake examples -release -prefix C:/Users/user/hostbuild
+ cmake --build . --parallel 6
+ cmake --install .
+</pre>
+<h2 id="creating-a-toolchain-file-for-integrity">Creating a toolchain file for INTEGRITY</h2>
+<p>To cross-compile a project with CMake, one must specify a toolchain file. This CMake-language file sets the right values for the platform name, the compiler/linker used, and a whole bunch of other toolchain-specific things. For Integrity build on Windows 10 create a toolchain.cmake file with following content:</p>
+<pre class="cpp" translate="no">
+ # Copyright (C) 2022 The Qt Company Ltd.
+ # SPDX-License-Identifier: BSD-3-Clause
+
+ #generic
+ set(CMAKE_SYSTEM_NAME Integrity)
+ set(CMAKE_SYSTEM_PROCESSOR arm)
+ set(CMAKE_CROSSCOMPILING True)
+
+ #path to installed GHS compiler for WIN10
+ set(TARGET_ROOT_PATH &quot;C:/Users/user/ghs_pack/es7_dev_env/hlos_dev_boot&quot;)
+ set(CMAKE_BUILD_TYPE &quot;Release&quot;)
+
+ set(GHS_COMPILER C:/ghs/comp_202014/cxintarm64.exe)
+ set(CMAKE_C_COMPILER ${GHS_COMPILER})
+ set(CMAKE_CXX_COMPILER ${GHS_COMPILER})
+ set(CMAKE_ASM_COMPILER ${GHS_COMPILER})
+
+ set(EGL_FOUND True)
+ set(UNIX True)
+
+ set (CMAKE_C_COMPILE_FEATURES c_std_99)
+ set (CMAKE_CXX_COMPILE_FEATURES
+ cxx_alias_templates
+ cxx_alignas
+ cxx_alignof
+ cxx_attributes
+ cxx_auto_type
+ cxx_constexp
+ cxx_decltype
+ cxx_delegating_constructors
+ cxx_explicit_conversions
+ cxx_extern_templates
+ cxx_inheriting_constructors
+ cxx_lambdas
+ cxx_noexcept
+ cxx_nonstatic_member_init
+ cxx_nullptr
+ cxx_override
+ cxx_range_for
+ cxx_raw_string_literals
+ cxx_reference_qualified_functions
+ cxx_rvalue_references
+ cxx_static_assert
+ cxx_std_17
+ cxx_thread_local
+ cxx_unicode_literals
+ cxx_uniform_initialization
+ cxx_unrestricted_unions
+ cxx_variadic_macros
+ cxx_variadic_templates)
+
+ if (NOT DEFINED CMAKE_FIND_ROOT_PATH_MODE_PROGRAM)
+     set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+ endif()
+ if (NOT DEFINED CMAKE_FIND_ROOT_PATH_MODE_LIBRARY)
+     set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+ endif()
+ if (NOT DEFINED CMAKE_FIND_ROOT_PATH_MODE_PACKAGE)
+     set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+ endif()
+ if (NOT DEFINED CMAKE_FIND_ROOT_PATH_MODE_INCLUDE)
+     set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+ endif()
+
+ set(CMAKE_FIND_ROOT_PATH ${TARGET_ROOT_PATH})
+
+ #base
+ set(CMAKE_C_FLAGS  &quot;-bsp $ENV{INTEGRITY_BSP} -os_dir $ENV{INTEGRITY_DIR} -non_shared -startfile_dir=$ENV{INTEGRITY_DIR}/libs/$ENV{INTEGRITY_BSP}/$ENV{INTEGRITY_BUILD_TARGET} --rtos_library_directory=libs/$ENV{INTEGRITY_BSP}/$ENV{INTEGRITY_BUILD_TARGET} --rtos_library_directory=libs/arm64/$ENV{INTEGRITY_BUILD_TARGET} -bigswitch -DINTEGRITY -llibposix.a&quot;)
+ set(CMAKE_C_FLAGS_DEBUG &quot;-g -Omaxdebug&quot;)
+ set(CMAKE_C_FLAGS_RELEASE &quot;-Ospeed -Olink -Omax -no_uvfd&quot;)
+ set(CMAKE_C_FLAGS &quot;${CMAKE_C_FLAGS} --signed_fields --diag_suppress=1,82,228,236,381,611,961,997,1795,1931,1974,3148 --c++17 --thread_local_storage --exceptions --defer_parse_function_templates&quot;)
+
+ set(CMAKE_CXX_FLAGS &quot;${CMAKE_C_FLAGS} -frigor=accurate --signed_fields --no_implicit_include --link_once_templates -non_shared --new_outside_of_constructor --commons -I $ENV{QC_MULTIMEDIA_INC_DIR}&quot;)
+ set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+ set(CMAKE_CXX_FLAGS_RELEASE &quot;${CMAKE_C_FLAGS_RELEASE}&quot;)
+
+ set(CMAKE_FIND_LIBRARY_PREFIXES &quot;lib&quot;)
+ set(CMAKE_FIND_LIBRARY_SUFFIXES &quot;.a&quot;)
+
+ set(BUILD_SHARED_LIBS OFF)
+ set(QT_CFLAGS_OPTIMIZE_FULL &quot;-Ospeed -Olink -Omax -no_uvfd&quot;)
+
+ set(EGL_INCLUDE_DIR $ENV{GL_INC_DIR})
+ set(PKG_EGL_LIBRARY_DIRS ${TARGET_ROOT_PATH})
+
+ set(GLESv2_INCLUDE_DIR $ENV{GL_INC_DIR})
+ set(OPENGL_INCLUDE_DIR $ENV{GL_INC_DIR})
+
+ set(EGL_LIBRARY &quot;${EGL_LIBRARY_GRAPHIC_PATH}/libESXEGL_Adreno.a&quot;)
+
+ set(GLESv2_INCLUDE_DIR $ENV{GL_INC_DIR})
+ set(GLESv2_LIBRARY &quot;${EGL_LIBRARY_GRAPHIC_PATH}/libESXGLESv2_Adreno.a&quot;)
+
+ set(IntegrityPlatformGraphics_INCLUDE_DIR ${GL_INC_DIR})
+ set(IntegrityPlatformGraphics_LIBRARY &quot;${EGL_LIBRARY_GRAPHIC_PATH}/libadreno_utils.a&quot;)
+ set(IntegrityPlatformGraphics_LIBRARIES_PACK
+     &quot;${EGL_LIBRARY_BASE_PATH}/libplanedef.a&quot;
+     &quot;${EGL_LIBRARY_BASE_PATH}/libmmosalfile.a&quot;
+     &quot;${EGL_LIBRARY_BASE_PATH}/libOSAbstraction.a&quot;
+     &quot;${EGL_LIBRARY_OPENWFD_PATH}/libopenwfd.a&quot;
+     &quot;${EGL_LIBRARY_GRAPHIC_PATH}/libOSUser.a&quot;
+     &quot;${EGL_LIBRARY_GRAPHIC_PATH}/libpanel.a&quot;
+     &quot;${EGL_LIBRARY_GRAPHIC_PATH}/libGSLUser.a&quot;
+     &quot;${EGL_LIBRARY_PREBUILD_PATH}/libglnext-llvm.a&quot;
+     &quot;${EGL_LIBRARY_PLATFORM_PATH}/libpmem.a&quot;
+     &quot;${EGL_LIBRARY_CHK_PATH}/libposix.a&quot;
+     &quot;${EGL_LIBRARY_CHK_PATH}/libivfs.a&quot;
+ )
+
+ list(APPEND _qt_igy_gui_libs
+     &quot;${GLESv2_LIBRARY}&quot;
+     &quot;${IntegrityPlatformGraphics_LIBRARY}&quot;
+     &quot;${IntegrityPlatformGraphics_LIBRARIES_PACK}&quot;)
+
+ set(OPENGL_opengl_LIBRARY ${EGL_LIBRARY})
+
+ # Command is required to fix CMake WIN bug https://gitlab.kitware.com/cmake/cmake/-/issues/22933
+ set(CMAKE_CXX_COMPILER_PREDEFINES_COMMAND ${CMAKE_CXX_COMPILER})
+ list(APPEND CMAKE_CXX_COMPILER_PREDEFINES_COMMAND -bsp $ENV{INTEGRITY_BSP} -os_dir $ENV{INTEGRITY_DIR} -E -dM &quot;${CMAKE_ROOT}/Modules/CMakeCXXCompilerABI.cpp&quot;)
+
+ # Set format for creating static library
+ set(CMAKE_CXX_CREATE_STATIC_LIBRARY &quot;${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} &lt;LINK_FLAGS&gt; -archive -o &lt;TARGET&gt; &lt;OBJECTS&gt; -keep_objs&quot;)
+ set(CMAKE_C_CREATE_STATIC_LIBRARY   &quot;${CMAKE_CXX_COMPILER} ${CMAKE_C_FLAGS} &lt;LINK_FLAGS&gt; -archive -o &lt;TARGET&gt; &lt;OBJECTS&gt; -keep_objs&quot;)
+
+ # Set format to create executables
+ set(CMAKE_CXX_LINK_EXECUTABLE &quot;${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} &lt;CMAKE_CXX_LINK_FLAGS&gt; &lt;LINK_FLAGS&gt; &lt;OBJECTS&gt; -o &lt;TARGET&gt; &lt;LINK_LIBRARIES&gt;&quot;)
+ set(CMAKE_C_LINK_EXECUTABLE   &quot;${CMAKE_CXX_COMPILER} ${CMAKE_C_FLAGS} &lt;CMAKE_C_LINK_FLAGS&gt; &lt;LINK_FLAGS&gt; &lt;OBJECTS&gt; -o &lt;TARGET&gt; &lt;LINK_LIBRARIES&gt;&quot;)
+</pre>
+<h2 id="configuring-qt-for-integrity">Configuring Qt for INTEGRITY</h2>
+<p>Configure Qt for the Qualcomm Snapdragon 8155P board using these following commands: <code translate="no">Windows 10 HOST</code> requires follow configure line:</p>
+<pre class="cpp plain" translate="no">
+ mkdir targetbuild
+ cd targetbuild/
+ cmake C:/Users/user/qt5/ -DQT_HOST_PATH=/c/Users/user/hostbuild/qtbase
+ -DCMAKE_TOOLCHAIN_FILE=/c/Users/user/ghs_pack/es7_dev_env/hlos_dev_boot/toolchain_integrity.cmake
+ -DQT_QMAKE_TARGET_MKSPEC=devices/integrity-armv8-SA8155P
+ -DBUILD_qtdoc=OFF -DBUILD_qttranslations=OFF -DFEATURE_printdialog=OFF --debug-trycompile -DFEATURE_dbus=OFF
+ -DFEATURE_dnslookup=OFF -DFEATURE_glib=OFF -DFEATURE_system_pcre2=OFF -DFEATURE_sql_mysql=OFF
+ -DQT_FEATURE_harfbuzz=OFF -DFEATURE_pkg_config=OFF -DUNIX=ON -DCMAKE_HOST_WIN32=ON -GNinja -DCMAKE_INSTALL_PREFIX=/c/Users/user/targetbuild/
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>INTEGRITY supports only static Qt builds.</p>
+</div>
+<div class="admonition note">
+<p><b>Note: </b><code translate="no">QT_HOST_PATH</code> variable introduced in Qt 6. When cross-compiling, this must be set to the install location of Qt for the host platform. It is used to locate tools to be run on the host (moc, rcc, androiddeployqt, and so on).</p>
+</div>
+<h2 id="building-qt-for-integrity">Building Qt for INTEGRITY</h2>
+<p>Build Qt by calling <code translate="no">cmake</code> in the terminal. You can run <code translate="no">cmake</code> with as many cores on your host machine as you desire. In our example we use six cores:</p>
+<pre class="cpp plain" translate="no">
+ cmake --build . --parallel 6
+</pre>
+<span id="installing-qt-for-sa8155"></span><h2 id="installing-qt">Installing Qt</h2>
+<p>If you have not used the configure option <code translate="no">-prefix $PWD/qtbase</code> in <a href="configure-linux-device.html#configuring-qt" translate="no">Configuring Qt</a>, run the following commands in a terminal:</p>
+<pre class="cpp plain" translate="no">
+ cd &lt;Qt installation directory&gt;
+ cmake --install .
+</pre>
+<p>If you have used the configure option <code translate="no">-prefix $PWD/qtbase</code>, you can use Qt from the build directory, without running the <code translate="no">cmake install</code> command.</p>
+<p>Qt is now configured and built for the sa8155 board.</p>
+</div>
+<!-- @@@integrity-building-qt-8155p-on-windows.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="integrity-win-monolith.html">Build Qt with Windows 10 host</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="integrity-building-and-flashing-dd-project.html">Building and flashing a Dynamic Download Project</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

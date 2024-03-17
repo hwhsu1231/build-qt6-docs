@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- sudoku.qdoc -->
+  <meta name="description" content="Demonstrates the use of separate javascript file with SCXML.">
+  <title>SCXML Sudoku | Qt SCXML 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtscxml-index.html" translate="no">Qt SCXML</a></li>
+<li><a href="examples-qtscxml.html" translate="no">Qt SCXML Examples</a></li>
+<li>SCXML Sudoku</li>
+<li id="buildversion"><a href="qtscxml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#sudoku-features">Sudoku Features</a></li>
+<li class="level1"><a href="#scxml-part-internal-logic-description">SCXML Part: Internal Logic Description</a></li>
+<li class="level1"><a href="#c-part-constructing-the-gui">C++ Part: Constructing the GUI</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">SCXML Sudoku</h1>
+<!-- $$$sudoku-brief -->
+<p>Demonstrates the use of separate javascript file with SCXML.</p>
+<!-- @@@sudoku -->
+<!-- $$$sudoku-description -->
+<div class="descr" id="details">
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="sudoku-features">Sudoku Features</h4>
+<p class="centerAlign"><img src="images/sudoku.png" alt="Screenshot of the Sudoku example" /></p><p>Our sudoku contains the following features:</p>
+<ul>
+<li>Initially and when the game ends, the sudoku enters the <code translate="no">idle</code> state. In that state the players can see if their last game finished successfully or not. The state machine is then in one of two child states of the <code translate="no">idle</code> state: <code translate="no">solved</code> or <code translate="no">unsolved</code>, respectively. In the <code translate="no">idle</code> state the players can also choose the sudoku grid they would like to solve. The grid is disabled and the user interaction is ignored.</li>
+<li>After players click the <b translate="no">Start</b> button, the sudoku enters the <code translate="no">playing</code> state and is ready for the user interaction on the board.</li>
+<li>When the game is in the <code translate="no">playing</code> state and the players click the <b translate="no">Stop</b> button, the game ends and enters the <code translate="no">unsolved</code> child state of the <code translate="no">idle</code> state. If the players have solved the current puzzle successfully, the game automatically ends and enters the <code translate="no">solved</code> child state of the <code translate="no">idle</code> state indicating success.</li>
+<li>The board consist of 81 buttons, laid out in a 9x9 grid. The buttons with initial values given remain disabled during the game. The players can only interact with buttons initially empty. Each click on the button increases its value by one.</li>
+<li>During the game the <b translate="no">Undo</b> button is available for the players' convenience.</li>
+</ul>
+<h4 id="scxml-part-internal-logic-description">SCXML Part: Internal Logic Description</h4>
+<p>The <i>sudoku.scxml</i> file describes the internal structure of the states the sudoku game can be in, defines the transitions between states, and triggers the appropriate script functions when the transitions take place. It also communicates with the GUI part by sending events and listening to the upcoming events and reacting to them.</p>
+<p>We use the ECMAScript data model:</p>
+<pre class="cpp" translate="no">
+ &lt;scxml xmlns=&quot;http://www.w3.org/2005/07/scxml&quot; version=&quot;1.0&quot;
+        name=&quot;Sudoku&quot; datamodel=&quot;ecmascript&quot;&gt;
+</pre>
+<p>We declare the following variables:</p>
+<pre class="cpp" translate="no">
+     &lt;datamodel&gt;
+         &lt;data id=&quot;initState&quot;/&gt;
+         &lt;data id=&quot;currentState&quot; expr=&quot;[[]]&quot;/&gt;
+         &lt;data id=&quot;undoStack&quot;/&gt;
+     &lt;/datamodel&gt;
+</pre>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Variable</th><th >Description</th></tr></thead>
+<tr valign="top" class="odd"><td ><code translate="no">initState</code></td><td >Holds the initial state of the current game. It is a two-dimensional array of 9x9 cells that contain initial sudoku numbers. The value of zero means the cell is initially empty.</td></tr>
+<tr valign="top" class="even"><td ><code translate="no">currentState</code></td><td >Holds the current state of the game being played. It is similar to the <code translate="no">initState</code> variable and initially contains the same content. However, when the players start entering the numbers into the empty cells, this variable is being updated accordingly, while the <code translate="no">initState</code> variable remains unchanged.</td></tr>
+<tr valign="top" class="odd"><td ><code translate="no">undoStack</code></td><td >Holds the history of players' moves. It is a list of the cells' coordinates that were touched last. Each new modification during a game adds a pair of x and y coordinates to that list.</td></tr>
+</table></div>
+<p>The variables above are shared with the script helper functions defined in the <code translate="no">sudoku.js</code> file:</p>
+<pre class="cpp" translate="no">
+     &lt;script src=&quot;sudoku.js&quot;/&gt;
+</pre>
+<p>We call some of the functions defined there when taking transitions or in reaction to the events sent by the GUI.</p>
+<p>All the possible states mentioned before are defined in a root state <code translate="no">game</code>.</p>
+<pre class="cpp" translate="no">
+     &lt;state id=&quot;game&quot;&gt;
+         &lt;onentry&gt;
+             &lt;raise event=&quot;restart&quot;/&gt;
+         &lt;/onentry&gt;
+         &lt;state id=&quot;idle&quot;&gt;
+             ...
+             &lt;state id=&quot;unsolved&quot;/&gt;
+             &lt;state id=&quot;solved&quot;/&gt;
+         &lt;/state&gt;
+         &lt;state id=&quot;playing&quot;&gt;
+             ...
+         &lt;/state&gt;
+         ...
+     &lt;/state&gt;
+</pre>
+<p>When the sudoku example is started, the state machine enters the <code translate="no">game</code> state and stays in this state until the application exits. When entering this state, we raise internally the <code translate="no">restart</code> event. This event is also being raised whenever the players change the current sudoku grid or when they start the game by pressing the <b translate="no">Start</b> button. We do not want to send it when they have finished the current game because we still want to show the filled grid from the last game play. So, this event is being raised from three different contexts and is captured internally once in a targetless transition of the <code translate="no">game</code> state:</p>
+<pre class="cpp" translate="no">
+         &lt;transition event=&quot;restart&quot;&gt;
+             &lt;script&gt;
+                 restart();
+             &lt;/script&gt;
+             &lt;raise event=&quot;update&quot;/&gt;
+         &lt;/transition&gt;
+</pre>
+<p>When we catch the <code translate="no">restart</code> event, we call a helper <code translate="no">restart()</code> script method, defined in the <code translate="no">sudoku.js</code> file and raise internally an additional <code translate="no">update</code> event.</p>
+<pre class="cpp" translate="no">
+ function restart() {
+     for (var i = 0; i &lt; initState.length; i++)
+         currentState[i] = initState[i].slice();
+     undoStack = [];
+ }
+</pre>
+<p>The <code translate="no">restart()</code> function assigns the <code translate="no">initState</code> into the <code translate="no">currentState</code> variable and clears the <code translate="no">undoStack</code> variable.</p>
+<p>The <code translate="no">update</code> event is raised internally whenever we want to notify the GUI that the grid contents have been changed and that the GUI should update itself according to the passed values. This event is caught in another targetless transition of the <code translate="no">game</code> state:</p>
+<pre class="cpp" translate="no">
+         &lt;transition event=&quot;update&quot;&gt;
+             &lt;send event=&quot;updateGUI&quot;&gt;
+                 &lt;param name=&quot;currentState&quot; expr=&quot;currentState&quot;/&gt;
+                 &lt;param name=&quot;initState&quot; expr=&quot;initState&quot;/&gt;
+             &lt;/send&gt;
+         &lt;/transition&gt;
+</pre>
+<p>We send the external event <code translate="no">updateGUI</code>, which is being intercepted in the <a href="qtscxml-sudoku-example.html#cpp" translate="no">C++ code</a>. The <code translate="no">updateGUI</code> event is equipped with additional data, specified inside <code translate="no">&lt;param&gt;</code> elements. We pass two parameters, which are accessible externally through the <code translate="no">currentState</code> and <code translate="no">initState</code> names. The actual values passed for them equal the datamodel's <code translate="no">currentState</code> and <code translate="no">initState</code> variables, respectively, which are specified by the <code translate="no">expr</code> attributes.</p>
+<pre class="cpp" translate="no">
+         &lt;state id=&quot;idle&quot;&gt;
+             &lt;transition event=&quot;start&quot; target=&quot;playing&quot;/&gt;
+             &lt;transition event=&quot;setup&quot; target=&quot;unsolved&quot;&gt;
+                 &lt;assign location=&quot;initState&quot; expr=&quot;_event.data.initState&quot;/&gt;
+                 &lt;raise event=&quot;restart&quot;/&gt;
+             &lt;/transition&gt;
+             &lt;state id=&quot;unsolved&quot;/&gt;
+             &lt;state id=&quot;solved&quot;/&gt;
+         &lt;/state&gt;
+</pre>
+<p>When in <code translate="no">idle</code> state, we react to two events, which may be sent by the GUI part: <code translate="no">start</code> and <code translate="no">setup</code>. Whenever we receive the <code translate="no">start</code> event, we just transition to the <code translate="no">playing</code> state. When we receive the <code translate="no">setup</code> event, we expect that the GUI part has sent us the new grid to be solved. The grid's new initial state is expected to be passed through the <code translate="no">initState</code> field of <code translate="no">_event.data</code>. We assign the passed value to the <code translate="no">initState</code> variable defined in our datamodel and restart the grid's contents.</p>
+<pre class="cpp" translate="no">
+         &lt;state id=&quot;playing&quot;&gt;
+             &lt;onentry&gt;
+                 &lt;raise event=&quot;restart&quot;/&gt;
+             &lt;/onentry&gt;
+             &lt;transition event=&quot;tap&quot;&gt;
+                 &lt;if cond=&quot;isValidPosition()&quot;&gt;
+                     &lt;script&gt;
+                         calculateCurrentState();
+                     &lt;/script&gt;
+                     &lt;if cond=&quot;isSolved()&quot;&gt;
+                         &lt;raise event=&quot;solved&quot;/&gt;
+                     &lt;/if&gt;
+                     &lt;raise event=&quot;update&quot;/&gt;
+                 &lt;/if&gt;
+             &lt;/transition&gt;
+             ...
+         &lt;/state&gt;
+</pre>
+<p>Whenever we enter the <code translate="no">playing</code> state, we reset the grid's contents since we could have been still showing the contents from the previous game play. In the <code translate="no">playing</code> state we react to possible events sent from the GUI: <code translate="no">tap</code>, <code translate="no">undo</code>, and <code translate="no">stop</code>.</p>
+<p>The <code translate="no">tap</code> event is sent when the players press one of the enabled sudoku cells. This event is expected to contain additional data specifying the cell's coordinates, which are passed through the <code translate="no">x</code> and <code translate="no">y</code> fields of <code translate="no">_event.data</code>. First, we check if the passed coordinates are valid by invoking the <code translate="no">isValidPosition()</code> script function:</p>
+<pre class="cpp" translate="no">
+ function isValidPosition() {
+     var x = _event.data.x;
+     var y = _event.data.y;
+     if (x &lt; 0 || x &gt;= initState.length)
+         return false;
+     if (y &lt; 0 || y &gt;= initState.length)
+         return false;
+     if (initState[x][y] !== 0)
+         return false;
+     return true;
+ }
+</pre>
+<p>We ensure the coordinates are neither negative nor bigger than our grid. In addition, we check if the coordinates point to an initially empty cell, since we can not modify the cells initially given by the grid description.</p>
+<p>When we have ensured the passed coordinates are correct, we call <code translate="no">calculateCurrentState()</code> script function:</p>
+<pre class="cpp" translate="no">
+ function calculateCurrentState() {
+     if (isValidPosition() === false)
+         return;
+     var x = _event.data.x;
+     var y = _event.data.y;
+     var currentValue = currentState[x][y];
+     if (currentValue === initState.length)
+         currentValue = 0;
+     else
+         currentValue += 1;
+     currentState[x][y] = currentValue;
+     undoStack.push([x, y]);
+ }
+</pre>
+<p>This function increments the value of the passed grid's cell and adds the new move to the undo stack history.</p>
+<p>Right after the <code translate="no">calculateCurrentState()</code> function finishes its execution, we check whether the grid is already solved by calling the <code translate="no">isSolved()</code> script function:</p>
+<pre class="cpp" translate="no">
+ function isOK(numbers) {
+     var temp = [];
+     for (var i = 0; i &lt; numbers.length; i++) {
+         var currentValue = numbers[i];
+         if (currentValue === 0)
+             return false;
+         if (temp.indexOf(currentValue) &gt;= 0)
+             return false;
+         temp.push(currentValue);
+     }
+     return true;
+ }
+
+ function isSolved() {
+     for (var i = 0; i &lt; currentState.length; i++) {
+         if (!isOK(currentState[i]))
+             return false;
+
+         var column = [];
+         var square = [];
+         for (var j = 0; j &lt; currentState[i].length; j++) {
+             column.push(currentState[j][i]);
+             square.push(currentState[Math.floor(i / 3) * 3 + Math.floor(j / 3)]
+                                     [i % 3 * 3 + j % 3]);
+         }
+
+         if (!isOK(column))
+             return false;
+         if (!isOK(square))
+             return false;
+     }
+     return true;
+ }
+</pre>
+<p>The <code translate="no">isSolved()</code> function returns <code translate="no">true</code> if the grid is properly solved. Since we need to check each row, each column, and each 3x3 square, we define the <code translate="no">isOK()</code> helper function. This function takes the list of numbers and returns <code translate="no">true</code> if the passed list contains unique numbers and no number equals zero, meaning there is no empty cell. The main loop of the <code translate="no">isSolved()</code> is invoked nine times. In every iteration, we construct three lists of numbers representing a row, a column, and a square of the grid and call <code translate="no">isOK()</code> for them. When all 27 lists are OK, the grid is solved properly and we return <code translate="no">true</code>.</p>
+<p>Coming back to our SCXML file, in case <code translate="no">isSolved()</code> returns <code translate="no">true</code>, we raise the <code translate="no">solved</code> event internally. The last instruction in case of a proper move is to raise the <code translate="no">update</code> event, since we need to notify the GUI about the grid's change.</p>
+<pre class="cpp" translate="no">
+         &lt;state id=&quot;playing&quot;&gt;
+             ...
+             &lt;transition event=&quot;undo&quot;&gt;
+                 &lt;script&gt;
+                     undo();
+                 &lt;/script&gt;
+                 &lt;raise event=&quot;update&quot;/&gt;
+             &lt;/transition&gt;
+             &lt;transition event=&quot;stop&quot; target=&quot;idle&quot;/&gt;
+             &lt;transition event=&quot;solved&quot; target=&quot;solved&quot;/&gt;
+         &lt;/state&gt;
+</pre>
+<p>When in the <code translate="no">playing</code> state, we also react to the <code translate="no">undo</code> event sent from the GUI. In this case, we call the <code translate="no">undo()</code> script function and notify the GUI about the need of an update.</p>
+<pre class="cpp" translate="no">
+ function undo() {
+     if (!undoStack.length)
+         return;
+
+     var lastMove = undoStack.pop();
+     var x = lastMove[0];
+     var y = lastMove[1];
+     var currentValue = currentState[x][y];
+     if (currentValue === 0)
+         currentValue = initState.length;
+     else
+         currentValue -= 1;
+     currentState[x][y] = currentValue;
+ }
+</pre>
+<p>The <code translate="no">undo()</code> function removes the last move from the history, if there was any, and decrements the current value for the cell described by the coordinates taken from this move.</p>
+<p>The <code translate="no">playing</code> state is also ready for the <code translate="no">stop</code> event sent by the GUI when the players press the <b translate="no">Stop</b> button. In this case, we simply activate the <code translate="no">idle</code> state.</p>
+<p>In addition, we intercept the <code translate="no">solved</code> event sent internally and activate the <code translate="no">solved</code> state in this case.</p>
+<span id="cpp"></span><h4 id="c-part-constructing-the-gui">C++ Part: Constructing the GUI</h4>
+<p>The C++ part of the application consists of a <code translate="no">MainWindow</code> class which constructs the GUI and glues it with the SCXML part. The class is declared in <i>mainwindow.h</i>.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> MainWindow : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> MainWindow(<span class="type"><a href="qscxmlstatemachine.html" translate="no">QScxmlStateMachine</a></span> <span class="operator">*</span>machine<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="qscxmlstatemachine.html" translate="no">QScxmlStateMachine</a></span> <span class="operator">*</span>m_machine <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtwidgets/qtoolbutton.html" translate="no">QToolButton</a></span> <span class="operator">*</span><span class="operator">&gt;</span><span class="operator">&gt;</span> m_buttons;
+     <span class="type"><a href="../qtwidgets/qtoolbutton.html" translate="no">QToolButton</a></span> <span class="operator">*</span>m_startButton <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qtoolbutton.html" translate="no">QToolButton</a></span> <span class="operator">*</span>m_undoButton <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>m_label <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span> <span class="operator">*</span>m_chooser <span class="operator">=</span> nullptr;
+ };
+</pre>
+<p>The <code translate="no">MainWindow</code> class holds the pointer to the <code translate="no">QScxmlStateMachine *m_machine</code>, which is the state machine class automatically generated by Qt out of the <code translate="no">sudoku.scxml</code> file. It also holds the pointers to some GUI elements.</p>
+<pre class="cpp" translate="no">
+ MainWindow<span class="operator">::</span>MainWindow(<span class="type"><a href="qscxmlstatemachine.html" translate="no">QScxmlStateMachine</a></span> <span class="operator">*</span>machine<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent) :
+     <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>(parent)<span class="operator">,</span>
+     m_machine(machine)
+ {
+</pre>
+<p>The constructor of the <code translate="no">MainWindow</code> class instantiates the GUI part of the application and stores the pointer to the passed state machine. It also initializes the GUI part and glues the GUI part to the state machine by connecting their communication interfaces together.</p>
+<pre class="cpp" translate="no">
+             connect(button<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qtoolbutton.html" translate="no">QToolButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">,</span> i<span class="operator">,</span> j<span class="operator">]</span>() {
+                 <span class="type"><a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMap</a></span> data;
+                 data<span class="operator">.</span>insert(u<span class="string">&quot;x&quot;</span>_s<span class="operator">,</span> i);
+                 data<span class="operator">.</span>insert(u<span class="string">&quot;y&quot;</span>_s<span class="operator">,</span> j);
+                 m_machine<span class="operator">-</span><span class="operator">&gt;</span>submitEvent(<span class="string">&quot;tap&quot;</span><span class="operator">,</span> data);
+             });
+</pre>
+<p>First, we create 81 buttons and connect their <code translate="no">clicked</code> signal to a lambda expression that submits the <code translate="no">tap</code> event to the state machine passing the button's coordinates.</p>
+<p>Later, we add some horizontal and vertical lines to the grid in order to group buttons in 3x3 boxes.</p>
+<pre class="cpp" translate="no">
+     connect(m_startButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qabstractbutton.html" translate="no">QAbstractButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>() {
+         <span class="keyword">if</span> (m_machine<span class="operator">-</span><span class="operator">&gt;</span>isActive(<span class="string">&quot;playing&quot;</span>))
+             m_machine<span class="operator">-</span><span class="operator">&gt;</span>submitEvent(<span class="string">&quot;stop&quot;</span>);
+         <span class="keyword">else</span>
+             m_machine<span class="operator">-</span><span class="operator">&gt;</span>submitEvent(<span class="string">&quot;start&quot;</span>);
+     });
+</pre>
+<p>We create the <b translate="no">Start / Stop</b> button and connect its clicked signal to a lambda expression which submits the <code translate="no">stop</code> or <code translate="no">start</code> event depending on whether the machine is in <code translate="no">playing</code> state or not, respectively.</p>
+<p>We create a label informing whether the grid is solved or not, and an <b translate="no">Undo</b> button, which submits the <code translate="no">undo</code> event whenever it is clicked.</p>
+<pre class="cpp" translate="no">
+     connect(m_undoButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qabstractbutton.html" translate="no">QAbstractButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>() {
+         m_machine<span class="operator">-</span><span class="operator">&gt;</span>submitEvent(<span class="string">&quot;undo&quot;</span>);
+     });
+</pre>
+<p>Then we create a combobox that is filled with grid names to be solved. These grids are read from the <code translate="no">:/data</code> directory of the application compiled-in resources.</p>
+<pre class="cpp" translate="no">
+     connect(m_chooser<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>(<span class="type">int</span> index) {
+         <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> sudokuFile <span class="operator">=</span> m_chooser<span class="operator">-</span><span class="operator">&gt;</span>itemData(index)<span class="operator">.</span>toString();
+         <span class="keyword">const</span> <span class="type"><a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMap</a></span> initValues <span class="operator">=</span> readSudoku(sudokuFile);
+         m_machine<span class="operator">-</span><span class="operator">&gt;</span>submitEvent(<span class="string">&quot;setup&quot;</span><span class="operator">,</span> initValues);
+     });
+
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMap</a></span> initValues <span class="operator">=</span> readSudoku(
+                 m_chooser<span class="operator">-</span><span class="operator">&gt;</span>itemData(<span class="number">0</span>)<span class="operator">.</span>toString());
+     m_machine<span class="operator">-</span><span class="operator">&gt;</span>setInitialValues(initValues);
+</pre>
+<p>Whenever the players change the grid in the combobox, we read the grid contents storing it in the variant map under the <code translate="no">initValues</code> key as a list of lists of int variants and we submit the <code translate="no">setup</code> event to the state machine passing the grid's contents. Initially, we read the first available grid from the list and pass it directly to the sudoku state machine as the initial grid.</p>
+<pre class="cpp" translate="no">
+     m_machine<span class="operator">-</span><span class="operator">&gt;</span>connectToState(<span class="string">&quot;playing&quot;</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span> (<span class="type">bool</span> playing) {
+         ...
+     });
+
+     m_machine<span class="operator">-</span><span class="operator">&gt;</span>connectToState(<span class="string">&quot;solved&quot;</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>(<span class="type">bool</span> solved) {
+         <span class="keyword">if</span> (solved)
+             m_label<span class="operator">-</span><span class="operator">&gt;</span>setText(tr(<span class="string">&quot;SOLVED !!!&quot;</span>));
+         <span class="keyword">else</span>
+             m_label<span class="operator">-</span><span class="operator">&gt;</span>setText(tr(<span class="string">&quot;unsolved&quot;</span>));
+     });
+
+     m_machine<span class="operator">-</span><span class="operator">&gt;</span>connectToEvent(<span class="string">&quot;updateGUI&quot;</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type"><a href="qscxmlevent.html" translate="no">QScxmlEvent</a></span> <span class="operator">&amp;</span>event) {
+         ...
+     });
+</pre>
+<p>Later, we connect to the signals that are being sent whenever the machine enters or leaves the <code translate="no">playing</code> or <code translate="no">solved</code> states, and we update some GUI parts accordingly. We also connect to the state machine's <code translate="no">updateGUI</code> event and update all the buttons' values according to the passed cells' states.</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &quot;mainwindow.h&quot;</span>
+ <span class="preprocessor">#include &quot;sudoku.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QtWidgets/qapplication.h&gt;</span>
+
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
+ {
+     <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span> app(argc<span class="operator">,</span> argv);
+
+     Sudoku machine;
+     MainWindow mainWindow(<span class="operator">&amp;</span>machine);
+
+     machine<span class="operator">.</span>start();
+     mainWindow<span class="operator">.</span>show();
+     <span class="keyword">return</span> app<span class="operator">.</span>exec();
+ }
+</pre>
+<p>In the <code translate="no">main()</code> function in the <code translate="no">main.cpp</code> file, we instantiate the <code translate="no">app</code> application object, <code translate="no">Sudoku</code> state machine, and <code translate="no">MainWindow</code> GUI class. We start the state machine, show the main window, and execute the application.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtscxml.git/tree/examples/scxml/sudoku?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@sudoku -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

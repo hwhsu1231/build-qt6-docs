@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- pdfviewer.qdoc -->
+  <meta name="description" content="A widget-based PDF viewer that allows scrolling through the pages.">
+  <title>PDF Viewer Widget Example | Qt PDF 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtpdf-index.html" translate="no">Qt PDF</a></li>
+<li><a href="qtpdf-examples.html" translate="no">Qt PDF Examples</a></li>
+<li>PDF Viewer Widget Example</li>
+<li id="buildversion"><a href="qtpdf-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#creating-the-main-window">Creating the Main Window</a></li>
+<li class="level1"><a href="#files-and-attributions">Files and Attributions</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">PDF Viewer Widget Example</h1>
+<!-- $$$pdfviewer-brief -->
+<p>A widget-based PDF viewer that allows scrolling through the pages.</p>
+<!-- @@@pdfviewer -->
+<!-- $$$pdfviewer-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/pdfviewer.png" alt="" /></p><p><i>PDF Viewer</i> demonstrates how to use the <a href="qpdfview.html" translate="no">QPdfView</a> class to render PDF documents and the <a href="qpdfpagenavigator.html" translate="no">QPdfPageNavigator</a> class to navigate them.</p>
+<p>Qt Creator and the integrated Qt Designer were used to create the example UI and to connect it to the code. This affects the code, which might be somewhat different to what you would typically write by hand. For more information about using Qt Designer, see <a href="../qtdesigner/qtdesigner-manual.html" translate="no">Qt Designer Manual</a> and <a href="https://doc.qt.io/qtcreator/creator-writing-program.html" translate="no">Qt Creator: Creating a Qt Widget Based Application</a>.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="creating-the-main-window">Creating the Main Window</h4>
+<p>The MainWindow class inherits the <a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a> class:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> MainWindow : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> MainWindow(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+     <span class="operator">~</span>MainWindow();
+</pre>
+<p>The class declares public and private slots that match the actions of the selectors:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> open(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> <span class="operator">&amp;</span>docLocation);
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> bookmarkSelected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qmodelindex.html" translate="no">QModelIndex</a></span> <span class="operator">&amp;</span>index);
+     <span class="type">void</span> pageSelected(<span class="type">int</span> page);
+     <span class="type">void</span> searchResultSelected(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qmodelindex.html" translate="no">QModelIndex</a></span> <span class="operator">&amp;</span>current<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qmodelindex.html" translate="no">QModelIndex</a></span> <span class="operator">&amp;</span>previous);
+
+     <span class="comment">// action handlers</span>
+     <span class="type">void</span> on_actionOpen_triggered();
+     <span class="type">void</span> on_actionQuit_triggered();
+     <span class="type">void</span> on_actionAbout_triggered();
+     <span class="type">void</span> on_actionAbout_Qt_triggered();
+     <span class="type">void</span> on_actionZoom_In_triggered();
+     <span class="type">void</span> on_actionZoom_Out_triggered();
+     <span class="type">void</span> on_actionPrevious_Page_triggered();
+     <span class="type">void</span> on_actionNext_Page_triggered();
+     <span class="type">void</span> on_thumbnailsView_activated(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qmodelindex.html" translate="no">QModelIndex</a></span> <span class="operator">&amp;</span>index);
+     <span class="type">void</span> on_actionContinuous_triggered();
+     <span class="type">void</span> on_actionBack_triggered();
+     <span class="type">void</span> on_actionForward_triggered();
+</pre>
+<p>The actual layout of the main window is specified in a <code translate="no">.ui</code> file. The widgets and actions are available at runtime in the <code translate="no">ui</code> member variable.</p>
+<pre class="cpp" translate="no">
+     <span class="type">void</span> on_actionFindNext_triggered();
+     <span class="type">void</span> on_actionFindPrevious_triggered();
+
+ <span class="keyword">private</span>:
+     Ui<span class="operator">::</span>MainWindow <span class="operator">*</span>ui;
+</pre>
+<p>The <code translate="no">m_zoomSelector</code> variable holds the zoom selector and the <code translate="no">m_pageSelector</code> holds the page selector. The <code translate="no">m_document</code> variable is an instance of the <a href="qpdfdocument.html" translate="no">QPdfDocument</a> class that contains the PDF document.</p>
+<pre class="cpp" translate="no">
+     ZoomSelector <span class="operator">*</span>m_zoomSelector;
+     <span class="type"><a href="qpdfpageselector.html" translate="no">QPdfPageSelector</a></span> <span class="operator">*</span>m_pageSelector;
+     <span class="type"><a href="qpdfsearchmodel.html" translate="no">QPdfSearchModel</a></span> <span class="operator">*</span>m_searchModel;
+     <span class="type"><a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a></span> <span class="operator">*</span>m_searchField;
+     <span class="type"><a href="../qtwidgets/qfiledialog.html" translate="no">QFileDialog</a></span> <span class="operator">*</span>m_fileDialog <span class="operator">=</span> nullptr;
+
+     <span class="type"><a href="qpdfdocument.html" translate="no">QPdfDocument</a></span> <span class="operator">*</span>m_document;
+ };
+</pre>
+<p>The actual setup of the different objects is done in the MainWindow constructor:</p>
+<pre class="cpp" translate="no">
+ MainWindow<span class="operator">::</span>MainWindow(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent)
+     : <span class="type"><a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a></span>(parent)
+     <span class="operator">,</span> ui(<span class="keyword">new</span> Ui<span class="operator">::</span>MainWindow)
+     <span class="operator">,</span> m_zoomSelector(<span class="keyword">new</span> ZoomSelector(<span class="keyword">this</span>))
+     <span class="operator">,</span> m_pageSelector(<span class="keyword">new</span> <span class="type"><a href="qpdfpageselector.html" translate="no">QPdfPageSelector</a></span>(<span class="keyword">this</span>))
+     <span class="operator">,</span> m_searchModel(<span class="keyword">new</span> <span class="type"><a href="qpdfsearchmodel.html" translate="no">QPdfSearchModel</a></span>(<span class="keyword">this</span>))
+     <span class="operator">,</span> m_searchField(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a></span>(<span class="keyword">this</span>))
+     <span class="operator">,</span> m_document(<span class="keyword">new</span> <span class="type"><a href="qpdfdocument.html" translate="no">QPdfDocument</a></span>(<span class="keyword">this</span>))
+ {
+</pre>
+<p>The constructor first calls <code translate="no">setupUi()</code> to construct most of the main window according to the UI file. The zoom and page selectors need to be added to the toolbar via <a href="../qtwidgets/qtoolbar.html#insertWidget" translate="no">QToolBar::insertWidget</a>(), because that cannot be done in a UI file:</p>
+<pre class="cpp" translate="no">
+     ui<span class="operator">-</span><span class="operator">&gt;</span>setupUi(<span class="keyword">this</span>);
+
+     m_zoomSelector<span class="operator">-</span><span class="operator">&gt;</span>setMaximumWidth(<span class="number">150</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>mainToolBar<span class="operator">-</span><span class="operator">&gt;</span>insertWidget(ui<span class="operator">-</span><span class="operator">&gt;</span>actionZoom_In<span class="operator">,</span> m_zoomSelector);
+
+     ui<span class="operator">-</span><span class="operator">&gt;</span>mainToolBar<span class="operator">-</span><span class="operator">&gt;</span>insertWidget(ui<span class="operator">-</span><span class="operator">&gt;</span>actionForward<span class="operator">,</span> m_pageSelector);
+</pre>
+<p>We connect relevant signals to the page selector spinbox and the browser-style back and forward buttons:</p>
+<pre class="cpp" translate="no">
+     connect(m_pageSelector<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qpdfpageselector.html" translate="no">QPdfPageSelector</a></span><span class="operator">::</span>currentPageChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>MainWindow<span class="operator">::</span>pageSelected);
+     m_pageSelector<span class="operator">-</span><span class="operator">&gt;</span>setDocument(m_document);
+     <span class="keyword">auto</span> nav <span class="operator">=</span> ui<span class="operator">-</span><span class="operator">&gt;</span>pdfView<span class="operator">-</span><span class="operator">&gt;</span>pageNavigator();
+     connect(nav<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qpdfpagenavigator.html" translate="no">QPdfPageNavigator</a></span><span class="operator">::</span>currentPageChanged<span class="operator">,</span> m_pageSelector<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qpdfpageselector.html" translate="no">QPdfPageSelector</a></span><span class="operator">::</span>setCurrentPage);
+     connect(nav<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qpdfpagenavigator.html" translate="no">QPdfPageNavigator</a></span><span class="operator">::</span>backAvailableChanged<span class="operator">,</span> ui<span class="operator">-</span><span class="operator">&gt;</span>actionBack<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span><span class="operator">::</span>setEnabled);
+     connect(nav<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qpdfpagenavigator.html" translate="no">QPdfPageNavigator</a></span><span class="operator">::</span>forwardAvailableChanged<span class="operator">,</span> ui<span class="operator">-</span><span class="operator">&gt;</span>actionForward<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span><span class="operator">::</span>setEnabled);
+</pre>
+<p>We connect the <code translate="no">zoomModeChanged</code> and <code translate="no">zoomFactor</code> changed signals of the PDF view to the functions that reset the zoom selector:</p>
+<pre class="cpp" translate="no">
+     connect(m_zoomSelector<span class="operator">,</span> <span class="operator">&amp;</span>ZoomSelector<span class="operator">::</span>zoomModeChanged<span class="operator">,</span> ui<span class="operator">-</span><span class="operator">&gt;</span>pdfView<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qpdfview.html" translate="no">QPdfView</a></span><span class="operator">::</span>setZoomMode);
+     connect(m_zoomSelector<span class="operator">,</span> <span class="operator">&amp;</span>ZoomSelector<span class="operator">::</span>zoomFactorChanged<span class="operator">,</span> ui<span class="operator">-</span><span class="operator">&gt;</span>pdfView<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qpdfview.html" translate="no">QPdfView</a></span><span class="operator">::</span>setZoomFactor);
+     m_zoomSelector<span class="operator">-</span><span class="operator">&gt;</span>reset();
+</pre>
+<p>We then load the PDF document to the viewer:</p>
+<pre class="cpp" translate="no">
+     ...
+     ui<span class="operator">-</span><span class="operator">&gt;</span>pdfView<span class="operator">-</span><span class="operator">&gt;</span>setSearchModel(m_searchModel);
+</pre>
+<p>Finally, we connect the <code translate="no">zoomFactorChanged</code> signal to the function that sets the value of the zoom selector:</p>
+<pre class="cpp" translate="no">
+     ui<span class="operator">-</span><span class="operator">&gt;</span>searchToolBar<span class="operator">-</span><span class="operator">&gt;</span>insertWidget(ui<span class="operator">-</span><span class="operator">&gt;</span>actionFindPrevious<span class="operator">,</span> m_searchField);
+     connect(<span class="keyword">new</span> <span class="type"><a href="../qtgui/qshortcut.html" translate="no">QShortcut</a></span>(<span class="type"><a href="../qtgui/qkeysequence.html" translate="no">QKeySequence</a></span><span class="operator">::</span>Find<span class="operator">,</span> <span class="keyword">this</span>)<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qshortcut.html" translate="no">QShortcut</a></span><span class="operator">::</span>activated<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>() {
+         m_searchField<span class="operator">-</span><span class="operator">&gt;</span>setFocus(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>ShortcutFocusReason);
+     });
+</pre>
+<h4 id="files-and-attributions">Files and Attributions</h4>
+<p><a href="https://code.qt.io/cgit/qt/qtwebengine.git/tree/examples/pdfwidgets/pdfviewer?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@pdfviewer -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

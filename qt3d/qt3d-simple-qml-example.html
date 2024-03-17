@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- simple-qml.qdoc -->
+  <meta name="description" content="A QML application that demonstrates how to render a scene in Qt 3D.">
+  <title>Qt 3D: Simple QML Example | Qt 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qt3d-index.html" translate="no">Qt 3D</a></li>
+<li>Qt 3D: Simple QML Example</li>
+<li id="buildversion"><a href="qt3d-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#setting-up-the-scene">Setting Up the Scene</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt 3D: Simple QML Example</h1>
+<!-- $$$simple-qml-brief -->
+<p>A QML application that demonstrates how to render a scene in Qt 3D.</p>
+<!-- @@@simple-qml -->
+<!-- $$$simple-qml-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/simple-qml.png" alt="" /></p><p><i>Simple</i> demonstrates how to render a scene in Qt 3D.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="setting-up-the-scene">Setting Up the Scene</h4>
+<p>We set up the entire scene in the <i>main.qml</i> file.</p>
+<p>To be able to use the types in the Q3D and Q3D Render modules, we must import the modules:</p>
+<pre class="qml" translate="no">
+ import Qt3D.Core 2.0
+ import Qt3D.Render 2.0
+</pre>
+<p>The first entities we create are a <a href="qml-qt3d-render-camera.html" translate="no">Camera</a>, which represents the camera used for the final rendering, and a camera controller, which allows us to control this camera using the keyboard or the mouse:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qt3d-render-camera.html" translate="no">Camera</a></span> {
+     <span class="name">id</span>: <span class="name">camera</span>
+     <span class="name">projectionType</span>: <span class="name">CameraLens</span>.<span class="name">PerspectiveProjection</span>
+     <span class="name">fieldOfView</span>: <span class="number">45</span>
+     <span class="name">aspectRatio</span>: <span class="number">16</span><span class="operator">/</span><span class="number">9</span>
+     <span class="name">nearPlane</span> : <span class="number">0.1</span>
+     <span class="name">farPlane</span> : <span class="number">1000.0</span>
+     <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>( <span class="number">0.0</span>, <span class="number">0.0</span>, -<span class="number">40.0</span> )
+     <span class="name">upVector</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>( <span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span> )
+     <span class="name">viewCenter</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>( <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span> )
+ }
+</pre>
+<p>A <a href="qml-qt3d-render-rendersettings.html" translate="no">RenderSettings</a> entity specifies a <a href="qml-qt3d-extras-forwardrenderer.html" translate="no">ForwardRenderer</a> as the active framegraph:</p>
+<pre class="qml" translate="no">
+ <span class="name">components</span>: [
+     <span class="type"><a href="qml-qt3d-render-rendersettings.html" translate="no">RenderSettings</a></span> {
+         <span class="name">activeFrameGraph</span>: <span class="name">ForwardRenderer</span> {
+             <span class="name">clearColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1</span>, <span class="number">1</span>)
+             <span class="name">camera</span>: <span class="name">camera</span>
+             <span class="name">showDebugOverlay</span>: <span class="number">true</span>
+         }
+     },
+     <span class="comment">// Event Source will be set by the Qt3DQuickWindow</span>
+     <span class="type"><a href="qml-qt3d-input-inputsettings.html" translate="no">InputSettings</a></span> { }
+ ]
+</pre>
+<p>The event source is set by the Qt3DQuickWindow:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qt3d-input-inputsettings.html" translate="no">InputSettings</a></span> { }
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qt3d.git/tree/examples/qt3d/simple-qml?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@simple-qml -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

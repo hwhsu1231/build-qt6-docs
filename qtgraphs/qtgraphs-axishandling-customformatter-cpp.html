@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- axishandling.qdoc -->
+  <meta name="description" content="Implementing axis dragging with a custom input handler in QML, and creating a custom axis formatter.">
+  <title>Axis Handling | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Axis Handling</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Axis Handling</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;customformatter.h&quot;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qvalue3daxis.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtQml/qqmlextensionplugin.h&gt;</span>
+
+ <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> oneDayMs <span class="operator">=</span> <span class="number">60.0</span> <span class="operator">*</span> <span class="number">60.0</span> <span class="operator">*</span> <span class="number">24.0</span> <span class="operator">*</span> <span class="number">1000.0</span>;
+
+ CustomFormatter<span class="operator">::</span>CustomFormatter(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent) :
+     QValue3DAxisFormatter(parent)
+ {
+     <a href="../qtcore/qmetatype.html#qRegisterMetaType-3" translate="no">qRegisterMetaType</a><span class="operator">&lt;</span>QValue3DAxisFormatter <span class="operator">*</span><span class="operator">&gt;</span>();
+ }
+
+ CustomFormatter<span class="operator">::</span><span class="operator">~</span>CustomFormatter()
+ {
+ }
+
+ QValue3DAxisFormatter <span class="operator">*</span>CustomFormatter<span class="operator">::</span>createNewInstance() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> <span class="keyword">new</span> CustomFormatter();
+ }
+
+ <span class="type">void</span> CustomFormatter<span class="operator">::</span>populateCopy(QValue3DAxisFormatter <span class="operator">&amp;</span>copy)
+ {
+     QValue3DAxisFormatter<span class="operator">::</span>populateCopy(copy);
+
+     CustomFormatter <span class="operator">*</span>customFormatter <span class="operator">=</span> <span class="keyword">static_cast</span><span class="operator">&lt;</span>CustomFormatter <span class="operator">*</span><span class="operator">&gt;</span>(<span class="operator">&amp;</span>copy);
+     customFormatter<span class="operator">-</span><span class="operator">&gt;</span>m_originDate <span class="operator">=</span> m_originDate;
+     customFormatter<span class="operator">-</span><span class="operator">&gt;</span>m_selectionFormat <span class="operator">=</span> m_selectionFormat;
+ }
+
+ <span class="type">void</span> CustomFormatter<span class="operator">::</span>recalculate()
+ {
+     <span class="comment">// We want our axis to always have gridlines at date breaks</span>
+
+     <span class="comment">// Convert range into QDateTimes</span>
+     <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> minTime <span class="operator">=</span> valueToDateTime(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(axis()<span class="operator">-</span><span class="operator">&gt;</span>min()));
+     <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> maxTime <span class="operator">=</span> valueToDateTime(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(axis()<span class="operator">-</span><span class="operator">&gt;</span>max()));
+
+     <span class="comment">// Find out the grid counts</span>
+     <span class="type"><a href="../qtcore/qtime.html" translate="no">QTime</a></span> midnight(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+     <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> minFullDate(minTime<span class="operator">.</span>date()<span class="operator">,</span> midnight);
+     <span class="type">int</span> gridCount <span class="operator">=</span> <span class="number">0</span>;
+     <span class="keyword">if</span> (minFullDate <span class="operator">!</span><span class="operator">=</span> minTime)
+         minFullDate <span class="operator">=</span> minFullDate<span class="operator">.</span>addDays(<span class="number">1</span>);
+     <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> maxFullDate(maxTime<span class="operator">.</span>date()<span class="operator">,</span> midnight);
+
+     gridCount <span class="operator">+</span><span class="operator">=</span> minFullDate<span class="operator">.</span>daysTo(maxFullDate) <span class="operator">+</span> <span class="number">1</span>;
+     <span class="type">int</span> subGridCount <span class="operator">=</span> axis()<span class="operator">-</span><span class="operator">&gt;</span>subSegmentCount() <span class="operator">-</span> <span class="number">1</span>;
+
+     <span class="comment">// Reserve space for position arrays and label strings</span>
+     gridPositions()<span class="operator">.</span>resize(gridCount);
+     subGridPositions()<span class="operator">.</span>resize((gridCount <span class="operator">+</span> <span class="number">1</span>) <span class="operator">*</span> subGridCount);
+     labelPositions()<span class="operator">.</span>resize(gridCount);
+     labelStrings()<span class="operator">.</span>reserve(gridCount);
+
+     <span class="comment">// Calculate positions and format labels</span>
+     <span class="type"><a href="../qtcore/qttypes.html#qint64-typedef" translate="no">qint64</a></span> startMs <span class="operator">=</span> minTime<span class="operator">.</span>toMSecsSinceEpoch();
+     <span class="type"><a href="../qtcore/qttypes.html#qint64-typedef" translate="no">qint64</a></span> endMs <span class="operator">=</span> maxTime<span class="operator">.</span>toMSecsSinceEpoch();
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> dateNormalizer <span class="operator">=</span> endMs <span class="operator">-</span> startMs;
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> firstLineOffset <span class="operator">=</span> (minFullDate<span class="operator">.</span>toMSecsSinceEpoch() <span class="operator">-</span> startMs) <span class="operator">/</span> dateNormalizer;
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> segmentStep <span class="operator">=</span> oneDayMs <span class="operator">/</span> dateNormalizer;
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> subSegmentStep <span class="operator">=</span> <span class="number">0</span>;
+     <span class="keyword">if</span> (subGridCount <span class="operator">&gt;</span> <span class="number">0</span>)
+         subSegmentStep <span class="operator">=</span> segmentStep <span class="operator">/</span> <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(subGridCount <span class="operator">+</span> <span class="number">1</span>);
+
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> gridCount; i<span class="operator">+</span><span class="operator">+</span>) {
+         <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> gridValue <span class="operator">=</span> firstLineOffset <span class="operator">+</span> (segmentStep <span class="operator">*</span> <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(i));
+         gridPositions()<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">=</span> <span class="type">float</span>(gridValue);
+         labelPositions()<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">=</span> <span class="type">float</span>(gridValue);
+         labelStrings() <span class="operator">&lt;</span><span class="operator">&lt;</span> minFullDate<span class="operator">.</span>addDays(i)<span class="operator">.</span>toString(axis()<span class="operator">-</span><span class="operator">&gt;</span>labelFormat());
+     }
+
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span><span class="operator">=</span> gridCount; i<span class="operator">+</span><span class="operator">+</span>) {
+         <span class="keyword">if</span> (subGridPositions()<span class="operator">.</span>size()) {
+             <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="number">0</span>; j <span class="operator">&lt;</span> subGridCount; j<span class="operator">+</span><span class="operator">+</span>) {
+                 <span class="type">float</span> position;
+                 <span class="keyword">if</span> (i)
+                     position <span class="operator">=</span>  gridPositions()<span class="operator">.</span>at(i <span class="operator">-</span> <span class="number">1</span>) <span class="operator">+</span> subSegmentStep <span class="operator">*</span> (j <span class="operator">+</span> <span class="number">1</span>);
+                 <span class="keyword">else</span>
+                     position <span class="operator">=</span>  gridPositions()<span class="operator">.</span>at(<span class="number">0</span>) <span class="operator">-</span> segmentStep <span class="operator">+</span> subSegmentStep <span class="operator">*</span> (j <span class="operator">+</span> <span class="number">1</span>);
+                 <span class="keyword">if</span> (position <span class="operator">&gt;</span> <span class="number">1.0f</span> <span class="operator">|</span><span class="operator">|</span> position <span class="operator">&lt;</span> <span class="number">0.0f</span>)
+                     position <span class="operator">=</span> gridPositions()<span class="operator">.</span>at(<span class="number">0</span>);
+                 subGridPositions()<span class="operator">[</span>i <span class="operator">*</span> subGridCount <span class="operator">+</span> j<span class="operator">]</span> <span class="operator">=</span> position;
+             }
+         }
+     }
+ }
+
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> CustomFormatter<span class="operator">::</span>stringForValue(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> value<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>format)
+ {
+     Q_UNUSED(format);
+
+     <span class="keyword">return</span> valueToDateTime(value)<span class="operator">.</span>toString(m_selectionFormat);
+ }
+
+ <span class="type"><a href="../qtcore/qdate.html" translate="no">QDate</a></span> CustomFormatter<span class="operator">::</span>originDate() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_originDate;
+ }
+
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> CustomFormatter<span class="operator">::</span>selectionFormat() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_selectionFormat;
+ }
+
+ <span class="type">void</span> CustomFormatter<span class="operator">::</span>setOriginDate(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qdate.html" translate="no">QDate</a></span> <span class="operator">&amp;</span>date)
+ {
+     <span class="keyword">if</span> (m_originDate <span class="operator">!</span><span class="operator">=</span> date) {
+         m_originDate <span class="operator">=</span> date;
+         markDirty(<span class="keyword">true</span>);
+         <span class="keyword">emit</span> originDateChanged(date);
+     }
+ }
+
+ <span class="type">void</span> CustomFormatter<span class="operator">::</span>setSelectionFormat(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>format)
+ {
+     <span class="keyword">if</span> (m_selectionFormat <span class="operator">!</span><span class="operator">=</span> format) {
+         m_selectionFormat <span class="operator">=</span> format;
+         markDirty(<span class="keyword">true</span>); <span class="comment">// Necessary to regenerate already visible selection label</span>
+         <span class="keyword">emit</span> selectionFormatChanged(format);
+     }
+ }
+
+ <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> CustomFormatter<span class="operator">::</span>valueToDateTime(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> value) <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_originDate<span class="operator">.</span>startOfDay()<span class="operator">.</span>addMSecs(<span class="type"><a href="../qtcore/qttypes.html#qint64-typedef" translate="no">qint64</a></span>(oneDayMs <span class="operator">*</span> value));
+ }
+</pre>

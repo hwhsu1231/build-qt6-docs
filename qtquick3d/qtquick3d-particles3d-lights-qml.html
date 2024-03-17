@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-particles3d.qdoc -->
+  <meta name="description" content="Demonstrates how to use the Qt Quick 3D Particles3D module.">
+  <title>Qt Quick 3D - Particles 3D Testbed Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Particles 3D Testbed Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Particles 3D Testbed Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2021 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Particles3D
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+     <span class="type"><a href="../qtqml/qml-qtqml-timer.html" translate="no">Timer</a></span> {
+         <span class="name">id</span>: <span class="name">lightsUpdateTimer</span>
+         <span class="name">interval</span>: <span class="number">0</span>
+         <span class="name">triggeredOnStart</span>: <span class="number">true</span>
+         <span class="name">onTriggered</span>: <span class="name">root</span>.<span class="name">updateLightsArray</span>();
+     }
+
+     <span class="comment">// Update the lights array of the particles</span>
+     <span class="keyword">function </span><span class="name">updateLightsArray</span>() {
+         var newLights = [];
+         <span class="keyword">if</span> (<span class="name">checkBoxDirectionalLightUse</span>.<span class="name">checked</span>)
+             <span class="name">newLights</span>.<span class="name">push</span>(<span class="name">lightDirectional</span>);
+         <span class="keyword">if</span> (<span class="name">checkBoxPointLightUse</span>.<span class="name">checked</span>)
+             <span class="name">newLights</span>.<span class="name">push</span>(<span class="name">lightPoint</span>);
+         <span class="keyword">if</span> (<span class="name">checkBoxSpotLightUse</span>.<span class="name">checked</span>)
+             <span class="name">newLights</span>.<span class="name">push</span>(<span class="name">lightSpot</span>);
+         <span class="comment">// Particles to use the enabled lights</span>
+         <span class="name">spriteParticle</span>.<span class="name">lights</span> <span class="operator">=</span> <span class="name">newLights</span>; <span class="comment">// qmllint disable read-only-property</span>
+     }
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">clearColor</span>: <span class="string">&quot;#000000&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+             <span class="name">antialiasingMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">MSAA</span>
+             <span class="name">antialiasingQuality</span>: <span class="name">SceneEnvironment</span>.<span class="name">High</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">100</span>, <span class="number">700</span>)
+             <span class="name">eulerRotation</span>.x: -<span class="number">10</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+             <span class="name">id</span>: <span class="name">lightDirectional</span>
+             <span class="name">color</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">1.0</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">1.0</span>)
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">200</span>, <span class="number">0</span>)
+             <span class="name">rotation</span>: <span class="name">Quaternion</span>.<span class="name">fromEulerAngles</span>(-<span class="number">70</span>, <span class="number">0</span>, <span class="number">0</span>)
+             <span class="name">visible</span>: <span class="name">checkBoxDirectionalLight</span>.<span class="name">checked</span>
+             <span class="name">brightness</span>: <span class="name">sliderDirectionalLight</span>.<span class="name">sliderValue</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-pointlight.html" translate="no">PointLight</a></span> {
+             <span class="name">id</span>: <span class="name">lightPoint</span>
+             <span class="name">color</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.1</span>, <span class="number">1.0</span>, <span class="number">0.1</span>, <span class="number">1.0</span>)
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">300</span>, <span class="number">0</span>)
+             <span class="name">visible</span>: <span class="name">checkBoxPointLight</span>.<span class="name">checked</span>
+             <span class="name">brightness</span>: <span class="name">sliderPointLight</span>.<span class="name">sliderValue</span>
+             <span class="name">constantFade</span>: <span class="name">sliderPointLightConstantFade</span>.<span class="name">sliderValue</span>
+             <span class="name">linearFade</span>: <span class="name">sliderPointLightLinearFade</span>.<span class="name">sliderValue</span>
+             <span class="name">quadraticFade</span>: <span class="name">sliderPointLightQuadraticFade</span>.<span class="name">sliderValue</span>
+             SequentialAnimation on <span class="name">x</span> {
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">to</span>: <span class="number">400</span>
+                     <span class="name">duration</span>: <span class="number">2000</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">to</span>: -<span class="number">400</span>
+                     <span class="name">duration</span>: <span class="number">2000</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-spotlight.html" translate="no">SpotLight</a></span> {
+             <span class="name">id</span>: <span class="name">lightSpot</span>
+             <span class="name">color</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>)
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">250</span>, <span class="number">0</span>)
+             <span class="name">eulerRotation</span>.x: -<span class="number">45</span>
+             <span class="name">visible</span>: <span class="name">checkBoxSpotLight</span>.<span class="name">checked</span>
+             <span class="name">brightness</span>: <span class="name">sliderSpotLight</span>.<span class="name">sliderValue</span>
+             <span class="name">coneAngle</span>: <span class="number">50</span>
+             <span class="name">innerConeAngle</span>: <span class="number">20</span>
+             <span class="name">constantFade</span>: <span class="name">sliderSpotLightConstantFade</span>.<span class="name">sliderValue</span>
+             <span class="name">linearFade</span>: <span class="name">sliderSpotLightLinearFade</span>.<span class="name">sliderValue</span>
+             <span class="name">quadraticFade</span>: <span class="name">sliderSpotLightQuadraticFade</span>.<span class="name">sliderValue</span>
+             PropertyAnimation on <span class="name">eulerRotation</span>.y {
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">duration</span>: <span class="number">10000</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+             <span class="name">y</span>: -<span class="number">200</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">15</span>, <span class="number">15</span>, <span class="number">15</span>)
+             <span class="name">eulerRotation</span>.x: -<span class="number">90</span>
+             <span class="name">materials</span>: [
+                 <span class="type"><a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a></span> {
+                     <span class="name">diffuseColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.4</span>, <span class="number">0.4</span>, <span class="number">0.4</span>, <span class="number">1.0</span>)
+                 }
+             ]
+         }
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+             <span class="name">z</span>: -<span class="number">400</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">15</span>, <span class="number">15</span>, <span class="number">15</span>)
+             <span class="name">materials</span>: [
+                 <span class="type"><a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a></span> {
+                     <span class="name">diffuseColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.4</span>, <span class="number">0.4</span>, <span class="number">0.4</span>, <span class="number">1.0</span>)
+                 }
+             ]
+         }
+
+         <span class="type"><a href="qml-qtquick3d-particles3d-particlesystem3d.html" translate="no">ParticleSystem3D</a></span> {
+             <span class="name">id</span>: <span class="name">psystem</span>
+
+             <span class="name">startTime</span>: <span class="number">5000</span>
+
+             <span class="type"><a href="qml-qtquick3d-particles3d-spriteparticle3d.html" translate="no">SpriteParticle3D</a></span> {
+                 <span class="name">id</span>: <span class="name">spriteParticle</span>
+                 <span class="name">sprite</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/sphere.png&quot;</span>
+                 }
+                 <span class="name">maxAmount</span>: <span class="number">10000</span>
+                 <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+                 <span class="name">colorVariation</span>: <span class="name">Qt</span>.<span class="name">vector4d</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">0.5</span>);
+                 <span class="name">fadeInDuration</span>: <span class="number">1000</span>
+                 <span class="name">fadeOutDuration</span>: <span class="number">1000</span>
+                 <span class="name">billboard</span>: <span class="number">true</span>
+                 <span class="comment">// Disable this to see the unlit particles</span>
+                 <span class="name">blendMode</span>: <span class="name">SpriteParticle3D</span>.<span class="name">Screen</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                 <span class="name">id</span>: <span class="name">emitter</span>
+                 <span class="name">particle</span>: <span class="name">spriteParticle</span>
+                 <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">350</span>, <span class="number">0</span>)
+                 <span class="name">depthBias</span>: -<span class="number">100</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">8.0</span>, <span class="number">0.0</span>, <span class="number">8.0</span>)
+                 <span class="name">shape</span>: <span class="name">ParticleShape3D</span> {
+                     <span class="name">type</span>: <span class="name">ParticleShape3D</span>.<span class="name">Sphere</span>
+                 }
+                 <span class="name">particleScale</span>: <span class="number">2.0</span>
+                 <span class="name">particleScaleVariation</span>: <span class="number">1.0</span>;
+                 <span class="name">velocity</span>: <span class="name">VectorDirection3D</span> {
+                     <span class="name">direction</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, -<span class="number">100</span>, <span class="number">0</span>)
+                     <span class="name">directionVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">20</span>, <span class="number">50</span>, <span class="number">20</span>)
+                 }
+                 <span class="name">emitRate</span>: <span class="number">2000</span>
+                 <span class="name">lifeSpan</span>: <span class="number">5000</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-particles3d-pointrotator3d.html" translate="no">PointRotator3D</a></span> {
+                 <span class="name">pivotPoint</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">direction</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)
+                 <span class="name">magnitude</span>: <span class="number">20</span>
+             }
+         }
+     }
+
+     <span class="type">SettingsView</span> {
+         <span class="type">CustomCheckBox</span> {
+             <span class="name">id</span>: <span class="name">checkBoxDirectionalLight</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Directional Light&quot;</span>)
+             <span class="name">checked</span>: <span class="number">true</span>
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderDirectionalLight</span>
+             <span class="name">sliderValue</span>: <span class="number">0.4</span>
+             <span class="name">fromValue</span>: <span class="number">0.0</span>
+             <span class="name">toValue</span>: <span class="number">1</span>
+         }
+         <span class="type">CustomCheckBox</span> {
+             <span class="name">id</span>: <span class="name">checkBoxDirectionalLightUse</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Use also for particles&quot;</span>)
+             <span class="name">checked</span>: <span class="number">true</span>
+             <span class="name">onCheckedChanged</span>: <span class="name">lightsUpdateTimer</span>.<span class="name">restart</span>();
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> { <span class="name">width</span>: <span class="number">1</span>; <span class="name">height</span>: <span class="number">40</span> }
+         <span class="type">CustomCheckBox</span> {
+             <span class="name">id</span>: <span class="name">checkBoxPointLight</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Point Light&quot;</span>)
+             <span class="name">checked</span>: <span class="number">true</span>
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderPointLight</span>
+             <span class="name">sliderValue</span>: <span class="number">6</span>
+             <span class="name">fromValue</span>: <span class="number">0.0</span>
+             <span class="name">toValue</span>: <span class="number">10</span>
+         }
+         <span class="type">CustomCheckBox</span> {
+             <span class="name">id</span>: <span class="name">checkBoxPointLightUse</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Use also for particles&quot;</span>)
+             <span class="name">checked</span>: <span class="number">true</span>
+             <span class="name">onCheckedChanged</span>: <span class="name">lightsUpdateTimer</span>.<span class="name">restart</span>();
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;constantFade&quot;</span>)
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderPointLightConstantFade</span>
+             <span class="name">sliderValue</span>: <span class="number">1.0</span>
+             <span class="name">fromValue</span>: <span class="number">0.1</span>
+             <span class="name">toValue</span>: <span class="number">20.0</span>
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;linearFade&quot;</span>)
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderPointLightLinearFade</span>
+             <span class="name">sliderValue</span>: <span class="number">0.0</span>
+             <span class="name">fromValue</span>: <span class="number">0.0</span>
+             <span class="name">toValue</span>: <span class="number">20.0</span>
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;quadraticFade&quot;</span>)
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderPointLightQuadraticFade</span>
+             <span class="name">sliderValue</span>: <span class="number">1.0</span>
+             <span class="name">fromValue</span>: <span class="number">0.1</span>
+             <span class="name">toValue</span>: <span class="number">20.0</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> { <span class="name">width</span>: <span class="number">1</span>; <span class="name">height</span>: <span class="number">40</span> }
+         <span class="type">CustomCheckBox</span> {
+             <span class="name">id</span>: <span class="name">checkBoxSpotLight</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Spot Light&quot;</span>)
+             <span class="name">checked</span>: <span class="number">true</span>
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderSpotLight</span>
+             <span class="name">sliderValue</span>: <span class="number">40</span>
+             <span class="name">fromValue</span>: <span class="number">0.0</span>
+             <span class="name">toValue</span>: <span class="number">100</span>
+         }
+         <span class="type">CustomCheckBox</span> {
+             <span class="name">id</span>: <span class="name">checkBoxSpotLightUse</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Use also for particles&quot;</span>)
+             <span class="name">checked</span>: <span class="number">true</span>
+             <span class="name">onCheckedChanged</span>: <span class="name">lightsUpdateTimer</span>.<span class="name">restart</span>();
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;constantFade&quot;</span>)
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderSpotLightConstantFade</span>
+             <span class="name">sliderValue</span>: <span class="number">1.0</span>
+             <span class="name">fromValue</span>: <span class="number">0.1</span>
+             <span class="name">toValue</span>: <span class="number">20.0</span>
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;linearFade&quot;</span>)
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderSpotLightLinearFade</span>
+             <span class="name">sliderValue</span>: <span class="number">0.0</span>
+             <span class="name">fromValue</span>: <span class="number">0.0</span>
+             <span class="name">toValue</span>: <span class="number">20.0</span>
+         }
+         <span class="type">CustomLabel</span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;quadraticFade&quot;</span>)
+         }
+         <span class="type">CustomSlider</span> {
+             <span class="name">id</span>: <span class="name">sliderSpotLightQuadraticFade</span>
+             <span class="name">sliderValue</span>: <span class="number">1.0</span>
+             <span class="name">fromValue</span>: <span class="number">0.1</span>
+             <span class="name">toValue</span>: <span class="number">20.0</span>
+         }
+     }
+
+     <span class="type">LoggingView</span> {
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">particleSystems</span>: [<span class="name">psystem</span>]
+     }
+
+ }
+</pre>

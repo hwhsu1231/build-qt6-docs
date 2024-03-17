@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- linux.qdoc -->
+  <meta name="description" content="How to configure and build Qt on Linux/X11 platforms.">
+  <title>Qt for Linux/X11 - Building from Source | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Qt for Linux/X11 - Building from Source</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#step-1-getting-the-sources">Step 1: Getting the Sources</a></li>
+<li class="level1"><a href="#step-2-install-build-requirements">Step 2: Install Build Requirements</a></li>
+<li class="level2"><a href="#build-tools">Build Tools</a></li>
+<li class="level2"><a href="#compilers-development-packages">Compilers &amp; Development Packages</a></li>
+<li class="level1"><a href="#step-3-build-the-qt-libraries-and-tools">Step 3: Build the Qt Libraries and Tools</a></li>
+<li class="level1"><a href="#step-4-using-qt">Step 4: Using Qt</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt for Linux/X11 - Building from Source</h1>
+<!-- $$$linux-building.html-description -->
+<div class="descr" id="details">
+<p>This page describes configuring and building <a href="linux.html" translate="no">Qt for Linux/X11</a> from sources. Note that it is typically easier to install the pre-built Qt libraries and tools via the <a href="get-and-install-qt.html" translate="no">Qt Online Installer</a>. A lot of Linux distributions also provide Qt packages through their package manager. Build Qt from sources, however, if you want to customize Qt further or are using a distribution for which no binary Qt packages (in the right version) are available.</p>
+<p>Distribution packagers can find further information on how to package Qt in the <a href="packaging-recommendations.html" translate="no">packaging recommendations</a>.</p>
+<h2 id="step-1-getting-the-sources">Step 1: Getting the Sources</h2>
+<p>Qt sources can be installed in the Qt Online Installer. Source packages are also available as <a href="https://code.qt.io" translate="no">Git repositories</a>, as archives in the <a href="https://account.qt.io/" translate="no">Qt Account</a> (commercial users), and on <a href="https://download.qt.io/official_releases/qt/" translate="no">download.qt.io</a> (open-source users).</p>
+<p>If you install the sources through the Qt Online Installer, they will be available in the Qt installation directory, for example <code translate="no">$HOME/Qt/6.6&#x2e;0/Src</code>.</p>
+<p>If you downloaded the single source archive, extract it to a directory of your choice:</p>
+<pre class="cpp plain" translate="no">
+ cd /tmp
+ tar xf ~/Downloads/qt-everywhere-src-6.6&#x2e;0&#x2e;tar.xz
+</pre>
+<h2 id="step-2-install-build-requirements">Step 2: Install Build Requirements</h2>
+<p>Building Qt requires a build environment with tools, compilers, and development packages.</p>
+<h3 id="build-tools">Build Tools</h3>
+<div class="table"><table class="generic" width="80%">
+ <thead><tr class="qt-style"><th >Tool</th><th >Supported Versions</th></tr></thead>
+<tr valign="top" class="odd"><td >CMake</td><td >Version 3.16 and newer (3.21 and newer for <code translate="no">-static</code> builds).</td></tr>
+<tr valign="top" class="even"><td >Ninja</td><td >-</td></tr>
+<tr valign="top" class="odd"><td >Python</td><td >Version 3</td></tr>
+</table></div>
+<div class="admonition note">
+<p><b>Note: </b>configure always uses the <b>Ninja</b> generator and build tool if a <code translate="no">ninja</code> executable is available. Ninja is cross-platform, feature-rich, performant, and recommended on all platforms. The use of other generators might work but is not officially supported.</p>
+</div>
+<h3 id="compilers-development-packages">Compilers &amp; Development Packages</h3>
+<p>The following compilers and configurations are supported in Qt 6.6:</p>
+<div class="table"><table class="generic" width="80%">
+ <thead><tr class="qt-style"><th >Distribution</th><th >Architecture</th><th >Compiler</th><th >Notes</th></tr></thead>
+<tr valign="top" class="odd"><td >Red Hat 8.6</td><td ><code translate="no">x86_64</code></td><td >GCC 10 (toolset)</td><td ></td></tr>
+<tr valign="top" class="even"><td >Red Hat 9.0</td><td ><code translate="no">x86_64</code></td><td >GCC 11</td><td ></td></tr>
+<tr valign="top" class="odd"><td >openSUSE 15.4</td><td ><code translate="no">x86_64</code></td><td >GCC 9</td><td ></td></tr>
+<tr valign="top" class="even"><td >SUSE Linux Enterprise Server 15 SP4</td><td ><code translate="no">x86_64</code></td><td >GCC 10</td><td ></td></tr>
+<tr valign="top" class="odd"><td >Ubuntu 22.04</td><td ><code translate="no">x86_64</code></td><td >GCC as provided by Canonical, GCC 11.x</td><td ></td></tr>
+</table></div>
+<p>Other compilers and configurations might work but are not actively tested.</p>
+<p>Qt also relies on the availability of various libraries and development packages, which are typically installed by the package manager of the respective resolution. See <a href="linux-requirements.html" translate="no">Qt for X11 Requirements</a> for the details.</p>
+<h2 id="step-3-build-the-qt-libraries-and-tools">Step 3: Build the Qt Libraries and Tools</h2>
+<p>To configure your build, create a build directory and run the <code translate="no">./configure</code> script in this directory:</p>
+<pre class="cpp plain" translate="no">
+ mkdir -p ~/dev/qt-build
+ cd ~/dev/qt-build
+ /tmp/qt-everywhere-src-6.6&#x2e;0/configure
+</pre>
+<p>By default, Qt is configured for installation in the <code translate="no">/usr/local/Qt-6.6&#x2e;0</code> directory. This can be changed by using the <code translate="no">-prefix</code> option. See the list of <a href="configure-options.html" translate="no">configure options</a> to tweak further.</p>
+<p>Did <code translate="no">configure</code> run successfully? Then proceed with building the libraries and tools:</p>
+<pre class="cpp plain" translate="no">
+ cmake --build . --parallel
+</pre>
+<p>After building, you need to install the libraries and tools in the appropriate place (unless you enabled a <a href="configure-options.html#developer-builds" translate="no">developer build</a>):</p>
+<pre class="cpp plain" translate="no">
+ cmake --install .
+</pre>
+<p>Note that this might require root access.</p>
+<h2 id="step-4-using-qt">Step 4: Using Qt</h2>
+<p>After Qt is installed, you can start building applications with it.</p>
+<p>If you work from the command line, consider adding the Qt tools to your default <code translate="no">PATH</code>. This is done as follows:</p>
+<p>In <code translate="no">.profile</code> (if your shell is bash, ksh, zsh or sh), add the following lines:</p>
+<pre class="cpp plain" translate="no">
+ PATH=/usr/local/Qt-6.6&#x2e;0/bin:$PATH
+ export PATH
+</pre>
+<p>In <code translate="no">.login</code> (if your shell is csh or tcsh), add the following line:</p>
+<pre class="cpp plain" translate="no">
+ setenv PATH /usr/local/Qt-6.6&#x2e;0/bin:$PATH
+</pre>
+<p>If you plan to use Qt from an IDE, you need to register the Qt version explicitly there. For Qt Creator, see <a href="https://doc.qt.io/qtcreator/creator-project-qmake.html" translate="no">Qt Creator: Adding Qt Versions</a>.</p>
+</div>
+<!-- @@@linux-building.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

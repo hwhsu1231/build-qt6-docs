@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- cmake-manual.qdoc -->
+  <title>Getting started with CMake | Build with CMake 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="cmake-manual.html" translate="no">Build with CMake</a></li>
+<li>Getting started with CMake</li>
+<li id="buildversion"><a href="cmake-manual.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="cmake-manual.html" />
+  <link rel="next" href="cmake-build-on-cmdline.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="cmake-manual.html">Build with CMake</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="cmake-build-on-cmdline.html">Building projects on the command line</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level2"><a href="#building-a-c-console-application">Building a C++ console application</a></li>
+<li class="level2"><a href="#building-a-c-gui-application">Building a C++ GUI application</a></li>
+<li class="level2"><a href="#structuring-projects">Structuring projects</a></li>
+<li class="level2"><a href="#building-libraries">Building libraries</a></li>
+<li class="level2"><a href="#using-libraries">Using libraries</a></li>
+<li class="level2"><a href="#adding-resources">Adding resources</a></li>
+<li class="level2"><a href="#adding-translations">Adding translations</a></li>
+<li class="level2"><a href="#further-reading">Further reading</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Getting started with CMake</h1>
+<!-- $$$cmake-get-started.html-description -->
+<div class="descr" id="details">
+<p><code translate="no">CMake</code> is a group of tools that allow to build, test, and package applications. Just like Qt, it is available on all major development platforms. It is also supported by various IDE's, including <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>.</p>
+<p>In this section we will show the most basic way to use Qt in a CMake project. First, we create a basic console application. Then, we extend the project into a GUI application that uses <a href="../qtwidgets/qtwidgets-index.html" translate="no">Qt Widgets</a>.</p>
+<p>If you want to know how to build an existing CMake project with Qt, see the documentation on <a href="cmake-build-on-cmdline.html" translate="no">how to build projects with CMake on the command line</a>.</p>
+<h3 id="building-a-c-console-application">Building a C++ console application</h3>
+<p>A <code translate="no">CMake</code> project is defined by files written in the CMake language. The main file is called <code translate="no">CMakeLists.txt</code>, and is usually placed in the same directory as the actual program sources.</p>
+<p>Here is a typical <code translate="no">CMakeLists.txt</code> file for a console application written in C++ using Qt:</p>
+<pre class="cpp" translate="no">
+ cmake_minimum_required(VERSION 3.16)
+
+ project(helloworld VERSION 1.0.0 LANGUAGES CXX)
+
+ set(CMAKE_CXX_STANDARD 17)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+ find_package(Qt6 REQUIRED COMPONENTS Core)
+ qt_standard_project_setup()
+
+ qt_add_executable(helloworld
+     main.cpp
+ )
+
+ target_link_libraries(helloworld PRIVATE Qt6::Core)
+</pre>
+<p>Let's go through the content.</p>
+<pre class="cpp" translate="no">
+ cmake_minimum_required(VERSION 3.16)
+</pre>
+<p><code translate="no">cmake_minimum_required()</code> specifies the minimum CMake version that the application requires. Qt itself requires at least CMake version 3.16, except on Apple platforms, or for static builds of Qt - the default in <a href="../qtdoc/ios.html" translate="no">Qt for iOS</a> and <a href="../qtdoc/wasm.html" translate="no">Qt for WebAssembly</a> - where you need CMake 3.21.1 or newer.</p>
+<pre class="cpp" translate="no">
+ project(helloworld VERSION 1.0.0 LANGUAGES CXX)
+</pre>
+<p><code translate="no">project()</code> sets a project name and the default project version. The <code translate="no">LANGUAGES</code> argument tells CMake that the program is written in C++.</p>
+<pre class="cpp" translate="no">
+ set(CMAKE_CXX_STANDARD 17)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+</pre>
+<p>Qt 6 requires a compiler supporting C++ version 17 or newer. Enforcing this by setting the <code translate="no">CMAKE_CXX_STANDARD</code>, <code translate="no">CMAKE_CXX_STANDARD_REQUIRED</code> variables will let CMake print an error if the compiler is too old.</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS Core)
+</pre>
+<p>This tells CMake to look up Qt 6, and import the <code translate="no">Core</code> module. There is no point in continuing if <code translate="no">CMake</code> cannot locate the module, so we do set the <code translate="no">REQUIRED</code> flag to let CMake abort in this case.</p>
+<p>If successful, the module will set some CMake variables documented in <a href="cmake-variable-reference.html#module-variables" translate="no">Module variables</a>. It furthermore imports the <code translate="no">Qt6::Core</code> target that we use below.</p>
+<p>For <code translate="no">find_package</code> to be successful, <code translate="no">CMake</code> must find the Qt installation. There are different ways you can tell <code translate="no">CMake</code> about Qt, but the most common and recommended approach is to set the CMake cache variable <code translate="no">CMAKE_PREFIX_PATH</code> to include the Qt 6 installation prefix. Note that <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a> will handle this transparently for you.</p>
+<pre class="cpp" translate="no">
+ qt_standard_project_setup()
+</pre>
+<p>The <a href="../qtcore/qt-standard-project-setup.html" translate="no">qt_standard_project_setup</a> command sets project-wide defaults for a typical Qt application.</p>
+<p>Among other things, this command sets the <code translate="no">CMAKE_AUTOMOC</code> variable to <code translate="no">ON</code>, which instructs CMake to automatically set up rules so that Qt's <a href="../qtdoc/moc.html" translate="no">Meta-Object Compiler (moc)</a> is called transparently, when required.</p>
+<p>See <a href="../qtcore/qt-standard-project-setup.html" translate="no">qt_standard_project_setup</a>'s reference for details.</p>
+<pre class="cpp" translate="no">
+ qt_add_executable(helloworld
+     main.cpp
+ )
+</pre>
+<p><a href="../qtcore/qt-add-executable.html" translate="no">qt_add_executable()</a> tells CMake that we want to build an executable (so not a library) called <code translate="no">helloworld</code> as a target. It is a wrapper around the built-in <code translate="no">add_executable()</code> command, and provides additional logic to automatically handle things like linking of Qt plugins in static Qt builds, platform-specific customization of library names, and so on.</p>
+<p>The target should be built from the C++ source file <code translate="no">main.cpp</code>.</p>
+<p>Typically, you do not list header files here. This is different from <a href="../qmake/qmake-manual.html" translate="no">qmake</a>, where header files need to be explicitly listed so that they are processed by the <a href="../qtdoc/moc.html" translate="no">Meta-Object Compiler (moc)</a>.</p>
+<p>For creating libraries, see <a href="../qtcore/qt-add-library.html" translate="no">qt_add_library</a>.</p>
+<pre class="cpp" translate="no">
+ target_link_libraries(helloworld PRIVATE Qt6::Core)
+</pre>
+<p>Finally, <code translate="no">target_link_libraries</code> tells CMake that the <code translate="no">helloworld</code> executable makes use of <a href="../qtcore/qtcore-index.html" translate="no">Qt Core</a> by referencing the <code translate="no">Qt6::Core</code> target imported by the <code translate="no">find_package()</code> call above. This will not only add the right arguments to the linker, but also makes sure that the right include directories, compiler definitions are passed to the C++ compiler. The <code translate="no">PRIVATE</code> keyword is not strictly necessary for an executable target, but it is good practice to specify it. If <code translate="no">helloworld</code> was a library rather than an executable, then either <code translate="no">PRIVATE</code> or <code translate="no">PUBLIC</code> should be specified (<code translate="no">PUBLIC</code> if the library mentions anything from <code translate="no">Qt6::Core</code> in its headers, <code translate="no">PRIVATE</code> otherwise).</p>
+<h3 id="building-a-c-gui-application">Building a C++ GUI application</h3>
+<p>In the <a href="cmake-get-started.html#building-a-c-console-application" translate="no">last section</a> we showed the CMakeLists.txt file for a simple console application. We will now create a GUI application that uses the <a href="../qtwidgets/qtwidgets-index.html" translate="no">Qt Widgets</a> module.</p>
+<p>This is the full project file:</p>
+<pre class="cpp" translate="no">
+ cmake_minimum_required(VERSION 3.16)
+
+ project(helloworld VERSION 1.0.0 LANGUAGES CXX)
+
+ set(CMAKE_CXX_STANDARD 17)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+ find_package(Qt6 REQUIRED COMPONENTS Widgets)
+ qt_standard_project_setup()
+
+ qt_add_executable(helloworld
+     mainwindow.ui
+     mainwindow.cpp
+     main.cpp
+ )
+
+ target_link_libraries(helloworld PRIVATE Qt6::Widgets)
+
+ set_target_properties(helloworld PROPERTIES
+     WIN32_EXECUTABLE ON
+     MACOSX_BUNDLE ON
+ )
+</pre>
+<p>Let's walk through the changes we have made.</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS Widgets)
+</pre>
+<p>In the <code translate="no">find_package</code> call, we replace <code translate="no">Core</code> with <code translate="no">Widgets</code>. This will locate the <code translate="no">Qt6Widgets</code> module and provide the <code translate="no">Qt6::Widgets</code> targets we later link against.</p>
+<p>Note that the application will still link against <code translate="no">Qt6::Core</code>, because <code translate="no">Qt6::Widgets</code> depends on it.</p>
+<pre class="cpp" translate="no">
+ qt_standard_project_setup()
+</pre>
+<p>In addition to <code translate="no">CMAKE_AUTOMOC</code>, <a href="../qtcore/qt-standard-project-setup.html" translate="no">qt_standard_project_setup</a> sets the <code translate="no">CMAKE_AUTOUIC</code> variable to <code translate="no">ON</code>. This will automatically create rules to invoke Qt's <a href="../qtdoc/uic.html" translate="no">User Interface Compiler (uic)</a> on <code translate="no">.ui</code> source files.</p>
+<pre class="cpp" translate="no">
+ qt_add_executable(helloworld
+     mainwindow.ui
+     mainwindow.cpp
+     main.cpp
+ )
+</pre>
+<p>We add a <a href="../qtdesigner/qtdesigner-manual.html" translate="no">Qt Designer</a> file (<code translate="no">mainwindow.ui</code>) and its corresponding C++ source file (<code translate="no">mainwindow.cpp</code>) to the application target's sources.</p>
+<pre class="cpp" translate="no">
+ target_link_libraries(helloworld PRIVATE Qt6::Widgets)
+</pre>
+<p>In the <code translate="no">target_link_libraries</code> command, we link against <code translate="no">Qt6::Widgets</code> instead of <code translate="no">Qt6::Core</code>.</p>
+<pre class="cpp" translate="no">
+ set_target_properties(helloworld PROPERTIES
+     WIN32_EXECUTABLE ON
+     MACOSX_BUNDLE ON
+ )
+</pre>
+<p>Finally, we set properties on our application target with the following effects:</p>
+<ul>
+<li>Prevent the creation of a console window on Windows.</li>
+<li>Create an application bundle on macOS.</li>
+</ul>
+<p>See the <a href="https://cmake.org/cmake/help/latest/" translate="no">CMake Documentation</a> for more information about these target properties.</p>
+<h3 id="structuring-projects">Structuring projects</h3>
+<p>Projects that contain more than just one target will benefit from a clear project file structure. We will use CMake's <a href="https://cmake.org/cmake/help/latest/command/add_subdirectory.html" translate="no">subdirectory feature</a>.</p>
+<p>As we plan to extend the project with more targets, we move the source files of the application into a subdirectory and create a new <code translate="no">CMakeLists.txt</code> in there.</p>
+<pre class="cpp plain" translate="no">
+ &lt;project root&gt;
+ ├── CMakeLists.txt
+ └── src
+     └── app
+         ├── CMakeLists.txt
+         ├── main.cpp
+         ├── mainwindow.cpp
+         ├── mainwindow.h
+         └── mainwindow.ui
+</pre>
+<p>The top-level <code translate="no">CMakeLists.txt</code> contains the overall project setup, <code translate="no">find_package</code> and <code translate="no">add_subdirectory</code> calls:</p>
+<pre class="cpp" translate="no">
+ cmake_minimum_required(VERSION <span class="number">3.16</span>)
+
+ project(helloworld VERSION <span class="number">1.0.0</span> LANGUAGES CXX)
+
+ set(CMAKE_CXX_STANDARD <span class="number">17</span>)
+ set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+ find_package(Qt6 REQUIRED COMPONENTS Widgets)
+ qt_standard_project_setup()
+
+ add_subdirectory(src<span class="operator">/</span>app)
+</pre>
+<p>Variables that are set in this file are visible in subdirectory project files.</p>
+<p>The application's project file <code translate="no">src/app/CMakeLists.txt</code> contains the executable target:</p>
+<pre class="cpp" translate="no">
+ qt_add_executable(helloworld
+     mainwindow<span class="operator">.</span>ui
+     mainwindow<span class="operator">.</span>cpp
+     main<span class="operator">.</span>cpp
+ )
+
+ target_link_libraries(helloworld PRIVATE Qt6<span class="operator">::</span>Widgets)
+
+ set_target_properties(helloworld PROPERTIES
+     WIN32_EXECUTABLE ON
+     MACOSX_BUNDLE ON
+ )
+</pre>
+<p>Such a structure will make it easy to add more targets to the project such as libraries or unit tests.</p>
+<div class="admonition note">
+<p><b>Note: </b>Add your project build directory to the list of excluded directories of any anti-virus application that runs on your system.</p>
+</div>
+<h3 id="building-libraries">Building libraries</h3>
+<p>As the project grows, you may want to turn parts of your application code into a library that is used by the application and possibly unit tests. This section shows how to create such a library.</p>
+<p>Our application currently contains business logic directly in <code translate="no">main.cpp</code>. We extract the code into a new static library called <code translate="no">businesslogic</code> in the subdirectory <code translate="no">&quot;src/businesslogic&quot;</code> as explained in the <a href="cmake-get-started.html#structuring-projects" translate="no">previous section</a>.</p>
+<p>For the sake of simplicity, the library consists of just one C++ source file and its corresponding header file that is included by the application's <code translate="no">main.cpp</code>:</p>
+<pre class="cpp plain" translate="no">
+ &lt;project root&gt;
+ ├── CMakeLists.txt
+ └── src
+     ├── app
+     │   ├── ..&#x2e;
+     │   └── main.cpp
+     └── businesslogic
+         ├── CMakeLists.txt
+         ├── businesslogic.cpp
+         └── businesslogic.h
+</pre>
+<p>Let's have a look at the library's project file (<code translate="no">src/businesslogic/CMakeLists.txt</code>).</p>
+<pre class="cpp" translate="no">
+ qt_add_library(businesslogic STATIC
+     businesslogic.cpp
+ )
+ target_link_libraries(businesslogic PRIVATE Qt6::Core)
+ target_include_directories(businesslogic INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+</pre>
+<p>Let's go through the content.</p>
+<pre class="cpp" translate="no">
+ qt_add_library(businesslogic STATIC
+     businesslogic.cpp
+ )
+</pre>
+<p>The <a href="https://cmake.org/cmake/help/latest/command/add_library.html" translate="no">add_library</a> command creates the library <code translate="no">businesslogic</code>. Later, we will let the application link against this target.</p>
+<p>The <code translate="no">STATIC</code> keyword denotes a static library. If we wanted to create a shared or dynamic library, we would use the <code translate="no">SHARED</code> keyword.</p>
+<pre class="cpp" translate="no">
+ target_link_libraries(businesslogic PRIVATE Qt6::Core)
+</pre>
+<p>We have a static library and don't actually have to link other libraries. But as our library uses classes from <code translate="no">QtCore</code>, we add a link dependency to <code translate="no">Qt6::Core</code>. This pulls in the necessary <code translate="no">QtCore</code> include paths and preprocessor defines.</p>
+<pre class="cpp" translate="no">
+ target_include_directories(businesslogic INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+</pre>
+<p>The library API is defined in the header file <code translate="no">businesslogic/businesslogic.h</code>. By calling <a href="https://cmake.org/cmake/help/latest/command/target_include_directories.html" translate="no">target_include_directories</a>, we make sure that the absolute path to the <code translate="no">businesslogic</code> directory is automatically added as an include path to all targets using our library.</p>
+<p>This frees us in <code translate="no">main.cpp</code> from using relative paths to locate <code translate="no">businesslogic.h</code>. Instead, we can just write</p>
+<pre class="cpp plain" translate="no">
+ #include &lt;businesslogic.h&gt;
+</pre>
+<p>Last, we must add the library's subdirectory to the top-level project file:</p>
+<pre class="cpp" translate="no">
+ add_subdirectory(src<span class="operator">/</span>app)
+ add_subdirectory(src<span class="operator">/</span>businesslogic)
+</pre>
+<h3 id="using-libraries">Using libraries</h3>
+<p>To use the library we created in the <a href="cmake-get-started.html#building-libraries" translate="no">previous section</a>, we instruct CMake to link against it:</p>
+<pre class="cpp" translate="no">
+ target_link_libraries(helloworld PRIVATE
+     businesslogic
+     Qt6<span class="operator">::</span>Widgets
+ )
+</pre>
+<p>This ensures that <code translate="no">businesslogic.h</code> is found when main.cpp is compiled. Furthermore, the businesslogic static library will become a part of the <code translate="no">helloworld</code> executable.</p>
+<p>In CMake terms, the library <code translate="no">businesslogic</code> specifies <i>usage requirements</i> (the include path) that every consumer of our library (the application) has to satisfy. The <code translate="no">target_link_libraries</code> command takes care of that.</p>
+<h3 id="adding-resources">Adding resources</h3>
+<p>We want to display some images in our application, so we add them using the <a href="../qtcore/resources.html" translate="no">Qt Resource System</a>.</p>
+<pre class="cpp" translate="no">
+ qt_add_resources(helloworld imageresources
+     PREFIX <span class="string">&quot;/images&quot;</span>
+     FILES logo<span class="operator">.</span>png splashscreen<span class="operator">.</span>png
+ )
+</pre>
+<p>The <a href="../qtcore/qt-add-resources.html" translate="no">qt_add_resources</a> command automatically creates a Qt resource containing the referenced images. From the C++ source code, you can access the images by prepending the specified resource prefix:</p>
+<pre class="cpp" translate="no">
+ logoLabel<span class="operator">-</span><span class="operator">&gt;</span>setPixmap(<span class="type"><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></span>(<span class="string">&quot;:/images/logo.png&quot;</span>));
+</pre>
+<p>The <a href="../qtcore/qt-add-resources.html" translate="no">qt_add_resources</a> command takes as the first argument either a variable name or a target name. We recommend to use the target-based variant of this command as shown in the example above.</p>
+<h3 id="adding-translations">Adding translations</h3>
+<p>Translations of strings in a Qt project are encoded in <code translate="no">.ts</code> files. See <a href="../qtdoc/internationalization.html" translate="no">Internationalization with Qt</a> for details.</p>
+<p>To add <code translate="no">.ts</code> files to your project, use the <a href="../qtlinguist/qtlinguist-cmake-qt-add-translations.html#qt6-add-translations" translate="no">qt_add_translations</a> command.</p>
+<p>The following example adds a German and a French translation file to the <code translate="no">helloworld</code> target:</p>
+<pre class="cpp" translate="no">
+ qt_add_translations(helloworld
+     TS_FILES helloworld_de<span class="operator">.</span>ts helloworld_fr<span class="operator">.</span>ts)
+</pre>
+<p>This creates build system rules to automatically generate <code translate="no">.qm</code> files from the <code translate="no">.ts</code> files. By default, the <code translate="no">.qm</code> files are embedded into a resource and are accessible under the <code translate="no">&quot;/i18n&quot;</code> resource prefix.</p>
+<p>To update the entries in the <code translate="no">.ts</code> file, build the <code translate="no">update_translations</code> target:</p>
+<pre class="cpp plain" translate="no">
+ $ cmake --build . --target update_translations
+</pre>
+<p>To trigger the generation of the <code translate="no">.qm</code> files manually, build the <code translate="no">release_translations</code> target:</p>
+<pre class="cpp plain" translate="no">
+ $ cmake --build . --target release_translations
+</pre>
+<p>For more information about how to influence the handling of <code translate="no">.ts</code> files and the embedding into a resource, see the <a href="../qtlinguist/qtlinguist-cmake-qt-add-translations.html#qt6-add-translations" translate="no">qt_add_translations documentation</a>.</p>
+<p>The <a href="../qtlinguist/qtlinguist-cmake-qt-add-translations.html#qt6-add-translations" translate="no">qt_add_translations</a> command is a convenience wrapper. For more fine-grained control of how <code translate="no">.ts</code> files and <code translate="no">.qm</code> files are handled, use the underlying commands <a href="../qtlinguist/qtlinguist-cmake-qt-add-lupdate.html#qt6-add-lupdate" translate="no">qt_add_lupdate</a> and <a href="../qtlinguist/qtlinguist-cmake-qt-add-lrelease.html#qt6-add-lrelease" translate="no">qt_add_lrelease</a>.</p>
+<h3 id="further-reading">Further reading</h3>
+<p>The official <a href="https://cmake.org/cmake/help/latest/" translate="no">CMake Documentation</a> is an invaluable source for working with CMake.</p>
+<p>The official <a href="https://cmake.org/cmake/help/latest/guide/tutorial/" translate="no">CMake Tutorial</a> covers common build system tasks.</p>
+<p>The book <a href="https://crascit.com/professional-cmake/" translate="no">Professional CMake: A Practical Guide</a> provides a great introduction to the most relevant CMake features.</p>
+</div>
+<!-- @@@cmake-get-started.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="cmake-manual.html">Build with CMake</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="cmake-build-on-cmdline.html">Building projects on the command line</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

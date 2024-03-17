@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-particles3d.qdoc -->
+  <meta name="description" content="Demonstrates how to use the Qt Quick 3D Particles3D module.">
+  <title>Qt Quick 3D - Particles 3D Testbed Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Particles 3D Testbed Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Particles 3D Testbed Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ pragma ComponentBehavior: Bound
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Particles3D
+ import QtQuick.Controls
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">mainView</span>
+
+     required property <span class="type"><a href="../qtquick/qml-qtquick-loader.html" translate="no">Loader</a></span> <span class="name">loader</span>
+
+     readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">listItemWidth</span>: <span class="number">180</span>
+     readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">listItemHeight</span>: <span class="number">40</span>
+     <span class="comment">// Enable this when only want to list the demos</span>
+     <span class="comment">// Tweak the demos list as needed</span>
+     readonly property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">showOnlyDemos</span>: <span class="number">false</span>
+
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listmodel.html" translate="no">ListModel</a></span> {
+         <span class="name">id</span>: <span class="name">demosModel</span>
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Snowing&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;Snowing.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Line Particles&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;LineParticles.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;HeartTrail&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;HeartTrail.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Giant Ocean Spider&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;OceanSpider.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Qt Cube Burst&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;QtLogoAnimation.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Fire And Smoke&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;Fire.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Speedometer&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;Speedometer.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Sorting&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;Sorting.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Model-Blend Particles&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;ModelBlendParticles.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Lights&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;Lights.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Dynamic Bursts&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;DynamicBursts.qml&quot;</span>
+         }
+     }
+
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listmodel.html" translate="no">ListModel</a></span> {
+         <span class="name">id</span>: <span class="name">testsModel</span>
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Colorful Particles&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;ColorfulParticles.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Emitter Shapes&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;EmitterShapes.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Emitter Custom Shapes&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;EmitterCustomShapes.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Attractor Shapes&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;AttractorShapes.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Fading In/Out&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;FadingInOut.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Emit And Burst&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;EmitAndBurst.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;ParticleSystem&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;SystemPlayPause.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Aligned Particles&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;AlignedParticles.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;TrailEmitter Burst&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;TrailEmitterBurst.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Animated Sprite&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;AnimatedSprite.qml&quot;</span>
+         }
+         <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Model Shape&quot;</span>
+             <span class="name">file</span>: <span class="string">&quot;ModelShape.qml&quot;</span>
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">clearColor</span>: <span class="string">&quot;#000000&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+             <span class="name">antialiasingMode</span>: <span class="name">AppSettings</span>.<span class="name">antialiasingMode</span>
+             <span class="name">antialiasingQuality</span>: <span class="name">AppSettings</span>.<span class="name">antialiasingQuality</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">600</span>)
+             <span class="name">clipFar</span>: <span class="number">2000</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-pointlight.html" translate="no">PointLight</a></span> {
+             <span class="name">id</span>: <span class="name">pointLight</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">400</span>)
+             <span class="name">brightness</span>: <span class="number">50</span>
+             <span class="name">ambientColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.5</span>, <span class="number">0.3</span>, <span class="number">0.1</span>, <span class="number">1.0</span>)
+             <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">target</span>: <span class="name">pointLight</span>
+                     <span class="name">property</span>: <span class="string">&quot;brightness&quot;</span>
+                     <span class="name">to</span>: <span class="number">400</span>
+                     <span class="name">duration</span>: <span class="number">2000</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">OutElastic</span>
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">target</span>: <span class="name">pointLight</span>
+                     <span class="name">property</span>: <span class="string">&quot;brightness&quot;</span>
+                     <span class="name">to</span>: <span class="number">50</span>
+                     <span class="name">duration</span>: <span class="number">6000</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                 }
+             }
+         }
+
+         <span class="comment">// Qt Cube model</span>
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Cube&quot;</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">250</span>, <span class="number">150</span>, <span class="number">100</span>)
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">1.0</span>)
+             NumberAnimation on <span class="name">eulerRotation</span>.y {
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">duration</span>: <span class="number">10000</span>
+             }
+             NumberAnimation on <span class="name">eulerRotation</span>.x {
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">duration</span>: <span class="number">6000</span>
+             }
+             <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                 <span class="name">baseColorMap</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/qt_logo2.png&quot;</span>
+                 }
+                 <span class="name">normalMap</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/qt_logo2_n.png&quot;</span>
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-particles3d-particlesystem3d.html" translate="no">ParticleSystem3D</a></span> {
+             <span class="name">id</span>: <span class="name">psystem</span>
+             <span class="name">startTime</span>: <span class="number">10000</span>
+             <span class="type"><a href="qml-qtquick3d-particles3d-spriteparticle3d.html" translate="no">SpriteParticle3D</a></span> {
+                 <span class="name">id</span>: <span class="name">spriteParticle</span>
+                 <span class="name">sprite</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/dot.png&quot;</span>
+                 }
+                 <span class="name">maxAmount</span>: <span class="number">200</span>
+                 <span class="name">color</span>: <span class="string">&quot;#80ff7000&quot;</span>
+                 <span class="name">colorVariation</span>: <span class="name">Qt</span>.<span class="name">vector4d</span>(<span class="number">0.6</span>, <span class="number">0.2</span>, <span class="number">0.0</span>, <span class="number">0.4</span>)
+                 <span class="name">unifiedColorVariation</span>: <span class="number">true</span>
+                 <span class="name">fadeInDuration</span>: <span class="number">1000</span>
+                 <span class="name">fadeOutDuration</span>: <span class="number">3000</span>
+             }
+             <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                 <span class="name">particle</span>: <span class="name">spriteParticle</span>
+                 <span class="name">emitRate</span>: <span class="number">20</span>
+                 <span class="name">lifeSpan</span>: <span class="number">10000</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">8</span>, <span class="number">8</span>, <span class="number">0</span>)
+                 <span class="name">shape</span>: <span class="name">ParticleShape3D</span> {
+                     <span class="name">type</span>: <span class="name">ParticleShape3D</span>.<span class="name">Cube</span>
+                 }
+                 <span class="name">particleScale</span>: <span class="number">2.4</span>
+                 <span class="name">particleScaleVariation</span>: <span class="number">1.8</span>
+                 <span class="name">particleEndScale</span>: <span class="number">0.2</span>
+                 <span class="name">velocity</span>: <span class="name">TargetDirection3D</span> {
+                     <span class="name">magnitudeVariation</span>: <span class="name">magnitude</span>
+                     <span class="name">positionVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">180</span>, <span class="number">180</span>, <span class="number">180</span>)
+                     SequentialAnimation on <span class="name">magnitude</span> {
+                         <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                         <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                             <span class="name">to</span>: <span class="number">1.0</span>
+                             <span class="name">duration</span>: <span class="number">3000</span>
+                             <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                         }
+                         <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                             <span class="name">to</span>: <span class="number">0.1</span>
+                             <span class="name">duration</span>: <span class="number">5000</span>
+                             <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                         }
+                     }
+                 }
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a></span> {
+         <span class="name">id</span>: <span class="name">listComponent</span>
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+             <span class="name">id</span>: <span class="name">button</span>
+             required property <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span> <span class="name">name</span>
+             required property <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span> <span class="name">file</span>
+
+             <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">listItemWidth</span>
+             <span class="name">height</span>: <span class="name">mainView</span>.<span class="name">listItemHeight</span>
+             <span class="name">background</span>: <span class="name">Rectangle</span> {
+                 <span class="name">id</span>: <span class="name">buttonBackground</span>
+                 <span class="name">border</span>.width: <span class="number">0.5</span>
+                 <span class="name">border</span>.color: <span class="string">&quot;#d0808080&quot;</span>
+                 <span class="name">color</span>: <span class="string">&quot;#d0404040&quot;</span>
+                 <span class="name">opacity</span>: <span class="name">button</span>.<span class="name">hovered</span> ? <span class="number">1.0</span> : <span class="number">0.5</span>
+             }
+             <span class="name">contentItem</span>: <span class="name">Text</span> {
+                 <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+                 <span class="name">color</span>: <span class="string">&quot;#f0f0f0&quot;</span>
+                 <span class="name">font</span>.pointSize: <span class="name">AppSettings</span>.<span class="name">fontSizeSmall</span>
+                 <span class="name">text</span>: <span class="name">button</span>.<span class="name">name</span>
+             }
+
+             <span class="name">onClicked</span>: {
+                 <span class="name">mainView</span>.<span class="name">loader</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">button</span>.<span class="name">file</span>
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+         <span class="name">id</span>: <span class="name">topLabel</span>
+         <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.topMargin: <span class="number">20</span>
+         <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Qt Quick 3D - Particles3D&quot;</span>)
+         <span class="name">color</span>: <span class="string">&quot;#f0f0f0&quot;</span>
+         <span class="name">font</span>.pointSize: <span class="name">AppSettings</span>.<span class="name">fontSizeLarge</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+         <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+         <span class="name">anchors</span>.top: <span class="name">topLabel</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.topMargin: <span class="number">20</span>
+         <span class="name">spacing</span>: <span class="number">20</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a></span> {
+             <span class="name">id</span>: <span class="name">demosListView</span>
+             <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">listItemWidth</span>
+             <span class="name">height</span>: <span class="name">count</span> <span class="operator">*</span> <span class="name">mainView</span>.<span class="name">listItemHeight</span>
+             <span class="name">model</span>: <span class="name">demosModel</span>
+             <span class="name">delegate</span>: <span class="name">listComponent</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a></span> {
+             <span class="name">id</span>: <span class="name">examplesListView</span>
+             <span class="name">visible</span>: !<span class="name">mainView</span>.<span class="name">showOnlyDemos</span>
+             <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">listItemWidth</span>
+             <span class="name">height</span>: <span class="name">count</span> <span class="operator">*</span> <span class="name">mainView</span>.<span class="name">listItemHeight</span>
+             <span class="name">model</span>: <span class="name">testsModel</span>
+             <span class="name">delegate</span>: <span class="name">listComponent</span>
+         }
+     }
+ }
+</pre>

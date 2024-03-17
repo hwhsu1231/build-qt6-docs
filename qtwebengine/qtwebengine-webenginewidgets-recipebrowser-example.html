@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- recipebrowser.qdoc -->
+  <meta name="description" content="Injecting custom stylsheets into web pages and providing a rich text preview tool for a custom markup language.">
+  <title>Recipe Browser | Qt WebEngine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtwebengine-index.html" translate="no">Qt WebEngine</a></li>
+<li><a href="webengine-widgetexamples.html" translate="no">Qt WebEngine Widgets Examples</a></li>
+<li>Recipe Browser</li>
+<li id="buildversion"><a href="qtwebengine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#exposing-document-text">Exposing Document Text</a></li>
+<li class="level1"><a href="#creating-the-main-window">Creating the Main Window</a></li>
+<li class="level1"><a href="#working-with-stylesheets">Working With Stylesheets</a></li>
+<li class="level1"><a href="#creating-a-recipe-file">Creating a recipe file</a></li>
+<li class="level1"><a href="#files-and-attributions">Files and Attributions</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Recipe Browser</h1>
+<!-- $$$webenginewidgets/recipebrowser-brief -->
+<p>Injecting custom stylsheets into web pages and providing a rich text preview tool for a custom markup language.</p>
+<!-- @@@webenginewidgets/recipebrowser -->
+<!-- $$$webenginewidgets/recipebrowser-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/recipebrowser.webp" alt="" /></p><p><i>Recipe Browser</i> is a small hybrid web browser application. It demonstrates how to use the <a href="qtwebenginewidgets-module.html" translate="no">Qt WebEngine C++ classes</a> to combine C++ and JavaScript logic in the following ways.</p>
+<ul>
+<li>Running arbitrary JavaScript code via <code translate="no">QWebEnginePage::runJavaScript()</code> to inject custom CSS stylesheets</li>
+<li>Using <a href="qwebenginescript.html" translate="no">QWebEngineScript</a> and <a href="qwebenginescriptcollection.html" translate="no">QWebEngineScriptCollection</a> to persist the JavaScript code and inject it to every page</li>
+<li>Using <a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a> to interact with and provide a rich text preview for a custom markup language</li>
+</ul>
+<p><a href="http://daringfireball.net/projects/markdown/" translate="no">Markdown</a> is a lightweight markup language with a plain text formatting syntax. Some services, such as <a href="http://github.com" translate="no">github</a>, acknowledge the format, and render the content as rich text when viewed in a browser.</p>
+<p>The Recipe Browser main window is split into a navigation on the left and a preview area on the right. The preview area on the right switches to an editor when the user clicks the Edit button on the top left of the main window. The editor supports the Markdown syntax and is implemented by using <a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a>. The document is rendered as rich text in the preview area, once the user clicks the View button,to which the Edit button transforms to. This rendering is implemented by using <a href="qwebengineview.html" translate="no">QWebEngineView</a>. To render the text, a JavaScript library inside the web engine converts the Markdown text to HTML. The preview is updated from the editor through <a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a>.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="exposing-document-text">Exposing Document Text</h4>
+<p>To render the current Markdown text it needs to be exposed to the web engine through <a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a>. To achieve this it has to be part of Qt metatype system. This is done by using a dedicated <code translate="no">Document</code> class that exposes the document text as a <code translate="no">Q_PROPERTY</code>:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> Document : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> text MEMBER m_currentText NOTIFY textChanged FINAL)
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> Document(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+
+     <span class="type">void</span> setTextEdit(<span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span> <span class="operator">*</span>textEdit);
+     <span class="type">void</span> setCurrentPage(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>page);
+
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> setInitialText(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>text);
+     <span class="type">void</span> setText(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>text);
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> textChanged(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>text);
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span> <span class="operator">*</span>m_textEdit;
+
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> m_currentText;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> m_currentPage;
+     <span class="type"><a href="../qtcore/qmap.html" translate="no">QMap</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">&gt;</span> m_textCollection;
+ };
+</pre>
+<p>The <code translate="no">Document</code> class wraps a <a href="../qtcore/qstring.html" translate="no">QString</a> <code translate="no">m_currentText</code> to be set on the C++ side with the <code translate="no">setText()</code> method and exposes it at runtime as a <code translate="no">text</code> property with a <code translate="no">textChanged</code> signal. We define the <code translate="no">setText</code> method as follows:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> Document<span class="operator">::</span>setText(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>text)
+ {
+     <span class="keyword">if</span> (text <span class="operator">=</span><span class="operator">=</span> m_currentText)
+         <span class="keyword">return</span>;
+     m_currentText <span class="operator">=</span> text;
+     <span class="keyword">emit</span> textChanged(m_currentText);
+
+     <span class="type"><a href="../qtcore/qsettings.html" translate="no">QSettings</a></span> settings;
+     settings<span class="operator">.</span>beginGroup(<span class="string">&quot;textCollection&quot;</span>);
+     settings<span class="operator">.</span>setValue(m_currentPage<span class="operator">,</span> text);
+     m_textCollection<span class="operator">.</span>insert(m_currentPage<span class="operator">,</span> text);
+     settings<span class="operator">.</span>endGroup();
+ }
+</pre>
+<p>Additionally, the <code translate="no">Document</code> class keeps track of the current recipe via <code translate="no">m_currentPage</code>. We call the recipes pages here, because each recipe has its distinct HTML document that contains the initial text content. Furthermore, <code translate="no">m_textCollection</code> is a <a href="../qtcore/qmap.html" translate="no">QMap</a>&lt;<a href="../qtcore/qstring.html" translate="no">QString</a>, <a href="../qtcore/qstring.html" translate="no">QString</a>&gt; that contains the key/value pairs {page, text}, so that changes made to the text content of a page is persisted between navigation. Nevertheless, we do not write the modified text contents to the drive, but instead we persist them between application start and shutdown via <a href="../qtcore/qsettings.html" translate="no">QSettings</a>.</p>
+<h4 id="creating-the-main-window">Creating the Main Window</h4>
+<p>The <code translate="no">MainWindow</code> class inherits the <a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a> class:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> MainWindow : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> MainWindow(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+     <span class="operator">~</span>MainWindow();
+
+     <span class="type">void</span> insertStyleSheet(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>source<span class="operator">,</span> <span class="type">bool</span> immediately);
+     <span class="type">void</span> removeStyleSheet(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name<span class="operator">,</span> <span class="type">bool</span> immediately);
+     <span class="type">bool</span> hasStyleSheet(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name);
+     <span class="type">void</span> loadDefaultStyleSheets();
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> showStyleSheetsDialog();
+     <span class="type">void</span> toggleEditView();
+
+ <span class="keyword">private</span>:
+     Ui<span class="operator">::</span>MainWindow <span class="operator">*</span>ui;
+
+     <span class="type">bool</span> m_isEditMode;
+     Document m_content;
+ };
+</pre>
+<p>The class declares private slots that match the two buttons on the top left, over the navigation list view. Additionally, helper methods for custom CSS stylesheets are declared.</p>
+<p>The actual layout of the main window is specified in a <code translate="no">.ui</code> file. The widgets and actions are available at runtime in the <code translate="no">ui</code> member variable.</p>
+<p><code translate="no">m_isEditMode</code> is a boolean that toggles between the editor and the preview area. <code translate="no">m_content</code> is an instance of the <code translate="no">Document</code> class.</p>
+<p>The actual setup of the different objects is done in the <code translate="no">MainWindow</code> constructor:</p>
+<pre class="cpp" translate="no">
+ MainWindow<span class="operator">::</span>MainWindow(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent)
+     : <span class="type"><a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a></span>(parent)<span class="operator">,</span> ui(<span class="keyword">new</span> Ui<span class="operator">::</span>MainWindow)<span class="operator">,</span> m_isEditMode(<span class="keyword">false</span>)
+ {
+     ui<span class="operator">-</span><span class="operator">&gt;</span>setupUi(<span class="keyword">this</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>textEdit<span class="operator">-</span><span class="operator">&gt;</span>setFont(<span class="type"><a href="../qtgui/qfontdatabase.html" translate="no">QFontDatabase</a></span><span class="operator">::</span>systemFont(<span class="type"><a href="../qtgui/qfontdatabase.html" translate="no">QFontDatabase</a></span><span class="operator">::</span>FixedFont));
+     ui<span class="operator">-</span><span class="operator">&gt;</span>textEdit<span class="operator">-</span><span class="operator">&gt;</span>hide();
+     ui<span class="operator">-</span><span class="operator">&gt;</span>webEngineView<span class="operator">-</span><span class="operator">&gt;</span>setContextMenuPolicy(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>NoContextMenu);
+</pre>
+<p>The constructor first calls <code translate="no">setupUi</code> to construct the widgets and menu actions according to the UI file. The text editor font is set to one with a fixed character width, and the <a href="qwebengineview.html" translate="no">QWebEngineView</a> widget is told not to show a context menu. Furthermore, the editor is hidden away.</p>
+<pre class="cpp" translate="no">
+     connect(ui<span class="operator">-</span><span class="operator">&gt;</span>stylesheetsButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>MainWindow<span class="operator">::</span>showStyleSheetsDialog);
+     connect(ui<span class="operator">-</span><span class="operator">&gt;</span>editViewButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>MainWindow<span class="operator">::</span>toggleEditView);
+</pre>
+<p>Here the <code translate="no">clicked</code> signals of <a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a> are connected to respective functions that show the stylesheets dialog or toggle between edit and view mode, that is, hide and show the editor and preview area respectively.</p>
+<pre class="cpp" translate="no">
+     ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">-</span><span class="operator">&gt;</span>insertItem(<span class="number">0</span><span class="operator">,</span> <span class="string">&quot;Burger&quot;</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">-</span><span class="operator">&gt;</span>insertItem(<span class="number">1</span><span class="operator">,</span> <span class="string">&quot;Cupcakes&quot;</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">-</span><span class="operator">&gt;</span>insertItem(<span class="number">2</span><span class="operator">,</span> <span class="string">&quot;Pasta&quot;</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">-</span><span class="operator">&gt;</span>insertItem(<span class="number">3</span><span class="operator">,</span> <span class="string">&quot;Pizza&quot;</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">-</span><span class="operator">&gt;</span>insertItem(<span class="number">4</span><span class="operator">,</span> <span class="string">&quot;Skewers&quot;</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">-</span><span class="operator">&gt;</span>insertItem(<span class="number">5</span><span class="operator">,</span> <span class="string">&quot;Soup&quot;</span>);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">-</span><span class="operator">&gt;</span>insertItem(<span class="number">6</span><span class="operator">,</span> <span class="string">&quot;Steak&quot;</span>);
+     connect(ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qlistwidget.html" translate="no">QListWidget</a></span><span class="operator">::</span>currentItemChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+             <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>(<span class="type"><a href="../qtwidgets/qlistwidgetitem.html" translate="no">QListWidgetItem</a></span> <span class="operator">*</span>current<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qlistwidgetitem.html" translate="no">QListWidgetItem</a></span> <span class="operator">*</span> <span class="comment">/* previous */</span>) {
+                 <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> page <span class="operator">=</span> current<span class="operator">-</span><span class="operator">&gt;</span>text()<span class="operator">.</span>toLower();
+                 <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> url <span class="operator">=</span> <span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;qrc:/pages/&quot;</span>) <span class="operator">+</span> page <span class="operator">+</span> <span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;.html&quot;</span>);
+                 ui<span class="operator">-</span><span class="operator">&gt;</span>webEngineView<span class="operator">-</span><span class="operator">&gt;</span>setUrl(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(url));
+                 m_content<span class="operator">.</span>setCurrentPage(page);
+             });
+</pre>
+<p>Here the navigation <a href="../qtwidgets/qlistwidget.html" translate="no">QListWidget</a> on the left is setup with the 7 recipes. Also, the currentItemChanged signal of <a href="../qtwidgets/qlistwidget.html" translate="no">QListWidget</a> is connected to a lambda that loads the new, current recipe page and updates the page in <code translate="no">m_content</code>.</p>
+<pre class="cpp" translate="no">
+     m_content<span class="operator">.</span>setTextEdit(ui<span class="operator">-</span><span class="operator">&gt;</span>textEdit);
+</pre>
+<p>Next, the pointer to the ui editor, a <a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a>, is passed to <code translate="no">m_content</code> to ensure that calls to <code translate="no">Document::setInitialText()</code> work properly.</p>
+<pre class="cpp" translate="no">
+     connect(ui<span class="operator">-</span><span class="operator">&gt;</span>textEdit<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qplaintextedit.html" translate="no">QPlainTextEdit</a></span><span class="operator">::</span>textChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+             <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>() { m_content<span class="operator">.</span>setText(ui<span class="operator">-</span><span class="operator">&gt;</span>textEdit<span class="operator">-</span><span class="operator">&gt;</span>toPlainText()); });
+
+     <span class="type"><a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a></span> <span class="operator">*</span>channel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a></span>(<span class="keyword">this</span>);
+     channel<span class="operator">-</span><span class="operator">&gt;</span>registerObject(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;content&quot;</span>)<span class="operator">,</span> <span class="operator">&amp;</span>m_content);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>webEngineView<span class="operator">-</span><span class="operator">&gt;</span>page()<span class="operator">-</span><span class="operator">&gt;</span>setWebChannel(channel);
+</pre>
+<p>Here the <code translate="no">textChanged</code> signal of the editor is connected to a lambda that updates the text in <code translate="no">m_content</code>. This object is then exposed to the JS side by <code translate="no">QWebChannel</code> under the name <code translate="no">content</code>.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtcore/qsettings.html" translate="no">QSettings</a></span> settings;
+     settings<span class="operator">.</span>beginGroup(<span class="string">&quot;styleSheets&quot;</span>);
+     <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> styleSheets <span class="operator">=</span> settings<span class="operator">.</span>allKeys();
+     <span class="keyword">if</span> (styleSheets<span class="operator">.</span>empty()) {
+         <span class="comment">// Add back default style sheets if the user cleared them out</span>
+         loadDefaultStyleSheets();
+     } <span class="keyword">else</span> {
+         <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> <span class="operator">&amp;</span>name : std<span class="operator">::</span>as_const(styleSheets)) {
+             StyleSheet styleSheet <span class="operator">=</span> settings<span class="operator">.</span>value(name)<span class="operator">.</span>value<span class="operator">&lt;</span>StyleSheet<span class="operator">&gt;</span>();
+             <span class="keyword">if</span> (styleSheet<span class="operator">.</span>second)
+                 insertStyleSheet(name<span class="operator">,</span> styleSheet<span class="operator">.</span>first<span class="operator">,</span> <span class="keyword">false</span>);
+         }
+     }
+     settings<span class="operator">.</span>endGroup();
+</pre>
+<p>By using <a href="../qtcore/qsettings.html" translate="no">QSettings</a> we persist stylesheets between application runs. If there should be no stylesheets configured, for example, because the user deleted all of them in a previous run, we load default ones.</p>
+<pre class="cpp" translate="no">
+     ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">-</span><span class="operator">&gt;</span>setCurrentItem(ui<span class="operator">-</span><span class="operator">&gt;</span>recipes<span class="operator">-</span><span class="operator">&gt;</span>item(<span class="number">0</span>));
+</pre>
+<p>Finally, we set the currently selected list item to the first contained in the navigation list widget. This triggers the previously mentioned <a href="../qtwidgets/qlistwidget.html#currentItemChanged" translate="no">QListWidget::currentItemChanged</a> signal and navigates to the page of the list item.</p>
+<h4 id="working-with-stylesheets">Working With Stylesheets</h4>
+<p>We use JavaScript to create and append CSS elements to the documents. After declaring the script source, <a href="qwebenginepage.html#runJavaScript" translate="no">QWebEnginePage::runJavaScript</a>() can run it immediately and apply newly created styles on the current content of the web view. Encapsulating the script into a <a href="qwebenginescript.html" translate="no">QWebEngineScript</a> and adding it to the script collection of <a href="qwebenginepage.html" translate="no">QWebEnginePage</a> makes its effect permanent.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> MainWindow<span class="operator">::</span>insertStyleSheet(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>source<span class="operator">,</span> <span class="type">bool</span> immediately)
+ {
+     <span class="type"><a href="qwebenginescript.html" translate="no">QWebEngineScript</a></span> script;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> s <span class="operator">=</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;(function() {&quot;</span>
+                                     <span class="string">&quot;    css = document.createElement('style');&quot;</span>
+                                     <span class="string">&quot;    css.type = 'text/css';&quot;</span>
+                                     <span class="string">&quot;    css.id = '%1';&quot;</span>
+                                     <span class="string">&quot;    document.head.appendChild(css);&quot;</span>
+                                     <span class="string">&quot;    css.innerText = '%2';&quot;</span>
+                                     <span class="string">&quot;})()&quot;</span>)
+                         <span class="operator">.</span>arg(name<span class="operator">,</span> source<span class="operator">.</span>simplified());
+     <span class="keyword">if</span> (immediately)
+         ui<span class="operator">-</span><span class="operator">&gt;</span>webEngineView<span class="operator">-</span><span class="operator">&gt;</span>page()<span class="operator">-</span><span class="operator">&gt;</span>runJavaScript(s<span class="operator">,</span> <span class="type"><a href="qwebenginescript.html" translate="no">QWebEngineScript</a></span><span class="operator">::</span>ApplicationWorld);
+
+     script<span class="operator">.</span>setName(name);
+     script<span class="operator">.</span>setSourceCode(s);
+     script<span class="operator">.</span>setInjectionPoint(<span class="type"><a href="qwebenginescript.html" translate="no">QWebEngineScript</a></span><span class="operator">::</span>DocumentReady);
+     script<span class="operator">.</span>setRunsOnSubFrames(<span class="keyword">true</span>);
+     script<span class="operator">.</span>setWorldId(<span class="type"><a href="qwebenginescript.html" translate="no">QWebEngineScript</a></span><span class="operator">::</span>ApplicationWorld);
+     ui<span class="operator">-</span><span class="operator">&gt;</span>webEngineView<span class="operator">-</span><span class="operator">&gt;</span>page()<span class="operator">-</span><span class="operator">&gt;</span>scripts()<span class="operator">.</span>insert(script);
+ }
+</pre>
+<p>Removing stylesheets can be done similarly:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> MainWindow<span class="operator">::</span>removeStyleSheet(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>name<span class="operator">,</span> <span class="type">bool</span> immediately)
+ {
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> s <span class="operator">=</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromLatin1(<span class="string">&quot;(function() {&quot;</span>
+                                     <span class="string">&quot;    var element = document.getElementById('%1');&quot;</span>
+                                     <span class="string">&quot;    element.outerHTML = '';&quot;</span>
+                                     <span class="string">&quot;    delete element;&quot;</span>
+                                     <span class="string">&quot;})()&quot;</span>)
+                         <span class="operator">.</span>arg(name);
+     <span class="keyword">if</span> (immediately)
+         ui<span class="operator">-</span><span class="operator">&gt;</span>webEngineView<span class="operator">-</span><span class="operator">&gt;</span>page()<span class="operator">-</span><span class="operator">&gt;</span>runJavaScript(s<span class="operator">,</span> <span class="type"><a href="qwebenginescript.html" translate="no">QWebEngineScript</a></span><span class="operator">::</span>ApplicationWorld);
+
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qwebenginescript.html" translate="no">QWebEngineScript</a></span><span class="operator">&gt;</span> scripts <span class="operator">=</span> ui<span class="operator">-</span><span class="operator">&gt;</span>webEngineView<span class="operator">-</span><span class="operator">&gt;</span>page()<span class="operator">-</span><span class="operator">&gt;</span>scripts()<span class="operator">.</span>find(name);
+     <span class="keyword">if</span> (<span class="operator">!</span>scripts<span class="operator">.</span>isEmpty())
+         ui<span class="operator">-</span><span class="operator">&gt;</span>webEngineView<span class="operator">-</span><span class="operator">&gt;</span>page()<span class="operator">-</span><span class="operator">&gt;</span>scripts()<span class="operator">.</span>remove(scripts<span class="operator">.</span>first());
+ }
+</pre>
+<h4 id="creating-a-recipe-file">Creating a recipe file</h4>
+<pre class="cpp" translate="no">
+ &lt;!doctype html&gt;
+ &lt;html lang=&quot;en&quot;&gt;
+ &lt;head&gt;
+   &lt;meta charset=&quot;utf-8&quot;&gt;
+   &lt;title&gt;Insanity Burger&lt;/title&gt;
+   &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;../3rdparty/markdown.css&quot;&gt;
+   &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;../custom.css&quot;&gt;
+   &lt;script src=&quot;../3rdparty/marked.js&quot;&gt;&lt;/script&gt;
+   &lt;script src=&quot;../custom.js&quot;&gt;&lt;/script&gt;
+   &lt;script src=&quot;qrc:/qtwebchannel/qwebchannel.js&quot;&gt;&lt;/script&gt;
+ &lt;/head&gt;
+ &lt;body&gt;
+   &lt;div id=&quot;placeholder&quot;&gt;&lt;/div&gt;
+   &lt;div id=&quot;content&quot;&gt;
+
+ &lt;img src=&quot;images/burger.jpg&quot; alt=&quot;Insanity Burger&quot; title=&quot;Insanity Burger&quot; /&gt;
+
+ Insanity burger
+ ===============
+
+ ### Ingredients
+
+ * 800 g minced chuck steak
+ * olive oil
+ * 1 large red onion
+ * 1 splash of white wine vinegar
+ * 2 large gherkins
+ * 4 sesame-topped brioche burger buns
+ * 4-8 rashers of smoked streaky bacon
+ * 4 teaspoons American mustard
+ * Tabasco Chipotle sauce
+ * 4 thin slices of Red Leicester cheese
+ * 4 teaspoons tomato ketchup
+
+ #### For the burger sauce
+ * ¼ of an iceberg lettuce
+ * 2 heaped tablespoons mayonnaise
+ * 1 heaped tablespoon tomato ketchup
+ * 1 teaspoon Tabasco Chipotle sauce
+ * 1 teaspoon Worcestershire sauce
+ * 1 teaspoon brandy, or bourbon (optional)
+
+ ### Instructions
+ For the best burger, go to your butcher’s and ask them to mince 800g of chuck steak for you.
+ This cut has a really good balance of fat and flavoursome meat. Divide it into 4 and, with wet
+ hands, roll each piece into a ball, then press into flat patties roughly 12cm wide and about 2cm
+ wider than your buns. Place on an oiled plate and chill in the fridge. Next, finely slice the red
+ onion, then dress in a bowl with the vinegar and a pinch of sea salt. Slice the gherkins and halve
+ the buns. Finely chop the lettuce and mix with the rest of the burger sauce ingredients in a bowl,
+ then season to taste.
+
+ I like to only cook 2 burgers at a time to achieve perfection, so get two pans on the go – a large
+ non-stick pan on a high heat for your burgers and another on a medium heat for the bacon. Pat your
+ burgers with oil and season them with salt and pepper. Put 2 burgers into the first pan, pressing
+ down on them with a fish slice, then put half the bacon into the other pan. After 1 minute, flip
+ the burgers and brush each cooked side with ½ a teaspoon of mustard and a dash of Tabasco. After
+ another minute, flip onto the mustard side and brush again with another ½ teaspoon of mustard and
+ a second dash of Tabasco on the other side. Cook for one more minute, by which point you can place
+ some crispy bacon on top of each burger with a slice of cheese. Add a tiny splash of water to the
+ pan and place a heatproof bowl over the burgers to melt the cheese – 30 seconds should do it. At the
+ same time, toast 2 split buns in the bacon fat in the other pan until lightly golden. Repeat with
+ the remaining two burgers.
+
+ To build each burger, add a quarter of the burger sauce to the bun base, then top with a cheesy
+ bacon burger, a quarter of the onions and gherkins. Rub the bun top with a teaspoon of ketchup,
+ then gently press together. As the burger rests, juices will soak into the bun, so serve right
+ away, which is great, or for an extra filthy experience, wrap each one in greaseproof paper, then
+ give it a minute to go gorgeous and sloppy.
+
+ **Enjoy!**
+
+   &lt;/div&gt;&lt;!--End of content--&gt;
+
+   &lt;script&gt;
+     'use strict';
+
+     var jsContent = document.getElementById('content');
+     var placeholder = document.getElementById('placeholder');
+
+     var updateText = function(text) {
+       placeholder.innerHTML = marked.parse(text);
+     }
+
+     new QWebChannel(qt.webChannelTransport,
+       function(channel) {
+         var content = channel.objects.content;
+         content.setInitialText(jsContent.innerHTML);
+         content.textChanged.connect(updateText);
+       }
+     );
+   &lt;/script&gt;
+ &lt;/body&gt;
+ &lt;/html&gt;
+</pre>
+<p>All the different recipe pages are set up the same way.</p>
+<p>In the <code translate="no">&lt;head&gt;</code> part they include two CSS files: <code translate="no">markdown.css</code>, that styles the markdown, and custom.css, that does some further styling but most importantly hides the <code translate="no">&lt;div&gt;</code> with id <i>content</i>, as this <code translate="no">&lt;div&gt;</code> only contains the unmodified, initial content text. Also, three JS scripts are included. <code translate="no">marked.js</code> is responsible for parsing the markdown and transforming it into HTML. <code translate="no">custom.js</code> does some configuration of <code translate="no">marked.js</code>, and <code translate="no">qwebchannel.js</code> exposes the <a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a> JavaScript API.</p>
+<p>In the body there are two <code translate="no">&lt;div&gt;</code> elements. The <code translate="no">&lt;div&gt;</code> with id <i>placeholder</i> gets the markdown text injected that is rendered and visible. The <code translate="no">&lt;div&gt;</code> with id <i>content</i> is hidden by <code translate="no">custom.css</code> and only contains the original, unmodified text content of the recipe.</p>
+<p>Finally, on the bottom of each recipe HTML file is a script that is responsible for the communication between the C++ and JavaScript side via <a href="../qtwebchannel/qwebchannel.html" translate="no">QWebChannel</a>. The original, unmodified text content inside the <code translate="no">&lt;div&gt;</code> with id <i>content</i> is passed to the C++ side and a callback is setup that is invoked when the <code translate="no">textChanged</code> signal of <code translate="no">m_content</code> is emitted. The callback then updates the contents of the <code translate="no">&lt;div&gt;</code> <i>placeholder</i> with the parsed markdown.</p>
+<h4 id="files-and-attributions">Files and Attributions</h4>
+<p>The example bundles the following code with third-party licenses:</p>
+<div class="table"><table class="generic">
+ <tr valign="top" class="odd"><td ><a href="qtwebengine-attribution-recipebrowser-marked.html#recipebrowser-marked" translate="no">Marked</a></td><td >MIT License</td></tr>
+<tr valign="top" class="even"><td ><a href="qtwebengine-attribution-recipebrowser-markdowncss.html#recipebrowser-markdowncss" translate="no">Markdown.css</a></td><td >Apache License 2.0</td></tr>
+</table></div>
+<p><a href="https://code.qt.io/cgit/qt/qtwebengine.git/tree/examples/webenginewidgets/recipebrowser?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@webenginewidgets/recipebrowser -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

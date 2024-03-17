@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- bars.qdoc -->
+  <meta name="description" content="Using Bars3D in a QML application.">
+  <title>Simple Bar Graph | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Simple Bar Graph</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Simple Bar Graph</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtGraphs
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     property <span class="type">alias</span> <span class="name">column</span>: <span class="name">columnAxis</span>
+     property <span class="type">alias</span> <span class="name">row</span>: <span class="name">rowAxis</span>
+     property <span class="type">alias</span> <span class="name">value</span>: <span class="name">valueAxis</span>
+     property <span class="type">alias</span> <span class="name">total</span>: <span class="name">totalAxis</span>
+
+     <span class="comment">// Custom labels for columns, since the data contains abbreviated month names.</span>
+     <span class="type"><a href="qml-qtgraphs-categoryaxis3d.html" translate="no">CategoryAxis3D</a></span> {
+         <span class="name">id</span>: <span class="name">columnAxis</span>
+         <span class="name">labels</span>: [<span class="string">&quot;January&quot;</span>, <span class="string">&quot;February&quot;</span>, <span class="string">&quot;March&quot;</span>, <span class="string">&quot;April&quot;</span>, <span class="string">&quot;May&quot;</span>, <span class="string">&quot;June&quot;</span>,
+             <span class="string">&quot;July&quot;</span>, <span class="string">&quot;August&quot;</span>, <span class="string">&quot;September&quot;</span>, <span class="string">&quot;October&quot;</span>, <span class="string">&quot;November&quot;</span>, <span class="string">&quot;December&quot;</span>]
+         <span class="name">labelAutoRotation</span>: <span class="number">30</span>
+     }
+     <span class="type"><a href="qml-qtgraphs-categoryaxis3d.html" translate="no">CategoryAxis3D</a></span> {
+         <span class="name">id</span>: <span class="name">totalAxis</span>
+         <span class="name">labels</span>: [<span class="string">&quot;Yearly total&quot;</span>]
+         <span class="name">labelAutoRotation</span>: <span class="number">30</span>
+     }
+     <span class="type"><a href="qml-qtgraphs-categoryaxis3d.html" translate="no">CategoryAxis3D</a></span> {
+         <span class="comment">// For row labels we can use row labels from data proxy, no labels defined for rows.</span>
+         <span class="name">id</span>: <span class="name">rowAxis</span>
+         <span class="name">labelAutoRotation</span>: <span class="number">30</span>
+     }
+
+     <span class="type"><a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a></span> {
+         <span class="name">id</span>: <span class="name">valueAxis</span>
+         <span class="name">min</span>: <span class="number">0</span>
+         <span class="name">max</span>: <span class="number">35</span>
+         <span class="name">labelFormat</span>: <span class="string">&quot;%.2f M\u20AC&quot;</span>
+         <span class="name">title</span>: <span class="string">&quot;Monthly income&quot;</span>
+         <span class="name">labelAutoRotation</span>: <span class="number">90</span>
+     }
+ }
+</pre>

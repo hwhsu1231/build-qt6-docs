@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- magic8ball.qdoc -->
+  <meta name="description" content="Creating a HTTP2 connection between a Qt GRPC client and a C++ gRPC server.">
+  <title>Magic 8 Ball | Qt GRPC 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgrpc-index.html" translate="no">Qt GRPC</a></li>
+<li><a href="qtgrpc-examples.html" translate="no">Qt GRPC Examples</a></li>
+<li>Magic 8 Ball</li>
+<li id="buildversion"><a href="qtgrpc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Magic 8 Ball</h1>
+<!-- $$$magic8ball-brief -->
+<p>Creating a HTTP2 connection between a Qt GRPC client and a C++ gRPC server.</p>
+<!-- @@@magic8ball -->
+<!-- $$$magic8ball-description -->
+<div class="descr" id="details">
+<p>Magic 8 ball shows an answer it receives from a server:</p>
+<p class="centerAlign"><img src="images/answer.webp" alt="" /></p><p>Magic 8 ball has the following components:</p>
+<ul>
+<li><code translate="no">magic8ball</code> Qt GRPC client application that includes the <a href="../qtprotobuf/qt-add-protobuf.html" translate="no">qt_add_protobuf()</a> and <a href="qt-add-grpc.html" translate="no">qt_add_grpc()</a> CMake functions for message and service Qt code generation.</li>
+<li><code translate="no">SimpleGrpcServer</code> application that calls C++ gRPC plugin for generating server code and implementing simple server logic.</li>
+</ul>
+<div class="admonition note">
+<p><b>Note: </b>you need the C++ gRPC plugin installed. Find details here: <a href="qtgrpc-index.html#module-prerequisites" translate="no">Module prerequisites</a></p>
+</div>
+<p>Both components use generated messages from the protobuf schema described in the <code translate="no">exampleservice.proto</code> file:</p>
+<pre class="cpp" translate="no">
+ syntax = &quot;proto3&quot;;
+
+ package qtgrpc.examples;
+
+ message AnswerRequest {
+   string message = 1;
+ }
+
+ message AnswerResponse {
+   string message = 1;
+ }
+
+ service ExampleService {
+   rpc answerMethod(AnswerRequest) returns (AnswerResponse) {}
+ }
+</pre>
+<p>The client application binds on the <code translate="no">localhost</code> with port <code translate="no">50051</code>:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qgrpcchanneloptions.html" translate="no">QGrpcChannelOptions</a></span> channelOptions(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;http://localhost:50051&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span><span class="operator">::</span>StrictMode));
+ m_client<span class="operator">-</span><span class="operator">&gt;</span>attachChannel(std<span class="operator">::</span>make_shared<span class="operator">&lt;</span>QGrpcHttp2Channel<span class="operator">&gt;</span>(channelOptions));
+</pre>
+<p>And sends a request to the server part:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> ClientService<span class="operator">::</span>sendRequest()
+ {
+     <span class="comment">// clean error on UI before new request</span>
+     <span class="keyword">emit</span> errorRecieved(<span class="string">&quot;&quot;</span>);
+
+     AnswerRequest request;
+     request<span class="operator">.</span>setMessage(<span class="string">&quot;sleep&quot;</span>);
+
+     m_client<span class="operator">-</span><span class="operator">&gt;</span>answerMethod(request<span class="operator">,</span> m_response<span class="operator">.</span>get());
+ }
+</pre>
+<p>Click the <b translate="no">Ask question</b> button to send the request to the SimpleGrpcServer application.</p>
+<p>The SimpleGrpcServer application chooses a random answer from the list of answers and sends the data to the client's port.</p>
+<pre class="cpp" translate="no">
+ Status ExampleServiceServiceImpl<span class="operator">::</span>answerMethod(grpc<span class="operator">::</span>ServerContext <span class="operator">*</span><span class="operator">,</span>
+                                                <span class="keyword">const</span> AnswerRequest <span class="operator">*</span>request<span class="operator">,</span>
+                                                AnswerResponse <span class="operator">*</span>response)
+ {
+     <span class="keyword">if</span> (request<span class="operator">-</span><span class="operator">&gt;</span>message() <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;sleep&quot;</span>)
+         <span class="type"><a href="../qtcore/qthread.html" translate="no">QThread</a></span><span class="operator">::</span>msleep(<span class="number">2000</span>);
+
+     response<span class="operator">-</span><span class="operator">&gt;</span>set_message(std<span class="operator">::</span>string(answers<span class="operator">[</span>generateRandomIndex()<span class="operator">]</span>));
+     <span class="keyword">return</span> Status();
+ }
+</pre>
+<p>After receiving a response the client application shows the answer.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtgrpc.git/tree/examples/grpc/magic8ball?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@magic8ball -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;surfacegraphmodifier.h&quot;</span>
+ <span class="preprocessor">#include &quot;highlightseries.h&quot;</span>
+ <span class="preprocessor">#include &quot;topographicseries.h&quot;</span>
+ <span class="preprocessor">#include &quot;custominputhandler.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QtGraphs/qvalue3daxis.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/q3dtheme.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGui/qimage.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/qmath.h&gt;</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
+
+ <span class="keyword">const</span> <span class="type">int</span> sampleCountX <span class="operator">=</span> <span class="number">150</span>;
+ <span class="keyword">const</span> <span class="type">int</span> sampleCountZ <span class="operator">=</span> <span class="number">150</span>;
+ <span class="keyword">const</span> <span class="type">int</span> heightMapGridStepX <span class="operator">=</span> <span class="number">6</span>;
+ <span class="keyword">const</span> <span class="type">int</span> heightMapGridStepZ <span class="operator">=</span> <span class="number">6</span>;
+ <span class="keyword">const</span> <span class="type">float</span> sampleMin <span class="operator">=</span> <span class="operator">-</span><span class="number">8.f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> sampleMax <span class="operator">=</span> <span class="number">8.f</span>;
+
+ <span class="keyword">const</span> <span class="type">float</span> areaWidth <span class="operator">=</span> <span class="number">8000.f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> areaHeight <span class="operator">=</span> <span class="number">8000.f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> aspectRatio <span class="operator">=</span> <span class="number">0.1389f</span>;
+ <span class="keyword">const</span> <span class="type">float</span> minRange <span class="operator">=</span> areaWidth <span class="operator">*</span> <span class="number">0.49f</span>;
+
+ SurfaceGraphModifier<span class="operator">::</span>SurfaceGraphModifier(<span class="type"><a href="q3dsurface.html" translate="no">Q3DSurface</a></span> <span class="operator">*</span>surface<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>label<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent) :
+       <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>(parent)<span class="operator">,</span>
+       m_graph(surface)<span class="operator">,</span>
+       m_textField(label)
+ {
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>setZoomLevel(<span class="number">85.f</span>);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>setCameraPreset(<span class="type"><a href="q3dcamera.html" translate="no">Q3DCamera</a></span><span class="operator">::</span>CameraPresetIsometricRight);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>activeTheme()<span class="operator">-</span><span class="operator">&gt;</span>setType(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ThemeRetro);
+
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>setAxisX(<span class="keyword">new</span> QValue3DAxis);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>setAxisY(<span class="keyword">new</span> QValue3DAxis);
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>setAxisZ(<span class="keyword">new</span> QValue3DAxis);
+
+     <span class="comment">//</span>
+     <span class="comment">// Sqrt Sin</span>
+     <span class="comment">//</span>
+     m_sqrtSinProxy <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html" translate="no">QSurfaceDataProxy</a></span>();
+     m_sqrtSinSeries <span class="operator">=</span> <span class="keyword">new</span> QSurface3DSeries(m_sqrtSinProxy);
+     fillSqrtSinProxy();
+
+     <span class="comment">//</span>
+     <span class="comment">// Multisurface heightmap</span>
+     <span class="comment">//</span>
+     <span class="comment">// Create the first surface layer</span>
+     <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> heightMapImageOne(<span class="string">&quot;:/data/layer_1.png&quot;</span>);
+     m_heightMapProxyOne <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a></span>(heightMapImageOne);
+     m_heightMapSeriesOne <span class="operator">=</span> <span class="keyword">new</span> QSurface3DSeries(m_heightMapProxyOne);
+     m_heightMapSeriesOne<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;(@xLabel, @zLabel): @yLabel&quot;</span>_s);
+     m_heightMapProxyOne<span class="operator">-</span><span class="operator">&gt;</span>setValueRanges(<span class="number">34.f</span><span class="operator">,</span> <span class="number">40.f</span><span class="operator">,</span> <span class="number">18.f</span><span class="operator">,</span> <span class="number">24.f</span>);
+
+     <span class="comment">// Create the other 2 surface layers</span>
+     <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> heightMapImageTwo(<span class="string">&quot;:/data/layer_2.png&quot;</span>);
+     m_heightMapProxyTwo <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a></span>(heightMapImageTwo);
+     m_heightMapSeriesTwo <span class="operator">=</span> <span class="keyword">new</span> QSurface3DSeries(m_heightMapProxyTwo);
+     m_heightMapSeriesTwo<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;(@xLabel, @zLabel): @yLabel&quot;</span>_s);
+     m_heightMapProxyTwo<span class="operator">-</span><span class="operator">&gt;</span>setValueRanges(<span class="number">34.f</span><span class="operator">,</span> <span class="number">40.f</span><span class="operator">,</span> <span class="number">18.f</span><span class="operator">,</span> <span class="number">24.f</span>);
+
+     <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> heightMapImageThree(<span class="string">&quot;:/data/layer_3.png&quot;</span>);
+     m_heightMapProxyThree <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a></span>(heightMapImageThree);
+     m_heightMapSeriesThree <span class="operator">=</span> <span class="keyword">new</span> QSurface3DSeries(m_heightMapProxyThree);
+     m_heightMapSeriesThree<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;(@xLabel, @zLabel): @yLabel&quot;</span>_s);
+     m_heightMapProxyThree<span class="operator">-</span><span class="operator">&gt;</span>setValueRanges(<span class="number">34.f</span><span class="operator">,</span> <span class="number">40.f</span><span class="operator">,</span> <span class="number">18.f</span><span class="operator">,</span> <span class="number">24.f</span>);
+
+     <span class="comment">// The images are the same size, so it's enough to get the dimensions from one</span>
+     m_heightMapWidth <span class="operator">=</span> heightMapImageOne<span class="operator">.</span>width();
+     m_heightMapHeight <span class="operator">=</span> heightMapImageOne<span class="operator">.</span>height();
+
+     <span class="comment">// Set the gradients for multi-surface layers</span>
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> grOne;
+     grOne<span class="operator">.</span>setColorAt(<span class="number">0.</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+     grOne<span class="operator">.</span>setColorAt(<span class="number">0.38</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkYellow);
+     grOne<span class="operator">.</span>setColorAt(<span class="number">0.39</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkGreen);
+     grOne<span class="operator">.</span>setColorAt(<span class="number">0.5</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkGray);
+     grOne<span class="operator">.</span>setColorAt(<span class="number">1.</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>gray);
+     m_heightMapSeriesOne<span class="operator">-</span><span class="operator">&gt;</span>setBaseGradient(grOne);
+     m_heightMapSeriesOne<span class="operator">-</span><span class="operator">&gt;</span>setColorStyle(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ColorStyleRangeGradient);
+
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> grTwo;
+     grTwo<span class="operator">.</span>setColorAt(<span class="number">0.39</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>blue);
+     grTwo<span class="operator">.</span>setColorAt(<span class="number">0.4</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>white);
+     m_heightMapSeriesTwo<span class="operator">-</span><span class="operator">&gt;</span>setBaseGradient(grTwo);
+     m_heightMapSeriesTwo<span class="operator">-</span><span class="operator">&gt;</span>setColorStyle(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ColorStyleRangeGradient);
+
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> grThree;
+     grThree<span class="operator">.</span>setColorAt(<span class="number">0.</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>white);
+     grThree<span class="operator">.</span>setColorAt(<span class="number">0.05</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+     m_heightMapSeriesThree<span class="operator">-</span><span class="operator">&gt;</span>setBaseGradient(grThree);
+     m_heightMapSeriesThree<span class="operator">-</span><span class="operator">&gt;</span>setColorStyle(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ColorStyleRangeGradient);
+
+     <span class="comment">// Custom items and label</span>
+     connect(m_graph<span class="operator">,</span> <span class="operator">&amp;</span>QAbstract3DGraph<span class="operator">::</span>selectedElementChanged<span class="operator">,</span>
+             <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>handleElementSelected);
+
+     m_selectionAnimation <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a></span>(<span class="keyword">this</span>);
+     m_selectionAnimation<span class="operator">-</span><span class="operator">&gt;</span>setPropertyName(<span class="string">&quot;scaling&quot;</span>);
+     m_selectionAnimation<span class="operator">-</span><span class="operator">&gt;</span>setDuration(<span class="number">500</span>);
+     m_selectionAnimation<span class="operator">-</span><span class="operator">&gt;</span>setLoopCount(<span class="operator">-</span><span class="number">1</span>);
+
+     <span class="type"><a href="../qtgui/qfont.html" translate="no">QFont</a></span> titleFont <span class="operator">=</span> <span class="type"><a href="../qtgui/qfont.html" translate="no">QFont</a></span>(<span class="string">&quot;Century Gothic&quot;</span><span class="operator">,</span> <span class="number">30</span>);
+     titleFont<span class="operator">.</span>setBold(<span class="keyword">true</span>);
+     m_titleLabel <span class="operator">=</span> <span class="keyword">new</span> QCustom3DLabel(<span class="string">&quot;Oil Rigs on Imaginary Sea&quot;</span><span class="operator">,</span> titleFont<span class="operator">,</span>
+                                       QVector3D(<span class="number">0.f</span><span class="operator">,</span> <span class="number">1.2f</span><span class="operator">,</span> <span class="number">0.f</span>)<span class="operator">,</span>
+                                       QVector3D(<span class="number">1.f</span><span class="operator">,</span> <span class="number">1.f</span><span class="operator">,</span> <span class="number">0.f</span>)<span class="operator">,</span>
+                                       <span class="type"><a href="../qtgui/qquaternion.html" translate="no">QQuaternion</a></span>());
+     m_titleLabel<span class="operator">-</span><span class="operator">&gt;</span>setPositionAbsolute(<span class="keyword">true</span>);
+     m_titleLabel<span class="operator">-</span><span class="operator">&gt;</span>setFacingCamera(<span class="keyword">true</span>);
+     m_titleLabel<span class="operator">-</span><span class="operator">&gt;</span>setBackgroundColor(<span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span>(<span class="number">0x66cdaa</span>));
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(m_titleLabel);
+     m_titleLabel<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+
+     <span class="comment">// Make two of the custom object visible</span>
+     toggleItemOne(<span class="keyword">true</span>);
+     toggleItemTwo(<span class="keyword">true</span>);
+
+     <span class="comment">//</span>
+     <span class="comment">// Topographic map</span>
+     <span class="comment">//</span>
+     m_topography <span class="operator">=</span> <span class="keyword">new</span> TopographicSeries();
+     m_topography<span class="operator">-</span><span class="operator">&gt;</span>setTopographyFile(<span class="string">&quot;:/data/topography.png&quot;</span><span class="operator">,</span> areaWidth<span class="operator">,</span> areaHeight);
+     m_topography<span class="operator">-</span><span class="operator">&gt;</span>setItemLabelFormat(u<span class="string">&quot;@yLabel m&quot;</span>_s);
+
+     m_highlight <span class="operator">=</span> <span class="keyword">new</span> HighlightSeries();
+     m_highlight<span class="operator">-</span><span class="operator">&gt;</span>setTopographicSeries(m_topography);
+     m_highlight<span class="operator">-</span><span class="operator">&gt;</span>setMinHeight(minRange <span class="operator">*</span> aspectRatio);
+     m_highlight<span class="operator">-</span><span class="operator">&gt;</span>handleGradientChange(areaWidth <span class="operator">*</span> aspectRatio);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">,</span> <span class="operator">&amp;</span>QValue3DAxis<span class="operator">::</span>maxChanged<span class="operator">,</span>
+                      m_highlight<span class="operator">,</span> <span class="operator">&amp;</span>HighlightSeries<span class="operator">::</span>handleGradientChange);
+
+     m_customInputHandler <span class="operator">=</span> <span class="keyword">new</span> CustomInputHandler(m_graph);
+     m_customInputHandler<span class="operator">-</span><span class="operator">&gt;</span>setHighlightSeries(m_highlight);
+     m_customInputHandler<span class="operator">-</span><span class="operator">&gt;</span>setAxes(m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">,</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">,</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ());
+     m_customInputHandler<span class="operator">-</span><span class="operator">&gt;</span>setLimits(<span class="number">0.f</span><span class="operator">,</span> areaWidth<span class="operator">,</span> minRange);
+     m_customInputHandler<span class="operator">-</span><span class="operator">&gt;</span>setAspectRatio(aspectRatio);
+ }
+
+ SurfaceGraphModifier<span class="operator">::</span><span class="operator">~</span>SurfaceGraphModifier()
+ {
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>fillSqrtSinProxy()
+ {
+     <span class="type">float</span> stepX <span class="operator">=</span> (sampleMax <span class="operator">-</span> sampleMin) <span class="operator">/</span> <span class="type">float</span>(sampleCountX <span class="operator">-</span> <span class="number">1</span>);
+     <span class="type">float</span> stepZ <span class="operator">=</span> (sampleMax <span class="operator">-</span> sampleMin) <span class="operator">/</span> <span class="type">float</span>(sampleCountZ <span class="operator">-</span> <span class="number">1</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>dataArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span>;
+     dataArray<span class="operator">-</span><span class="operator">&gt;</span>reserve(sampleCountZ);
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span> ; i <span class="operator">&lt;</span> sampleCountZ ; <span class="operator">+</span><span class="operator">+</span>i) {
+         <span class="keyword">auto</span> <span class="operator">*</span>newRow <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataRow-typedef" translate="no">QSurfaceDataRow</a></span>;
+         newRow<span class="operator">-</span><span class="operator">&gt;</span>reserve(sampleCountX);
+         <span class="comment">// Keep values within range bounds, since just adding step can cause minor drift due</span>
+         <span class="comment">// to the rounding errors.</span>
+         <span class="type">float</span> z <span class="operator">=</span> qMin(sampleMax<span class="operator">,</span> (i <span class="operator">*</span> stepZ <span class="operator">+</span> sampleMin));
+         <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="number">0</span>; j <span class="operator">&lt;</span> sampleCountX; <span class="operator">+</span><span class="operator">+</span>j) {
+             <span class="type">float</span> x <span class="operator">=</span> qMin(sampleMax<span class="operator">,</span> (j <span class="operator">*</span> stepX <span class="operator">+</span> sampleMin));
+             <span class="type">float</span> R <span class="operator">=</span> qSqrt(z <span class="operator">*</span> z <span class="operator">+</span> x <span class="operator">*</span> x) <span class="operator">+</span> <span class="number">0.01f</span>;
+             <span class="type">float</span> y <span class="operator">=</span> (<a href="../qtcore/qtmath.html#qSin" translate="no">qSin</a>(R) <span class="operator">/</span> R <span class="operator">+</span> <span class="number">0.24f</span>) <span class="operator">*</span> <span class="number">1.61f</span>;
+             newRow<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="type"><a href="qsurfacedataitem.html" translate="no">QSurfaceDataItem</a></span>({x<span class="operator">,</span> y<span class="operator">,</span> z}));
+         }
+         dataArray<span class="operator">-</span><span class="operator">&gt;</span>append(newRow);
+     }
+
+     m_sqrtSinProxy<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataArray);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>enableSqrtSinModel(<span class="type">bool</span> enable)
+ {
+     <span class="keyword">if</span> (enable) {
+         m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawSurfaceAndWireframe);
+         m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setFlatShadingEnabled(<span class="keyword">true</span>);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%.2f&quot;</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%.2f&quot;</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setRange(sampleMin<span class="operator">,</span> sampleMax);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0.f</span><span class="operator">,</span> <span class="number">2.f</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setRange(sampleMin<span class="operator">,</span> sampleMax);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">30.f</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">90.f</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">30.f</span>);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_heightMapSeriesOne);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_heightMapSeriesTwo);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_heightMapSeriesThree);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_topography);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_highlight);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_sqrtSinSeries);
+
+         m_titleLabel<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">false</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">false</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">false</span>);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setTitle({});
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setTitle({});
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setTitle({});
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>setActiveInputHandler(m_defaultInputHandler);
+
+         <span class="comment">// Reset range sliders for Sqrt &amp; Sin</span>
+         m_rangeMinX <span class="operator">=</span> sampleMin;
+         m_rangeMinZ <span class="operator">=</span> sampleMin;
+         m_stepX <span class="operator">=</span> (sampleMax <span class="operator">-</span> sampleMin) <span class="operator">/</span> <span class="type">float</span>(sampleCountX <span class="operator">-</span> <span class="number">1</span>);
+         m_stepZ <span class="operator">=</span> (sampleMax <span class="operator">-</span> sampleMin) <span class="operator">/</span> <span class="type">float</span>(sampleCountZ <span class="operator">-</span> <span class="number">1</span>);
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(sampleCountX <span class="operator">-</span> <span class="number">2</span>);
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(sampleCountX <span class="operator">-</span> <span class="number">1</span>);
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(sampleCountX <span class="operator">-</span> <span class="number">1</span>);
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(sampleCountZ <span class="operator">-</span> <span class="number">2</span>);
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(sampleCountZ <span class="operator">-</span> <span class="number">1</span>);
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(sampleCountZ <span class="operator">-</span> <span class="number">1</span>);
+     }
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>enableHeightMapModel(<span class="type">bool</span> enable)
+ {
+     <span class="keyword">if</span> (enable) {
+         m_heightMapSeriesOne<span class="operator">-</span><span class="operator">&gt;</span>setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawSurface);
+         m_heightMapSeriesOne<span class="operator">-</span><span class="operator">&gt;</span>setFlatShadingEnabled(<span class="keyword">false</span>);
+         m_heightMapSeriesTwo<span class="operator">-</span><span class="operator">&gt;</span>setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawSurface);
+         m_heightMapSeriesTwo<span class="operator">-</span><span class="operator">&gt;</span>setFlatShadingEnabled(<span class="keyword">false</span>);
+         m_heightMapSeriesThree<span class="operator">-</span><span class="operator">&gt;</span>setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawSurface);
+         m_heightMapSeriesThree<span class="operator">-</span><span class="operator">&gt;</span>setFlatShadingEnabled(<span class="keyword">false</span>);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%.1f N&quot;</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%.1f E&quot;</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">34.f</span><span class="operator">,</span> <span class="number">40.f</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setAutoAdjustRange(<span class="keyword">true</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">18.f</span><span class="operator">,</span> <span class="number">24.f</span>);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setTitle(u<span class="string">&quot;Latitude&quot;</span>_s);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setTitle(u<span class="string">&quot;Height&quot;</span>_s);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setTitle(u<span class="string">&quot;Longitude&quot;</span>_s);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_sqrtSinSeries);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_topography);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_highlight);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_heightMapSeriesOne);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_heightMapSeriesTwo);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_heightMapSeriesThree);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>setActiveInputHandler(m_defaultInputHandler);
+
+         m_titleLabel<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">true</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+
+         <span class="comment">// Reset range sliders for height map</span>
+         <span class="type">int</span> mapGridCountX <span class="operator">=</span> m_heightMapWidth <span class="operator">/</span> heightMapGridStepX;
+         <span class="type">int</span> mapGridCountZ <span class="operator">=</span> m_heightMapHeight <span class="operator">/</span> heightMapGridStepZ;
+         m_rangeMinX <span class="operator">=</span> <span class="number">34.f</span>;
+         m_rangeMinZ <span class="operator">=</span> <span class="number">18.f</span>;
+         m_stepX <span class="operator">=</span> <span class="number">6.f</span> <span class="operator">/</span> <span class="type">float</span>(mapGridCountX <span class="operator">-</span> <span class="number">1</span>);
+         m_stepZ <span class="operator">=</span> <span class="number">6.f</span> <span class="operator">/</span> <span class="type">float</span>(mapGridCountZ <span class="operator">-</span> <span class="number">1</span>);
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(mapGridCountX <span class="operator">-</span> <span class="number">2</span>);
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(mapGridCountX <span class="operator">-</span> <span class="number">1</span>);
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(mapGridCountX <span class="operator">-</span> <span class="number">1</span>);
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(mapGridCountZ <span class="operator">-</span> <span class="number">2</span>);
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(mapGridCountZ <span class="operator">-</span> <span class="number">1</span>);
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(mapGridCountZ <span class="operator">-</span> <span class="number">1</span>);
+     }
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>enableTopographyModel(<span class="type">bool</span> enable)
+ {
+     <span class="keyword">if</span> (enable) {
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%i&quot;</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setLabelFormat(<span class="string">&quot;%i&quot;</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0.f</span><span class="operator">,</span> areaWidth);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">100.f</span><span class="operator">,</span> areaWidth <span class="operator">*</span> aspectRatio);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0.f</span><span class="operator">,</span> areaHeight);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">30.f</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">90.f</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setLabelAutoRotation(<span class="number">30.f</span>);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_sqrtSinSeries);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_heightMapSeriesOne);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_heightMapSeriesTwo);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeSeries(m_heightMapSeriesThree);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_topography);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_highlight);
+
+         m_titleLabel<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">false</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">false</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">false</span>);
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setTitle({});
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisY()<span class="operator">-</span><span class="operator">&gt;</span>setTitle({});
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setTitle({});
+
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>setActiveInputHandler(m_customInputHandler);
+
+         <span class="comment">// Reset range sliders for topography map</span>
+         m_rangeMinX <span class="operator">=</span> <span class="number">0.f</span>;
+         m_rangeMinZ <span class="operator">=</span> <span class="number">0.f</span>;
+         m_stepX <span class="operator">=</span> <span class="number">1.f</span>;
+         m_stepZ <span class="operator">=</span> <span class="number">1.f</span>;
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(areaWidth <span class="operator">-</span> <span class="number">200</span>);
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">200</span>);
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(areaWidth);
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(areaWidth);
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(areaHeight <span class="operator">-</span> <span class="number">200</span>);
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">200</span>);
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(areaHeight);
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(areaHeight);
+     }
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>adjustXMin(<span class="type">int</span> min)
+ {
+     <span class="type">float</span> minX <span class="operator">=</span> m_stepX <span class="operator">*</span> <span class="type">float</span>(min) <span class="operator">+</span> m_rangeMinX;
+
+     <span class="type">int</span> max <span class="operator">=</span> m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>value();
+     <span class="keyword">if</span> (min <span class="operator">&gt;</span><span class="operator">=</span> max) {
+         max <span class="operator">=</span> min <span class="operator">+</span> <span class="number">1</span>;
+         m_axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(max);
+     }
+     <span class="type">float</span> maxX <span class="operator">=</span> m_stepX <span class="operator">*</span> max <span class="operator">+</span> m_rangeMinX;
+
+     setAxisXRange(minX<span class="operator">,</span> maxX);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>adjustXMax(<span class="type">int</span> max)
+ {
+     <span class="type">float</span> maxX <span class="operator">=</span> m_stepX <span class="operator">*</span> <span class="type">float</span>(max) <span class="operator">+</span> m_rangeMinX;
+
+     <span class="type">int</span> min <span class="operator">=</span> m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>value();
+     <span class="keyword">if</span> (max <span class="operator">&lt;</span><span class="operator">=</span> min) {
+         min <span class="operator">=</span> max <span class="operator">-</span> <span class="number">1</span>;
+         m_axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(min);
+     }
+     <span class="type">float</span> minX <span class="operator">=</span> m_stepX <span class="operator">*</span> min <span class="operator">+</span> m_rangeMinX;
+
+     setAxisXRange(minX<span class="operator">,</span> maxX);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>adjustZMin(<span class="type">int</span> min)
+ {
+     <span class="type">float</span> minZ <span class="operator">=</span> m_stepZ <span class="operator">*</span> <span class="type">float</span>(min) <span class="operator">+</span> m_rangeMinZ;
+
+     <span class="type">int</span> max <span class="operator">=</span> m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>value();
+     <span class="keyword">if</span> (min <span class="operator">&gt;</span><span class="operator">=</span> max) {
+         max <span class="operator">=</span> min <span class="operator">+</span> <span class="number">1</span>;
+         m_axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(max);
+     }
+     <span class="type">float</span> maxZ <span class="operator">=</span> m_stepZ <span class="operator">*</span> max <span class="operator">+</span> m_rangeMinZ;
+
+     setAxisZRange(minZ<span class="operator">,</span> maxZ);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>adjustZMax(<span class="type">int</span> max)
+ {
+     <span class="type">float</span> maxX <span class="operator">=</span> m_stepZ <span class="operator">*</span> <span class="type">float</span>(max) <span class="operator">+</span> m_rangeMinZ;
+
+     <span class="type">int</span> min <span class="operator">=</span> m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>value();
+     <span class="keyword">if</span> (max <span class="operator">&lt;</span><span class="operator">=</span> min) {
+         min <span class="operator">=</span> max <span class="operator">-</span> <span class="number">1</span>;
+         m_axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setValue(min);
+     }
+     <span class="type">float</span> minX <span class="operator">=</span> m_stepZ <span class="operator">*</span> min <span class="operator">+</span> m_rangeMinZ;
+
+     setAxisZRange(minX<span class="operator">,</span> maxX);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>setAxisXRange(<span class="type">float</span> min<span class="operator">,</span> <span class="type">float</span> max)
+ {
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisX()<span class="operator">-</span><span class="operator">&gt;</span>setRange(min<span class="operator">,</span> max);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>setAxisZRange(<span class="type">float</span> min<span class="operator">,</span> <span class="type">float</span> max)
+ {
+     m_graph<span class="operator">-</span><span class="operator">&gt;</span>axisZ()<span class="operator">-</span><span class="operator">&gt;</span>setRange(min<span class="operator">,</span> max);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>setBlackToYellowGradient()
+ {
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> gr;
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.33f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>blue);
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.67f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+     gr<span class="operator">.</span>setColorAt(<span class="number">1.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>yellow);
+
+     m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setBaseGradient(gr);
+     m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setColorStyle(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ColorStyleRangeGradient);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>setGreenToRedGradient()
+ {
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> gr;
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkGreen);
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.5f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>yellow);
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.8f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+     gr<span class="operator">.</span>setColorAt(<span class="number">1.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkRed);
+
+     m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setBaseGradient(gr);
+     m_sqrtSinSeries<span class="operator">-</span><span class="operator">&gt;</span>setColorStyle(<span class="type"><a href="q3dtheme.html" translate="no">Q3DTheme</a></span><span class="operator">::</span>ColorStyleRangeGradient);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>toggleItemOne(<span class="type">bool</span> show)
+ {
+     QVector3D positionOne <span class="operator">=</span> QVector3D(<span class="number">39.f</span><span class="operator">,</span> <span class="number">77.f</span><span class="operator">,</span> <span class="number">19.2f</span>);
+     QVector3D positionOnePipe <span class="operator">=</span> QVector3D(<span class="number">39.f</span><span class="operator">,</span> <span class="number">45.f</span><span class="operator">,</span> <span class="number">19.2f</span>);
+     QVector3D positionOneLabel <span class="operator">=</span> QVector3D(<span class="number">39.f</span><span class="operator">,</span> <span class="number">107.f</span><span class="operator">,</span> <span class="number">19.2f</span>);
+     <span class="keyword">if</span> (show) {
+         <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> color <span class="operator">=</span> <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span>(<span class="number">2</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span><span class="operator">::</span>Format_RGB32);
+         color<span class="operator">.</span>fill(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+         <span class="keyword">auto</span> <span class="operator">*</span>item <span class="operator">=</span> <span class="keyword">new</span> QCustom3DItem(<span class="string">&quot;:/data/oilrig.mesh&quot;</span><span class="operator">,</span> positionOne<span class="operator">,</span>
+                                                 QVector3D(<span class="number">0.025f</span><span class="operator">,</span> <span class="number">0.025f</span><span class="operator">,</span> <span class="number">0.025f</span>)<span class="operator">,</span>
+                                                 <span class="type"><a href="../qtgui/qquaternion.html" translate="no">QQuaternion</a></span><span class="operator">::</span>fromAxisAndAngle(<span class="number">0.f</span><span class="operator">,</span> <span class="number">1.f</span><span class="operator">,</span> <span class="number">0.f</span><span class="operator">,</span> <span class="number">45.f</span>)<span class="operator">,</span>
+                                                 color);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(item);
+         item <span class="operator">=</span> <span class="keyword">new</span> QCustom3DItem(<span class="string">&quot;:/data/pipe.mesh&quot;</span><span class="operator">,</span> positionOnePipe<span class="operator">,</span>
+                                  QVector3D(<span class="number">0.005f</span><span class="operator">,</span> <span class="number">0.5f</span><span class="operator">,</span> <span class="number">0.005f</span>)<span class="operator">,</span>
+                                  <span class="type"><a href="../qtgui/qquaternion.html" translate="no">QQuaternion</a></span>()<span class="operator">,</span>
+                                  color);
+         item<span class="operator">-</span><span class="operator">&gt;</span>setShadowCasting(<span class="keyword">false</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(item);
+
+         <span class="keyword">auto</span> <span class="operator">*</span>label <span class="operator">=</span> <span class="keyword">new</span> QCustom3DLabel();
+         label<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="string">&quot;Oil Rig One&quot;</span>);
+         label<span class="operator">-</span><span class="operator">&gt;</span>setPosition(positionOneLabel);
+         label<span class="operator">-</span><span class="operator">&gt;</span>setScaling(QVector3D(<span class="number">1.f</span><span class="operator">,</span> <span class="number">1.f</span><span class="operator">,</span> <span class="number">1.f</span>));
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(label);
+     } <span class="keyword">else</span> {
+         resetSelection();
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeCustomItemAt(positionOne);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeCustomItemAt(positionOnePipe);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeCustomItemAt(positionOneLabel);
+     }
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>toggleItemTwo(<span class="type">bool</span> show)
+ {
+     QVector3D positionTwo <span class="operator">=</span> QVector3D(<span class="number">34.5f</span><span class="operator">,</span> <span class="number">77.f</span><span class="operator">,</span> <span class="number">23.4f</span>);
+     QVector3D positionTwoPipe <span class="operator">=</span> QVector3D(<span class="number">34.5f</span><span class="operator">,</span> <span class="number">45.f</span><span class="operator">,</span> <span class="number">23.4f</span>);
+     QVector3D positionTwoLabel <span class="operator">=</span> QVector3D(<span class="number">34.5f</span><span class="operator">,</span> <span class="number">107.f</span><span class="operator">,</span> <span class="number">23.4f</span>);
+     <span class="keyword">if</span> (show) {
+         <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> color <span class="operator">=</span> <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span>(<span class="number">2</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span><span class="operator">::</span>Format_RGB32);
+         color<span class="operator">.</span>fill(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+         <span class="keyword">auto</span> <span class="operator">*</span>item <span class="operator">=</span> <span class="keyword">new</span> QCustom3DItem();
+         item<span class="operator">-</span><span class="operator">&gt;</span>setMeshFile(<span class="string">&quot;:/data/oilrig.mesh&quot;</span>);
+         item<span class="operator">-</span><span class="operator">&gt;</span>setPosition(positionTwo);
+         item<span class="operator">-</span><span class="operator">&gt;</span>setScaling(QVector3D(<span class="number">0.025f</span><span class="operator">,</span> <span class="number">0.025f</span><span class="operator">,</span> <span class="number">0.025f</span>));
+         item<span class="operator">-</span><span class="operator">&gt;</span>setRotation(<span class="type"><a href="../qtgui/qquaternion.html" translate="no">QQuaternion</a></span><span class="operator">::</span>fromAxisAndAngle(<span class="number">0.f</span><span class="operator">,</span> <span class="number">1.f</span><span class="operator">,</span> <span class="number">0.f</span><span class="operator">,</span> <span class="number">25.f</span>));
+         item<span class="operator">-</span><span class="operator">&gt;</span>setTextureImage(color);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(item);
+         item <span class="operator">=</span> <span class="keyword">new</span> QCustom3DItem(<span class="string">&quot;:/data/pipe.mesh&quot;</span><span class="operator">,</span> positionTwoPipe<span class="operator">,</span>
+                                  QVector3D(<span class="number">0.005f</span><span class="operator">,</span> <span class="number">0.5f</span><span class="operator">,</span> <span class="number">0.005f</span>)<span class="operator">,</span>
+                                  <span class="type"><a href="../qtgui/qquaternion.html" translate="no">QQuaternion</a></span>()<span class="operator">,</span>
+                                  color);
+         item<span class="operator">-</span><span class="operator">&gt;</span>setShadowCasting(<span class="keyword">false</span>);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(item);
+
+         <span class="keyword">auto</span> <span class="operator">*</span>label <span class="operator">=</span> <span class="keyword">new</span> QCustom3DLabel();
+         label<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="string">&quot;Oil Rig Two&quot;</span>);
+         label<span class="operator">-</span><span class="operator">&gt;</span>setPosition(positionTwoLabel);
+         label<span class="operator">-</span><span class="operator">&gt;</span>setScaling(QVector3D(<span class="number">1.f</span><span class="operator">,</span> <span class="number">1.f</span><span class="operator">,</span> <span class="number">1.f</span>));
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(label);
+     } <span class="keyword">else</span> {
+         resetSelection();
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeCustomItemAt(positionTwo);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeCustomItemAt(positionTwoPipe);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeCustomItemAt(positionTwoLabel);
+     }
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>toggleItemThree(<span class="type">bool</span> show)
+ {
+     QVector3D positionThree <span class="operator">=</span> QVector3D(<span class="number">34.5f</span><span class="operator">,</span> <span class="number">86.f</span><span class="operator">,</span> <span class="number">19.1f</span>);
+     QVector3D positionThreeLabel <span class="operator">=</span> QVector3D(<span class="number">34.5f</span><span class="operator">,</span> <span class="number">116.f</span><span class="operator">,</span> <span class="number">19.1f</span>);
+     <span class="keyword">if</span> (show) {
+         <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> color <span class="operator">=</span> <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span>(<span class="number">2</span><span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span><span class="operator">::</span>Format_RGB32);
+         color<span class="operator">.</span>fill(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkMagenta);
+         <span class="keyword">auto</span> <span class="operator">*</span>item <span class="operator">=</span> <span class="keyword">new</span> QCustom3DItem();
+         item<span class="operator">-</span><span class="operator">&gt;</span>setMeshFile(<span class="string">&quot;:/data/refinery.mesh&quot;</span>);
+         item<span class="operator">-</span><span class="operator">&gt;</span>setPosition(positionThree);
+         item<span class="operator">-</span><span class="operator">&gt;</span>setScaling(QVector3D(<span class="number">0.04f</span><span class="operator">,</span> <span class="number">0.04f</span><span class="operator">,</span> <span class="number">0.04f</span>));
+         item<span class="operator">-</span><span class="operator">&gt;</span>setRotation(<span class="type"><a href="../qtgui/qquaternion.html" translate="no">QQuaternion</a></span><span class="operator">::</span>fromAxisAndAngle(<span class="number">0.f</span><span class="operator">,</span> <span class="number">1.f</span><span class="operator">,</span> <span class="number">0.f</span><span class="operator">,</span> <span class="number">75.f</span>));
+         item<span class="operator">-</span><span class="operator">&gt;</span>setTextureImage(color);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(item);
+
+         <span class="keyword">auto</span> <span class="operator">*</span>label <span class="operator">=</span> <span class="keyword">new</span> QCustom3DLabel();
+         label<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="string">&quot;Refinery&quot;</span>);
+         label<span class="operator">-</span><span class="operator">&gt;</span>setPosition(positionThreeLabel);
+         label<span class="operator">-</span><span class="operator">&gt;</span>setScaling(QVector3D(<span class="number">1.f</span><span class="operator">,</span> <span class="number">1.f</span><span class="operator">,</span> <span class="number">1.f</span>));
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>addCustomItem(label);
+     } <span class="keyword">else</span> {
+         resetSelection();
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeCustomItemAt(positionThree);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>removeCustomItemAt(positionThreeLabel);
+     }
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>toggleSeeThrough(<span class="type">bool</span> seethrough)
+ {
+     <span class="keyword">if</span> (seethrough) {
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">-</span><span class="operator">&gt;</span>setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawWireframe);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">1</span>)<span class="operator">-</span><span class="operator">&gt;</span>setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawWireframe);
+     } <span class="keyword">else</span> {
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">0</span>)<span class="operator">-</span><span class="operator">&gt;</span>setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawSurface);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">1</span>)<span class="operator">-</span><span class="operator">&gt;</span>setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawSurface);
+     }
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>toggleOilHighlight(<span class="type">bool</span> highlight)
+ {
+     <span class="keyword">if</span> (highlight) {
+         <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> grThree;
+         grThree<span class="operator">.</span>setColorAt(<span class="number">0.0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+         grThree<span class="operator">.</span>setColorAt(<span class="number">0.05</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">2</span>)<span class="operator">-</span><span class="operator">&gt;</span>setBaseGradient(grThree);
+     } <span class="keyword">else</span> {
+         <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> grThree;
+         grThree<span class="operator">.</span>setColorAt(<span class="number">0.0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>white);
+         grThree<span class="operator">.</span>setColorAt(<span class="number">0.05</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>seriesList()<span class="operator">.</span>at(<span class="number">2</span>)<span class="operator">-</span><span class="operator">&gt;</span>setBaseGradient(grThree);
+     }
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>toggleShadows(<span class="type">bool</span> shadows)
+ {
+     <span class="keyword">if</span> (shadows)
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>setShadowQuality(QAbstract3DGraph<span class="operator">::</span>ShadowQualityMedium);
+     <span class="keyword">else</span>
+         m_graph<span class="operator">-</span><span class="operator">&gt;</span>setShadowQuality(QAbstract3DGraph<span class="operator">::</span>ShadowQualityNone);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>toggleSurfaceTexture(<span class="type">bool</span> enable)
+ {
+     <span class="keyword">if</span> (enable)
+         m_topography<span class="operator">-</span><span class="operator">&gt;</span>setTextureFile(<span class="string">&quot;:/data/maptexture.jpg&quot;</span>);
+     <span class="keyword">else</span>
+         m_topography<span class="operator">-</span><span class="operator">&gt;</span>setTextureFile(<span class="string">&quot;&quot;</span>);
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>handleElementSelected(QAbstract3DGraph<span class="operator">::</span>ElementType type)
+ {
+     resetSelection();
+     <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> QAbstract3DGraph<span class="operator">::</span>ElementCustomItem) {
+         QCustom3DItem <span class="operator">*</span>item <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>selectedCustomItem();
+         <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> text;
+         <span class="keyword">if</span> (qobject_cast<span class="operator">&lt;</span>QCustom3DLabel <span class="operator">*</span><span class="operator">&gt;</span>(item) <span class="operator">!</span><span class="operator">=</span> <span class="number">0</span>) {
+             text<span class="operator">.</span>append(<span class="string">&quot;Custom label: &quot;</span>);
+         } <span class="keyword">else</span> {
+             <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> split <span class="operator">=</span> item<span class="operator">-</span><span class="operator">&gt;</span>meshFile()<span class="operator">.</span>split(<span class="string">&quot;/&quot;</span>);
+             text<span class="operator">.</span>append(split<span class="operator">.</span>last());
+             text<span class="operator">.</span>append(<span class="string">&quot;: &quot;</span>);
+         }
+         <span class="type">int</span> index <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>selectedCustomItemIndex();
+         text<span class="operator">.</span>append(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(index));
+         m_textField<span class="operator">-</span><span class="operator">&gt;</span>setText(text);
+         m_previouslyAnimatedItem <span class="operator">=</span> item;
+         m_previousScaling <span class="operator">=</span> item<span class="operator">-</span><span class="operator">&gt;</span>scaling();
+         m_selectionAnimation<span class="operator">-</span><span class="operator">&gt;</span>setTargetObject(item);
+         m_selectionAnimation<span class="operator">-</span><span class="operator">&gt;</span>setStartValue(item<span class="operator">-</span><span class="operator">&gt;</span>scaling());
+         m_selectionAnimation<span class="operator">-</span><span class="operator">&gt;</span>setEndValue(item<span class="operator">-</span><span class="operator">&gt;</span>scaling() <span class="operator">*</span> <span class="number">1.5f</span>);
+         m_selectionAnimation<span class="operator">-</span><span class="operator">&gt;</span>start();
+     } <span class="keyword">else</span> <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> QAbstract3DGraph<span class="operator">::</span>ElementSeries) {
+         <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> text <span class="operator">=</span> <span class="string">&quot;Surface (&quot;</span>;
+         QSurface3DSeries <span class="operator">*</span>series <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>selectedSeries();
+         <span class="keyword">if</span> (series) {
+             <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> point <span class="operator">=</span> series<span class="operator">-</span><span class="operator">&gt;</span>selectedPoint();
+             <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> posStr;
+             posStr<span class="operator">.</span>setNum(point<span class="operator">.</span>x());
+             text<span class="operator">.</span>append(posStr);
+             text<span class="operator">.</span>append(<span class="string">&quot;, &quot;</span>);
+             posStr<span class="operator">.</span>setNum(point<span class="operator">.</span>y());
+             text<span class="operator">.</span>append(posStr);
+         }
+         text<span class="operator">.</span>append(<span class="string">&quot;)&quot;</span>);
+         m_textField<span class="operator">-</span><span class="operator">&gt;</span>setText(text);
+     } <span class="keyword">else</span> <span class="keyword">if</span> (type <span class="operator">&gt;</span> QAbstract3DGraph<span class="operator">::</span>ElementSeries
+                <span class="operator">&amp;</span><span class="operator">&amp;</span> type <span class="operator">&lt;</span> QAbstract3DGraph<span class="operator">::</span>ElementCustomItem) {
+         <span class="type">int</span> index <span class="operator">=</span> m_graph<span class="operator">-</span><span class="operator">&gt;</span>selectedLabelIndex();
+         <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> text;
+         <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> QAbstract3DGraph<span class="operator">::</span>ElementAxisXLabel)
+             text<span class="operator">.</span>append(<span class="string">&quot;Axis X label: &quot;</span>);
+         <span class="keyword">else</span> <span class="keyword">if</span> (type <span class="operator">=</span><span class="operator">=</span> QAbstract3DGraph<span class="operator">::</span>ElementAxisYLabel)
+             text<span class="operator">.</span>append(<span class="string">&quot;Axis Y label: &quot;</span>);
+         <span class="keyword">else</span>
+             text<span class="operator">.</span>append(<span class="string">&quot;Axis Z label: &quot;</span>);
+         text<span class="operator">.</span>append(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(index));
+         m_textField<span class="operator">-</span><span class="operator">&gt;</span>setText(text);
+     } <span class="keyword">else</span> {
+         m_textField<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="string">&quot;Nothing&quot;</span>);
+     }
+ }
+
+ <span class="type">void</span> SurfaceGraphModifier<span class="operator">::</span>resetSelection()
+ {
+     m_selectionAnimation<span class="operator">-</span><span class="operator">&gt;</span>stop();
+     <span class="keyword">if</span> (m_previouslyAnimatedItem)
+         m_previouslyAnimatedItem<span class="operator">-</span><span class="operator">&gt;</span>setScaling(m_previousScaling);
+     m_previouslyAnimatedItem <span class="operator">=</span> nullptr;
+ }
+</pre>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;bargraph.h&quot;</span>
+ <span class="preprocessor">#include &quot;scattergraph.h&quot;</span>
+ <span class="preprocessor">#include &quot;surfacegraph.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QtWidgets/qapplication.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qwidget.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qtabwidget.h&gt;</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
+
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
+ {
+     <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span> app(argc<span class="operator">,</span> argv);
+
+     <span class="comment">// Create bar graph</span>
+     BarGraph bars;
+
+     <span class="comment">// Create scatter graph</span>
+     ScatterGraph scatter;
+
+     <span class="comment">// Create surface graph</span>
+     SurfaceGraph surface;
+
+     <span class="comment">// Create a tab widget for creating own tabs for Q3DBars, Q3DScatter, and Q3DSurface</span>
+     <span class="type"><a href="../qtwidgets/qtabwidget.html" translate="no">QTabWidget</a></span> tabWidget;
+     tabWidget<span class="operator">.</span>setWindowTitle(u<span class="string">&quot;Graph Gallery&quot;</span>_s);
+
+     <span class="comment">// Add bars widget</span>
+     tabWidget<span class="operator">.</span>addTab(bars<span class="operator">.</span>barsWidget()<span class="operator">,</span> u<span class="string">&quot;Bar Graph&quot;</span>_s);
+     <span class="comment">// Add scatter widget</span>
+     tabWidget<span class="operator">.</span>addTab(scatter<span class="operator">.</span>scatterWidget()<span class="operator">,</span> u<span class="string">&quot;Scatter Graph&quot;</span>_s);
+     <span class="comment">// Add surface widget</span>
+     tabWidget<span class="operator">.</span>addTab(surface<span class="operator">.</span>surfaceWidget()<span class="operator">,</span> u<span class="string">&quot;Surface Graph&quot;</span>_s);
+
+     tabWidget<span class="operator">.</span>show();
+     <span class="keyword">return</span> app<span class="operator">.</span>exec();
+ }
+</pre>

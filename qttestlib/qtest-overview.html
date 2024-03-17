@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qttestlib-manual.qdoc -->
+  <meta name="description" content="Overview of the Qt unit testing framework.">
+  <title>Qt Test Overview | Qt Test 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qttest-index.html" translate="no">Qt Test</a></li>
+<li>Qt Test Overview</li>
+<li id="buildversion"><a href="qttest-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#creating-a-test">Creating a Test</a></li>
+<li class="level1"><a href="#increasing-test-function-timeout">Increasing Test Function Timeout</a></li>
+<li class="level1"><a href="#building-a-test">Building a Test</a></li>
+<li class="level2"><a href="#building-with-cmake-and-ctest">Building with CMake and CTest</a></li>
+<li class="level2"><a href="#building-with-qmake">Building with qmake</a></li>
+<li class="level2"><a href="#building-with-other-tools">Building with Other Tools</a></li>
+<li class="level1"><a href="#qt-test-command-line-arguments">Qt Test Command Line Arguments</a></li>
+<li class="level2"><a href="#syntax">Syntax</a></li>
+<li class="level2"><a href="#options">Options</a></li>
+<li class="level1"><a href="#qt-test-environment-variables">Qt Test Environment Variables</a></li>
+<li class="level1"><a href="#creating-a-benchmark">Creating a Benchmark</a></li>
+<li class="level2"><a href="#selecting-the-measurement-back-end">Selecting the Measurement Back-end</a></li>
+<li class="level1"><a href="#using-global-test-data">Using Global Test Data</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt Test Overview</h1>
+<!-- $$$qtest-overview.html-description -->
+<div class="descr" id="details">
+<p>Qt Test is a framework for unit testing Qt based applications and libraries. Qt Test provides all the functionality commonly found in unit testing frameworks as well as extensions for testing graphical user interfaces.</p>
+<p>Qt Test is designed to ease the writing of unit tests for Qt based applications and libraries:</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Feature</th><th >Details</th></tr></thead>
+<tr valign="top" class="odd"><td ><b>Lightweight</b></td><td >Qt Test consists of about 6000 lines of code and 60 exported symbols.</td></tr>
+<tr valign="top" class="even"><td ><b>Self-contained</b></td><td >Qt Test requires only a few symbols from the Qt Core module for non-gui testing.</td></tr>
+<tr valign="top" class="odd"><td ><b>Rapid testing</b></td><td >Qt Test needs no special test-runners; no special registration for tests.</td></tr>
+<tr valign="top" class="even"><td ><b>Data-driven testing</b></td><td >A test can be executed multiple times with different test data.</td></tr>
+<tr valign="top" class="odd"><td ><b>Basic GUI testing</b></td><td >Qt Test offers functionality for mouse and keyboard simulation.</td></tr>
+<tr valign="top" class="even"><td ><b>Benchmarking</b></td><td >Qt Test supports benchmarking and provides several measurement back-ends.</td></tr>
+<tr valign="top" class="odd"><td ><b>IDE friendly</b></td><td >Qt Test outputs messages that can be interpreted by Qt Creator, Visual Studio, and KDevelop.</td></tr>
+<tr valign="top" class="even"><td ><b>Thread-safety</b></td><td >The error reporting is thread safe and atomic.</td></tr>
+<tr valign="top" class="odd"><td ><b>Type-safety</b></td><td >Extensive use of templates prevent errors introduced by implicit type casting.</td></tr>
+<tr valign="top" class="even"><td ><b>Easily extendable</b></td><td >Custom types can easily be added to the test data and test output.</td></tr>
+</table></div>
+<p>You can use a Qt Creator wizard to create a project that contains Qt tests and build and run them directly from Qt Creator. For more information, see <a href="https://doc.qt.io/qtcreator/creator-autotest.html" translate="no">Running Autotests</a>.</p>
+<h2 id="creating-a-test">Creating a Test</h2>
+<p>To create a test, subclass <a href="../qtcore/qobject.html" translate="no">QObject</a> and add one or more private slots to it. Each private slot is a test function in your test. <a href="qtest.html#qExec" translate="no">QTest::qExec</a>() can be used to execute all test functions in the test object.</p>
+<p>In addition, you can define the following private slots that are <i>not</i> treated as test functions. When present, they will be executed by the testing framework and can be used to initialize and clean up either the entire test or the current test function.</p>
+<ul>
+<li><code translate="no">initTestCase()</code> will be called before the first test function is executed.</li>
+<li><code translate="no">initTestCase_data()</code> will be called to create a global test data table.</li>
+<li><code translate="no">cleanupTestCase()</code> will be called after the last test function was executed.</li>
+<li><code translate="no">init()</code> will be called before each test function is executed.</li>
+<li><code translate="no">cleanup()</code> will be called after every test function.</li>
+</ul>
+<p>Use <code translate="no">initTestCase()</code> for preparing the test. Every test should leave the system in a usable state, so it can be run repeatedly. Cleanup operations should be handled in <code translate="no">cleanupTestCase()</code>, so they get run even if the test fails.</p>
+<p>Use <code translate="no">init()</code> for preparing a test function. Every test function should leave the system in a usable state, so it can be run repeatedly. Cleanup operations should be handled in <code translate="no">cleanup()</code>, so they get run even if the test function fails and exits early.</p>
+<p>Alternatively, you can use RAII (resource acquisition is initialization), with cleanup operations called in destructors, to ensure they happen when the test function returns and the object moves out of scope.</p>
+<p>If <code translate="no">initTestCase()</code> fails, no test function will be executed. If <code translate="no">init()</code> fails, the following test function will not be executed, the test will proceed to the next test function.</p>
+<p>Example:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> MyFirstTest: <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">private</span>:
+     <span class="type">bool</span> myCondition()
+     {
+         <span class="keyword">return</span> <span class="keyword">true</span>;
+     }
+
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> initTestCase()
+     {
+         <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>(<span class="string">&quot;Called before everything else.&quot;</span>);
+     }
+
+     <span class="type">void</span> myFirstTest()
+     {
+         QVERIFY(<span class="keyword">true</span>); <span class="comment">// check that a condition is satisfied</span>
+         QCOMPARE(<span class="number">1</span><span class="operator">,</span> <span class="number">1</span>); <span class="comment">// compare two values</span>
+     }
+
+     <span class="type">void</span> mySecondTest()
+     {
+         QVERIFY(myCondition());
+         QVERIFY(<span class="number">1</span> <span class="operator">!</span><span class="operator">=</span> <span class="number">2</span>);
+     }
+
+     <span class="type">void</span> cleanupTestCase()
+     {
+         <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>(<span class="string">&quot;Called after myFirstTest and mySecondTest.&quot;</span>);
+     }
+ };
+</pre>
+<p>Finally, if the test class has a static public <code translate="no">void initMain()</code> method, it is called by the <a href="qtest.html#QTEST_MAIN" translate="no">QTEST_MAIN</a> macros before the <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> object is instantiated. This was added in 5.14.</p>
+<p>For more examples, refer to the <a href="qtest-tutorial.html" translate="no">Qt Test Tutorial</a>.</p>
+<h2 id="increasing-test-function-timeout">Increasing Test Function Timeout</h2>
+<p><a href="qttest-module.html" translate="no">QtTest</a> limits the run-time of each test to catch infinite loops and similar bugs. By default, any test function call will be interrupted after five minutes. For data-driven tests, this applies to each call with a distinct data-tag. This timeout can be configured by setting the <code translate="no">QTEST_FUNCTION_TIMEOUT</code> environment variable to the maximum number of milliseconds that is acceptable for a single call to take. If a test takes longer than the configured timeout, it is interrupted, and <code translate="no">qFatal()</code> is called. As a result, the test aborts by default, as if it had crashed.</p>
+<p>To set <code translate="no">QTEST_FUNCTION_TIMEOUT</code> from the command line on Linux or macOS, enter:</p>
+<pre class="cpp plain" translate="no">
+ QTEST_FUNCTION_TIMEOUT=900000
+ export QTEST_FUNCTION_TIMEOUT
+</pre>
+<p>On Windows:</p>
+<pre class="cpp plain" translate="no">
+ SET QTEST_FUNCTION_TIMEOUT=900000
+</pre>
+<p>Then run the test inside this environment.</p>
+<p>Alternatively, you can set the environment variable programmatically in the test code itself, for example by calling, from the <a href="qtest-overview.html#creating-a-test" translate="no">initMain()</a> special method of your test class:</p>
+<pre class="cpp plain" translate="no">
+ qputenv(&quot;QTEST_FUNCTION_TIMEOUT&quot;, &quot;900000&quot;);
+</pre>
+<p>To calculate a suitable value for the timeout, see how long the test usually takes and decide how much longer it can take without that being a symptom of some problem. Convert that longer time to milliseconds to get the timeout value. For example, if you decide that a test that takes several minutes could reasonably take up to twenty minutes, for example on a slow machine, multiply <code translate="no">20 * 60 * 1000 = 1200000</code> and set the environment variable to <code translate="no">1200000</code> instead of the <code translate="no">900000</code> above.</p>
+<h2 id="building-a-test">Building a Test</h2>
+<p>You can build an executable that contains one test class that typically tests one class of production code. However, usually you would want to test several classes in a project by running one command.</p>
+<p>See <a href="qttestlib-tutorial1-example.html" translate="no">Writing a Unit Test</a> for a step by step explanation.</p>
+<h3 id="building-with-cmake-and-ctest">Building with CMake and CTest</h3>
+<p>You can use <a href="qtest-overview.html#building-with-cmake-and-ctest" translate="no">Building with CMake and CTest</a> to create a test. <a href="https://cmake.org/cmake/help/latest/manual/ctest.1.html" translate="no">CTest</a> enables you to include or exclude tests based on a regular expression that is matched against the test name. You can further apply the <code translate="no">LABELS</code> property to a test and CTest can then include or exclude tests based on those labels. All labeled targets will be run when <code translate="no">test</code> target is called on the command line.</p>
+<div class="admonition note">
+<p><b>Note: </b>On Android, if you have one connected device or emulator, tests will run on that device. If you have more than one device connected, set the environment variable <code translate="no">ANDROID_DEVICE_SERIAL</code> to the <a href="https://developer.android.com/studio/command-line/adb#devicestatus" translate="no">ADB serial number</a> of the device that you want to run tests on.</p>
+</div>
+<p>There are several other advantages with CMake. For example, the result of a test run can be published on a web server using CDash with virtually no effort.</p>
+<p>CTest scales to very different unit test frameworks, and works out of the box with <a href="qtest.html" translate="no">QTest</a>.</p>
+<p>The following is an example of a CMakeLists.txt file that specifies the project name and the language used (here, <i>mytest</i> and C++), the Qt modules required for building the test (Qt5Test), and the files that are included in the test (<i>tst_mytest.cpp</i>).</p>
+<pre class="cpp" translate="no">
+ project(mytest LANGUAGES CXX)
+
+ find_package(Qt6 REQUIRED COMPONENTS Test)
+
+ set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+ set(CMAKE_AUTOMOC ON)
+
+ enable_testing(true)
+
+ qt_add_executable(mytest tst_mytest.cpp)
+ add_test(NAME mytest COMMAND mytest)
+
+ target_link_libraries(mytest PRIVATE Qt::Test)
+</pre>
+<p>For more information about the options you have, see <a href="../qtcmake/cmake-manual.html" translate="no">Build with CMake</a>.</p>
+<h3 id="building-with-qmake">Building with qmake</h3>
+<p>If you are using <code translate="no">qmake</code> as your build tool, just add the following to your project file:</p>
+<pre class="cpp" translate="no">
+ QT += testlib
+</pre>
+<p>If you would like to run the test via <code translate="no">make check</code>, add the additional line:</p>
+<pre class="cpp" translate="no">
+ CONFIG += testcase
+</pre>
+<p>To prevent the test from being installed to your target, add the additional line:</p>
+<pre class="cpp" translate="no">
+ CONFIG += no_testcase_installs
+</pre>
+<p>See the <a href="../qmake/qmake-common-projects.html#building-a-testcase" translate="no">qmake manual</a> for more information about <code translate="no">make check</code>.</p>
+<h3 id="building-with-other-tools">Building with Other Tools</h3>
+<p>If you are using other build tools, make sure that you add the location of the Qt Test header files to your include path (usually <code translate="no">include/QtTest</code> under your Qt installation directory). If you are using a release build of Qt, link your test to the <code translate="no">QtTest</code> library. For debug builds, use <code translate="no">QtTest_debug</code>.</p>
+<h2 id="qt-test-command-line-arguments">Qt Test Command Line Arguments</h2>
+<h3 id="syntax">Syntax</h3>
+<p>The syntax to execute an autotest takes the following simple form:</p>
+<pre class="cpp" translate="no">
+ testname <span class="operator">[</span>options<span class="operator">]</span> <span class="operator">[</span>testfunctions<span class="operator">[</span>:testdata<span class="operator">]</span><span class="operator">]</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
+</pre>
+<p>Substitute <code translate="no">testname</code> with the name of your executable. <code translate="no">testfunctions</code> can contain names of test functions to be executed. If no <code translate="no">testfunctions</code> are passed, all tests are run. If you append the name of an entry in <code translate="no">testdata</code>, the test function will be run only with that test data.</p>
+<p>For example:</p>
+<pre class="cpp" translate="no">
+ <span class="operator">/</span>myTestDirectory$ testQString toUpper
+</pre>
+<p>Runs the test function called <code translate="no">toUpper</code> with all available test data.</p>
+<pre class="cpp" translate="no">
+ <span class="operator">/</span>myTestDirectory$ testQString toUpper toInt:zero
+</pre>
+<p>Runs the <code translate="no">toUpper</code> test function with all available test data, and the <code translate="no">toInt</code> test function with the test data row called <code translate="no">zero</code> (if the specified test data doesn't exist, the associated test will fail and the available data tags are reported).</p>
+<pre class="cpp" translate="no">
+ <span class="operator">/</span>myTestDirectory$ testMyWidget <span class="operator">-</span>vs <span class="operator">-</span>eventdelay <span class="number">500</span>
+</pre>
+<p>Runs the <code translate="no">testMyWidget</code> function test, outputs every signal emission and waits 500 milliseconds after each simulated mouse/keyboard event.</p>
+<h3 id="options">Options</h3>
+<h4 id="logging-options">Logging Options</h4>
+<p>The following command line options determine how test results are reported:</p>
+<ul>
+<li><code translate="no">-o</code> <i>filename,format</i> <br />
+ Writes output to the specified file, in the specified format (one of <code translate="no">txt</code>, <code translate="no">csv</code>, <code translate="no">junitxml</code>, <code translate="no">xml</code>, <code translate="no">lightxml</code>, <code translate="no">teamcity</code> or <code translate="no">tap</code>). Use the special filename <code translate="no">-</code> (hyphen) to log to standard output.</li>
+<li><code translate="no">-o</code> <i>filename</i> <br />
+ Writes output to the specified file.</li>
+<li><code translate="no">-txt</code> <br />
+ Outputs results in plain text.</li>
+<li><code translate="no">-csv</code> <br />
+ Outputs results as comma-separated values (CSV) suitable for import into spreadsheets. This mode is only suitable for benchmarks, since it suppresses normal pass/fail messages.</li>
+<li><code translate="no">-junitxml</code> <br />
+ Outputs results as a <a href="https://junit.org/" translate="no">JUnit XML</a> document.</li>
+<li><code translate="no">-xml</code> <br />
+ Outputs results as an XML document.</li>
+<li><code translate="no">-lightxml</code> <br />
+ Outputs results as a stream of XML tags.</li>
+<li><code translate="no">-teamcity</code> <br />
+ Outputs results in <a href="https://www.jetbrains.com/teamcity/" translate="no">TeamCity</a> format.</li>
+<li><code translate="no">-tap</code> <br />
+ Outputs results in <a href="https://testanything.org" translate="no">Test Anything Protocol</a> (TAP) format.</li>
+</ul>
+<p>The first version of the <code translate="no">-o</code> option may be repeated in order to log test results in multiple formats, but no more than one instance of this option can log test results to standard output.</p>
+<p>If the first version of the <code translate="no">-o</code> option is used, neither the second version of the <code translate="no">-o</code> option nor the <code translate="no">-txt</code>, <code translate="no">-xml</code>, <code translate="no">-lightxml</code>, <code translate="no">-teamcity</code>, <code translate="no">-junitxml</code> or <code translate="no">-tap</code> options should be used.</p>
+<p>If neither version of the <code translate="no">-o</code> option is used, test results will be logged to standard output. If no format option is used, test results will be logged in plain text.</p>
+<h4 id="test-log-detail-options">Test Log Detail Options</h4>
+<p>The following command line options control how much detail is reported in test logs:</p>
+<ul>
+<li><code translate="no">-silent</code> <br />
+ Silent output; only shows fatal errors, test failures and minimal status messages.</li>
+<li><code translate="no">-v1</code> <br />
+ Verbose output; shows when each test function is entered. (This option only affects plain text output.)</li>
+<li><code translate="no">-v2</code> <br />
+ Extended verbose output; shows each <a href="qtest.html#QCOMPARE" translate="no">QCOMPARE</a>() and <a href="qtest.html#QVERIFY" translate="no">QVERIFY</a>(). (This option affects all output formats and implies <code translate="no">-v1</code> for plain text output.)</li>
+<li><code translate="no">-vs</code> <br />
+ Shows all signals that get emitted and the slot invocations resulting from those signals. (This option affects all output formats.)</li>
+</ul>
+<h4 id="testing-options">Testing Options</h4>
+<p>The following command-line options influence how tests are run:</p>
+<ul>
+<li><code translate="no">-functions</code> <br />
+ Outputs all test functions available in the test, then quits.</li>
+<li><code translate="no">-datatags</code> <br />
+ Outputs all data tags available in the test. A global data tag is preceded by ' __global__ '.</li>
+<li><code translate="no">-eventdelay</code> <i>ms</i> <br />
+ If no delay is specified for keyboard or mouse simulation (<a href="qtest.html#keyClick" translate="no">QTest::keyClick</a>(), <a href="qtest.html#mouseClick" translate="no">QTest::mouseClick</a>() etc.), the value from this parameter (in milliseconds) is substituted.</li>
+<li><code translate="no">-keydelay</code> <i>ms</i> <br />
+ Like -eventdelay, but only influences keyboard simulation and not mouse simulation.</li>
+<li><code translate="no">-mousedelay</code> <i>ms</i> <br />
+ Like -eventdelay, but only influences mouse simulation and not keyboard simulation.</li>
+<li><code translate="no">-maxwarnings</code> <i>number</i> <br />
+ Sets the maximum number of warnings to output. 0 for unlimited, defaults to 2000.</li>
+<li><code translate="no">-nocrashhandler</code> <br />
+ Disables the crash handler on Unix platforms. On Windows, it re-enables the Windows Error Reporting dialog, which is turned off by default. This is useful for debugging crashes.</li>
+<li><code translate="no">-platform</code> <i>name</i> <br />
+ This command line argument applies to all Qt applications, but might be especially useful in the context of auto-testing. By using the &quot;offscreen&quot; platform plugin (-platform offscreen) it's possible to have tests that use <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> or <a href="../qtgui/qwindow.html" translate="no">QWindow</a> run without showing anything on the screen. Currently the offscreen platform plugin is only fully supported on X11.</li>
+</ul>
+<h4 id="benchmarking-options">Benchmarking Options</h4>
+<p>The following command line options control benchmark testing:</p>
+<ul>
+<li><code translate="no">-callgrind</code> <br />
+ Uses Callgrind to time benchmarks (Linux only).</li>
+<li><code translate="no">-tickcounter</code> <br />
+ Uses CPU tick counters to time benchmarks.</li>
+<li><code translate="no">-eventcounter</code> <br />
+ Counts events received during benchmarks.</li>
+<li><code translate="no">-minimumvalue</code> <i>n</i> <br />
+ Sets the minimum acceptable measurement value.</li>
+<li><code translate="no">-minimumtotal</code> <i>n</i> <br />
+ Sets the minimum acceptable total for repeated executions of a test function.</li>
+<li><code translate="no">-iterations</code> <i>n</i> <br />
+ Sets the number of accumulation iterations.</li>
+<li><code translate="no">-median</code> <i>n</i> <br />
+ Sets the number of median iterations.</li>
+<li><code translate="no">-vb</code> <br />
+ Outputs verbose benchmarking information.</li>
+</ul>
+<h4 id="miscellaneous-options">Miscellaneous Options</h4>
+<ul>
+<li><code translate="no">-help</code> <br />
+ Outputs the possible command line arguments and gives some useful help.</li>
+</ul>
+<h2 id="qt-test-environment-variables">Qt Test Environment Variables</h2>
+<p>You can set certain environment variables in order to affect the execution of an autotest:</p>
+<ul>
+<li><code translate="no">QTEST_DISABLE_CORE_DUMP</code> <br />
+ Setting this variable to a non-zero value will disable the generation of a core dump file.</li>
+<li><code translate="no">QTEST_DISABLE_STACK_DUMP</code> <br />
+ Setting this variable to a non-zero value will prevent Qt Test from printing a stacktrace in case an autotest times out or crashes.</li>
+<li><code translate="no">QTEST_FATAL_FAIL</code> <br />
+ Setting this variable to a non-zero value will cause a failure in an autotest to immediately abort the entire autotest. This is useful to e.g&#x2e; debug an unstable or intermittent failure in a test, by launching the test in a debugger. Support for this variable was added in Qt 6.1&#x2e;</li>
+</ul>
+<h2 id="creating-a-benchmark">Creating a Benchmark</h2>
+<p>To create a benchmark, follow the instructions for creating a test and then add a <a href="qtest.html#QBENCHMARK" translate="no">QBENCHMARK</a> macro or <a href="qtest.html#setBenchmarkResult" translate="no">QTest::setBenchmarkResult</a>() to the test function that you want to benchmark. In the following code snippet, the macro is used:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> MyFirstBenchmark: <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+ <span class="keyword">private</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> myFirstBenchmark()
+     {
+         <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> string1;
+         <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> string2;
+         QBENCHMARK {
+             string1<span class="operator">.</span>localeAwareCompare(string2);
+         }
+     }
+ };
+</pre>
+<p>A test function that measures performance should contain either a single <code translate="no">QBENCHMARK</code> macro or a single call to <code translate="no">setBenchmarkResult()</code>. Multiple occurrences make no sense, because only one performance result can be reported per test function, or per data tag in a data-driven setup.</p>
+<p>Avoid changing the test code that forms (or influences) the body of a <code translate="no">QBENCHMARK</code> macro, or the test code that computes the value passed to <code translate="no">setBenchmarkResult()</code>. Differences in successive performance results should ideally be caused only by changes to the product you are testing. Changes to the test code can potentially result in misleading report of a change in performance. If you do need to change the test code, make that clear in the commit message.</p>
+<p>In a performance test function, the <code translate="no">QBENCHMARK</code> or <code translate="no">setBenchmarkResult()</code> should be followed by a verification step using <a href="qtest.html#QCOMPARE" translate="no">QCOMPARE</a>(), <a href="qtest.html#QVERIFY" translate="no">QVERIFY</a>(), and so on. You can then flag a performance result as <i>invalid</i> if another code path than the intended one was measured. A performance analysis tool can use this information to filter out invalid results. For example, an unexpected error condition will typically cause the program to bail out prematurely from the normal program execution, and thus falsely show a dramatic performance increase.</p>
+<h3 id="selecting-the-measurement-back-end">Selecting the Measurement Back-end</h3>
+<p>The code inside the QBENCHMARK macro will be measured, and possibly also repeated several times in order to get an accurate measurement. This depends on the selected measurement back-end. Several back-ends are available. They can be selected on the command line:</p>
+<span id="testlib-benchmarking-measurement"></span><div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Name</th><th >Command-line Argument</th><th >Availability</th></tr></thead>
+<tr valign="top" class="odd"><td >Walltime</td><td >(default)</td><td >All platforms</td></tr>
+<tr valign="top" class="even"><td >CPU tick counter</td><td >-tickcounter</td><td >Windows, macOS, Linux, many UNIX-like systems.</td></tr>
+<tr valign="top" class="odd"><td >Event Counter</td><td >-eventcounter</td><td >All platforms</td></tr>
+<tr valign="top" class="even"><td >Valgrind Callgrind</td><td >-callgrind</td><td >Linux (if installed)</td></tr>
+<tr valign="top" class="odd"><td >Linux Perf</td><td >-perf</td><td >Linux</td></tr>
+</table></div>
+<p>In short, walltime is always available but requires many repetitions to get a useful result. Tick counters are usually available and can provide results with fewer repetitions, but can be susceptible to CPU frequency scaling issues. Valgrind provides exact results, but does not take I/O waits into account, and is only available on a limited number of platforms. Event counting is available on all platforms and it provides the number of events that were received by the event loop before they are sent to their corresponding targets (this might include non-Qt events).</p>
+<p>The Linux Performance Monitoring solution is available only on Linux and provides many different counters, which can be selected by passing an additional option <code translate="no">-perfcounter countername</code>, such as <code translate="no">-perfcounter cache-misses</code>, <code translate="no">-perfcounter branch-misses</code>, or <code translate="no">-perfcounter l1d-load-misses</code>. The default counter is <code translate="no">cpu-cycles</code>. The full list of counters can be obtained by running any benchmark executable with the option <code translate="no">-perfcounterlist</code>.</p>
+<ul>
+<li>Using the performance counter may require enabling access to non-privileged applications.</li>
+<li>Devices that do not support high-resolution timers default to one-millisecond granularity.</li>
+</ul>
+<p>See <a href="qttestlib-tutorial5-example.html" translate="no">Writing a Benchmark</a> in the Qt Test Tutorial for more benchmarking examples.</p>
+<h2 id="using-global-test-data">Using Global Test Data</h2>
+<p>You can define <code translate="no">initTestCase_data()</code> to set up a global test data table. Each test is run once for each row in the global test data table. When the test function itself <a href="qttestlib-tutorial2-example.html" translate="no">is data-driven</a>, it is run for each local data row, for each global data row. So, if there are <code translate="no">g</code> rows in the global data table and <code translate="no">d</code> rows in the test's own data-table, the number of runs of this test is <code translate="no">g</code> times <code translate="no">d</code>.</p>
+<p>Global data is fetched from the table using the <a href="qtest.html#QFETCH_GLOBAL" translate="no">QFETCH_GLOBAL</a>() macro.</p>
+<p>The following are typical use cases for global test data:</p>
+<ul>
+<li>Selecting among the available database backends in QSql tests to run every test against every database.</li>
+<li>Doing all networking tests with and without SSL (HTTP versus HTTPS) and proxying.</li>
+<li>Testing a timer with a high precision clock and with a coarse one.</li>
+<li>Selecting whether a parser shall read from a <a href="../qtcore/qbytearray.html" translate="no">QByteArray</a> or from a <a href="../qtcore/qiodevice.html" translate="no">QIODevice</a>.</li>
+</ul>
+<p>For example, to test each number provided by <code translate="no">roundTripInt_data()</code> with each locale provided by <code translate="no">initTestCase_data()</code>:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> TestQLocale<span class="operator">::</span>roundTripInt()
+ {
+     QFETCH_GLOBAL(<span class="type"><a href="../qtcore/qlocale.html" translate="no">QLocale</a></span><span class="operator">,</span> locale);
+     QFETCH(<span class="type">int</span><span class="operator">,</span> number);
+     <span class="type">bool</span> ok;
+     QCOMPARE(locale<span class="operator">.</span>toInt(locale<span class="operator">.</span>toString(number)<span class="operator">,</span> <span class="operator">&amp;</span>ok)<span class="operator">,</span> number);
+     QVERIFY(ok);
+ }
+</pre>
+<p>On the command-line of a test you can pass the name of a function (with no test-class-name prefix) to run only that one function's tests. If the test class has global data, or the function is data-driven, you can append a data tag, after a colon, to run only that tag's data-set for the function. To specify both a global tag and a tag specific to the test function, combine them with a colon between, putting the global data tag first. For example</p>
+<pre class="cpp" translate="no">
+ <span class="operator">.</span><span class="operator">/</span>testqlocale roundTripInt:zero
+</pre>
+<p>will run the <code translate="no">zero</code> test-case of the <code translate="no">roundTripInt()</code> test above (assuming its <code translate="no">TestQLocale</code> class has been compiled to an executable <code translate="no">testqlocale</code>) in each of the locales specified by <code translate="no">initTestCase_data()</code>, while</p>
+<pre class="cpp" translate="no">
+ <span class="operator">.</span><span class="operator">/</span>testqlocale roundTripInt:C
+</pre>
+<p>will run all three test-cases of <code translate="no">roundTripInt()</code> only in the C locale and</p>
+<pre class="cpp" translate="no">
+ <span class="operator">.</span><span class="operator">/</span>testqlocale roundTripInt:C:zero
+</pre>
+<p>will only run the <code translate="no">zero</code> test-case in the C locale.</p>
+<p>Providing such fine-grained control over which tests are to be run can make it considerably easier to debug a problem, as you only need to step through the one test-case that has been seen to fail.</p>
+</div>
+<!-- @@@qtest-overview.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

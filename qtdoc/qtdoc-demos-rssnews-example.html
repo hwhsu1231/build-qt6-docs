@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- rssnews.qdoc -->
+  <meta name="description" content="A QML RSS news reader that uses XmlListModel and XmlListModelRole custom QML types to download XML data, ListModel and ListElement to create a category list, and ListView to display the data.">
+  <title>Qt Quick Demo - RSS News | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Qt Quick Demo - RSS News</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#using-custom-types">Using Custom Types</a></li>
+<li class="level1"><a href="#creating-the-main-window">Creating the Main Window</a></li>
+<li class="level1"><a href="#creating-a-category-list">Creating a Category List</a></li>
+<li class="level1"><a href="#creating-list-elements">Creating List Elements</a></li>
+<li class="level1"><a href="#downloading-xml-data">Downloading XML Data</a></li>
+<li class="level1"><a href="#providing-feedback-to-users">Providing Feedback to Users</a></li>
+<li class="level1"><a href="#creating-scroll-bars">Creating Scroll Bars</a></li>
+<li class="level1"><a href="#creating-footers">Creating Footers</a></li>
+<li class="level1"><a href="#creating-buttons">Creating Buttons</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt Quick Demo - RSS News</h1>
+<!-- $$$demos/rssnews-brief -->
+<p>A QML RSS news reader that uses <a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodel.html" translate="no">XmlListModel</a> and <a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodelrole.html" translate="no">XmlListModelRole</a> custom QML types to download XML data, <a href="../qtqmlmodels/qml-qtqml-models-listmodel.html" translate="no">ListModel</a> and <a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a> to create a category list, and <a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a> to display the data.</p>
+<!-- @@@demos/rssnews -->
+<!-- $$$demos/rssnews-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/qtquick-demo-rssnews-small.png" alt="" /></p><p><i>RSS News</i> demonstrates the following <a href="../qtquick/qtquick-index.html" translate="no">Qt Quick</a> features:</p>
+<ul>
+<li>Using custom QML types.</li>
+<li>Using list models and list elements to represent data.</li>
+<li>Using XML list models to download XML data.</li>
+<li>Using list views to display data.</li>
+<li>Using the <a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a> type to create a footer for the news item list view.</li>
+<li>Using the <a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a> type to create a button for closing the app.</li>
+</ul>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="using-custom-types">Using Custom Types</h4>
+<p>In the RSS News app, we use the following custom types that are each defined in a separate .qml file:</p>
+<ul>
+<li><code translate="no">BusyIndicator.qml</code></li>
+<li><code translate="no">CategoryDelegate.qml</code></li>
+<li><code translate="no">NewsDelegate.qml</code></li>
+<li><code translate="no">RssFeeds.qml</code></li>
+<li><code translate="no">ScrollBar.qml</code></li>
+</ul>
+<p>To use the custom types, we add an import statement to the main QML file, rssnews.qml that imports the folder called <code translate="no">content</code> where the types are located:</p>
+<pre class="cpp" translate="no">
+ import &quot;./content&quot;
+</pre>
+<h4 id="creating-the-main-window">Creating the Main Window</h4>
+<p>In <code translate="no">rssnews.qml</code>, we use a <a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a> type with custom properties to create the app main window:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+
+     <span class="name">width</span>: <span class="number">800</span>
+     <span class="name">height</span>: <span class="number">480</span>
+
+     property <span class="type">string</span> <span class="name">currentFeed</span>: <span class="name">rssFeeds</span>.<span class="name">get</span>(<span class="number">0</span>).<span class="name">feed</span>
+     property <span class="type">bool</span> <span class="name">loading</span>: <span class="name">feedModel</span>.<span class="name">status</span> <span class="operator">===</span> <span class="name">XmlListModel</span>.<span class="name">Loading</span>
+     property <span class="type">bool</span> <span class="name">isPortrait</span>: <span class="name">Screen</span>.<span class="name">primaryOrientation</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">PortraitOrientation</span>
+</pre>
+<p>We will use the custom properties later for loading XML data and for adjusting the screen layout depending on its orientation.</p>
+<h4 id="creating-a-category-list">Creating a Category List</h4>
+<p>In <code translate="no">rssnews.qml</code>, we use the <code translate="no">RssFeeds</code> custom type that we specify in <code translate="no">RssFeeds.qml</code> to create a list of feed categories:</p>
+<pre class="cpp" translate="no">
+     <span class="type">RssFeeds</span> { <span class="name">id</span>: <span class="name">rssFeeds</span> }
+</pre>
+<p>In <code translate="no">RssFeeds.qml</code>, we use a <a href="../qtqmlmodels/qml-qtqml-models-listmodel.html" translate="no">ListModel</a> type with a <a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a> type to create a category list where list elements represent feed categories:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listmodel.html" translate="no">ListModel</a></span> {
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Top Stories&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/topstories&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/TopStories.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;World&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/world&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/World.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Europe&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/europe&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/Europe.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Asia&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/asia&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/Asia.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;U.S. National&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/us&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/USNational.jpg&quot;</span>  }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Politics&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/politics&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/Politics.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Business&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/business&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/Business.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Technology&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/tech&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/Technology.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Entertainment&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/entertainment&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/Entertainment.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Health&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/health&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/Health.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Science&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/science&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/Science.jpg&quot;</span> }
+     <span class="type"><a href="../qtqmlmodels/qml-qtqml-models-listelement.html" translate="no">ListElement</a></span> { <span class="name">name</span>: <span class="string">&quot;Sports&quot;</span>; <span class="name">feed</span>: <span class="string">&quot;news.yahoo.com/rss/sports&quot;</span>; <span class="name">image</span>: <span class="string">&quot;images/Sports.jpg&quot;</span> }
+ }
+</pre>
+<p>List elements are defined like other QML types except that they contain a collection of <i>role</i> definitions instead of properties. Roles both define how the data is accessed and include the data itself.</p>
+<p>For each list element, we use the <code translate="no">name</code> role to specify the category name, the <code translate="no">feed</code> role to specify the URL to load the data from, and the <code translate="no">image</code> role to display an image for the category.</p>
+<p>In <code translate="no">rssnews.qml</code>, we use a <a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a> type to display the category list:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a></span> {
+         <span class="name">id</span>: <span class="name">categories</span>
+         property <span class="type">int</span> <span class="name">itemWidth</span>: <span class="number">190</span>
+
+         <span class="name">width</span>: <span class="name">isPortrait</span> ? <span class="name">parent</span>.<span class="name">width</span> : <span class="name">itemWidth</span>
+         <span class="name">height</span>: <span class="name">isPortrait</span> ? <span class="name">itemWidth</span> : <span class="name">parent</span>.<span class="name">height</span>
+         <span class="name">orientation</span>: <span class="name">isPortrait</span> ? <span class="name">ListView</span>.<span class="name">Horizontal</span> : <span class="name">ListView</span>.<span class="name">Vertical</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">model</span>: <span class="name">rssFeeds</span>
+         <span class="name">delegate</span>: <span class="name">CategoryDelegate</span> { <span class="name">itemSize</span>: <span class="name">categories</span>.<span class="name">itemWidth</span> }
+         <span class="name">spacing</span>: <span class="number">3</span>
+     }
+</pre>
+<p>To lay out the category list horizontally at the top of the window in portrait orientation and vertically on the left side in landscape orientation, we use the <code translate="no">orientation</code> property. Based on the orientation, we bind either the width or the height of the list to a fixed value (<code translate="no">itemWidth</code>).</p>
+<p>We use the <code translate="no">anchors.top</code> property to position the list view at the top of the screen in both orientations.</p>
+<p>We use the <code translate="no">model</code> property to load XML data from the <code translate="no">rssFeeds</code> model, and <code translate="no">CategoryDelegate</code> as the delegate to instantiate each item in the list.</p>
+<h4 id="creating-list-elements">Creating List Elements</h4>
+<p>In <code translate="no">CategoryDelegate.qml</code>, we use the <a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a> type with custom properties to create list elements:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     <span class="name">id</span>: <span class="name">delegate</span>
+
+     property <span class="type">bool</span> <span class="name">selected</span>: <span class="name">ListView</span>.<span class="name">isCurrentItem</span>
+</pre>
+<p>We set the <code translate="no">selected</code> property to the <code translate="no">ListView.isCurrentItem</code> attached property to specify that <code translate="no">selected</code> is <code translate="no">true</code> if <code translate="no">delegate</code> is the current item.</p>
+<p>We use the <a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a> type <code translate="no">source</code> property to display the image, centered in the delegate, specified for the list element by the <code translate="no">image</code> role in the <code translate="no">rssFeeds</code> list model:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+         <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+         <span class="name">source</span>: <span class="name">image</span>
+     }
+</pre>
+<p>We use a <a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a> type to add titles to list elements:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+         <span class="name">id</span>: <span class="name">titleText</span>
+
+         <span class="type">anchors</span> {
+             <span class="name">left</span>: <span class="name">parent</span>.<span class="name">left</span>; <span class="name">leftMargin</span>: <span class="number">20</span>
+             <span class="name">right</span>: <span class="name">parent</span>.<span class="name">right</span>; <span class="name">rightMargin</span>: <span class="number">20</span>
+             <span class="name">top</span>: <span class="name">parent</span>.<span class="name">top</span>; <span class="name">topMargin</span>: <span class="number">20</span>
+         }
+
+         <span class="type">font</span> { <span class="name">pixelSize</span>: <span class="number">18</span>; <span class="name">bold</span>: <span class="number">true</span> }
+         <span class="name">text</span>: <span class="name">name</span>
+         <span class="name">color</span>: <span class="name">selected</span> ? <span class="string">&quot;#ffffff&quot;</span> : <span class="string">&quot;#ebebdd&quot;</span>
+         <span class="name">scale</span>: <span class="name">selected</span> ? <span class="number">1.15</span> : <span class="number">1.0</span>
+         Behavior on <span class="name">color</span> { <span class="type"><a href="../qtquick/qml-qtquick-coloranimation.html" translate="no">ColorAnimation</a></span> { <span class="name">duration</span>: <span class="number">150</span> } }
+         Behavior on <span class="name">scale</span> { <span class="type"><a href="../qtquick/qml-qtquick-propertyanimation.html" translate="no">PropertyAnimation</a></span> { <span class="name">duration</span>: <span class="number">300</span> } }
+</pre>
+<p>We use the <code translate="no">anchors</code> property to position the title at the top of the list element, with a 20-pixel margin. We use <code translate="no">font</code> properties to adjust font size and text formatting.</p>
+<p>We use the <code translate="no">color</code> and <code translate="no">scale</code> properties to brighten the text and to scale it slightly larger when the list item is the current item. By applying a <a href="../qtquick/qml-qtquick-behavior.html" translate="no">Behavior</a> to the property, we animate the actions of selecting and deselecting list items.</p>
+<p>We use a <a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a> type to download XML data when users tap a category list element:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">delegate</span>
+         <span class="name">onClicked</span>: {
+             <span class="name">delegate</span>.<span class="name">ListView</span>.<span class="name">view</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">index</span>
+             <span class="keyword">if</span> (<span class="name">window</span>.<span class="name">currentFeed</span> <span class="operator">==</span> <span class="name">feed</span>)
+                 <span class="name">feedModel</span>.<span class="name">reload</span>()
+             <span class="keyword">else</span>
+                 <span class="name">window</span>.<span class="name">currentFeed</span> <span class="operator">=</span> <span class="name">feed</span>
+         }
+     }
+</pre>
+<p>The <code translate="no">anchors.fill</code> property is set to <code translate="no">delegate</code> to enable users to tap anywhere within the list element.</p>
+<p>We use the <code translate="no">onClicked</code> signal handler to load the XML data for the category list. If the tapped category is already current, the <code translate="no">reload()</code> function is called to reload the data.</p>
+<h4 id="downloading-xml-data">Downloading XML Data</h4>
+<p>In <code translate="no">rssnews.qml</code>, we use an <a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodel.html" translate="no">XmlListModel</a> type as a data source for <a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a> elements to display news items in the selected category:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodel.html" translate="no">XmlListModel</a></span> {
+         <span class="name">id</span>: <span class="name">feedModel</span>
+
+         <span class="name">source</span>: <span class="string">&quot;https://&quot;</span> <span class="operator">+</span> <span class="name">window</span>.<span class="name">currentFeed</span>
+         <span class="name">query</span>: <span class="string">&quot;/rss/channel/item&quot;</span>
+</pre>
+<p>We use the <code translate="no">source</code> property and the <code translate="no">window.currentFeed</code> custom property to fetch news items for the selected category.</p>
+<p>The <code translate="no">query</code> property specifies that the <a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodel.html" translate="no">XmlListModel</a> generates a model item for each <code translate="no">&lt;item&gt;</code> in the XML document.</p>
+<p>We use the <a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodelrole.html" translate="no">XmlListModelRole</a> type to specify the model item attributes. Each model item has the <code translate="no">title</code>, <code translate="no">content</code>, <code translate="no">link</code>, and <code translate="no">pubDate</code> attributes that match the values of the corresponding <code translate="no">&lt;item&gt;</code> in the XML document:</p>
+<pre class="cpp" translate="no">
+         <span class="type"><a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodelrole.html" translate="no">XmlListModelRole</a></span> { <span class="name">name</span>: <span class="string">&quot;title&quot;</span>; <span class="name">elementName</span>: <span class="string">&quot;title&quot;</span>; <span class="name">attributeName</span>: <span class="string">&quot;&quot;</span>}
+         <span class="type"><a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodelrole.html" translate="no">XmlListModelRole</a></span> { <span class="name">name</span>: <span class="string">&quot;content&quot;</span>; <span class="name">elementName</span>: <span class="string">&quot;content&quot;</span>; <span class="name">attributeName</span>: <span class="string">&quot;url&quot;</span> }
+         <span class="type"><a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodelrole.html" translate="no">XmlListModelRole</a></span> { <span class="name">name</span>: <span class="string">&quot;link&quot;</span>; <span class="name">elementName</span>: <span class="string">&quot;link&quot;</span>; <span class="name">attributeName</span>: <span class="string">&quot;&quot;</span> }
+         <span class="type"><a href="../qtqmlxmllistmodel/qml-qtqml-xmllistmodel-xmllistmodelrole.html" translate="no">XmlListModelRole</a></span> { <span class="name">name</span>: <span class="string">&quot;pubDate&quot;</span>; <span class="name">elementName</span>: <span class="string">&quot;pubDate&quot;</span>; <span class="name">attributeName</span>: <span class="string">&quot;&quot;</span> }
+     }
+</pre>
+<p>We use the <code translate="no">feedModel</code> model in a <a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a> type to display the data:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a></span> {
+         <span class="name">id</span>: <span class="name">list</span>
+
+         <span class="name">anchors</span>.left: <span class="name">isPortrait</span> ? <span class="name">window</span>.<span class="name">left</span> : <span class="name">categories</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.right: <span class="name">closeButton</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.top: <span class="name">isPortrait</span> ? <span class="name">categories</span>.<span class="name">bottom</span> : <span class="name">window</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.bottom: <span class="name">window</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.leftMargin: <span class="number">30</span>
+         <span class="name">anchors</span>.rightMargin: <span class="number">4</span>
+         <span class="name">clip</span>: <span class="name">isPortrait</span>
+         <span class="name">model</span>: <span class="name">feedModel</span>
+         <span class="name">footer</span>: <span class="name">footerText</span>
+         <span class="name">delegate</span>: <span class="name">NewsDelegate</span> {}
+     }
+</pre>
+<p>To list the news items below the category list in portrait orientation and to its right in landscape orientation, we use the <code translate="no">isPortrait</code> custom property to anchor the top of the news items list to the left of <code translate="no">window</code> and bottom of <code translate="no">categories</code> in portrait orientation and to the right of <code translate="no">categories</code> and bottom of <code translate="no">window</code> in landscape orientation.</p>
+<p>We use the <code translate="no">anchors.bottom</code> property to anchor the bottom of the list view to the bottom of the window in both orientations.</p>
+<p>In portrait orientation, we clip the painting of the news items to the bounding rectangle of the list view to avoid graphical artifacts when news items are scrolled over other items. In landscape, this is not required, because the list spans the entire screen vertically.</p>
+<p>We use the <code translate="no">model</code> property to load XML data from the <code translate="no">feedModel</code> model, and use <code translate="no">NewsDelegate</code> as the delegate to instantiate each item in the list.</p>
+<p>In <code translate="no">NewsDelegate.qml</code>, we use a <a href="../qtquick/qml-qtquick-column.html" translate="no">Column</a> type to lay out the XML data:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-column.html" translate="no">Column</a></span> {
+     <span class="name">id</span>: <span class="name">delegate</span>
+     <span class="name">width</span>: <span class="name">delegate</span>.<span class="name">ListView</span>.<span class="name">view</span>.<span class="name">width</span>
+     <span class="name">spacing</span>: <span class="number">8</span>
+</pre>
+<p>Within the column, we use a <a href="../qdoc/10-qdoc-commands-tablesandlists.html#row" translate="no">Row</a> and another column to position images and title text:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+         <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+         <span class="name">spacing</span>: <span class="number">8</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-column.html" translate="no">Column</a></span> {
+             <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+                 <span class="name">width</span>: <span class="number">4</span>
+                 <span class="name">height</span>: <span class="name">titleText</span>.<span class="name">font</span>.<span class="name">pixelSize</span> <span class="operator">/</span> <span class="number">4</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+                 <span class="name">id</span>: <span class="name">titleImage</span>
+                 <span class="name">source</span>: <span class="name">content</span>
+                 <span class="name">width</span>: <span class="name">Math</span>.<span class="name">min</span>(<span class="name">delegate</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">2</span>, <span class="name">sourceSize</span>.<span class="name">width</span>)
+                 <span class="name">fillMode</span>: <span class="name">Image</span>.<span class="name">PreserveAspectFit</span>
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="name">id</span>: <span class="name">titleText</span>
+
+             <span class="name">text</span>: <span class="name">title</span>.<span class="name">replace</span>(/&amp;#39;/g, <span class="string">&quot;'&quot;</span>)
+             <span class="name">width</span>: <span class="name">delegate</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">titleImage</span>.<span class="name">width</span>
+             <span class="name">wrapMode</span>: <span class="name">Text</span>.<span class="name">WordWrap</span>
+             <span class="name">font</span>.pixelSize: <span class="number">26</span>
+             <span class="name">font</span>.bold: <span class="number">true</span>
+         }
+     }
+</pre>
+<p>We generate a textual representation of how long ago the item was posted using the <code translate="no">timeSinceEvent()</code> JavaScript function:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+         <span class="name">width</span>: <span class="name">delegate</span>.<span class="name">width</span>
+         <span class="name">font</span>.pixelSize: <span class="number">12</span>
+         <span class="name">textFormat</span>: <span class="name">Text</span>.<span class="name">RichText</span>
+         <span class="name">font</span>.italic: <span class="number">true</span>
+         <span class="name">text</span>: <span class="name">timeSinceEvent</span>(<span class="name">pubDate</span>) <span class="operator">+</span> <span class="string">&quot; (&lt;a href=\&quot;&quot;</span> <span class="operator">+</span> <span class="name">link</span> <span class="operator">+</span> <span class="string">&quot;\&quot;&gt;Link&lt;/a&gt;)&quot;</span>
+         <span class="name">onLinkActivated</span>: <span class="keyword">function</span>(link) {
+             <span class="name">Qt</span>.<span class="name">openUrlExternally</span>(<span class="name">link</span>)
+         }
+     }
+</pre>
+<p>We use the <code translate="no">onLinkActivated</code> signal handler to open the URL in an external browser when users select the link.</p>
+<h4 id="providing-feedback-to-users">Providing Feedback to Users</h4>
+<p>In <code translate="no">CategoryDelegate.qml</code>, we use the <code translate="no">BusyIndicator</code> custom type to indicate activity while the XML data is being loaded:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-busyindicator.html" translate="no">BusyIndicator</a></span> {
+         <span class="name">scale</span>: <span class="number">0.8</span>
+         <span class="name">visible</span>: <span class="name">delegate</span>.<span class="name">ListView</span>.<span class="name">isCurrentItem</span> <span class="operator">&amp;&amp;</span> <span class="name">window</span>.<span class="name">loading</span>
+         <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+     }
+</pre>
+<p>We use the <code translate="no">scale</code> property to reduce the indicator size to <code translate="no">0.8</code>. We bind the <code translate="no">visible</code> property to the <code translate="no">isCurrentItem</code> attached property of the <code translate="no">delegate</code> list view and <code translate="no">loading</code> property of the main window to display the indicator image when a category list item is the current item and XML data is being loaded.</p>
+<p>We define the <code translate="no">BusyIndicator</code> type in <code translate="no">BusyIndicator.qml</code>. We use an <a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a> type to display an image and apply a <a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a> to its <code translate="no">rotation</code> property to rotate the image in an infinite loop:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+     <span class="name">id</span>: <span class="name">container</span>
+
+     <span class="name">source</span>: <span class="string">&quot;images/busy.png&quot;</span>;
+
+     NumberAnimation on <span class="name">rotation</span> {
+         <span class="name">running</span>: <span class="name">container</span>.<span class="name">visible</span>
+         <span class="name">from</span>: <span class="number">0</span>; <span class="name">to</span>: <span class="number">360</span>;
+         <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>;
+         <span class="name">duration</span>: <span class="number">1200</span>
+     }
+ }
+</pre>
+<p>In your apps, you can also use the <a href="../qtquickcontrols/qml-qtquick-controls-busyindicator.html" translate="no">BusyIndicator</a> type from the <a href="../qtquickcontrols/qtquickcontrols-index.html" translate="no">Qt Quick Controls</a> module.</p>
+<h4 id="creating-scroll-bars">Creating Scroll Bars</h4>
+<p>In <code translate="no">rssnews.qml</code>, we use our own custom <code translate="no">ScrollBar</code> type to create scroll bars in the category and news item list views. In your apps, you can also use the <a href="../qtquickcontrols/qml-qtquick-controls-scrollview.html" translate="no">ScrollView</a> type from the <a href="../qtquickcontrols/qtquickcontrols-index.html" translate="no">Qt Quick Controls</a> module.</p>
+<p>First, we create a scroll bar in the category list view. We bind the <code translate="no">orientation</code> property to the <code translate="no">isPortrait</code> property and to the <code translate="no">Horizontal</code> value of the <code translate="no">Qt::Orientation</code> enum type to display a horizontal scroll bar in portrait orientation and to the <code translate="no">Vertical</code> value to display a vertical scroll bar in landscape orientation:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-scrollbar.html" translate="no">ScrollBar</a></span> {
+         <span class="name">id</span>: <span class="name">listScrollBar</span>
+
+         <span class="name">orientation</span>: <span class="name">isPortrait</span> ? <span class="name">Qt</span>.<span class="name">Horizontal</span> : <span class="name">Qt</span>.<span class="name">Vertical</span>
+         <span class="name">height</span>: <span class="name">isPortrait</span> ? <span class="number">8</span> : <span class="name">categories</span>.<span class="name">height</span>;
+         <span class="name">width</span>: <span class="name">isPortrait</span> ? <span class="name">categories</span>.<span class="name">width</span> : <span class="number">8</span>
+         <span class="name">scrollArea</span>: <span class="name">categories</span>;
+         <span class="name">anchors</span>.right: <span class="name">categories</span>.<span class="name">right</span>
+     }
+</pre>
+<p>Same as with the <code translate="no">categories</code> list view, we adjust the width and height of the scroll bar based on the <code translate="no">isPortrait</code> property.</p>
+<p>We use the <code translate="no">scrollArea</code> property to display the scroll bar in the <code translate="no">categories</code> list view.</p>
+<p>We use the <code translate="no">anchors.right</code> property to anchor the scroll bar to the right side of the category list.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-scrollbar.html" translate="no">ScrollBar</a></span> {
+         <span class="name">scrollArea</span>: <span class="name">list</span>
+         <span class="name">width</span>: <span class="number">8</span>
+         <span class="name">anchors</span>.right: <span class="name">window</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.top: <span class="name">isPortrait</span> ? <span class="name">categories</span>.<span class="name">bottom</span> : <span class="name">window</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.bottom: <span class="name">window</span>.<span class="name">bottom</span>
+     }
+</pre>
+<p>Second, we create another scroll bar in the news item list view. We want a vertical scroll bar to appear on the right side of the view regardless of screen orientation, so we can set the <code translate="no">width</code> property to <code translate="no">8</code> and bind the <code translate="no">anchors.right</code> property to the <code translate="no">window.right</code> property. We use the <code translate="no">anchors.top</code> property to anchor the scroll bar top to the bottom of the category list in portrait orientation and to the top of the news item list in landscape orientation. We use the <code translate="no">anchors.bottom</code> property to anchor the scroll bar bottom to the list view bottom in both orientations.</p>
+<p>We define the <code translate="no">ScrollBar</code> type in <code translate="no">ScrollBar.qml</code>. We use an <a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a> type with custom properties to create a container for the scroll bar:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">container</span>
+
+     property <span class="type">variant</span> <span class="name">scrollArea</span>
+     property <span class="type">int</span> <span class="name">orientation</span>: <span class="name">Qt</span>.<span class="name">Vertical</span>
+
+     <span class="name">opacity</span>: <span class="number">0</span>
+</pre>
+<p>We use a <a href="../qtquick/qml-qtquick-borderimage.html" translate="no">BorderImage</a> type to display the scroll bar thumb at the x and y position that we calculate by using the <code translate="no">position()</code> function:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-borderimage.html" translate="no">BorderImage</a></span> {
+         <span class="name">source</span>: <span class="string">&quot;images/scrollbar.png&quot;</span>
+         <span class="type">border</span> { <span class="name">left</span>: <span class="number">1</span>; <span class="name">right</span>: <span class="number">1</span>; <span class="name">top</span>: <span class="number">1</span>; <span class="name">bottom</span>: <span class="number">1</span> }
+         <span class="name">x</span>: <span class="name">container</span>.<span class="name">orientation</span> <span class="operator">==</span> <span class="name">Qt</span>.<span class="name">Vertical</span> ? <span class="number">2</span> : <span class="name">position</span>()
+         <span class="name">y</span>: <span class="name">container</span>.<span class="name">orientation</span> <span class="operator">==</span> <span class="name">Qt</span>.<span class="name">Vertical</span> ? <span class="name">position</span>() : <span class="number">2</span>
+         <span class="name">width</span>: <span class="name">container</span>.<span class="name">orientation</span> <span class="operator">==</span> <span class="name">Qt</span>.<span class="name">Vertical</span> ? <span class="name">container</span>.<span class="name">width</span> <span class="operator">-</span> <span class="number">4</span> : <span class="name">size</span>()
+         <span class="name">height</span>: <span class="name">container</span>.<span class="name">orientation</span> <span class="operator">==</span> <span class="name">Qt</span>.<span class="name">Vertical</span> ? <span class="name">size</span>() : <span class="name">container</span>.<span class="name">height</span> <span class="operator">-</span> <span class="number">4</span>
+     }
+</pre>
+<p>We use the <code translate="no">size</code> function to calculate the thumb width and height depending on the screen orientation.</p>
+<p>We use <code translate="no">states</code> to make the scroll bar visible when the users move the scroll area:</p>
+<pre class="cpp" translate="no">
+     <span class="name">states</span>: <span class="name">State</span> {
+         <span class="name">name</span>: <span class="string">&quot;visible&quot;</span>
+         <span class="name">when</span>: <span class="name">container</span>.<span class="name">orientation</span> <span class="operator">==</span> <span class="name">Qt</span>.<span class="name">Vertical</span> ?
+                   <span class="name">scrollArea</span>.<span class="name">movingVertically</span> :
+                   <span class="name">scrollArea</span>.<span class="name">movingHorizontally</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">container</span>; <span class="name">opacity</span>: <span class="number">1.0</span> }
+     }
+</pre>
+<p>We use <code translate="no">transitions</code> to apply a <a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a> to the <code translate="no">opacity</code> property when the state changes from <code translate="no">&quot;visible&quot;</code> to the default state:</p>
+<pre class="cpp" translate="no">
+     <span class="name">transitions</span>: <span class="name">Transition</span> {
+         <span class="name">from</span>: <span class="string">&quot;visible&quot;</span>; <span class="name">to</span>: <span class="string">&quot;&quot;</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">properties</span>: <span class="string">&quot;opacity&quot;</span>; <span class="name">duration</span>: <span class="number">600</span> }
+     }
+ }
+</pre>
+<h4 id="creating-footers">Creating Footers</h4>
+<p>In <code translate="no">rssnews.qml</code>, we use a <a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a> type with a <a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a> type to create a footer for the news list view:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a></span> {
+         <span class="name">id</span>: <span class="name">footerText</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+             <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+             <span class="name">height</span>: <span class="name">closeButton</span>.<span class="name">height</span>
+             <span class="name">color</span>: <span class="string">&quot;lightgray&quot;</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;RSS Feed from Yahoo News&quot;</span>
+                 <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+                 <span class="name">font</span>.pixelSize: <span class="number">14</span>
+             }
+         }
+     }
+</pre>
+<p>We bind the <code translate="no">width</code> of the footer to the width of the component and the <code translate="no">height</code> to the height of close button to align them when no news items are displayed.</p>
+<h4 id="creating-buttons">Creating Buttons</h4>
+<p>In <code translate="no">rssnews.qml</code>, we use an <a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a> type to create a simple push button that users can tap to close the app:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+         <span class="name">id</span>: <span class="name">closeButton</span>
+         <span class="name">source</span>: <span class="string">&quot;content/images/btn_close.png&quot;</span>
+         <span class="name">scale</span>: <span class="number">0.8</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.margins: <span class="number">4</span>
+         <span class="name">opacity</span>: (<span class="name">isPortrait</span> <span class="operator">&amp;&amp;</span> <span class="name">categories</span>.<span class="name">moving</span>) ? <span class="number">0.2</span> : <span class="number">1.0</span>
+         Behavior on <span class="name">opacity</span> {
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">duration</span>: <span class="number">300</span>; <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">OutSine</span> }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">onClicked</span>: {
+                 <span class="name">Qt</span>.<span class="name">quit</span>()
+             }
+         }
+     }
+</pre>
+<p>We use <code translate="no">anchors</code> to position the close button in the top right corner of the news list view, with 4-pixel margins. Because the close button overlaps the category list in portrait orientation, we animate the <code translate="no">opacity</code> property to make the button almost fully transparent when users are scrolling the category list.</p>
+<p>We use the <code translate="no">onClicked</code> signal handler within a <a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a> to call the <code translate="no">quit()</code> function when users select the close button.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtdoc.git/tree/examples/demos/rssnews?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<p><b>See also </b><a href="qmlapplications.html" translate="no">QML Applications</a>.</p>
+<!-- @@@demos/rssnews -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

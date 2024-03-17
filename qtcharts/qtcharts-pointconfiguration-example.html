@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- examples-pointconfiguration.qdoc -->
+  <meta name="description" content="Shows how to modify the configuration of individual points.">
+  <title>Selected Point Configuration | Qt Charts 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtcharts-index.html" translate="no">Qt Charts</a></li>
+<li>Selected Point Configuration</li>
+<li id="buildversion"><a href="qtcharts-index.html" translate="no">Qt Charts | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#features-demonstrated">Features Demonstrated</a></li>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#subclass-qmainwindow">Subclass QMainWindow</a></li>
+<li class="level1"><a href="#create-a-line-series">Create a Line Series</a></li>
+<li class="level1"><a href="#create-the-point-configuration-controls">Create the Point Configuration Controls</a></li>
+<li class="level1"><a href="#populate-the-controls-upon-selecting-a-point">Populate the Controls upon Selecting a Point</a></li>
+<li class="level1"><a href="#provide-the-logic-to-configure-the-selected-point">Provide the Logic to Configure the Selected Point</a></li>
+<li class="level1"><a href="#create-the-chart-and-lay-out-the-controls">Create the Chart and Lay out the Controls</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Selected Point Configuration</h1>
+<!-- $$$qtcharts-pointconfiguration-example.html-description -->
+<div class="descr" id="details">
+<div class="admonition note">
+<p><b>Note: </b>This is part of the <a href="qtcharts-chartsgallery-example.html" translate="no">Charts with Widgets Gallery</a> example.</p>
+</div>
+<p class="centerAlign"><img src="images/examples_pointconfiguration.png" alt="" /></p><h2 id="features-demonstrated">Features Demonstrated</h2>
+<p>Here you will learn how to:</p>
+<ul>
+<li>Provide click-selection of points in a series.</li>
+<li>Override the individual configuration of specific points, configuring:<ul>
+<li>Color</li>
+<li>Size</li>
+<li>Visibility of the label</li>
+<li>Text format of the label</li>
+</ul>
+</li>
+</ul>
+<h2 id="running-the-example">Running the Example</h2>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h2 id="subclass-qmainwindow">Subclass QMainWindow</h2>
+<p>We start by creating a subclass of <a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a> that will contain the chart and controls. And we provide the boilerplate for the constructor implementation:</p>
+<pre class="cpp" translate="no">
+ PointConfigurationWidget<span class="operator">::</span>PointConfigurationWidget(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent)
+     : ContentWidget(parent)
+ {
+</pre>
+<h2 id="create-a-line-series">Create a Line Series</h2>
+<p>Then we create a <a href="qlineseries.html" translate="no">QLineSeries</a>, giving it a name, making the points visible, and giving it some points to plot.</p>
+<pre class="cpp" translate="no">
+ m_series <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qlineseries.html" translate="no">QLineSeries</a></span>;
+ m_series<span class="operator">-</span><span class="operator">&gt;</span>setPointsVisible(<span class="keyword">true</span>);
+ m_series<span class="operator">-</span><span class="operator">&gt;</span>append({<span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">7</span>)<span class="operator">,</span>  <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">2</span><span class="operator">,</span> <span class="number">4</span>)<span class="operator">,</span>
+                   <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">3</span><span class="operator">,</span> <span class="number">5</span>)<span class="operator">,</span>  <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">7</span><span class="operator">,</span> <span class="number">4</span>)<span class="operator">,</span>
+                   <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">10</span><span class="operator">,</span> <span class="number">5</span>)<span class="operator">,</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">11</span><span class="operator">,</span> <span class="number">1</span>)<span class="operator">,</span>
+                   <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">13</span><span class="operator">,</span> <span class="number">3</span>)<span class="operator">,</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">17</span><span class="operator">,</span> <span class="number">6</span>)<span class="operator">,</span>
+                   <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">18</span><span class="operator">,</span> <span class="number">3</span>)<span class="operator">,</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(<span class="number">20</span><span class="operator">,</span> <span class="number">2</span>)});
+</pre>
+<h2 id="create-the-point-configuration-controls">Create the Point Configuration Controls</h2>
+<p>Now we create some controls to configure the color, size, label visibility, and the label itself. We create an associated label for each control so the user knows what the control does.</p>
+<p>For the color and size, we use a <a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a>, populating it with a variety of color and size choices.</p>
+<p>Next we create the final two controls. A Checkbox controls the visibility of the selected point. The other control is a <a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a> allowing the user to provide a custom label for the point.</p>
+<p>Note that we do not set initial values for any of the controls, as a point will always be selected showing its current settings.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> selectedPointIndexLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Selected Point: &quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>);
+ m_selectedPointIndexLineEdit <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a></span>(<span class="keyword">this</span>);
+ m_selectedPointIndexLineEdit<span class="operator">-</span><span class="operator">&gt;</span>setReadOnly(<span class="keyword">true</span>);
+
+ <span class="keyword">auto</span> colorLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Color: &quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>);
+ m_colorCombobox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(<span class="keyword">this</span>);
+ <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> colorStrings <span class="operator">=</span> {<span class="string">&quot;red&quot;</span><span class="operator">,</span> <span class="string">&quot;orange&quot;</span><span class="operator">,</span> <span class="string">&quot;yellow&quot;</span><span class="operator">,</span> <span class="string">&quot;green&quot;</span><span class="operator">,</span> <span class="string">&quot;blue&quot;</span><span class="operator">,</span>
+                             <span class="string">&quot;indigo&quot;</span><span class="operator">,</span> <span class="string">&quot;violet&quot;</span><span class="operator">,</span> <span class="string">&quot;black&quot;</span>};
+ <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> trColorStrings <span class="operator">=</span> {tr(<span class="string">&quot;red&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;orange&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;yellow&quot;</span>)<span class="operator">,</span>
+                               tr(<span class="string">&quot;green&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;blue&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;indigo&quot;</span>)<span class="operator">,</span>
+                               tr(<span class="string">&quot;violet&quot;</span>)<span class="operator">,</span> tr(<span class="string">&quot;black&quot;</span>)};
+ <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> colorStrings<span class="operator">.</span>size(); i<span class="operator">+</span><span class="operator">+</span>)
+     m_colorCombobox<span class="operator">-</span><span class="operator">&gt;</span>addItem(<span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span>()<span class="operator">,</span> trColorStrings<span class="operator">[</span>i<span class="operator">]</span><span class="operator">,</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span>(colorStrings<span class="operator">[</span>i<span class="operator">]</span>));
+
+ <span class="keyword">auto</span> sizeLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Size: &quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>);
+ m_sizeCombobox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(<span class="keyword">this</span>);
+ <span class="keyword">for</span> (<span class="keyword">auto</span> size : { <span class="number">2</span><span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">4</span><span class="operator">,</span> <span class="number">6</span><span class="operator">,</span> <span class="number">8</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> <span class="number">12</span><span class="operator">,</span> <span class="number">15</span> })
+     m_sizeCombobox<span class="operator">-</span><span class="operator">&gt;</span>addItem(<span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span>()<span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(size)<span class="operator">,</span> size);
+
+ <span class="keyword">auto</span> labelVisibilityLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Label Visibility: &quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>);
+ m_labelVisibilityCheckbox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(<span class="keyword">this</span>);
+
+ <span class="keyword">auto</span> customLabelLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Custom Label: &quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>);
+ m_customLabelLineEdit <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a></span>(<span class="keyword">this</span>);
+</pre>
+<h2 id="populate-the-controls-upon-selecting-a-point">Populate the Controls upon Selecting a Point</h2>
+<p>Now that we have the controls, we need to provide the logic that sets the current control values for the selected point. Note that the whole series value is used if there is no customization for a selected point. In this case, if the series is set to show blue points, a blue color value will be shown in the color combobox.</p>
+<p>Upon clicking on the lineseries, we look up the point clicked on, remove the prior point selection, and then select the point that was clicked on. This visually indicates the selected point on the chart - making the point larger to indicate its selection. The index of the current selected point and its <code translate="no">PointConfigurations</code> are saved to a member variable for later use.</p>
+<p>The <code translate="no">PointConfigurations</code> are queried and matching values in the comboboxes are looked up. Then the current indices of the comboboxes are set accordingly. Similarly for the checkbox and line edit, the values are looked up from the <code translate="no">PointConfigurations</code>, and the controls are set to match them.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_series<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>clicked<span class="operator">,</span> m_series<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span> <span class="operator">&amp;</span>point) {
+     <span class="type">int</span> index <span class="operator">=</span> m_series<span class="operator">-</span><span class="operator">&gt;</span>points()<span class="operator">.</span>indexOf(point<span class="operator">.</span>toPoint());
+     <span class="keyword">if</span> (index <span class="operator">!</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>) {
+         m_series<span class="operator">-</span><span class="operator">&gt;</span>deselectAllPoints();
+         m_series<span class="operator">-</span><span class="operator">&gt;</span>selectPoint(index);
+         m_selectedPointIndex <span class="operator">=</span> index;
+         m_selectedPointConfig <span class="operator">=</span> m_series<span class="operator">-</span><span class="operator">&gt;</span>pointConfiguration(index);
+         <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span> selectedPoint(m_series<span class="operator">-</span><span class="operator">&gt;</span>at(index));
+         m_selectedPointIndexLineEdit<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="string">&quot;(&quot;</span> <span class="operator">+</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(selectedPoint<span class="operator">.</span>x()) <span class="operator">+</span> <span class="string">&quot;, &quot;</span> <span class="operator">+</span>
+                                               <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(selectedPoint<span class="operator">.</span>y()) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>);
+         PointConfigurations config <span class="operator">=</span> m_series<span class="operator">-</span><span class="operator">&gt;</span>pointConfiguration(index);
+
+         <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span> colorVar <span class="operator">=</span> config<span class="operator">[</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>PointConfiguration<span class="operator">::</span>Color<span class="operator">]</span>;
+         <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> color <span class="operator">=</span> colorVar<span class="operator">.</span>isValid() <span class="operator">?</span> colorVar<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span><span class="operator">&gt;</span>() : m_series<span class="operator">-</span><span class="operator">&gt;</span>color();
+         <span class="keyword">if</span> (m_colorCombobox<span class="operator">-</span><span class="operator">&gt;</span>findData(color) <span class="operator">&lt;</span> <span class="number">0</span>)
+             m_colorCombobox<span class="operator">-</span><span class="operator">&gt;</span>addItem(color<span class="operator">.</span>name()<span class="operator">,</span> color);
+         m_colorCombobox<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(m_colorCombobox<span class="operator">-</span><span class="operator">&gt;</span>findData(color));
+
+         <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span> sizeVar <span class="operator">=</span> config<span class="operator">[</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>PointConfiguration<span class="operator">::</span>Size<span class="operator">]</span>;
+         <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> size <span class="operator">=</span> sizeVar<span class="operator">.</span>isValid() <span class="operator">?</span> sizeVar<span class="operator">.</span>toReal() : m_series<span class="operator">-</span><span class="operator">&gt;</span>markerSize();
+         <span class="keyword">if</span> (m_sizeCombobox<span class="operator">-</span><span class="operator">&gt;</span>findData(size) <span class="operator">&lt;</span> <span class="number">0</span>)
+             m_sizeCombobox<span class="operator">-</span><span class="operator">&gt;</span>addItem(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(size)<span class="operator">,</span> size);
+         m_sizeCombobox<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(m_sizeCombobox<span class="operator">-</span><span class="operator">&gt;</span>findData(size));
+
+         <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span> labelVisibilityVar <span class="operator">=</span> config<span class="operator">[</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>PointConfiguration<span class="operator">::</span>LabelVisibility<span class="operator">]</span>;
+         <span class="type">bool</span> labelVisibility <span class="operator">=</span> labelVisibilityVar<span class="operator">.</span>isValid() <span class="operator">?</span> labelVisibilityVar<span class="operator">.</span>toBool() :
+                                                               m_series<span class="operator">-</span><span class="operator">&gt;</span>pointLabelsVisible();
+         m_labelVisibilityCheckbox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(labelVisibility);
+
+         <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span> customLabelVar <span class="operator">=</span> config<span class="operator">[</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>PointConfiguration<span class="operator">::</span>LabelFormat<span class="operator">]</span>;
+         <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> customLabel <span class="operator">=</span> customLabelVar<span class="operator">.</span>isValid() <span class="operator">?</span> customLabelVar<span class="operator">.</span>toString() : <span class="string">&quot;&quot;</span>;
+         m_customLabelLineEdit<span class="operator">-</span><span class="operator">&gt;</span>setText(customLabel);
+     }
+ });
+</pre>
+<h2 id="provide-the-logic-to-configure-the-selected-point">Provide the Logic to Configure the Selected Point</h2>
+<p>Now that the controls are populated with the current configuration, we need to make them do something. We connect up their signals to logic that will do the work of configuring the selected point with the setting chosen. It is a simple matter of setting the <a href="qxyseries.html#PointConfiguration-enum" translate="no">QXYSeries::PointConfiguration</a> value associated with the control to the <code translate="no">m_selectedPointConfig</code> <code translate="no">PointConfigurations</code> member variable, and calling <a href="qxyseries.html#setPointConfiguration" translate="no">QXYSeries::setPointConfiguration</a>.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_colorCombobox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>activated<span class="operator">,</span> m_series<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type">int</span>) {
+     m_selectedPointConfig<span class="operator">[</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>PointConfiguration<span class="operator">::</span>Color<span class="operator">]</span> <span class="operator">=</span> m_colorCombobox<span class="operator">-</span><span class="operator">&gt;</span>currentData();
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>setPointConfiguration(m_selectedPointIndex<span class="operator">,</span> m_selectedPointConfig);
+ });
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_sizeCombobox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>activated<span class="operator">,</span> m_series<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type">int</span>) {
+     m_selectedPointConfig<span class="operator">[</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>PointConfiguration<span class="operator">::</span>Size<span class="operator">]</span> <span class="operator">=</span> m_sizeCombobox<span class="operator">-</span><span class="operator">&gt;</span>currentData();
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>setPointConfiguration(m_selectedPointIndex<span class="operator">,</span> m_selectedPointConfig);
+ });
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_labelVisibilityCheckbox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qabstractbutton.html" translate="no">QAbstractButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> m_series<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type">bool</span> checked) {
+     m_selectedPointConfig<span class="operator">[</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>PointConfiguration<span class="operator">::</span>LabelVisibility<span class="operator">]</span> <span class="operator">=</span> checked;
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>setPointConfiguration(m_selectedPointIndex<span class="operator">,</span> m_selectedPointConfig);
+ });
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_customLabelLineEdit<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a></span><span class="operator">::</span>editingFinished<span class="operator">,</span> m_series<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>() {
+     m_selectedPointConfig<span class="operator">[</span><span class="type"><a href="qxyseries.html" translate="no">QXYSeries</a></span><span class="operator">::</span>PointConfiguration<span class="operator">::</span>LabelFormat<span class="operator">]</span> <span class="operator">=</span> m_customLabelLineEdit<span class="operator">-</span><span class="operator">&gt;</span>text();
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>setPointConfiguration(m_selectedPointIndex<span class="operator">,</span> m_selectedPointConfig);
+ });
+</pre>
+<h2 id="create-the-chart-and-lay-out-the-controls">Create the Chart and Lay out the Controls</h2>
+<p>Finally we create the chart and its view, add the series to the chart, and create the layout of the window. As part of this, we connect to the <code translate="no">geometryChanged</code> signal to catch a signal when the chart is first painted. This is so that we can get correct values for the initially selected point. If we do this earlier, the point values are incorrect. This connection is disconnected after the first time that it is fired.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> chart <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qchart.html" translate="no">QChart</a></span>;
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addSeries(m_series);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>createDefaultAxes();
+ chart<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Select points with mouse click&quot;</span>);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>layout()<span class="operator">-</span><span class="operator">&gt;</span>setContentsMargins(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>legend()<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+
+ m_selectInitialPointConnection <span class="operator">=</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(chart<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qchart.html" translate="no">QChart</a></span><span class="operator">::</span>geometryChanged<span class="operator">,</span> chart<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>() {
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>selectPoint(<span class="number">4</span>);
+     m_series<span class="operator">-</span><span class="operator">&gt;</span>clicked(m_series<span class="operator">-</span><span class="operator">&gt;</span>at(m_series<span class="operator">-</span><span class="operator">&gt;</span>selectedPoints()<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>));
+     disconnect(m_selectInitialPointConnection);
+ });
+
+ <span class="keyword">auto</span> chartView <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qchartview.html" translate="no">QChartView</a></span>(chart<span class="operator">,</span> <span class="keyword">this</span>);
+ chartView<span class="operator">-</span><span class="operator">&gt;</span>setRenderHint(<span class="type"><a href="../qtgui/qpainter.html" translate="no">QPainter</a></span><span class="operator">::</span>Antialiasing);
+
+ <span class="keyword">auto</span> controlWidget <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>(<span class="keyword">this</span>);
+ <span class="keyword">auto</span> controlLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgridlayout.html" translate="no">QGridLayout</a></span>(controlWidget);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>setColumnStretch(<span class="number">1</span><span class="operator">,</span> <span class="number">1</span>);
+
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(selectedPointIndexLabel<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(m_selectedPointIndexLineEdit<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span>);
+
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(colorLabel<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span>);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(m_colorCombobox<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span>);
+
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(sizeLabel<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">0</span>);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(m_sizeCombobox<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">1</span>);
+
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(labelVisibilityLabel<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">0</span>);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(m_labelVisibilityCheckbox<span class="operator">,</span> <span class="number">3</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">2</span>);
+
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(customLabelLabel<span class="operator">,</span> <span class="number">4</span><span class="operator">,</span> <span class="number">0</span>);
+ controlLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(m_customLabelLineEdit<span class="operator">,</span> <span class="number">4</span><span class="operator">,</span> <span class="number">1</span>);
+
+ <span class="keyword">auto</span> mainLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qhboxlayout.html" translate="no">QHBoxLayout</a></span>(<span class="keyword">this</span>);
+ mainLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(chartView);
+ mainLayout<span class="operator">-</span><span class="operator">&gt;</span>setStretch(<span class="number">0</span><span class="operator">,</span> <span class="number">1</span>);
+ mainLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(controlWidget);
+</pre>
+<p>Now we have a fully functioning application that demonstrates how to customize individual chart points.</p>
+</div>
+<!-- @@@qtcharts-pointconfiguration-example.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

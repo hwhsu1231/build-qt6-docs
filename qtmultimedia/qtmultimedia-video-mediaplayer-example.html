@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- mediaplayer.qdoc -->
+  <meta name="description" content="Playing audio and video using Qt Quick.">
+  <title>QML Media Player Example | Qt Multimedia 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtmultimedia-index.html" translate="no">Qt Multimedia</a></li>
+<li><a href="multimedia-examples.html" translate="no">Qt Multimedia Examples</a></li>
+<li>QML Media Player Example</li>
+<li id="buildversion"><a href="qtmultimedia-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#using-mediaplayer-and-videooutput">Using MediaPlayer and VideoOutput</a></li>
+<li class="level1"><a href="#playermenubar">PlayerMenuBar</a></li>
+<li class="level2"><a href="#filedialog">fileDialog</a></li>
+<li class="level2"><a href="#loadurl">loadUrl</a></li>
+<li class="level2"><a href="#getting-meta-data">Getting meta data</a></li>
+<li class="level2"><a href="#tracks-information-and-control">Tracks information and control</a></li>
+<li class="level1"><a href="#playbackcontrolpanel">playbackControlPanel</a></li>
+<li class="level2"><a href="#playback-control">Playback control</a></li>
+<li class="level2"><a href="#play-pause-stop">Play Pause Stop</a></li>
+<li class="level2"><a href="#playback-seek-control">Playback seek control</a></li>
+<li class="level2"><a href="#playback-rate-control">Playback rate control</a></li>
+<li class="level2"><a href="#audio-control">Audio control</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">QML Media Player Example</h1>
+<!-- $$$video/mediaplayer-brief -->
+<p>Playing audio and video using Qt Quick.</p>
+<!-- @@@video/mediaplayer -->
+<!-- $$$video/mediaplayer-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/qmlmediaplayer.jpg" alt="" /></p><p>This example demonstrates a simple multimedia player that can play audio and video files using various codecs.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="overview">Overview</h4>
+<p>At its core this is a QML application, see <a href="../qtdoc/qtdoc-tutorials-alarms-example.html" translate="no">Getting Started Programming with Qt Quick</a> for information specific to that. This documentation is focused on how this example utilizes the <a href="qtmultimedia-qmlmodule.html" translate="no">Qt Multimedia QML Types</a>.</p>
+<p class="centerAlign"><img src="images/architecture-overview.gif" alt="" /></p><h4 id="using-mediaplayer-and-videooutput">Using MediaPlayer and VideoOutput</h4>
+<p>In <code translate="no">main.qml</code> a <a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a> instance is connected to a <a href="qml-qtmultimedia-videooutput.html" translate="no">VideoOutput</a> to play back the video:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a></span> {
+         <span class="name">id</span>: <span class="name">mediaPlayer</span>
+
+         <span class="keyword">function </span><span class="name">updateMetadata</span>() {
+             <span class="name">metadataInfo</span>.<span class="name">clear</span>();
+             <span class="name">metadataInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">metaData</span>);
+             <span class="name">metadataInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">audioTracks</span>[<span class="name">mediaPlayer</span>.<span class="name">activeAudioTrack</span>]);
+             <span class="name">metadataInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">videoTracks</span>[<span class="name">mediaPlayer</span>.<span class="name">activeVideoTrack</span>]);
+         }
+
+         <span class="name">videoOutput</span>: <span class="name">videoOutput</span>
+</pre>
+<p><code translate="no">videoOutput</code> is declared like so:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="qml-qtmultimedia-videooutput.html" translate="no">VideoOutput</a></span> {
+         <span class="name">id</span>: <span class="name">videoOutput</span>
+
+         property <span class="type">bool</span> <span class="name">fullScreen</span>: <span class="number">false</span>
+
+         <span class="name">anchors</span>.top: <span class="name">fullScreen</span> ? <span class="name">parent</span>.<span class="name">top</span> : <span class="name">menuBar</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.bottom: <span class="name">playbackControl</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+             <span class="name">onDoubleTapped</span>: {
+                 <span class="name">parent</span>.<span class="name">fullScreen</span> ?  <span class="name">showNormal</span>() : <span class="name">showFullScreen</span>()
+                 <span class="name">parent</span>.<span class="name">fullScreen</span> <span class="operator">=</span> !<span class="name">parent</span>.<span class="name">fullScreen</span>
+             }
+             <span class="name">onTapped</span>: {
+                 <span class="name">metadataInfo</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+                 <span class="name">audioTracksInfo</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+                 <span class="name">videoTracksInfo</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+                 <span class="name">subtitleTracksInfo</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>
+             }
+         }
+     }
+</pre>
+<h4 id="playermenubar">PlayerMenuBar</h4>
+<p class="centerAlign"><img src="images/PlayerMenuBar.gif" alt="" /></p><p>This QML type handles media selection from a url or local file, exiting the application, viewing meta data, and the selection of available video, audio or subtitle tracks.</p>
+<p>Accessing the mediaPlayer object is done through properties:</p>
+<pre class="cpp" translate="no">
+     required property <span class="type"><a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a></span> <span class="name">mediaPlayer</span>
+     required property <span class="type"><a href="qml-qtmultimedia-videooutput.html" translate="no">VideoOutput</a></span> <span class="name">videoOutput</span>
+     required property <span class="type">MetadataInfo</span> <span class="name">metadataInfo</span>
+     required property <span class="type">TracksInfo</span> <span class="name">audioTracksInfo</span>
+     required property <span class="type">TracksInfo</span> <span class="name">videoTracksInfo</span>
+     required property <span class="type">TracksInfo</span> <span class="name">subtitleTracksInfo</span>
+</pre>
+<h5 id="filedialog">fileDialog</h5>
+<p>A FileDialog, <code translate="no">fileDialog</code>, is created with an <code translate="no">onAccepted</code> function that will stop <code translate="no">mediaPlayer</code>, load the source by setting the <a href="qml-qtmultimedia-mediaplayer.html#source-prop" translate="no">source</a> property and then play it automatically:</p>
+<pre class="cpp" translate="no">
+     <span class="type">FileDialog</span> {
+         <span class="name">id</span>: <span class="name">fileDialog</span>
+         <span class="name">title</span>: <span class="string">&quot;Please choose a file&quot;</span>
+         <span class="name">onAccepted</span>: {
+             <span class="name">mediaPlayer</span>.<span class="name">stop</span>()
+             <span class="name">mediaPlayer</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">fileDialog</span>.<span class="name">currentFile</span>
+             <span class="name">mediaPlayer</span>.<span class="name">play</span>()
+         }
+     }
+</pre>
+<p>This is triggered in the Menu <code translate="no">File</code>, which is a child of the <a href="../qtquickcontrols/qml-qtquick-controls-menubar.html" translate="no">MenuBar</a>:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-menubar.html" translate="no">MenuBar</a></span> {
+         <span class="name">id</span>: <span class="name">menuBar</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-menu.html" translate="no">Menu</a></span> {
+             <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;&amp;File&quot;</span>)
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-action.html" translate="no">Action</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;&amp;Open&quot;</span>)
+                 <span class="name">onTriggered</span>: <span class="name">fileDialog</span>.<span class="name">open</span>()
+</pre>
+<h5 id="loadurl">loadUrl</h5>
+<p class="centerAlign"><img src="images/url.png" alt="" /></p><p>While <code translate="no">urlPopup</code> handles prompting and capturing a url, it is the <code translate="no">loadUrl</code> function that interacts with <code translate="no">mediaPlayer</code> like so:</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">function </span><span class="name">loadUrl</span>(url) {
+         <span class="name">mediaPlayer</span>.<span class="name">stop</span>()
+         <span class="name">mediaPlayer</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">url</span>
+         <span class="name">mediaPlayer</span>.<span class="name">play</span>()
+     }
+</pre>
+<h5 id="getting-meta-data">Getting meta data</h5>
+<p class="centerAlign"><img src="images/meta-data.png" alt="" /></p><p>In the declaration of <code translate="no">mediaPlayer</code>, in <code translate="no">main.qml</code>, there is the function <code translate="no">updateMetadata()</code>:</p>
+<pre class="cpp" translate="no">
+         <span class="keyword">function </span><span class="name">updateMetadata</span>() {
+             <span class="name">metadataInfo</span>.<span class="name">clear</span>();
+             <span class="name">metadataInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">metaData</span>);
+             <span class="name">metadataInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">audioTracks</span>[<span class="name">mediaPlayer</span>.<span class="name">activeAudioTrack</span>]);
+             <span class="name">metadataInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">videoTracks</span>[<span class="name">mediaPlayer</span>.<span class="name">activeVideoTrack</span>]);
+</pre>
+<p>It is called in the following places:</p>
+<pre class="cpp" translate="no">
+         <span class="name">onMetaDataChanged</span>: { <span class="name">updateMetadata</span>() }
+         <span class="name">onTracksChanged</span>: {
+             <span class="name">audioTracksInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">audioTracks</span>);
+             <span class="name">audioTracksInfo</span>.<span class="name">selectedTrack</span> <span class="operator">=</span> <span class="name">mediaPlayer</span>.<span class="name">activeAudioTrack</span>;
+             <span class="name">videoTracksInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">videoTracks</span>);
+             <span class="name">videoTracksInfo</span>.<span class="name">selectedTrack</span> <span class="operator">=</span> <span class="name">mediaPlayer</span>.<span class="name">activeVideoTrack</span>;
+             <span class="name">subtitleTracksInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">subtitleTracks</span>);
+             <span class="name">subtitleTracksInfo</span>.<span class="name">selectedTrack</span> <span class="operator">=</span> <span class="name">mediaPlayer</span>.<span class="name">activeSubtitleTrack</span>;
+             <span class="name">updateMetadata</span>()
+         }
+</pre>
+<p>Reading MetaData is done by the <code translate="no">MetadataInfo</code> type's <code translate="no">read()</code> function</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">function </span><span class="name">read</span>(metadata) {
+         <span class="keyword">if</span> (<span class="name">metadata</span>) {
+             <span class="keyword">for</span> (var key of <span class="name">metadata</span>.<span class="name">keys</span>()) {
+                 <span class="keyword">if</span> (<span class="name">metadata</span>.<span class="name">stringValue</span>(<span class="name">key</span>)) {
+                     <span class="name">elements</span>.<span class="name">append</span>(
+                                 { name: <span class="name">metadata</span>.<span class="name">metaDataKeyToString</span>(<span class="name">key</span>)
+                                 , value: <span class="name">metadata</span>.<span class="name">stringValue</span>(<span class="name">key</span>)
+                                 })
+                 }
+             }
+         }
+     }
+</pre>
+<p>The information is displayed via an <a href="../qtquickcontrols/qml-qtquick-controls-overlay.html" translate="no">Overlay</a> item.</p>
+<h5 id="tracks-information-and-control">Tracks information and control</h5>
+<div class="video">
+<a href="https://www.youtube.com/watch/?v=OqosZsDqvzQ">
+<img src="images/OqosZsDqvzQ.jpg" title="Click to play in a browser" /></a>
+</div>
+<p>This is defined in <code translate="no">TracksInfo.qml</code> and reading available tracks is done in a similar way to <code translate="no">MetadataInfo</code>:</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">function </span><span class="name">read</span>(metadataList) {
+         var LanguageKey = <span class="number">6</span>;
+
+         <span class="name">elements</span>.<span class="name">clear</span>()
+
+         <span class="name">elements</span>.<span class="name">append</span>(
+                     { language: <span class="string">&quot;No Selected Track&quot;</span>
+                     , trackNumber: -<span class="number">1</span>
+                     })
+
+         <span class="keyword">if</span> (!<span class="name">metadataList</span>)
+             <span class="keyword">return</span>;
+
+         <span class="name">metadataList</span>.<span class="name">forEach</span>(<span class="keyword">function </span>(metadata, index) {
+             var language = <span class="name">metadata</span>.<span class="name">stringValue</span>(<span class="name">LanguageKey</span>);
+             var label = <span class="name">language</span> ? <span class="name">metadata</span>.<span class="name">stringValue</span>(<span class="name">LanguageKey</span>) : <span class="string">&quot;track &quot;</span> <span class="operator">+</span> (<span class="name">index</span> <span class="operator">+</span> <span class="number">1</span>)
+             <span class="name">elements</span>.<span class="name">append</span>(
+                         { language: <span class="name">label</span>
+                         , trackNumber: <span class="name">index</span>
+                         })
+         });
+     }
+</pre>
+<p>To set a track, the property <code translate="no">selectedTrack</code> is set like so:</p>
+<pre class="cpp" translate="no">
+         <span class="type"><a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a></span> {
+             <span class="name">id</span>: <span class="name">trackList</span>
+             <span class="name">visible</span>: <span class="name">elements</span>.<span class="name">count</span> <span class="operator">&gt;</span> <span class="number">0</span>
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">model</span>: <span class="name">elements</span>
+             <span class="name">delegate</span>: <span class="name">RowLayout</span> {
+                 <span class="name">width</span>: <span class="name">trackList</span>.<span class="name">width</span>
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+                     <span class="name">checked</span>: <span class="name">model</span>.<span class="name">trackNumber</span> <span class="operator">===</span> <span class="name">selectedTrack</span>
+                     <span class="name">text</span>: <span class="name">model</span>.<span class="name">language</span>
+                     <span class="name">ButtonGroup</span>.group: <span class="name">group</span>
+                     <span class="name">onClicked</span>: <span class="name">selectedTrack</span> <span class="operator">=</span> <span class="name">model</span>.<span class="name">trackNumber</span>
+                 }
+             }
+         }
+</pre>
+<p>The <code translate="no">onSelectectedTrackChanged</code> signal, in each relevant <code translate="no">TracksInfo</code> instance in <code translate="no">main.qml</code>, is what makes changes to <code translate="no">mediaPlayer</code> like so:</p>
+<pre class="cpp" translate="no">
+         <span class="name">id</span>: <span class="name">audioTracksInfo</span>
+
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.top: <span class="name">videoOutput</span>.<span class="name">fullScreen</span> ? <span class="name">parent</span>.<span class="name">top</span> : <span class="name">menuBar</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.bottom: <span class="name">playbackControl</span>.<span class="name">opacity</span> ? <span class="name">playbackControl</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">bottom</span>
+
+         <span class="name">visible</span>: <span class="number">false</span>
+         <span class="name">onSelectedTrackChanged</span>:  <span class="name">mediaPlayer</span>.<span class="name">activeAudioTrack</span> <span class="operator">=</span> <span class="name">audioTracksInfo</span>.<span class="name">selectedTrack</span>
+</pre>
+<h4 id="playbackcontrolpanel">playbackControlPanel</h4>
+<p class="centerAlign"><img src="images/playbackControlPanel.gif" alt="" /></p><p>This item has controls for <a href="qtmultimedia-video-mediaplayer-example.html#playback-control" translate="no">Playback control</a>, <a href="qtmultimedia-video-mediaplayer-example.html#play-pause-stop" translate="no">Play Pause Stop</a>, <a href="qtmultimedia-video-mediaplayer-example.html#playback-rate-control" translate="no">Playback rate control</a> and <a href="qtmultimedia-video-mediaplayer-example.html#playback-seek-control" translate="no">Playback seek control</a>.</p>
+<h5 id="playback-control">Playback control</h5>
+<p>This qml type handles media playback and interacts with the <a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a> in <code translate="no">main.qml</code>.</p>
+<p>Here are the property definitions.</p>
+<pre class="cpp" translate="no">
+     required property <span class="type"><a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a></span> <span class="name">mediaPlayer</span>
+     property <span class="type">int</span> <span class="name">mediaPlayerState</span>: <span class="name">mediaPlayer</span>.<span class="name">playbackState</span>
+</pre>
+<p>Connections:</p>
+<pre class="cpp" translate="no">
+         <span class="name">target</span>: <span class="name">mediaPlayer</span>
+         <span class="keyword">function </span><span class="name">onPlaybackStateChanged</span>() { <span class="name">updateOpacity</span>() }
+         <span class="keyword">function </span><span class="name">onHasVideoChanged</span>() { <span class="name">updateOpacity</span>() }
+     }
+</pre>
+<h5 id="play-pause-stop">Play Pause Stop</h5>
+<p class="centerAlign"><img src="images/play-pause-stop.gif" alt="" /></p><p><a href="qml-qtmultimedia-mediaplayer.html#play-method" translate="no">Play</a>, <a href="qml-qtmultimedia-mediaplayer.html#stop-method" translate="no">stop</a> and <a href="qml-qtmultimedia-mediaplayer.html#pause-method" translate="no">pause</a> interactions with the <a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a> object are done like so:</p>
+<pre class="cpp" translate="no">
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-roundbutton.html" translate="no">RoundButton</a></span> {
+                         <span class="name">id</span>: <span class="name">pauseButton</span>
+                         <span class="name">radius</span>: <span class="number">50.0</span>
+                         <span class="name">text</span>: <span class="string">&quot;\u2016&quot;</span>;
+                         <span class="name">onClicked</span>: <span class="name">mediaPlayer</span>.<span class="name">pause</span>()
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-roundbutton.html" translate="no">RoundButton</a></span> {
+                         <span class="name">id</span>: <span class="name">playButton</span>
+                         <span class="name">radius</span>: <span class="number">50.0</span>
+                         <span class="name">text</span>: <span class="string">&quot;\u25B6&quot;</span>;
+                         <span class="name">onClicked</span>: <span class="name">mediaPlayer</span>.<span class="name">play</span>()
+                     }
+
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-roundbutton.html" translate="no">RoundButton</a></span> {
+                         <span class="name">id</span>: <span class="name">stopButton</span>
+                         <span class="name">radius</span>: <span class="number">50.0</span>
+                         <span class="name">text</span>: <span class="string">&quot;\u25A0&quot;</span>;
+                         <span class="name">onClicked</span>: <span class="name">mediaPlayer</span>.<span class="name">stop</span>()
+                     }
+                 }
+</pre>
+<p>Playback states done using <a href="qml-qtmultimedia-mediaplayer.html#playbackState-prop" translate="no">playbackstate</a> like so:</p>
+<pre class="cpp" translate="no">
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;playing&quot;</span>
+             <span class="name">when</span>: <span class="name">mediaPlayerState</span> <span class="operator">==</span> <span class="name">MediaPlayer</span>.<span class="name">PlayingState</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">pauseButton</span>; <span class="name">visible</span>: <span class="number">true</span>}
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">playButton</span>; <span class="name">visible</span>: <span class="number">false</span>}
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">stopButton</span>; <span class="name">visible</span>: <span class="number">true</span>}
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;stopped&quot;</span>
+             <span class="name">when</span>: <span class="name">mediaPlayerState</span> <span class="operator">==</span> <span class="name">MediaPlayer</span>.<span class="name">StoppedState</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">pauseButton</span>; <span class="name">visible</span>: <span class="number">false</span>}
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">playButton</span>; <span class="name">visible</span>: <span class="number">true</span>}
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">stopButton</span>; <span class="name">visible</span>: <span class="number">false</span>}
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;paused&quot;</span>
+             <span class="name">when</span>: <span class="name">mediaPlayerState</span> <span class="operator">==</span> <span class="name">MediaPlayer</span>.<span class="name">PausedState</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">pauseButton</span>; <span class="name">visible</span>: <span class="number">false</span>}
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">playButton</span>; <span class="name">visible</span>: <span class="number">true</span>}
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">stopButton</span>; <span class="name">visible</span>: <span class="number">true</span>}
+         }
+     ]
+</pre>
+<h5 id="playback-seek-control">Playback seek control</h5>
+<div class="video">
+<a href="https://www.youtube.com/watch/?v=sf_yv01UtIw">
+<img src="images/sf_yv01UtIw.jpg" title="Click to play in a browser" /></a>
+</div>
+<p>Defined in <code translate="no">PlaybackSeekControl.qml</code>, this component comprises of an item with a Text, <code translate="no">mediaTime</code>, and <a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a>, <code translate="no">mediaSlider</code>, in a <a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a>.</p>
+<p><code translate="no">mediaTime</code> uses <a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a>'s <a href="qml-qtmultimedia-mediaplayer.html#position-prop" translate="no">position</a> property like so:</p>
+<pre class="cpp" translate="no">
+         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="name">id</span>: <span class="name">mediaTime</span>
+             <span class="name">Layout</span>.minimumWidth: <span class="number">50</span>
+             <span class="name">Layout</span>.minimumHeight: <span class="number">18</span>
+             <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignRight</span>
+             <span class="name">text</span>: {
+                 var m = <span class="name">Math</span>.<span class="name">floor</span>(<span class="name">mediaPlayer</span>.<span class="name">position</span> <span class="operator">/</span> <span class="number">60000</span>)
+                 var ms = (<span class="name">mediaPlayer</span>.<span class="name">position</span> <span class="operator">/</span> <span class="number">1000</span> <span class="operator">-</span> <span class="name">m</span> <span class="operator">*</span> <span class="number">60</span>).<span class="name">toFixed</span>(<span class="number">1</span>)
+                 <span class="keyword">return</span> `${m}:${ms.padStart(4, 0)}`
+             }
+         }
+</pre>
+<p><code translate="no">mediaSlider</code> uses the <a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a> <a href="qml-qtmultimedia-mediaplayer.html#seekable-prop" translate="no">seekable</a>, <a href="qml-qtmultimedia-mediaplayer.html#duration-prop" translate="no">duration</a>, and <a href="qml-qtmultimedia-mediaplayer.html#position-prop" translate="no">position</a> properties like so:</p>
+<pre class="cpp" translate="no">
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+             <span class="name">id</span>: <span class="name">mediaSlider</span>
+             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             <span class="name">enabled</span>: <span class="name">mediaPlayer</span>.<span class="name">seekable</span>
+             <span class="name">to</span>: <span class="number">1.0</span>
+             <span class="name">value</span>: <span class="name">mediaPlayer</span>.<span class="name">position</span> <span class="operator">/</span> <span class="name">mediaPlayer</span>.<span class="name">duration</span>
+
+             <span class="name">onMoved</span>: <span class="name">mediaPlayer</span>.<span class="name">setPosition</span>(<span class="name">value</span> <span class="operator">*</span> <span class="name">mediaPlayer</span>.<span class="name">duration</span>)
+         }
+</pre>
+<h5 id="playback-rate-control">Playback rate control</h5>
+<div class="video">
+<a href="https://www.youtube.com/watch/?v=nHrBbW0H-pc">
+<img src="images/nHrBbW0H-pc.jpg" title="Click to play in a browser" /></a>
+</div>
+<p>This type is defined in <code translate="no">PlaybackRateControl.qml</code> like so:</p>
+<pre class="cpp" translate="no">
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+             <span class="name">id</span>: <span class="name">slider</span>
+             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             <span class="name">snapMode</span>: <span class="name">Slider</span>.<span class="name">SnapOnRelease</span>
+             <span class="name">enabled</span>: <span class="number">true</span>
+             <span class="name">from</span>: <span class="number">0.5</span>
+             <span class="name">to</span>: <span class="number">2.5</span>
+             <span class="name">stepSize</span>: <span class="number">0.5</span>
+             <span class="name">value</span>: <span class="number">1.0</span>
+
+             <span class="name">onMoved</span>: { <span class="name">mediaPlayer</span>.<span class="name">setPlaybackRate</span>(<span class="name">value</span>) }
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="name">text</span>: <span class="string">&quot;Rate &quot;</span> <span class="operator">+</span> <span class="name">slider</span>.<span class="name">value</span> <span class="operator">+</span> <span class="string">&quot;x&quot;</span>
+</pre>
+<h5 id="audio-control">Audio control</h5>
+<p class="centerAlign"><img src="images/audio-control.gif" alt="" /></p><p>This type is defined in <code translate="no">AudioControl.qml</code>, and utilizes the <a href="qml-qtmultimedia-audiooutput.html#muted-prop" translate="no">muted</a> and <a href="qml-qtmultimedia-audiooutput.html#volume-prop" translate="no">volume</a> properties of the <a href="qml-qtmultimedia-audiooutput.html" translate="no">AudioOutput</a> instantiated within the <a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a>, which is instantiated in <code translate="no">main.qml</code>.</p>
+<pre class="cpp" translate="no">
+     required property <span class="type"><a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a></span> <span class="name">mediaPlayer</span>
+     property <span class="type">bool</span> <span class="name">muted</span>: <span class="number">false</span>
+     property <span class="type">real</span> <span class="name">volume</span>: <span class="name">volumeSlider</span>.<span class="name">value</span><span class="operator">/</span><span class="number">100.</span>
+
+     <span class="name">implicitHeight</span>: <span class="name">buttons</span>.<span class="name">height</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+             <span class="name">id</span>: <span class="name">buttons</span>
+
+             <span class="name">width</span>: <span class="name">muteButton</span>.<span class="name">implicitWidth</span>
+             <span class="name">height</span>: <span class="name">muteButton</span>.<span class="name">implicitHeight</span>
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-roundbutton.html" translate="no">RoundButton</a></span> {
+                 <span class="name">id</span>: <span class="name">muteButton</span>
+                 <span class="name">radius</span>: <span class="number">50.0</span>
+                 <span class="name">icon</span>.source: <span class="name">muted</span> ? <span class="string">&quot;qrc:///Mute_Icon.svg&quot;</span> : <span class="string">&quot;qrc:///Speaker_Icon.svg&quot;</span>
+                 <span class="name">onClicked</span>: { <span class="name">muted</span> <span class="operator">=</span> !<span class="name">muted</span> }
+             }
+         }
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+             <span class="name">id</span>: <span class="name">volumeSlider</span>
+             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignVCenter</span>
+
+             <span class="name">enabled</span>: <span class="number">true</span>
+             <span class="name">to</span>: <span class="number">100.0</span>
+             <span class="name">value</span>: <span class="number">100.0</span>
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtmultimedia.git/tree/examples/multimedia/video/mediaplayer?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@video/mediaplayer -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

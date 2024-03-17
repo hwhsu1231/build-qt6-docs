@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- cmake-manual.qdoc -->
+  <meta name="description" content="Describes how to use CMake in your development projects.">
+  <title>Build with CMake 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li>Build with CMake</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="next" href="cmake-get-started.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="nextPage" href="cmake-get-started.html">Getting started with CMake</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#table-of-contents">Table of Contents</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Build with CMake</h1>
+<!-- $$$cmake-manual.html-description -->
+<div class="descr" id="details">
+<span id="cmake-manual"></span><p><code translate="no">CMake</code> is a tool to simplify the build process for development projects across different platforms. <code translate="no">CMake</code> automatically generates build systems, such as Makefiles and Ninja files.</p>
+<p><code translate="no">CMake</code> is a third-party tool with its own <a href="https://cmake.org/cmake/help/latest/" translate="no">documentation</a>. This manual focuses on how to use <code translate="no">CMake</code> to build Qt applications and libraries.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="cmake-get-started.html" translate="no">Getting started with CMake</a><ul>
+<li><a href="cmake-get-started.html#building-a-c-console-application" translate="no">Building a C++ console application</a></li>
+<li><a href="cmake-get-started.html#building-a-c-gui-application" translate="no">Building a C++ GUI application</a></li>
+<li><a href="cmake-get-started.html#structuring-projects" translate="no">Structuring projects</a></li>
+<li><a href="cmake-get-started.html#building-libraries" translate="no">Building libraries</a></li>
+<li><a href="cmake-get-started.html#using-libraries" translate="no">Using libraries</a></li>
+<li><a href="cmake-get-started.html#adding-resources" translate="no">Adding resources</a></li>
+<li><a href="cmake-get-started.html#adding-translations" translate="no">Adding translations</a></li>
+<li><a href="cmake-get-started.html#further-reading" translate="no">Further reading</a></li>
+</ul>
+</li>
+<li><a href="cmake-build-qml-application.html" translate="no">Building a QML application</a></li>
+<li><a href="cmake-build-reusable-qml-module.html" translate="no">Building a reusable QML module</a></li>
+<li><a href="cmake-build-on-cmdline.html" translate="no">Building projects on the command line</a><ul>
+<li><a href="cmake-build-on-cmdline.html#cmake-generators" translate="no">CMake generators</a></li>
+<li><a href="cmake-build-on-cmdline.html#qt-cmake" translate="no">qt-cmake</a></li>
+<li><a href="cmake-build-on-cmdline.html#cross-compiling" translate="no">Cross-compiling</a></li>
+<li><a href="cmake-build-on-cmdline.html#specifying-a-custom-toolchain-file" translate="no">Specifying a custom toolchain file</a></li>
+</ul>
+</li>
+<li><a href="cmake-deployment.html" translate="no">Deployment</a><ul>
+<li><a href="cmake-deployment.html#deploying-a-qt-widgets-application" translate="no">Deploying a Qt Widgets application</a></li>
+<li><a href="cmake-deployment.html#deploying-a-qt-quick-application" translate="no">Deploying a Qt Quick application</a></li>
+</ul>
+</li>
+<li><a href="cmake-imported-targets.html" translate="no">Imported targets</a></li>
+<li><a href="qt-cmake-policies.html" translate="no">Qt CMake policies</a></li>
+<li><a href="cmake-qt5-and-qt6-compatibility.html" translate="no">Qt 5 and Qt 6 compatibility</a><ul>
+<li><a href="cmake-qt5-and-qt6-compatibility.html#versionless-targets" translate="no">Versionless targets</a></li>
+<li><a href="cmake-qt5-and-qt6-compatibility.html#versionless-commands" translate="no">Versionless commands</a></li>
+<li><a href="cmake-qt5-and-qt6-compatibility.html#supporting-older-qt-5-versions" translate="no">Supporting older Qt 5 versions</a></li>
+<li><a href="cmake-qt5-and-qt6-compatibility.html#recommended-practices" translate="no">Recommended practices</a></li>
+</ul>
+</li>
+<li><a href="cmake-command-reference.html" translate="no">CMake Command Reference</a><ul>
+<li><a href="cmake-command-reference.html#cmake-commands-qtcore" translate="no">Qt6::Core</a></li>
+<li><a href="cmake-command-reference.html#cmake-commands-qtdbus" translate="no">Qt6::DBus</a></li>
+<li><a href="cmake-command-reference.html#cmake-commands-qtinterfaceframework" translate="no">Qt6::InterfaceFramework</a></li>
+<li><a href="cmake-command-reference.html#cmake-commands-qtlinguisttools" translate="no">Qt6::LinguistTools</a></li>
+<li><a href="cmake-command-reference.html#cmake-commands-qtprotobuf" translate="no">Qt6::Protobuf</a></li>
+<li><a href="cmake-command-reference.html#cmake-commands-qtgrpc" translate="no">Qt6::Grpc</a></li>
+<li><a href="cmake-command-reference.html#cmake-commands-qtqml" translate="no">Qt6::Qml</a></li>
+<li><a href="cmake-command-reference.html#cmake-macros-qtremoteobjects" translate="no">Qt6::RemoteObjects</a></li>
+<li><a href="cmake-command-reference.html#cmake-macros-qtscxml" translate="no">Qt6::Scxml</a></li>
+<li><a href="cmake-command-reference.html#cmake-macros-qtwidgets" translate="no">Qt6::Widgets</a></li>
+<li><a href="cmake-command-reference.html#cmake-commands-qtwebenginecore" translate="no">Qt6::WebEngineCore</a></li>
+</ul>
+</li>
+<li><a href="cmake-variable-reference.html" translate="no">CMake Variable Reference</a><ul>
+<li><a href="cmake-variable-reference.html#module-variables" translate="no">Module variables</a></li>
+<li><a href="cmake-variable-reference.html#installation-variables" translate="no">Installation variables</a></li>
+<li><a href="cmake-variable-reference.html#project-variables" translate="no">Project variables</a></li>
+</ul>
+</li>
+<li><a href="cmake-property-reference.html" translate="no">CMake Property Reference</a><ul>
+<li><a href="cmake-property-reference.html#cmake-properties-qtcore" translate="no">Qt6::Core</a></li>
+<li><a href="cmake-property-reference.html#cmake-properties-qtdbus" translate="no">Qt6::DBus</a></li>
+<li><a href="cmake-property-reference.html#cmake-properties-qtqml" translate="no">Qt6::Qml</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- @@@cmake-manual.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="nextPage" href="cmake-get-started.html">Getting started with CMake</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

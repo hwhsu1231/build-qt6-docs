@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- simplefog.qdoc -->
+  <meta name="description" content="Demonstrates how to enable fog in the 3D scene.">
+  <title>Qt Quick 3D - Simple Fog Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Simple Fog Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Simple Fog Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2022 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+ import QtQuick.Dialogs
+ import QtQuick3D
+ import QtQuick3D.Helpers
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">1280</span>
+     <span class="name">height</span>: <span class="number">800</span>
+     <span class="name">color</span>: <span class="string">&quot;black&quot;</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">root</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="type"><a href="qml-qtquick3d-fog.html" translate="no">Fog</a></span> {
+             <span class="name">id</span>: <span class="name">theFog</span>
+
+             <span class="name">enabled</span>: <span class="name">cbFogEnabled</span>.<span class="name">checked</span>
+             <span class="name">depthEnabled</span>: <span class="name">cbDepthEnabled</span>.<span class="name">checked</span>
+             <span class="name">heightEnabled</span>: <span class="name">cbHeightEnabled</span>.<span class="name">checked</span>
+             <span class="name">transmitEnabled</span>: <span class="name">cbTransmitEnabled</span>.<span class="name">checked</span>
+
+             <span class="name">density</span>: <span class="name">valDensity</span>.<span class="name">value</span>
+             <span class="name">depthNear</span>: <span class="name">valDepth</span>.<span class="name">first</span>.<span class="name">value</span>
+             <span class="name">depthFar</span>: <span class="name">valDepth</span>.<span class="name">second</span>.<span class="name">value</span>
+             <span class="name">depthCurve</span>: <span class="name">valDepthCurve</span>.<span class="name">value</span>
+             <span class="name">leastIntenseY</span>: <span class="name">valHeightMin</span>.<span class="name">value</span>
+             <span class="name">mostIntenseY</span>: <span class="name">valHeightMax</span>.<span class="name">value</span>
+             <span class="name">heightCurve</span>: <span class="name">valHeightCurve</span>.<span class="name">value</span>
+             <span class="name">transmitCurve</span>: <span class="name">valTransmitCurve</span>.<span class="name">value</span>
+         }
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+             <span class="name">clearColor</span>: <span class="name">theFog</span>.<span class="name">color</span>
+             <span class="name">fog</span>: <span class="name">theFog</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">id</span>: <span class="name">camera</span>
+             <span class="name">z</span>: <span class="number">300</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+                 <span class="name">running</span>: <span class="name">cbAutoMove</span>.<span class="name">checked</span>
+                 <span class="name">loops</span>: -<span class="number">1</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">target</span>: <span class="name">camera</span>
+                     <span class="name">property</span>: <span class="string">&quot;z&quot;</span>
+                     <span class="name">from</span>: <span class="number">600</span>
+                     <span class="name">to</span>: -<span class="number">600</span>
+                     <span class="name">duration</span>: <span class="number">5000</span>
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">target</span>: <span class="name">camera</span>
+                     <span class="name">property</span>: <span class="string">&quot;z&quot;</span>
+                     <span class="name">from</span>: -<span class="number">600</span>
+                     <span class="name">to</span>: <span class="number">600</span>
+                     <span class="name">duration</span>: <span class="number">5000</span>
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+         }
+
+         <span class="type"><a href="qml-qtquick3d-pointlight.html" translate="no">PointLight</a></span> {
+             <span class="name">y</span>: <span class="number">100</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+             <span class="name">eulerRotation</span>.x: -<span class="number">75</span>
+             <span class="name">y</span>: -<span class="number">200</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>)
+             <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                 <span class="name">baseColor</span>: <span class="string">&quot;green&quot;</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-helpers-randominstancing.html" translate="no">RandomInstancing</a></span> {
+             <span class="name">id</span>: <span class="name">randomInstancing</span>
+             <span class="name">instanceCount</span>: <span class="number">2000</span>
+
+             <span class="name">position</span>: <span class="name">InstanceRange</span> {
+                 <span class="name">from</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">500</span>, -<span class="number">300</span>, <span class="number">0</span>)
+                 <span class="name">to</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">500</span>, <span class="number">300</span>, -<span class="number">2000</span>)
+             }
+             <span class="name">scale</span>: <span class="name">InstanceRange</span> {
+                 <span class="name">from</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)
+                 <span class="name">to</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">50</span>, <span class="number">50</span>, <span class="number">50</span>)
+             }
+             <span class="name">rotation</span>: <span class="name">InstanceRange</span> {
+                 <span class="name">from</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">to</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">180</span>, <span class="number">180</span>, <span class="number">180</span>)
+             }
+             <span class="name">color</span>: <span class="name">InstanceRange</span> {
+                 <span class="name">from</span>: <span class="string">&quot;#000000&quot;</span>
+                 <span class="name">to</span>: <span class="string">&quot;#ffffff&quot;</span>
+             }
+             <span class="name">randomSeed</span>: <span class="number">2022</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">instancing</span>: <span class="name">randomInstancing</span>
+             <span class="name">source</span>: <span class="string">&quot;#Sphere&quot;</span>
+             <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> { }
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.005</span>, <span class="number">0.005</span>, <span class="number">0.005</span>)
+         }
+
+         <span class="type"><a href="qml-qtquick3d-helpers-wasdcontroller.html" translate="no">WasdController</a></span> {
+             <span class="name">controlledObject</span>: <span class="name">camera</span>
+         }
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         <span class="name">color</span>: <span class="string">&quot;lightGray&quot;</span>
+         <span class="name">width</span>: <span class="number">350</span>
+         <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span> <span class="operator">-</span> <span class="number">40</span>
+         <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+         <span class="name">x</span>: <span class="number">8</span>
+         <span class="name">radius</span>: <span class="number">8</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+             <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-groupbox.html" translate="no">GroupBox</a></span> {
+                 <span class="name">title</span>: <span class="string">&quot;Fog&quot;</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                             <span class="name">id</span>: <span class="name">cbFogEnabled</span>
+                             <span class="name">text</span>: <span class="string">&quot;Enabled&quot;</span>
+                             <span class="name">checked</span>: <span class="number">true</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;Color: &quot;</span> <span class="operator">+</span> <span class="name">theFog</span>.<span class="name">color</span>
+                             <span class="name">onClicked</span>: <span class="name">colorDialog</span>.<span class="name">open</span>()
+                         }
+                     }
+                 }
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-groupbox.html" translate="no">GroupBox</a></span> {
+                 <span class="name">title</span>: <span class="string">&quot;Depth Fog&quot;</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                         <span class="name">id</span>: <span class="name">cbDepthEnabled</span>
+                         <span class="name">text</span>: <span class="string">&quot;Enabled&quot;</span>
+                         <span class="name">checked</span>: <span class="number">true</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;Density&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">valDensity</span>
+                             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+                             <span class="name">from</span>: <span class="number">0.0</span>
+                             <span class="name">to</span>: <span class="number">1.0</span>
+                             <span class="name">value</span>: <span class="number">1.0</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="name">valDensity</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+                         }
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;Near/Far&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-rangeslider.html" translate="no">RangeSlider</a></span> {
+                             <span class="name">id</span>: <span class="name">valDepth</span>
+                             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+                             <span class="name">from</span>: -<span class="number">1000.0</span>
+                             <span class="name">to</span>: <span class="number">1000.0</span>
+                             <span class="name">first</span>.value: <span class="number">10.0</span>
+                             <span class="name">second</span>.value: <span class="number">1000.0</span>
+                         }
+                     }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                         <span class="name">text</span>: <span class="string">&quot;Near: &quot;</span> <span class="operator">+</span> <span class="name">valDepth</span>.<span class="name">first</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot; Far: &quot;</span> <span class="operator">+</span> <span class="name">valDepth</span>.<span class="name">second</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;Curve&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">valDepthCurve</span>
+                             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+                             <span class="name">from</span>: <span class="number">0.0</span>
+                             <span class="name">to</span>: <span class="number">1.0</span>
+                             <span class="name">value</span>: <span class="number">1.0</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="name">valDepthCurve</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+                         }
+                     }
+                 }
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-groupbox.html" translate="no">GroupBox</a></span> {
+                 <span class="name">title</span>: <span class="string">&quot;Height Fog&quot;</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                         <span class="name">id</span>: <span class="name">cbHeightEnabled</span>
+                         <span class="name">text</span>: <span class="string">&quot;Enabled&quot;</span>
+                         <span class="name">checked</span>: <span class="number">false</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;Least Intense Y&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">valHeightMin</span>
+                             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+                             <span class="name">from</span>: -<span class="number">1000.0</span>
+                             <span class="name">to</span>: <span class="number">1000.0</span>
+                             <span class="name">value</span>: <span class="number">10.0</span>
+                         }
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;Most Intense Y&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">valHeightMax</span>
+                             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+                             <span class="name">from</span>: -<span class="number">1000.0</span>
+                             <span class="name">to</span>: <span class="number">1000.0</span>
+                             <span class="name">value</span>: <span class="number">0.0</span>
+                         }
+                     }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                         <span class="name">text</span>: <span class="string">&quot;Least intense Y: &quot;</span> <span class="operator">+</span> <span class="name">valHeightMin</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot; Most intense Y: &quot;</span> <span class="operator">+</span> <span class="name">valHeightMax</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;Curve&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">valHeightCurve</span>
+                             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+                             <span class="name">from</span>: <span class="number">0.0</span>
+                             <span class="name">to</span>: <span class="number">100.0</span>
+                             <span class="name">value</span>: <span class="number">1.0</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="name">valHeightCurve</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+                         }
+                     }
+                 }
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-groupbox.html" translate="no">GroupBox</a></span> {
+                 <span class="name">title</span>: <span class="string">&quot;Light Transmission&quot;</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                         <span class="name">id</span>: <span class="name">cbTransmitEnabled</span>
+                         <span class="name">text</span>: <span class="string">&quot;Enabled&quot;</span>
+                         <span class="name">checked</span>: <span class="number">false</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;Curve&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">valTransmitCurve</span>
+                             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+                             <span class="name">from</span>: <span class="number">0.0</span>
+                             <span class="name">to</span>: <span class="number">100.0</span>
+                             <span class="name">value</span>: <span class="number">1.0</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="name">valTransmitCurve</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+                         }
+                     }
+                 }
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+         <span class="name">width</span>: <span class="name">debugViewToggleText</span>.<span class="name">implicitWidth</span>
+         <span class="name">height</span>: <span class="name">debugViewToggleText</span>.<span class="name">implicitHeight</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+             <span class="name">id</span>: <span class="name">debugViewToggleText</span>
+             <span class="name">text</span>: <span class="string">&quot;Click here &quot;</span> <span class="operator">+</span> (<span class="name">dbg</span>.<span class="name">visible</span> ? <span class="string">&quot;to hide DebugView&quot;</span> : <span class="string">&quot;for DebugView&quot;</span>)
+             <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">onClicked</span>: <span class="name">dbg</span>.<span class="name">visible</span> <span class="operator">=</span> !<span class="name">dbg</span>.<span class="name">visible</span>
+             <span class="type"><a href="qml-qtquick3d-helpers-debugview.html" translate="no">DebugView</a></span> {
+                 <span class="name">y</span>: <span class="name">debugViewToggleText</span>.<span class="name">height</span> <span class="operator">*</span> <span class="number">2</span>
+                 <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+                 <span class="name">source</span>: <span class="name">root</span>
+                 <span class="name">id</span>: <span class="name">dbg</span>
+                 <span class="name">visible</span>: <span class="number">false</span>
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+         <span class="name">id</span>: <span class="name">cbAutoMove</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">text</span>: <span class="string">&quot;Auto Move&quot;</span>
+         <span class="name">checked</span>: <span class="number">true</span>
+     }
+
+     <span class="type">ColorDialog</span> {
+         <span class="name">id</span>: <span class="name">colorDialog</span>
+         <span class="name">selectedColor</span>: <span class="name">theFog</span>.<span class="name">color</span>
+         <span class="name">onAccepted</span>: <span class="name">theFog</span>.<span class="name">color</span> <span class="operator">=</span> <span class="name">selectedColor</span>
+     }
+ }
+</pre>

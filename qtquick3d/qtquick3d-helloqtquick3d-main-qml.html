@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- helloqtquick3d.qdoc -->
+  <meta name="description" content="Demonstrates simple instanced drawing.">
+  <title>Hello Qt Quick 3D Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Hello Qt Quick 3D Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Hello Qt Quick 3D Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Timeline
+ import QtQuick3D
+ import HelloExample
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">1280</span>
+     <span class="name">height</span>: <span class="number">720</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">view</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">clearColor</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">cameraNode</span>
+
+             <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+                 <span class="name">id</span>: <span class="name">camera</span>
+                 <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">650</span>)
+             }
+
+             property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">isRotating</span>: <span class="number">false</span>
+             PropertyAnimation on <span class="name">eulerRotation</span>.x {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">duration</span>: <span class="number">20000</span>
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="name">running</span>: <span class="name">cameraNode</span>.<span class="name">isRotating</span>
+             }
+
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-timeline.html" translate="no">Timeline</a></span> {
+                 <span class="name">id</span>: <span class="name">timeline0</span>
+                 <span class="name">startFrame</span>: <span class="number">0</span>
+                 <span class="name">endFrame</span>: <span class="number">1000</span>
+                 <span class="name">enabled</span>: <span class="number">true</span>
+
+                 SequentialAnimation on <span class="name">currentFrame</span> {
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">from</span>: <span class="number">0</span>
+                         <span class="name">to</span>: <span class="number">500</span>
+                         <span class="name">duration</span>: <span class="number">4000</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">from</span>: <span class="number">500</span>
+                         <span class="name">to</span>: <span class="number">1000</span>
+                         <span class="name">duration</span>: <span class="number">10000</span>
+                         <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                     }
+                 }
+
+                 <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframegroup.html" translate="no">KeyframeGroup</a></span> {
+                     <span class="name">target</span>: <span class="name">cameraNode</span>
+                     <span class="name">property</span>: <span class="string">&quot;isRotating&quot;</span>
+
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">0</span>
+                         <span class="name">value</span>: <span class="number">false</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">500</span>
+                         <span class="name">value</span>: <span class="number">true</span>
+                     }
+                 }
+
+                 <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframegroup.html" translate="no">KeyframeGroup</a></span> {
+                     <span class="name">target</span>: <span class="name">oldLogo</span>
+                     <span class="name">property</span>: <span class="string">&quot;isRotating&quot;</span>
+
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">0</span>
+                         <span class="name">value</span>: <span class="number">false</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">100</span>
+                         <span class="name">value</span>: <span class="number">true</span>
+                     }
+                 }
+
+                 <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframegroup.html" translate="no">KeyframeGroup</a></span> {
+                     <span class="name">target</span>: <span class="name">camera</span>
+                     <span class="name">property</span>: <span class="string">&quot;z&quot;</span>
+
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">0</span>
+                         <span class="name">value</span>: <span class="number">2000</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">100</span>
+                         <span class="name">value</span>: <span class="number">2000</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">400</span>
+                         <span class="name">value</span>: <span class="number">100</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">500</span>
+                         <span class="name">value</span>: <span class="number">200</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">550</span>
+                         <span class="name">value</span>: <span class="number">200</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">700</span>
+                         <span class="name">value</span>: <span class="number">1000</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">OutElastic</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">750</span>
+                         <span class="name">value</span>: <span class="number">1000</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">800</span>
+                         <span class="name">value</span>: <span class="number">1000</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">950</span>
+                         <span class="name">value</span>: <span class="number">200</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">OutElastic</span>
+                     }
+                     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                         <span class="name">frame</span>: <span class="number">1000</span>
+                         <span class="name">value</span>: <span class="number">200</span>
+                     }
+
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+             <span class="name">eulerRotation</span>.x: <span class="number">250</span>
+             <span class="name">eulerRotation</span>.y: -<span class="number">30</span>
+             <span class="name">brightness</span>: <span class="number">1.0</span>
+             <span class="name">ambientColor</span>: <span class="string">&quot;#7f7f7f&quot;</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">id</span>: <span class="name">oldLogo</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">s</span>: <span class="number">4.75</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">r</span>: <span class="number">0</span>
+             property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">isRotating</span>: <span class="number">false</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">s</span>, <span class="name">s</span>, <span class="name">s</span>);
+             <span class="name">source</span>: <span class="string">&quot;oldqtlogo.mesh&quot;</span>
+             <span class="name">instancing</span>: <span class="name">ImageInstanceTable</span> {
+                 <span class="name">gridSize</span>: <span class="number">40</span>
+                 <span class="name">gridSpacing</span>: <span class="number">20</span>
+                 <span class="name">image</span>: <span class="string">&quot;:/qt_logo.png&quot;</span>
+             }
+             <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> { <span class="name">baseColor</span>: <span class="string">&quot;white&quot;</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">target</span>: <span class="name">oldLogo</span>
+                 <span class="name">property</span>: <span class="string">&quot;r&quot;</span>
+                 <span class="name">running</span>: <span class="name">oldLogo</span>.<span class="name">isRotating</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">duration</span>: <span class="number">3000</span>
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+             }
+             <span class="name">onRChanged</span>: <span class="name">rotate</span>(<span class="number">2.5</span>, <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1</span>, -<span class="number">1</span>, <span class="number">0</span>), <span class="name">Node</span>.<span class="name">LocalSpace</span>)
+         }
+     }
+ }
+</pre>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- android-building.qdoc -->
+  <meta name="description" content="How to configure and build Qt for Android directly from source.">
+  <title>Qt for Android - Building from Source | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Qt for Android - Building from Source</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="android-getting-started.html" />
+  <link rel="next" href="android-building-user-projects.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="android-getting-started.html">Getting Started with Qt for Android</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-building-user-projects.html">Qt for Android - Building User Projects</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#prerequisites">Prerequisites</a></li>
+<li class="level2"><a href="#windows">Windows</a></li>
+<li class="level1"><a href="#getting-the-sources">Getting the Sources</a></li>
+<li class="level1"><a href="#configuring">Configuring</a></li>
+<li class="level2"><a href="#architectures">Architectures</a></li>
+<li class="level1"><a href="#advanced-configure-arguments">Advanced Configure Arguments</a></li>
+<li class="level1"><a href="#building">Building</a></li>
+<li class="level1"><a href="#installing">Installing</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt for Android - Building from Source</h1>
+<!-- $$$android-building.html-description -->
+<div class="descr" id="details">
+<p>This page describes the process of configuring and building <a href="android.html" translate="no">Qt for Android</a>. To download and install a pre-built Qt for Android, follow the instructions on the <a href="gettingstarted.html" translate="no">Getting Started with Qt</a> page.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>To build Qt for Android from source please ensure all requirements from <a href="android-getting-started.html" translate="no">Getting Started with Qt for Android</a> are met before continuing.</p>
+<h3 id="windows">Windows</h3>
+<p>Building Qt for Android on Windows also requires the following software:</p>
+<ul>
+<li>MinGW 11.2 toolchain</li>
+</ul>
+<div class="admonition note">
+<p><b>Note: </b>Qt for Android does not support building from source with Microsoft Visual C++ (MSVC).</p>
+</div>
+<p>Install the requirements, and set the <code translate="no">PATH</code> to include the newly installed binaries:</p>
+<pre class="cpp plain" translate="no">
+ set MINGW_ROOT=&lt;MINGW_ROOT_PATH&gt;\bin
+ set PATH=%MINGW_ROOT%;%PATH%
+</pre>
+<p>To verify the installation, run:</p>
+<pre class="cpp plain" translate="no">
+ where mingw32-make.exe
+</pre>
+<p>The command should list mingw32-make.exe under the path <i>&lt;MINGW_ROOT&gt;</i> first.</p>
+<h2 id="getting-the-sources">Getting the Sources</h2>
+<p>You can download the Qt sources from the <a href="https://www.qt.io/download" translate="no">Qt Downloads</a> page, or follow the wiki guide for <a href="https://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_source_code" translate="no">Getting the source code</a>.</p>
+<h2 id="configuring">Configuring</h2>
+<p>Qt 6 allows building Qt for Android from source code using <code translate="no">CMake</code>. Qt 6 keeps the same configure script from Qt 5. The main difference is that Qt for Android is dependent on a host Qt build, which means to build Qt for Android, you need to build Qt for the desktop platform used as a host (for example Linux, macOS, or Windows).</p>
+<p>To configure Qt for Android, create a shadow build directory to keep the source directory clean:</p>
+<pre class="cpp plain" translate="no">
+ mkdir &lt;path_to_build_dir&gt;/build-qt
+ cd &lt;path_to_build_dir&gt;/build-qt
+</pre>
+<p>And then run the configure script:</p>
+<pre class="cpp plain" translate="no">
+ &lt;path_to_qt_source&gt;/configure -platform android-clang -prefix &lt;/path/to/install&gt; -android-ndk $ANDROID_NDK_ROOT -android-sdk $ANDROID_SDK_ROOT -qt-host-path &lt;path_to_host_qt_installation&gt;
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>configure always uses the <b>Ninja</b> generator and build tool if a <code translate="no">ninja</code> executable is available. Ninja is cross-platform, feature-rich, performant, and recommended on all platforms. The use of other generators might work but is not officially supported.</p>
+</div>
+<h3 id="architectures">Architectures</h3>
+<p>Qt for Android supports the following ABIs:</p>
+<p>The following configurations are supported in this Qt release:</p>
+<div class="table"><table class="generic" width="80%">
+ <thead><tr class="qt-style"><th >Distribution</th><th >Architecture</th><th >Compiler</th><th >Notes</th></tr></thead>
+<tr valign="top" class="odd"><td >Android 8.0 to Android 13 (API level 26 to API 33)</td><td ><code translate="no">armeabi-v7a</code>, <code translate="no">x86</code>, <code translate="no">arm64-v8</code>, and <code translate="no">x86_64</code></td><td >Clang 14.0&#x2e;6 (NDK r25b) as provided by Google</td><td >For JDK versions see <a href="android-getting-started.html#java-development-kit-jdk" translate="no">Java Development Kit (JDK)</a></td></tr>
+</table></div>
+<div class="admonition note">
+<p><b>Note: </b>It's recommended that Qt user apps use the same NDK r25b version used for building these official Qt for Android libraries. An NDK version more recent than r23b is required if building a project results in an error of missing the symbols for <code translate="no">__emutls_get_address</code>.</p>
+</div>
+<p>To choose the ABI to build for, use the <i>-android-abis</i> feature of the configure script.</p>
+<div class="admonition note">
+<p><b>Note: </b>6.6 does not yet support being built for multiple ABIs at the same time.</p>
+</div>
+<h2 id="advanced-configure-arguments">Advanced Configure Arguments</h2>
+<p>Qt for Android contains Java code which is compiled into *.jar files with <i>javac</i>. To set the <i>javac</i> version for source and target, use <i>-android-javac-source</i> and <i>-android-javac-target</i> respectively:</p>
+<pre class="cpp plain" translate="no">
+ -android-javac-source 8 -android-javac-target 8
+</pre>
+<p>To build Qt as a developer build instead of a prefix build, use the following instead of <code translate="no">-prefix</code> argument:</p>
+<pre class="cpp plain" translate="no">
+ -developer-build
+</pre>
+<p><a href="configure-options.html" translate="no">Qt Configure Options</a> contains more information about the configure options.</p>
+<h2 id="building">Building</h2>
+<p>To build the configured Qt code, run the following command:</p>
+<pre class="cpp plain" translate="no">
+ cmake --build . --parallel
+</pre>
+<h2 id="installing">Installing</h2>
+<p>Now, to install Qt, run the following command:</p>
+<pre class="cpp plain" translate="no">
+ cmake --install .
+</pre>
+<p>On Unix based OSes you should prefix the install command with the <code translate="no">sudo</code> command.</p>
+<p>If you haven't provided the <code translate="no">--prefix &lt;install-dir&gt;</code> configure option, the installation is placed under <code translate="no">/usr/local/Qt-&lt;version&gt;</code>.</p>
+</div>
+<!-- @@@android-building.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="android-getting-started.html">Getting Started with Qt for Android</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-building-user-projects.html">Qt for Android - Building User Projects</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

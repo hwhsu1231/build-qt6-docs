@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qdoc-manual-contextcmds.qdoc -->
+  <title>Status | QDoc Manual 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qdoc-index.html" translate="no">QDoc Manual</a></li>
+<li>Status</li>
+<li id="buildversion"><a href="qdoc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="15-qdoc-commands-navigation.html" />
+  <link rel="next" href="17-qdoc-commands-thread.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="15-qdoc-commands-navigation.html">Document Navigation</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="17-qdoc-commands-thread.html">Thread Support</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#abstract-and-qmlabstract">\abstract and \qmlabstract</a></li>
+<li class="level1"><a href="#default">\default</a></li>
+<li class="level1"><a href="#qmldefault">\qmldefault</a></li>
+<li class="level1"><a href="#dontdocument">\dontdocument</a></li>
+<li class="level1"><a href="#inheaderfile">\inheaderfile</a></li>
+<li class="level1"><a href="#obsolete">\obsolete</a></li>
+<li class="level1"><a href="#deprecated">\deprecated</a></li>
+<li class="level1"><a href="#internal">\internal</a></li>
+<li class="level1"><a href="#modulestate">\modulestate</a></li>
+<li class="level1"><a href="#preliminary">\preliminary</a></li>
+<li class="level1"><a href="#readonly">\readonly</a></li>
+<li class="level1"><a href="#required">\required</a></li>
+<li class="level1"><a href="#since">\since</a></li>
+<li class="level2"><a href="#inheritance-of-since-information">Inheritance of Since Information</a></li>
+<li class="level2"><a href="#since-clause">Since Clause</a></li>
+<li class="level1"><a href="#wrapper">\wrapper</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Status</h1>
+<!-- $$$16-qdoc-commands-status.html-description -->
+<div class="descr" id="details">
+<p>These commands are for indicating that a documented element has some special status. The element could be marked <i>deprecated</i>, that is, it's about to be made obsolete and no longer included in the public interface. The <a href="16-qdoc-commands-status.html#since-command" translate="no">\since</a> command is for specifying the version number in which a function or class first appeared. The <a href="16-qdoc-commands-status.html#qmlabstract-command" translate="no">\qmlabstract</a> command is for marking a QML type as an abstract base class.</p>
+<span id="abstract-command"></span><span id="qmlabstract-command"></span><h2 id="abstract-and-qmlabstract">\abstract and \qmlabstract</h2>
+<p>\abstract is a synonym for the \qmlabstract command. Add this command to the <a href="13-qdoc-commands-topics.html#qmltype-command" translate="no">\qmltype</a> comment for a QML type when that type is meant to be used <i>only</i> as an abstract base type. When a QML type is abstract, it means that the QML type that can't be instantiated. Instead, the properties in its public API are included in the public properties list on the reference page for each QML type that inherits the abstract QML type. The properties are documented as if they are properties of the inheriting QML type.</p>
+<p>Normally, when a QML type is marked with <i>\qmlabstract</i>, it is also marked with <i>\internal</i> so that its reference page is not generated. It the abstract QML type is not marked internal, it will have a reference page in the documentation.</p>
+<span id="default-command"></span><h2 id="default">\default</h2>
+<p>The \default command is used for documenting a default value for a QML property. The command takes a single argument, which is displayed in the documentation as the default value.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \qmlproperty real Item::x
+     \default 0.0
+ */
+</pre>
+<p>If the default value is a non-empty string, use quotes:</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \qmlproperty string Item::state
+     \default &quot;invalid&quot;
+ */
+</pre>
+<span id="qmldefault-command"></span><h2 id="qmldefault">\qmldefault</h2>
+<p>The \qmldefault command is for marking a QML property as the <a href="../qtqml/qtqml-tutorials-extending-qml-advanced-example.html#default-properties" translate="no">default property</a>. The word <code translate="no">default</code> is displayed in the documentation of the property.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \qmlproperty list&lt;Change&gt; State::changes
+     This property holds the changes to apply for this state.
+     \qmldefault
+
+     By default, these changes are applied against the default state. If the state
+     extends another state, then the changes are applied against the state being
+     extended.
+ */
+</pre>
+<p>See how QDoc renders this property on the reference page for the <a href="../qtquick/qml-qtquick-state.html#changes-prop" translate="no">State</a> type.</p>
+<span id="dontdocument-command"></span><h2 id="dontdocument">\dontdocument</h2>
+<p>The \dontdocument command is only used in a dontdocument.qdoc file for a particular module. This file specifies publically declared classes or structs that are not meant to be documented. QDoc will not print warnings about missing \class comments for these classes and structs.</p>
+<p>Below you will find the \dontdocument command in the dontdocument.qdoc for widgets:</p>
+<pre class="cpp plain" translate="no">
+ /*!
+    \dontdocument (QTypeInfo QMetaTypeId)
+ */
+</pre>
+<span id="inheaderfile-command"></span><h2 id="inheaderfile">\inheaderfile</h2>
+<p>The \inheaderfile meta-command is used for overriding the include statement generated for a C++ class, namespace, or header file reference documentation.</p>
+<p>By default, QDoc documents a <code translate="no">\class SomeClass</code> to be available with a following include statement:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &lt;SomeClass&gt;</span>
+</pre>
+<p>If the actual include statement differs from the default, this can be documented as</p>
+<pre class="cpp plain" translate="no">
+ \class SomeClass
+ \inheaderfile Tools/SomeClass
+ ..&#x2e;
+</pre>
+<p>See also <a href="13-qdoc-commands-topics.html#class-command" translate="no">\class</a> and <a href="13-qdoc-commands-topics.html#headerfile-command" translate="no">\headerfile</a>.</p>
+<span id="obsolete-command"></span><h2 id="obsolete">\obsolete</h2>
+<p>The \obsolete command is superceded by the \deprecated command.</p>
+<p>This command is kept for backwards compatibility reasons only. It may be removed in a future version of QDoc. Use the \deprecated command instead.</p>
+<p>See also <a href="16-qdoc-commands-status.html#deprecated-command" translate="no">\deprecated</a>.</p>
+<span id="deprecated-command"></span><h2 id="deprecated">\deprecated</h2>
+<p>The \deprecated command is for indicating that a function is being deprecated, and that it should no longer be used in new code. There is no guarantee for how long it will remain in the library.</p>
+<p>The \deprecated command takes two optional arguments:</p>
+<ul>
+<li>A version in square brackets (e.g&#x2e; [6.2]).</li>
+<li>A string with more information, for example a suggested replacement.</li>
+</ul>
+<p>When generating the reference documentation for a class, QDoc will create and link to a separate page documenting its deprecated functions. It is good practice to suggest an equivalent function as an alternative.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \fn MyClass::MyDeprecatedFunction
+     \deprecated [6.2] Use MyNewFunction() instead.
+ */
+</pre>
+<span id="internal-command"></span><h2 id="internal">\internal</h2>
+<p>The \internal command indicates that the referenced function is not part of the public interface.</p>
+<p>The command must stand on its own line.</p>
+<p>QDoc ignores the documentation as well as the documented item, when generating the associated class reference documentation.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \internal
+
+     Tries to find the decimal separator. If it can't find
+     it and the thousand delimiter is != '.' it will try to
+     find a '.';
+ */
+ int QDoubleSpinBoxPrivate::findDelimiter
+         (const QString &amp;str, int index) const
+ {
+     int dotindex = str.indexOf(delimiter, index);
+     if (dotindex == -1 &amp;&amp; thousand != dot &amp;&amp; delimiter != dot)
+         dotindex = str.indexOf(dot, index);
+     return dotindex;
+ }
+</pre>
+<p>This function will not be included in the documentation, unless QDoc is called with the <code translate="no">-showinternal</code> command line option or the <code translate="no">QDOC_SHOW_INTERNAL</code> environment variable is set.</p>
+<span id="modulestate-command"></span><h2 id="modulestate">\modulestate</h2>
+<p>The \modulestate command can be used within a \module or \qmlmodule topic to provide a module state description other than <i>preliminary</i> or <i>deprecated</i>.</p>
+<p>Rest of the line is taken as an argument that describes the module's state. For example:</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \module QtFoo
+     \modulestate Technical Preview
+ */
+</pre>
+<p>QDoc will then add this information on the module page:</p>
+<blockquote><p>This module is in <i>Technical Preview</i> state.</p>
+</blockquote>
+<p>In HTML output, this state information appears also in the navigation bar (breadcrumbs) of reference pages for the module's members.</p>
+<span id="preliminary-command"></span><h2 id="preliminary">\preliminary</h2>
+<p>The \preliminary command is for indicating that a referenced function is still under development.</p>
+<p>The command must stand on its own line.</p>
+<p>The \preliminary command expands to a notification in the function documentation, and marks the function as preliminary when it appears in lists.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \preliminary
+
+     Returns information about the joining type attributes of the
+     character (needed for certain languages such as Arabic or
+     Syriac).
+
+ */
+ QChar::JoiningType QChar::joiningType() const
+ {
+     return QChar::joiningType(ucs);
+ }
+</pre>
+<span id="readonly-command"></span><h2 id="readonly">\readonly</h2>
+<p>The \readonly command is used in conjunction with a <a href="13-qdoc-commands-topics.html#qmlproperty-command" translate="no">\qmlproperty</a> command to mark the QML property as read-only.</p>
+<span id="required-command"></span><h2 id="required">\required</h2>
+<p>The \required command is used in conjunction with a <a href="13-qdoc-commands-topics.html#qmlproperty-command" translate="no">\qmlproperty</a> command to mark the QML property as required.</p>
+<p><b>See also</b> <a href="../qtcore/properties.html" translate="no">The Property System</a>.</p>
+<span id="since-command"></span><h2 id="since">\since</h2>
+<p>The \since command tells in which minor release the associated functionality was added.</p>
+<p>If the argument passed to \since contains no spaces, it is assumed to be a version number string for the Qt project, and QDoc will prefix it with 'Qt' in the generated output. The argument can also contain the project name explicitly:</p>
+<pre class="cpp plain" translate="no">
+ \since MyFramework 2.0
+</pre>
+<p>In this case, the arguments (project and version) are used as is.</p>
+<h3 id="inheritance-of-since-information">Inheritance of Since Information</h3>
+<p>Since QDoc version 6.5, C++ classes and QML types inherit the \since statement from their respective <a href="13-qdoc-commands-topics.html#module-command" translate="no">module</a> or <a href="13-qdoc-commands-topics.html#qmlmodule-command" translate="no">QML module</a>, unless \since is explicitly used in the type documentation.</p>
+<h3 id="since-clause">Since Clause</h3>
+<p>The \value command allows an optional <i>since</i> clause, enclosed in square brackets, to immediately follow the command string. This is used for marking specific C++ enum values with since information.</p>
+<p>See also <a href="10-qdoc-commands-tablesandlists.html#value-command" translate="no">\value</a> and <a href="22-qdoc-configuration-generalvariables.html#ignoresince" translate="no">ignoresince</a>.</p>
+<span id="wrapper-command"></span><h2 id="wrapper">\wrapper</h2>
+<p>The \wrapper command, when used in a C++ class documentation, marks the class as a <i>wrapper</i> that provides access to a non-Qt API. This command is used for suppressing warnings that might otherwise be generated for members of such a class.</p>
+</div>
+<!-- @@@16-qdoc-commands-status.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="15-qdoc-commands-navigation.html">Document Navigation</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="17-qdoc-commands-thread.html">Thread Support</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

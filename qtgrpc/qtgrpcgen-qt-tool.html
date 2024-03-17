@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtgrpcgen.qdoc -->
+  <meta name="description" content="An overview of the qtgrpcgen tool and how to use it.">
+  <title>The qtgrpcgen Tool | Qt GRPC 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgrpc-index.html" translate="no">Qt GRPC</a></li>
+<li>The qtgrpcgen Tool</li>
+<li id="buildversion"><a href="qtgrpc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#usage">Usage</a></li>
+<li class="level2"><a href="#cmake">CMake</a></li>
+<li class="level2"><a href="#running-qtgrpcgen-manually">Running <code translate="no">qtgrpcgen</code> manually</a></li>
+<li class="level2"><a href="#options">Options</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">The qtgrpcgen Tool</h1>
+<!-- $$$qtgrpcgen-qt-tool.html-description -->
+<div class="descr" id="details">
+<p>The <code translate="no">qtgrpcgen</code> tool can be used to generate Qt GRPC service classes from a protobuf schema. The tool is provided by the CMake <code translate="no">Qt6::GrpcTools</code> package. It works as an extension to Google's <code translate="no">protoc</code> tool.</p>
+<pre class="cpp plain" translate="no">
+ find_package(Qt6 COMPONENTS GrpcTools REQUIRED)
+</pre>
+<h2 id="usage">Usage</h2>
+<p>Qt provides CMake functions that ease the use of the <code translate="no">qtgrpcgen</code> tool. When using CMake as a build tool you should prefer using the Qt CMake API. For build systems other than CMake, adapt the commands described in <a href="qtgrpcgen-qt-tool.html#running-qtgrpcgen-manually" translate="no">Running qtgrpcgen manually</a>.</p>
+<div class="admonition note">
+<p><b>Note: </b>there is no explicit support for building gRPC and Protobuf applications using the Qt GRPC module with <i>qmake</i>.</p>
+</div>
+<h3 id="cmake">CMake</h3>
+<p>The following CMake commands integrate a gRPC service into a Qt project.</p>
+<span id="cmake-commands-qtgrpc"></span><div class="table"><table class="annotated">
+<tr class="odd topAlign"><td class="tblName" translate="no"><p><a href="qt-add-grpc.html">qt_add_grpc</a></p></td><td class="tblDescr"><p>Generates Qt-based C++ services using a protobuf schema</p></td></tr>
+</table></div>
+<p>Usually <code translate="no">qtgrpcgen</code> would be invoked through CMake using the <code translate="no">qt_add_grpc</code> macro, as shown in the following example:</p>
+<pre class="cpp" translate="no">
+ cmake_minimum_required(VERSION 3.16...3.22)
+ project(MyProject)
+
+ find_package(Qt6 REQUIRED COMPONENTS Protobuf Grpc)
+ qt_standard_project_setup()
+
+ qt_add_protobuf(MyProtoMessageLib
+     PROTO_FILES
+         path/to/helloworld.proto
+     PROTO_INCLUDES
+         path/to/proto/include
+ )
+
+ qt_add_grpc(MyGrpcClient CLIENT
+     PROTO_FILES
+         path/to/helloworld.proto
+     PROTO_INCLUDES
+         path/to/proto/include
+ )
+
+ qt_add_executable(MyApp main.cpp)
+
+ target_link_libraries(MyApp PRIVATE MyGrpcClient MyProtoMessageLib Qt6::Protobuf)
+</pre>
+<p>The example above calls the <code translate="no">qt_add_grpc()</code> CMake function to generate a library called <code translate="no">MyGrpcClient</code>.</p>
+<div class="admonition note">
+<p><b>Note: </b>if the <code translate="no">.proto</code> file API contains messages, then the <code translate="no">qt_add_protobuf()</code> CMake function should be called to generate protobuf message classes for the project.</p>
+</div>
+<p>Finally, the example creates a target for an executable called <i>MyApp</i> which links to the <i>MyGrpcClient</i> and <i>MyProtoMessageLib</i> libraries.</p>
+<h3 id="running-qtgrpcgen-manually">Running <code translate="no">qtgrpcgen</code> manually</h3>
+<pre class="cpp plain" translate="no">
+ protoc --plugin=protoc-gen-qtgrpc=&lt;path/to/bin/&gt;qtgrpcgen \
+     --qtgrpc_out=&quot;[&lt;options&gt;:]&lt;output_dir&gt;&quot; \
+     [--qtgrpc_opt=&quot;&lt;options&gt;&quot;] \
+     [-I/extra/proto/include/path] \
+     &lt;protofile&gt;.proto
+</pre>
+<p>The <code translate="no">options</code> argument is a semicolon-separated list of <a href="qtprotobufgen-qt-tool.html#options" translate="no">Options</a>. It can be passed by prepending the <code translate="no">options</code> to the <code translate="no">output_dir</code> argument, delimited by a colon, or through a separate argument, <code translate="no">--qtgrpc_opt</code>. You also can pass the corresponding keys as the <code translate="no">QT_GRPC_OPTIONS</code> environment variable. Keys must be presented as a semicolon-separated list:</p>
+<pre class="cpp plain" translate="no">
+ export QT_GRPC_OPTIONS=&quot;COPY_COMMENTS;GENERATE_PACKAGE_SUBFOLDERS;EXTRA_NAMESPACE=MyTopLevelNamespace&quot;
+</pre>
+<h3 id="options">Options</h3>
+<p>The generator supports options that can be provided to tune generation. Options have direct aliases in the <a href="qt-add-grpc.html" translate="no">qt_add_grpc</a> function. The following options are supported:</p>
+<ul>
+<li><code translate="no">COPY_COMMENTS</code> copies comments from <code translate="no">.proto</code> files. If provided in the parameter list, comments related to messages and fields are copied to generated header files.</li>
+<li><code translate="no">GENERATE_PACKAGE_SUBFOLDERS</code> generates a folder structure for the generated files matching the <code translate="no">.proto</code> file's package name. For example, <code translate="no">package io.qt.test;</code> would put the generated files into <code translate="no">io/qt/test/</code>.</li>
+<li><code translate="no">EXTRA_NAMESPACE</code> is an optional namespace that will be used for the generated classes. The classes are always generated in a namespace whose name is the same as the package name specified in the <code translate="no">.proto</code> file. If this option is used, then everything will be nested inside the extra namespace.</li>
+<li><code translate="no">EXPORT_MACRO</code> is the base name of the symbol export macro used for the generated code. The generated macro name is constructed as <code translate="no">QPB_&lt;EXPORT_MACRO&gt;_EXPORT</code>. If the option is not set, the macro is not generated.</li>
+</ul>
+</div>
+<!-- @@@qtgrpcgen-qt-tool.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

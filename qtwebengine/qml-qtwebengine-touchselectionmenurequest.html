@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- touch_selection_menu_request.qdoc -->
+  <meta name="description" content="A request for showing a touch selection menu.">
+  <title>TouchSelectionMenuRequest QML Type | Qt WebEngine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtwebengine-index.html" translate="no">Qt WebEngine</a></li>
+<li><a href="qtwebengine-qmlmodule.html" translate="no">QML Types</a></li>
+<li>TouchSelectionMenuRequest</li>
+<li id="buildversion"><a href="qtwebengine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">TouchSelectionMenuRequest QML Type</h1>
+<!-- $$$TouchSelectionMenuRequest-brief -->
+<p>A request for showing a touch selection menu. <a href="#details">More...</a></p>
+<!-- @@@TouchSelectionMenuRequest -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtWebEngine</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> QtWebEngine 6.3</td></tr></table></div><ul>
+<li><a href="qml-qtwebengine-touchselectionmenurequest-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-touchselectionmenurequest.html#accepted-prop" translate="no">accepted</a></b> : bool</li>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-touchselectionmenurequest.html#selectionBounds-prop" translate="no">selectionBounds</a></b> : rect</li>
+</ul>
+<!-- $$$TouchSelectionMenuRequest-description -->
+<h2 id="details">Detailed Description</h2>
+<p>A TouchSelectionMenuRequest is passed as an argument of the WebEngineView::touchSelectionMenuRequest signal. It provides further information about the context of the request. The <a href="qml-qtwebengine-touchselectionmenurequest.html#selectionBounds-prop" translate="no">selectionBounds</a> property provides the origin of the request.</p>
+<p>The <a href="qml-qtwebengine-touchselectionmenurequest.html#accepted-prop" translate="no">accepted</a> property of the request indicates whether the request is handled by the user code or the default touch selection menu should be displayed.</p>
+<p>The following code uses a custom menu to handle the request:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qml-qtwebengine-webengineview.html" translate="no">WebEngineView</a></span> {
+     <span class="name">id</span>: <span class="name">view</span>
+     <span class="comment">// ...</span>
+     <span class="name">onTouchSelectionMenuRequested</span>: <span class="keyword">function</span>(request) {
+         <span class="name">request</span>.<span class="name">accepted</span> <span class="operator">=</span> <span class="number">true</span>;
+         <span class="name">myMenu</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">request</span>.<span class="name">selectionBounds</span>.<span class="name">x</span>;
+         <span class="name">myMenu</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">request</span>.<span class="name">selectionBounds</span>.<span class="name">y</span>;
+         <span class="name">myMenu</span>.<span class="name">trigger</span>.<span class="name">connect</span>(<span class="name">view</span>.<span class="name">triggerWebAction</span>);
+         <span class="name">myMenu</span>.<span class="name">popup</span>();
+     }
+     <span class="comment">// ...</span>
+ }
+</pre>
+<!-- @@@TouchSelectionMenuRequest -->
+<h2>Property Documentation</h2>
+<!-- $$$accepted -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="accepted-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">accepted</span> : <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Indicates whether the touch selection menu request has been handled by the signal handler.</p>
+<p>If the property is <code translate="no">false</code> after any signal handlers for <a href="qml-qtwebengine-webengineview.html#touchSelectionMenuRequested-signal" translate="no">WebEngineView::touchSelectionMenuRequested</a> have been executed, a default touch selection menu will be shown. To prevent this, set <code translate="no">request.accepted</code> to <code translate="no">true</code>.</p>
+<p>The default is <code translate="no">false</code>.</p>
+<div class="admonition note">
+<p><b>Note: </b>The default content of the touch selection menu depends on the web element for which the request was actually generated.</p>
+</div>
+</div></div><!-- @@@accepted -->
+<br/>
+<!-- $$$selectionBounds -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="selectionBounds-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">selectionBounds</span> : <span class="type"><a href="../qtqml/qml-rect.html" translate="no">rect</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>The position of the bound rectangle from the touch text selection.</p>
+</div></div><!-- @@@selectionBounds -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

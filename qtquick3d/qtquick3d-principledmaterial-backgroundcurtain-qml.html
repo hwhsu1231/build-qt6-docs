@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-principledmaterial.qdoc -->
+  <meta name="description" content="Demonstrates the use of Principled Material.">
+  <title>Qt Quick 3D - Principled Material Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Principled Material Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Principled Material Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2022 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+ <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+     <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">200</span>, <span class="number">200</span>, <span class="number">200</span>)
+     <span class="type"><a href="qml-qtquick3d-resourceloader.html" translate="no">ResourceLoader</a></span> {
+         <span class="name">meshSources</span>: [
+             <span class="name">frame</span>.<span class="name">source</span>,
+             <span class="name">curtain</span>.<span class="name">source</span>
+         ]
+         <span class="name">textures</span>: [
+             <span class="name">tilePatternTexture</span>,
+             <span class="name">curtainNormalTexture</span>
+         ]
+     }
+
+     <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+         <span class="name">id</span>: <span class="name">frame</span>
+         <span class="name">z</span>: -<span class="number">1.95</span>
+         <span class="name">source</span>: <span class="string">&quot;meshes/frame.mesh&quot;</span>
+
+         <span class="type"><a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a></span> {
+             <span class="name">id</span>: <span class="name">frame_material</span>
+             <span class="name">baseColor</span>: <span class="string">&quot;#ffcccccc&quot;</span>
+             <span class="name">metalness</span>: <span class="number">1</span>
+             <span class="name">roughness</span>: <span class="number">0.259091</span>
+             <span class="name">alphaMode</span>: <span class="name">PrincipledMaterial</span>.<span class="name">Opaque</span>
+         }
+         <span class="name">materials</span>: [
+             <span class="name">frame_material</span>
+         ]
+     }
+     <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+         <span class="name">id</span>: <span class="name">curtain</span>
+         <span class="name">y</span>: <span class="number">3.02413</span>
+         <span class="name">z</span>: <span class="number">2.04922</span>
+         <span class="name">source</span>: <span class="string">&quot;meshes/curtain.mesh&quot;</span>
+
+         <span class="type"><a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a></span> {
+             <span class="name">id</span>: <span class="name">curtain_material</span>
+             <span class="name">baseColorMap</span>: <span class="name">Texture</span> {
+                 <span class="name">id</span>: <span class="name">tilePatternTexture</span>
+                 <span class="name">source</span>: <span class="string">&quot;maps/tilepattern.png&quot;</span>
+                 <span class="name">generateMipmaps</span>: <span class="number">true</span>
+                 <span class="name">mipFilter</span>: <span class="name">Texture</span>.<span class="name">Linear</span>
+             }
+             <span class="name">opacityChannel</span>: <span class="name">Material</span>.<span class="name">A</span>
+             <span class="name">roughness</span>: <span class="number">0.5</span>
+             <span class="name">normalMap</span>: <span class="name">Texture</span> {
+                 <span class="name">id</span>: <span class="name">curtainNormalTexture</span>
+                 <span class="name">source</span>: <span class="string">&quot;maps/curtain_normal.jpg&quot;</span>
+                 <span class="name">generateMipmaps</span>: <span class="number">true</span>
+                 <span class="name">mipFilter</span>: <span class="name">Texture</span>.<span class="name">Linear</span>
+             }
+             <span class="name">cullMode</span>: <span class="name">Material</span>.<span class="name">NoCulling</span>
+             <span class="name">alphaMode</span>: <span class="name">PrincipledMaterial</span>.<span class="name">Opaque</span>
+         }
+         <span class="name">materials</span>: [
+             <span class="name">curtain_material</span>
+         ]
+     }
+ }
+</pre>

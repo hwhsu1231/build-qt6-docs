@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtvirtualkeyboard-examples.qdoc -->
+  <meta name="description" content="This example shows how to use the virtual keyboard in a Qt Quick application.">
+  <title>Virtual Keyboard in Qt Quick | Qt Virtual Keyboard 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtvirtualkeyboard-index.html" translate="no">Qt Virtual Keyboard</a></li>
+<li><a href="qtvirtualkeyboard-examples.html" translate="no">Qt Virtual Keyboard Examples</a></li>
+<li>Virtual Keyboard in Qt Quick</li>
+<li id="buildversion"><a href="qtvirtualkeyboard-index.html" translate="no">Qt Virtual Keyboard | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Virtual Keyboard in Qt Quick</h1>
+<!-- $$$basic-brief -->
+<p>This example shows how to use the virtual keyboard in a Qt Quick application.</p>
+<!-- @@@basic -->
+<!-- $$$basic-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/basic-example.png" alt="" /></p><p>The example has two implementations: one for desktop platforms and another for embedded platforms. The former version enables text input into several text fields using the virtual keyboard, whereas the latter version uses the same UI but with a custom virtual keyboard <a href="qml-qtquick-virtualkeyboard-inputpanel.html" translate="no">InputPanel</a>. The following snippet from <code translate="no">basic.pro</code> shows how the qmake project is set up to choose the appropriate implementation based on the CONFIG options:</p>
+<pre class="cpp" translate="no">
+ !qtConfig(vkb-desktop) {
+     DEFINES += MAIN_QML=\\\&quot;basic-b2qt.qml\\\&quot;
+ } else {
+     DEFINES += MAIN_QML=\\\&quot;Basic.qml\\\&quot;
+ }
+</pre>
+<p>The example enables the virtual keyboard by setting the <code translate="no">QT_IM_MODULE</code> environment variable before loading the <code translate="no">.qml</code> file:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &lt;QQuickView&gt;</span>
+ <span class="preprocessor">#include &lt;QGuiApplication&gt;</span>
+ <span class="preprocessor">#include &lt;QQmlEngine&gt;</span>
+
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
+ {
+     qputenv(<span class="string">&quot;QT_IM_MODULE&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span>(<span class="string">&quot;qtvirtualkeyboard&quot;</span>));
+
+     <span class="type"><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a></span> app(argc<span class="operator">,</span> argv);
+     <span class="type"><a href="../qtquick/qquickview.html" translate="no">QQuickView</a></span> view(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span>(<span class="string">&quot;qrc:/%2&quot;</span>)<span class="operator">.</span>arg(MAIN_QML));
+     <span class="keyword">if</span> (view<span class="operator">.</span>status() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtquick/qquickview.html" translate="no">QQuickView</a></span><span class="operator">::</span>Error)
+         <span class="keyword">return</span> <span class="operator">-</span><span class="number">1</span>;
+     view<span class="operator">.</span>setResizeMode(<span class="type"><a href="../qtquick/qquickview.html" translate="no">QQuickView</a></span><span class="operator">::</span>SizeRootObjectToView);
+
+     view<span class="operator">.</span>show();
+
+     <span class="keyword">return</span> app<span class="operator">.</span>exec();
+ }
+</pre>
+<p>Besides this, it uses custom <a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a> and <a href="../qtquickcontrols/qml-qtquick-controls-textarea.html" translate="no">TextArea</a> items to configure the <i>[ENTER]</i> key behavior using the <a href="qml-qtquick-virtualkeyboard-enterkeyaction.html" translate="no">EnterKeyAction</a> attached property.</p>
+<pre class="cpp" translate="no">
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.VirtualKeyboard
+ import &quot;content&quot;
+
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     ...
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                     <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+                     <span class="name">placeholderText</span>: <span class="string">&quot;One line field&quot;</span>
+                     <span class="name">enterKeyAction</span>: <span class="name">EnterKeyAction</span>.<span class="name">Next</span>
+                     <span class="name">onAccepted</span>: <span class="name">passwordField</span>.<span class="name">focus</span> <span class="operator">=</span> <span class="number">true</span>
+                 }
+     ...
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textarea.html" translate="no">TextArea</a></span> {
+                     <span class="name">id</span>: <span class="name">textArea</span>
+                     <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+                     <span class="name">placeholderText</span>: <span class="string">&quot;Multiple line field&quot;</span>
+                     <span class="name">height</span>: <span class="name">Math</span>.<span class="name">max</span>(<span class="number">206</span>, <span class="name">implicitHeight</span>)
+                 }
+ }
+</pre>
+<p>The <a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a> and <a href="../qtquickcontrols/qml-qtquick-controls-textarea.html" translate="no">TextArea</a> controls extend the respective <a href="../qtquickcontrols/qtquickcontrols-index.html" translate="no">Qt Quick Controls 2</a> types with <code translate="no">enterKeyEnabled</code> and <code translate="no">enterKeyAction</code> properties. The <a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a> and <a href="../qtquickcontrols/qml-qtquick-controls-textarea.html" translate="no">TextArea</a> instances in the snippet can set these properties to change the default behavior.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtvirtualkeyboard.git/tree/examples/virtualkeyboard/basic?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@basic -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

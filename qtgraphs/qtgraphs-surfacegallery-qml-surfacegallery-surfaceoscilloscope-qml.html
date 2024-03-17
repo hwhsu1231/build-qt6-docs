@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- surfacegallery.qdoc -->
+  <meta name="description" content="Gallery with three different ways to use a Surface3D graph.">
+  <title>Surface Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Surface Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Surface Graph Gallery</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtGraphs
+ import SurfaceGallery
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">oscilloscopeView</span>
+
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">sampleColumns</span>: <span class="name">sampleSlider</span>.<span class="name">value</span>
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">sampleRows</span>: <span class="name">sampleColumns</span> <span class="operator">/</span> <span class="number">2</span>
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">sampleCache</span>: <span class="number">24</span>
+
+     required property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">portraitMode</span>
+
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">controlWidth</span>: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">oscilloscopeView</span>.<span class="name">width</span> <span class="operator">-</span> <span class="number">10</span>
+                                                               : <span class="name">oscilloscopeView</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">4</span> <span class="operator">-</span> <span class="number">6.66</span>
+
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">buttonWidth</span>: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">oscilloscopeView</span>.<span class="name">width</span> <span class="operator">-</span> <span class="number">10</span>
+                                                              : <span class="name">oscilloscopeView</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">3</span> <span class="operator">-</span> <span class="number">7.5</span>
+
+     <span class="name">onSampleRowsChanged</span>: {
+         <span class="name">surfaceSeries</span>.<span class="name">selectedPoint</span> <span class="operator">=</span> <span class="name">surfaceSeries</span>.<span class="name">invalidSelectionPosition</span>
+         <span class="name">generateData</span>()
+     }
+
+     <span class="type">DataSource</span> {
+         <span class="name">id</span>: <span class="name">dataSource</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+         <span class="name">id</span>: <span class="name">dataView</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+         <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span> <span class="operator">-</span> <span class="name">controlArea</span>.<span class="name">height</span>
+
+         <span class="type"><a href="qml-qtgraphs-surface3d.html" translate="no">Surface3D</a></span> {
+             <span class="name">id</span>: <span class="name">surfaceGraph</span>
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+             <span class="type"><a href="qml-qtgraphs-surface3dseries.html" translate="no">Surface3DSeries</a></span> {
+                 <span class="name">id</span>: <span class="name">surfaceSeries</span>
+                 <span class="name">drawMode</span>: <span class="name">Surface3DSeries</span>.<span class="name">DrawSurfaceAndWireframe</span>
+                 <span class="name">itemLabelFormat</span>: <span class="string">&quot;@xLabel, @zLabel: @yLabel&quot;</span>
+                 <span class="name">itemLabelVisible</span>: <span class="number">false</span>
+
+                 <span class="name">onItemLabelChanged</span>: {
+                     <span class="keyword">if</span> (<span class="name">surfaceSeries</span>.<span class="name">selectedPoint</span> <span class="operator">==</span> <span class="name">surfaceSeries</span>.<span class="name">invalidSelectionPosition</span>)
+                         <span class="name">selectionText</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;No selection&quot;</span>;
+                     <span class="keyword">else</span>
+                         <span class="name">selectionText</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">surfaceSeries</span>.<span class="name">itemLabel</span>;
+                 }
+             }
+
+             <span class="name">shadowQuality</span>: <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityNone</span>
+             <span class="name">selectionMode</span>: <span class="name">AbstractGraph3D</span>.<span class="name">SelectionSlice</span> <span class="operator">|</span> <span class="name">AbstractGraph3D</span>.<span class="name">SelectionItemAndColumn</span>
+             <span class="name">theme</span>: <span class="name">Theme3D</span> {
+                 <span class="name">type</span>: <span class="name">Theme3D</span>.<span class="name">ThemeIsabelle</span>
+                 <span class="name">backgroundEnabled</span>: <span class="number">false</span>
+             }
+             <span class="name">scene</span>.activeCamera.cameraPreset: <span class="name">Camera3D</span>.<span class="name">CameraPresetFrontHigh</span>
+
+             <span class="name">axisX</span>.labelFormat: <span class="string">&quot;%d ms&quot;</span>
+             <span class="name">axisY</span>.labelFormat: <span class="string">&quot;%d W&quot;</span>
+             <span class="name">axisZ</span>.labelFormat: <span class="string">&quot;%d mV&quot;</span>
+             <span class="name">axisX</span>.min: <span class="number">0</span>
+             <span class="name">axisY</span>.min: <span class="number">0</span>
+             <span class="name">axisZ</span>.min: <span class="number">0</span>
+             <span class="name">axisX</span>.max: <span class="number">1000</span>
+             <span class="name">axisY</span>.max: <span class="number">100</span>
+             <span class="name">axisZ</span>.max: <span class="number">800</span>
+             <span class="name">axisX</span>.segmentCount: <span class="number">4</span>
+             <span class="name">axisY</span>.segmentCount: <span class="number">4</span>
+             <span class="name">axisZ</span>.segmentCount: <span class="number">4</span>
+             <span class="name">measureFps</span>: <span class="number">true</span>
+             <span class="name">renderingMode</span>: <span class="name">AbstractGraph3D</span>.<span class="name">RenderDirectToBackground</span>
+
+             <span class="name">onCurrentFpsChanged</span>: (<span class="keyword"></span>currentFps)=&gt; {
+                                      <span class="name">fpsText</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;FPS: &quot;</span> <span class="operator">+</span> <span class="name">currentFps</span>;
+                                  }
+
+             <span class="name">Component</span>.onCompleted: <span class="name">oscilloscopeView</span>.<span class="name">generateData</span>();
+         }
+     }
+
+     <span class="type"><a href="../qtqml/qml-qtqml-timer.html" translate="no">Timer</a></span> {
+         <span class="name">id</span>: <span class="name">refreshTimer</span>
+         <span class="name">interval</span>: <span class="number">1000</span> <span class="operator">/</span> <span class="name">frequencySlider</span>.<span class="name">value</span>
+         <span class="name">running</span>: <span class="number">true</span>
+         <span class="name">repeat</span>: <span class="number">true</span>
+         <span class="name">onTriggered</span>: <span class="name">dataSource</span>.<span class="name">update</span>(<span class="name">surfaceSeries</span>);
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         <span class="name">id</span>: <span class="name">controlArea</span>
+         <span class="name">height</span>: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">flatShadingToggle</span>.<span class="name">implicitHeight</span> <span class="operator">*</span> <span class="number">7</span>
+                                               : <span class="name">flatShadingToggle</span>.<span class="name">implicitHeight</span> <span class="operator">*</span> <span class="number">2</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">backgroundColor</span>
+
+         <span class="comment">// Samples</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+             <span class="name">id</span>: <span class="name">samples</span>
+             <span class="name">width</span>: <span class="name">oscilloscopeView</span>.<span class="name">controlWidth</span>
+             <span class="name">height</span>: <span class="name">flatShadingToggle</span>.<span class="name">implicitHeight</span>
+             <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+             <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+
+             <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+             <span class="name">border</span>.color: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+             <span class="name">border</span>.width: <span class="number">1</span>
+             <span class="name">radius</span>: <span class="number">4</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+                 <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+                 <span class="name">spacing</span>: <span class="number">10</span>
+                 <span class="name">padding</span>: <span class="number">5</span>
+
+                 <span class="type">Slider</span> {
+                     <span class="name">id</span>: <span class="name">sampleSlider</span>
+                     <span class="name">from</span>: <span class="name">oscilloscopeView</span>.<span class="name">sampleCache</span> <span class="operator">*</span> <span class="number">2</span>
+                     <span class="name">to</span>: <span class="name">from</span> <span class="operator">*</span> <span class="number">10</span>
+                     <span class="name">stepSize</span>: <span class="name">oscilloscopeView</span>.<span class="name">sampleCache</span>
+
+                     <span class="name">background</span>: <span class="name">Rectangle</span> {
+                         <span class="name">x</span>: <span class="name">sampleSlider</span>.<span class="name">leftPadding</span>
+                         <span class="name">y</span>: <span class="name">sampleSlider</span>.<span class="name">topPadding</span> <span class="operator">+</span> <span class="name">sampleSlider</span>.<span class="name">availableHeight</span> <span class="operator">/</span> <span class="number">2</span>
+                            <span class="operator">-</span> <span class="name">height</span> <span class="operator">/</span> <span class="number">2</span>
+                         <span class="name">implicitWidth</span>: <span class="number">200</span>
+                         <span class="name">implicitHeight</span>: <span class="number">4</span>
+                         <span class="name">width</span>: <span class="name">sampleSlider</span>.<span class="name">availableWidth</span>
+                         <span class="name">height</span>: <span class="name">implicitHeight</span>
+                         <span class="name">radius</span>: <span class="number">2</span>
+                         <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+
+                         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+                             <span class="name">width</span>: <span class="name">sampleSlider</span>.<span class="name">visualPosition</span> <span class="operator">*</span> <span class="name">parent</span>.<span class="name">width</span>
+                             <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span>
+                             <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                             <span class="name">radius</span>: <span class="number">2</span>
+                         }
+                     }
+
+                     <span class="name">handle</span>: <span class="name">Rectangle</span> {
+                         <span class="name">x</span>: <span class="name">sampleSlider</span>.<span class="name">leftPadding</span> <span class="operator">+</span> <span class="name">sampleSlider</span>.<span class="name">visualPosition</span>
+                            <span class="operator">*</span> (<span class="name">sampleSlider</span>.<span class="name">availableWidth</span> <span class="operator">-</span> <span class="name">width</span>)
+                         <span class="name">y</span>: <span class="name">sampleSlider</span>.<span class="name">topPadding</span> <span class="operator">+</span> <span class="name">sampleSlider</span>.<span class="name">availableHeight</span> <span class="operator">/</span> <span class="number">2</span>
+                            <span class="operator">-</span> <span class="name">height</span> <span class="operator">/</span> <span class="number">2</span>
+                         <span class="name">implicitWidth</span>: <span class="number">20</span>
+                         <span class="name">implicitHeight</span>: <span class="number">20</span>
+                         <span class="name">radius</span>: <span class="number">10</span>
+                         <span class="name">color</span>: <span class="name">sampleSlider</span>.<span class="name">pressed</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                                                     : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+                         <span class="name">border</span>.color: <span class="name">sampleSlider</span>.<span class="name">pressed</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                                                            : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                     }
+
+                     <span class="name">Component</span>.onCompleted: <span class="name">value</span> <span class="operator">=</span> <span class="name">from</span>;
+                 }
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                     <span class="name">id</span>: <span class="name">samplesText</span>
+                     <span class="name">text</span>: <span class="string">&quot;Samples: &quot;</span> <span class="operator">+</span> (<span class="name">oscilloscopeView</span>.<span class="name">sampleRows</span> <span class="operator">*</span> <span class="name">oscilloscopeView</span>.<span class="name">sampleColumns</span>)
+                     <span class="name">verticalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignVCenter</span>
+                     <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignHCenter</span>
+                     <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                 }
+             }
+         }
+
+         <span class="comment">// Frequency</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+             <span class="name">id</span>: <span class="name">frequency</span>
+             <span class="name">width</span>: <span class="name">oscilloscopeView</span>.<span class="name">controlWidth</span>
+             <span class="name">height</span>: <span class="name">flatShadingToggle</span>.<span class="name">implicitHeight</span>
+             <span class="name">anchors</span>.left: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">samples</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">samples</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+
+             <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+             <span class="name">border</span>.color: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+             <span class="name">border</span>.width: <span class="number">1</span>
+             <span class="name">radius</span>: <span class="number">4</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+                 <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+                 <span class="name">spacing</span>: <span class="number">10</span>
+                 <span class="name">padding</span>: <span class="number">5</span>
+
+                 <span class="type">Slider</span> {
+                     <span class="name">id</span>: <span class="name">frequencySlider</span>
+                     <span class="name">from</span>: <span class="number">2</span>
+                     <span class="name">to</span>: <span class="number">60</span>
+                     <span class="name">stepSize</span>: <span class="number">2</span>
+                     <span class="name">value</span>: <span class="number">30</span>
+
+                     <span class="name">background</span>: <span class="name">Rectangle</span> {
+                         <span class="name">x</span>: <span class="name">frequencySlider</span>.<span class="name">leftPadding</span>
+                         <span class="name">y</span>: <span class="name">frequencySlider</span>.<span class="name">topPadding</span> <span class="operator">+</span> <span class="name">frequencySlider</span>.<span class="name">availableHeight</span> <span class="operator">/</span> <span class="number">2</span>
+                            <span class="operator">-</span> <span class="name">height</span> <span class="operator">/</span> <span class="number">2</span>
+                         <span class="name">implicitWidth</span>: <span class="number">200</span>
+                         <span class="name">implicitHeight</span>: <span class="number">4</span>
+                         <span class="name">width</span>: <span class="name">frequencySlider</span>.<span class="name">availableWidth</span>
+                         <span class="name">height</span>: <span class="name">implicitHeight</span>
+                         <span class="name">radius</span>: <span class="number">2</span>
+                         <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+
+                         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+                             <span class="name">width</span>: <span class="name">frequencySlider</span>.<span class="name">visualPosition</span> <span class="operator">*</span> <span class="name">parent</span>.<span class="name">width</span>
+                             <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span>
+                             <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                             <span class="name">radius</span>: <span class="number">2</span>
+                         }
+                     }
+
+                     <span class="name">handle</span>: <span class="name">Rectangle</span> {
+                         <span class="name">x</span>: <span class="name">frequencySlider</span>.<span class="name">leftPadding</span> <span class="operator">+</span> <span class="name">frequencySlider</span>.<span class="name">visualPosition</span>
+                            <span class="operator">*</span> (<span class="name">frequencySlider</span>.<span class="name">availableWidth</span> <span class="operator">-</span> <span class="name">width</span>)
+                         <span class="name">y</span>: <span class="name">frequencySlider</span>.<span class="name">topPadding</span> <span class="operator">+</span> <span class="name">frequencySlider</span>.<span class="name">availableHeight</span> <span class="operator">/</span> <span class="number">2</span>
+                            <span class="operator">-</span> <span class="name">height</span> <span class="operator">/</span> <span class="number">2</span>
+                         <span class="name">implicitWidth</span>: <span class="number">20</span>
+                         <span class="name">implicitHeight</span>: <span class="number">20</span>
+                         <span class="name">radius</span>: <span class="number">10</span>
+                         <span class="name">color</span>: <span class="name">frequencySlider</span>.<span class="name">pressed</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                                                        : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+                         <span class="name">border</span>.color: <span class="name">frequencySlider</span>.<span class="name">pressed</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                                                               : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                     }
+                 }
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                     <span class="name">id</span>: <span class="name">frequencyText</span>
+                     <span class="name">text</span>: <span class="string">&quot;Freq: &quot;</span> <span class="operator">+</span> <span class="name">frequencySlider</span>.<span class="name">value</span> <span class="operator">+</span> <span class="string">&quot; Hz&quot;</span>
+                     <span class="name">verticalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignVCenter</span>
+                     <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignHCenter</span>
+                     <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                 }
+             }
+         }
+
+         <span class="comment">// FPS</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+             <span class="name">id</span>: <span class="name">fpsindicator</span>
+             <span class="name">width</span>: <span class="name">oscilloscopeView</span>.<span class="name">controlWidth</span>
+             <span class="name">height</span>: <span class="name">flatShadingToggle</span>.<span class="name">implicitHeight</span>
+             <span class="name">anchors</span>.left: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">frequency</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">frequency</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+
+             <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+             <span class="name">border</span>.color: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+             <span class="name">border</span>.width: <span class="number">1</span>
+             <span class="name">radius</span>: <span class="number">4</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">id</span>: <span class="name">fpsText</span>
+                 <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                 <span class="name">verticalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignVCenter</span>
+                 <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+             }
+         }
+
+         <span class="comment">// Selection</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+             <span class="name">id</span>: <span class="name">selection</span>
+             <span class="name">width</span>: <span class="name">oscilloscopeView</span>.<span class="name">controlWidth</span>
+             <span class="name">height</span>: <span class="name">flatShadingToggle</span>.<span class="name">implicitHeight</span>
+             <span class="name">anchors</span>.left: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">fpsindicator</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">fpsindicator</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+
+             <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+             <span class="name">border</span>.color: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+             <span class="name">border</span>.width: <span class="number">1</span>
+             <span class="name">radius</span>: <span class="number">4</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">id</span>: <span class="name">selectionText</span>
+                 <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                 <span class="name">verticalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignVCenter</span>
+                 <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">text</span>: <span class="string">&quot;No selection&quot;</span>
+                 <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+             }
+         }
+
+         <span class="comment">// Flat shading</span>
+         <span class="type">Button</span> {
+             <span class="name">id</span>: <span class="name">flatShadingToggle</span>
+             <span class="name">width</span>: <span class="name">oscilloscopeView</span>.<span class="name">buttonWidth</span>
+             <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+             <span class="name">anchors</span>.top: <span class="name">selection</span>.<span class="name">bottom</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+
+             <span class="name">text</span>: <span class="name">surfaceSeries</span>.<span class="name">flatShadingSupported</span> ? <span class="string">&quot;Show\nSmooth&quot;</span> : <span class="string">&quot;Flat\nnot supported&quot;</span>
+             <span class="name">enabled</span>: <span class="name">surfaceSeries</span>.<span class="name">flatShadingSupported</span>
+
+             <span class="name">onClicked</span>: {
+                 <span class="keyword">if</span> (<span class="name">surfaceSeries</span>.<span class="name">flatShadingEnabled</span>) {
+                     <span class="name">surfaceSeries</span>.<span class="name">flatShadingEnabled</span> <span class="operator">=</span> <span class="number">false</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show\nFlat&quot;</span>
+                 } <span class="keyword">else</span> {
+                     <span class="name">surfaceSeries</span>.<span class="name">flatShadingEnabled</span> <span class="operator">=</span> <span class="number">true</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show\nSmooth&quot;</span>
+                 }
+             }
+
+             <span class="name">contentItem</span>: <span class="name">Text</span> {
+                 <span class="name">text</span>: <span class="name">flatShadingToggle</span>.<span class="name">text</span>
+                 <span class="name">opacity</span>: <span class="name">flatShadingToggle</span>.<span class="name">enabled</span> ? <span class="number">1.0</span> : <span class="number">0.3</span>
+                 <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                 <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">verticalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignVCenter</span>
+                 <span class="name">elide</span>: <span class="name">Text</span>.<span class="name">ElideRight</span>
+             }
+
+             <span class="name">background</span>: <span class="name">Rectangle</span> {
+                 <span class="name">opacity</span>: <span class="name">flatShadingToggle</span>.<span class="name">enabled</span> ? <span class="number">1</span> : <span class="number">0.3</span>
+                 <span class="name">color</span>: <span class="name">flatShadingToggle</span>.<span class="name">down</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                                               : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+                 <span class="name">border</span>.color: <span class="name">flatShadingToggle</span>.<span class="name">down</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                                                      : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                 <span class="name">border</span>.width: <span class="number">1</span>
+                 <span class="name">radius</span>: <span class="number">2</span>
+             }
+         }
+
+         <span class="comment">// Surface grid</span>
+         <span class="type">Button</span> {
+             <span class="name">id</span>: <span class="name">surfaceGridToggle</span>
+             <span class="name">width</span>: <span class="name">oscilloscopeView</span>.<span class="name">buttonWidth</span>
+             <span class="name">anchors</span>.left: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">flatShadingToggle</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">flatShadingToggle</span>.<span class="name">bottom</span> : <span class="name">selection</span>.<span class="name">bottom</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+
+             <span class="name">text</span>: <span class="string">&quot;Hide\nSurface Grid&quot;</span>
+
+             <span class="name">onClicked</span>: {
+                 <span class="keyword">if</span> (<span class="name">surfaceSeries</span>.<span class="name">drawMode</span> <span class="operator">&amp;</span> <span class="name">Surface3DSeries</span>.<span class="name">DrawWireframe</span>) {
+                     <span class="name">surfaceSeries</span>.<span class="name">drawMode</span> <span class="operator">&amp;=</span> ~<span class="name">Surface3DSeries</span>.<span class="name">DrawWireframe</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show\nSurface Grid&quot;</span>;
+                 } <span class="keyword">else</span> {
+                     <span class="name">surfaceSeries</span>.<span class="name">drawMode</span> <span class="operator">|=</span> <span class="name">Surface3DSeries</span>.<span class="name">DrawWireframe</span>;
+                     <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Hide\nSurface Grid&quot;</span>;
+                 }
+             }
+
+             <span class="name">contentItem</span>: <span class="name">Text</span> {
+                 <span class="name">text</span>: <span class="name">surfaceGridToggle</span>.<span class="name">text</span>
+                 <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                 <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">verticalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignVCenter</span>
+                 <span class="name">elide</span>: <span class="name">Text</span>.<span class="name">ElideRight</span>
+             }
+
+             <span class="name">background</span>: <span class="name">Rectangle</span> {
+                 <span class="name">color</span>: <span class="name">surfaceGridToggle</span>.<span class="name">down</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                                               : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+                 <span class="name">border</span>.color: <span class="name">surfaceGridToggle</span>.<span class="name">down</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                                                      : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                 <span class="name">border</span>.width: <span class="number">1</span>
+                 <span class="name">radius</span>: <span class="number">2</span>
+             }
+         }
+
+         <span class="comment">// Exit</span>
+         <span class="type">Button</span> {
+             <span class="name">id</span>: <span class="name">exitButton</span>
+             <span class="name">width</span>: <span class="name">oscilloscopeView</span>.<span class="name">buttonWidth</span>
+             <span class="name">height</span>: <span class="name">surfaceGridToggle</span>.<span class="name">height</span>
+             <span class="name">anchors</span>.left: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">surfaceGridToggle</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">oscilloscopeView</span>.<span class="name">portraitMode</span> ? <span class="name">surfaceGridToggle</span>.<span class="name">bottom</span> : <span class="name">selection</span>.<span class="name">bottom</span>
+             <span class="name">anchors</span>.margins: <span class="number">5</span>
+
+             <span class="name">text</span>: <span class="string">&quot;Quit&quot;</span>
+
+             <span class="name">onClicked</span>: <span class="name">Qt</span>.<span class="name">quit</span>();
+
+             <span class="name">contentItem</span>: <span class="name">Text</span> {
+                 <span class="name">text</span>: <span class="name">exitButton</span>.<span class="name">text</span>
+                 <span class="name">color</span>: <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                 <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">verticalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignVCenter</span>
+                 <span class="name">elide</span>: <span class="name">Text</span>.<span class="name">ElideRight</span>
+             }
+
+             <span class="name">background</span>: <span class="name">Rectangle</span> {
+                 <span class="name">color</span>: <span class="name">exitButton</span>.<span class="name">down</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                                        : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">windowColor</span>
+                 <span class="name">border</span>.color: <span class="name">exitButton</span>.<span class="name">down</span> ? <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">labelTextColor</span>
+                                               : <span class="name">surfaceGraph</span>.<span class="name">theme</span>.<span class="name">gridLineColor</span>
+                 <span class="name">border</span>.width: <span class="number">1</span>
+                 <span class="name">radius</span>: <span class="number">2</span>
+             }
+         }
+     }
+
+     <span class="keyword">function </span><span class="name">generateData</span>() {
+         <span class="name">dataSource</span>.<span class="name">generateData</span>(<span class="name">oscilloscopeView</span>.<span class="name">sampleCache</span>, <span class="name">oscilloscopeView</span>.<span class="name">sampleRows</span>,
+                                 <span class="name">oscilloscopeView</span>.<span class="name">sampleColumns</span>,
+                                 <span class="name">surfaceGraph</span>.<span class="name">axisX</span>.<span class="name">min</span>, <span class="name">surfaceGraph</span>.<span class="name">axisX</span>.<span class="name">max</span>,
+                                 <span class="name">surfaceGraph</span>.<span class="name">axisY</span>.<span class="name">min</span>, <span class="name">surfaceGraph</span>.<span class="name">axisY</span>.<span class="name">max</span>,
+                                 <span class="name">surfaceGraph</span>.<span class="name">axisZ</span>.<span class="name">min</span>, <span class="name">surfaceGraph</span>.<span class="name">axisZ</span>.<span class="name">max</span>);
+     }
+ }
+</pre>

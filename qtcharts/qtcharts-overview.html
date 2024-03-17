@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtcharts-overview.qdoc -->
+  <meta name="description" content="Visualizing data as 2D charts.">
+  <title>Qt Charts Overview | Qt Charts 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtcharts-index.html" translate="no">Qt Charts</a></li>
+<li>Qt Charts Overview</li>
+<li id="buildversion"><a href="qtcharts-index.html" translate="no">Qt Charts | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#chart-types">Chart Types</a></li>
+<li class="level2"><a href="#line-and-spline-charts">Line and Spline Charts</a></li>
+<li class="level2"><a href="#area-and-scatter-charts">Area and Scatter Charts</a></li>
+<li class="level2"><a href="#bar-charts">Bar Charts</a></li>
+<li class="level2"><a href="#pie-charts">Pie Charts</a></li>
+<li class="level2"><a href="#box-and-whiskers-charts">Box-and-Whiskers Charts</a></li>
+<li class="level2"><a href="#candlestick-charts">Candlestick Charts</a></li>
+<li class="level2"><a href="#polar-charts">Polar Charts</a></li>
+<li class="level1"><a href="#axes">Axes</a></li>
+<li class="level1"><a href="#legend">Legend</a></li>
+<li class="level1"><a href="#interacting-with-charts">Interacting with Charts</a></li>
+<li class="level2"><a href="#drawing-data-dynamically">Drawing Data Dynamically</a></li>
+<li class="level2"><a href="#drilling-down-into-data">Drilling Down into Data</a></li>
+<li class="level2"><a href="#zooming-and-scrolling">Zooming and Scrolling</a></li>
+<li class="level2"><a href="#clicking-and-hovering">Clicking and Hovering</a></li>
+<li class="level1"><a href="#themes">Themes</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt Charts Overview</h1>
+<!-- $$$qtcharts-overview.html-description -->
+<div class="descr" id="details">
+<p>Qt Charts enables creating stylish, interactive, data centric user interfaces. Qt Charts uses the <a href="../qtwidgets/graphicsview.html" translate="no">Graphics View Framework</a> for ease of integration. The chart components can be used as <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> or <a href="../qtwidgets/qgraphicswidget.html" translate="no">QGraphicsWidget</a> objects or QML types.</p>
+<p class="centerAlign"><img src="images/examples_chartthemes_light.png" alt="" /></p><p>The <a href="qchart.html" translate="no">QChart</a> class manages the graphical representation of different types of series and other chart related objects, such as legend and axes. <a href="qchart.html" translate="no">QChart</a> is a <a href="../qtwidgets/qgraphicswidget.html" translate="no">QGraphicsWidget</a> that can be shown in a <a href="../qtwidgets/qgraphicsscene.html" translate="no">QGraphicsScene</a>. A simpler solution is to display a chart in a layout by using the convenience class <a href="qchartview.html" translate="no">QChartView</a> instead of <a href="qchart.html" translate="no">QChart</a>. In QML, charts are displayed using the <a href="qml-qtcharts-chartview.html" translate="no">ChartView</a> type.</p>
+<p>Some chart components can also be presented as polar charts by using the the <a href="qpolarchart.html" translate="no">QPolarChart</a> class that is a specialization of the <a href="qchart.html" translate="no">QChart</a> class or the <a href="qml-qtcharts-polarchartview.html" translate="no">PolarChartView</a> QML type that is a specialization of the <a href="qml-qtcharts-chartview.html" translate="no">ChartView</a> type.</p>
+<p>The look and feel of charts can be customized by using themes, modifying colors and properties, hiding chart components, or animating charts.</p>
+<p>Model mappers enable using a data model derived from the <a href="../qtcore/qabstractitemmodel.html" translate="no">QAbstractItemModel</a> class as a data source for a chart. Model mappers can be either horizontal or vertical.</p>
+<h2 id="chart-types">Chart Types</h2>
+<p>The Qt Charts module provides the following chart types:</p>
+<ul>
+<li><a href="qtcharts-overview.html#line-and-spline-charts" translate="no">Line and spline charts</a></li>
+<li><a href="qtcharts-overview.html#area-and-scatter-charts" translate="no">Area and scatter charts</a></li>
+<li><a href="qtcharts-overview.html#bar-charts" translate="no">Bar charts</a></li>
+<li><a href="qtcharts-overview.html#pie-charts" translate="no">Pie charts</a></li>
+<li><a href="qtcharts-overview.html#box-and-whiskers-charts" translate="no">Box-and-whiskers charts</a></li>
+<li><a href="qtcharts-overview.html#candlestick-charts" translate="no">Candlestick charts</a></li>
+<li><a href="qtcharts-overview.html#polar-charts" translate="no">Polar charts</a></li>
+</ul>
+<p>Each chart type is represented by an <a href="qabstractseries.html" translate="no">QAbstractSeries</a> derived class or <a href="qml-qtcharts-abstractseries.html" translate="no">AbstractSeries</a> derived type in QML. Charts are created by using an instance of a series class and adding it to a <a href="qchart.html" translate="no">QChart</a> or <a href="qml-qtcharts-chartview.html" translate="no">ChartView</a> instance.</p>
+<p>For example:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qlineseries.html" translate="no">QLineSeries</a></span><span class="operator">*</span> series <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qlineseries.html" translate="no">QLineSeries</a></span>();
+ series<span class="operator">-</span><span class="operator">&gt;</span>add(<span class="number">0</span><span class="operator">,</span> <span class="number">6</span>);
+ series<span class="operator">-</span><span class="operator">&gt;</span>add(<span class="number">2</span><span class="operator">,</span> <span class="number">4</span>);
+ <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
+ chartView<span class="operator">-</span><span class="operator">&gt;</span>chart()<span class="operator">-</span><span class="operator">&gt;</span>addSeries(series);
+ chartView<span class="operator">-</span><span class="operator">&gt;</span>chart()<span class="operator">-</span><span class="operator">&gt;</span>createDefaultAxes();
+</pre>
+<p>Or, in QML:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtcharts-chartview.html" translate="no">ChartView</a></span> {
+     <span class="name">id</span>: <span class="name">chart</span>
+     <span class="name">title</span>: <span class="string">&quot;Top-5 car brand shares in Finland&quot;</span>
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+     <span class="name">legend</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignBottom</span>
+     <span class="name">antialiasing</span>: <span class="number">true</span>
+
+     property <span class="type"><a href="../qtqml/qml-variant.html" translate="no">variant</a></span> <span class="name">othersSlice</span>: <span class="number">0</span>
+
+     <span class="type"><a href="qml-qtcharts-pieseries.html" translate="no">PieSeries</a></span> {
+         <span class="name">id</span>: <span class="name">pieSeries</span>
+         <span class="type"><a href="qml-qtcharts-pieslice.html" translate="no">PieSlice</a></span> { <span class="name">label</span>: <span class="string">&quot;Volkswagen&quot;</span>; <span class="name">value</span>: <span class="number">13.5</span> }
+         <span class="type"><a href="qml-qtcharts-pieslice.html" translate="no">PieSlice</a></span> { <span class="name">label</span>: <span class="string">&quot;Toyota&quot;</span>; <span class="name">value</span>: <span class="number">10.9</span> }
+         <span class="type"><a href="qml-qtcharts-pieslice.html" translate="no">PieSlice</a></span> { <span class="name">label</span>: <span class="string">&quot;Ford&quot;</span>; <span class="name">value</span>: <span class="number">8.6</span> }
+         <span class="type"><a href="qml-qtcharts-pieslice.html" translate="no">PieSlice</a></span> { <span class="name">label</span>: <span class="string">&quot;Skoda&quot;</span>; <span class="name">value</span>: <span class="number">8.2</span> }
+         <span class="type"><a href="qml-qtcharts-pieslice.html" translate="no">PieSlice</a></span> { <span class="name">label</span>: <span class="string">&quot;Volvo&quot;</span>; <span class="name">value</span>: <span class="number">6.8</span> }
+     }
+
+     <span class="name">Component</span>.onCompleted: {
+         <span class="comment">// You can also manipulate slices dynamically, like append a slice or set a slice exploded</span>
+         <span class="name">othersSlice</span> <span class="operator">=</span> <span class="name">pieSeries</span>.<span class="name">append</span>(<span class="string">&quot;Others&quot;</span>, <span class="number">52.0</span>);
+         <span class="name">pieSeries</span>.<span class="name">find</span>(<span class="string">&quot;Volkswagen&quot;</span>).<span class="name">exploded</span> <span class="operator">=</span> <span class="number">true</span>;
+     }
+ }
+
+ import QtQuick
+</pre>
+<p>You can combine different types of series in one chart.</p>
+<h3 id="line-and-spline-charts">Line and Spline Charts</h3>
+<p>Line and spline charts present data as a series of data points connected by lines. In a line chart, the data points are connected by straight lines, whereas in a spline chart they are connected by a spline. The spline is drawn by using <a href="../qtgui/qpainterpath.html" translate="no">QPainterPath</a>.</p>
+<p><img src="images/examples_linechart.png" alt="" /> <img src="images/examples_splinechart.png" alt="" /></p>
+<p>A line chart is implemented by using the <a href="qlineseries.html" translate="no">QLineSeries</a> class or the <a href="qml-qtcharts-lineseries.html" translate="no">LineSeries</a> QML type.</p>
+<p>A spline chart is implemented by using the <a href="qsplineseries.html" translate="no">QSplineSeries</a> class that inherits <a href="qlineseries.html" translate="no">QLineSeries</a> or the <a href="qml-qtcharts-splineseries.html" translate="no">SplineSeries</a> type that inherits <a href="qml-qtcharts-lineseries.html" translate="no">LineSeries</a>.</p>
+<p>For more information, see <a href="qtcharts-linechart-example.html" translate="no">Creating Line Charts</a> and <a href="qtcharts-splinechart-example.html" translate="no">Creating Spline Charts</a>. For an example of combining a line chart with a bar chart and using a common axis for both, see <a href="qtcharts-lineandbar-example.html" translate="no">Combining Line and BarChart</a>.</p>
+<h3 id="area-and-scatter-charts">Area and Scatter Charts</h3>
+<p>Area charts present data as an area bound by two lines, whereas scatter charts present data as a collection of points.</p>
+<p><img src="images/examples_areachart.png" alt="" /> <img src="images/examples_scatterchart.png" alt="" /></p>
+<p>An area chart is implemented by using the <a href="qareaseries.html" translate="no">QAreaSeries</a> class or the <a href="qml-qtcharts-areaseries.html" translate="no">AreaSeries</a> QML type. By default, the x-axis is used as one boundary and <a href="qlineseries.html" translate="no">QLineSeries</a> or <a href="qml-qtcharts-lineseries.html" translate="no">LineSeries</a> as the other. However, you can use <a href="qlineseries.html" translate="no">QLineSeries</a> or <a href="qml-qtcharts-lineseries.html" translate="no">LineSeries</a> as both boundaries.</p>
+<p>A scatter chart is implemented by using the <a href="qscatterseries.html" translate="no">QScatterSeries</a> class or the <a href="qml-qtcharts-scatterseries.html" translate="no">ScatterSeries</a> QML type.</p>
+<p>For more information, see <a href="qtcharts-areachart-example.html" translate="no">Creating Area Charts</a> and <a href="qtcharts-scatterchart-example.html" translate="no">Creating Scatter Charts</a>.</p>
+<h3 id="bar-charts">Bar Charts</h3>
+<p>A bar chart presents data as horizontal or vertical bars that are grouped by category. The <a href="qbarset.html" translate="no">QBarSet</a> class and the <a href="qml-qtcharts-barset.html" translate="no">BarSet</a> QML type represent one set of bars in a bar chart. The <a href="qabstractbarseries.html" translate="no">QAbstractBarSeries</a> class is an abstract parent class for all bar series classes, and the <a href="qml-qtcharts-abstractbarseries.html" translate="no">AbstractBarSeries</a> type is the parent type of bar series types. The series type determines how the data is presented.</p>
+<p>The <a href="qbarseries.html" translate="no">QBarSeries</a> class and the <a href="qml-qtcharts-barseries.html" translate="no">BarSeries</a> QML type present data as vertical bars grouped by category. Similarly, the <a href="qhorizontalbarseries.html" translate="no">QHorizontalBarSeries</a> class and the <a href="qml-qtcharts-horizontalbarseries.html" translate="no">HorizontalBarSeries</a> QML type present data as horizontal bars.</p>
+<p><img src="images/examples_barchart.png" alt="" /> <img src="images/examples_horizontalbarchart.png" alt="" /></p>
+<p>The <a href="qstackedbarseries.html" translate="no">QStackedBarSeries</a> class and the <a href="qml-qtcharts-stackedbarseries.html" translate="no">StackedBarSeries</a> type present a series of data as vertically stacked bars, with one bar per category. The corresponding horizontal class and type are <a href="qhorizontalstackedbarseries.html" translate="no">QHorizontalStackedBarSeries</a> and <a href="qml-qtcharts-horizontalstackedbarseries.html" translate="no">HorizontalStackedBarSeries</a>, respectively.</p>
+<p><img src="images/examples_stackedbarchart.png" alt="" /> <img src="images/examples_horizontalstackedbarchart.png" alt="" /></p>
+<p>The <a href="qpercentbarseries.html" translate="no">QPercentBarSeries</a> class and <a href="qml-qtcharts-percentbarseries.html" translate="no">PercentBarSeries</a> QML type present a series of categorized data as a percentage of each category. The corresponding horizontal class and type are <a href="qhorizontalpercentbarseries.html" translate="no">QHorizontalPercentBarSeries</a> and <a href="qml-qtcharts-horizontalpercentbarseries.html" translate="no">HorizontalPercentBarSeries</a>, respectively.</p>
+<p><img src="images/examples_percentbarchart.png" alt="" /> <img src="images/examples_horizontalpercentbarchart.png" alt="" /></p>
+<p>For more information, see <a href="qtcharts-barchart-example.html" translate="no">Creating Bar Charts</a>, <a href="qtcharts-horizontalstackedbarchart-example.html" translate="no">Creating Horizontal Stacked Bar Charts</a>, <a href="qtcharts-horizontalbarchart-example.html" translate="no">Creating Horizontal Bar Charts</a>, and <a href="qtcharts-horizontalpercentbarchart-example.html" translate="no">Creating Horizontal Percent Bar Charts</a>.</p>
+<h3 id="pie-charts">Pie Charts</h3>
+<p>Pie charts present data as a pie that consists of pie slices. The pie is implemented using the <a href="qpieseries.html" translate="no">QPieSeries</a> class or the <a href="qml-qtcharts-pieseries.html" translate="no">PieSeries</a> QML type and the pie slices are added using the <a href="qpieslice.html" translate="no">QPieSlice</a> class or the <a href="qml-qtcharts-pieslice.html" translate="no">PieSlice</a> QML type.</p>
+<p>The pie can be turned into a donut by specifying a hole size between 0.0 and 1.0&#x2e;</p>
+<p><img src="images/examples_piechart.png" alt="" /> <img src="images/examples_donutchart.png" alt="" /></p>
+<p>For more information, see <a href="qtcharts-chartsgallery-example.html" translate="no">Charts with Widgets Gallery</a>, <a href="qtcharts-donutbreakdown-example.html" translate="no">Creating a Donut Breakdown Chart</a>, and <a href="qtcharts-nesteddonuts-example.html" translate="no">Creating Nested Donut Charts</a>.</p>
+<h3 id="box-and-whiskers-charts">Box-and-Whiskers Charts</h3>
+<p>The box-and-whiskers charts present data as quartiles extended with whiskers that show the variability of the values. The items in box plot series are grouped by category, similarly to bar sets in bar series. For each box-and-whiskers item, the lower extreme, lower quartile, median, upper quartile, and upper extreme value are specified.</p>
+<p>A box-and-whiskers chart is implemented by using the <a href="qboxplotseries.html" translate="no">QBoxPlotSeries</a> and <a href="qboxset.html" translate="no">QBoxSet</a> classes or the <a href="qml-qtcharts-boxplotseries.html" translate="no">BoxPlotSeries</a> and <a href="qml-qtcharts-boxset.html" translate="no">BoxSet</a> QML types.</p>
+<p class="centerAlign"><img src="images/examples_boxplotchart.png" alt="" /></p><p>For more information, see <a href="qtcharts-boxplotchart-example.html" translate="no">Creating Box-and-Whiskers Charts</a>.</p>
+<h3 id="candlestick-charts">Candlestick Charts</h3>
+<p>Candlestick charts presents a series of data shown as candlesticks.</p>
+<p class="centerAlign"><img src="images/examples_candlestickchart.png" alt="" /></p><p>A candlestick chart is implemented by using the <a href="qcandlestickseries.html" translate="no">QCandlestickSeries</a> and <a href="qcandlestickset.html" translate="no">QCandlestickSet</a> classes or the <a href="qml-qtcharts-candlestickseries.html" translate="no">CandlestickSeries</a> and <a href="qml-qtcharts-candlestickset.html" translate="no">CandlestickSet</a> QML types.</p>
+<h3 id="polar-charts">Polar Charts</h3>
+<p>Polar charts present data in a circular graph, where the placement of data is based on the angle and distance from the center of the graph, the <i>pole</i>.</p>
+<p class="centerAlign"><img src="images/examples_polarchart.png" alt="" /></p><p>The <a href="qpolarchart.html" translate="no">QPolarChart</a> class is a specialization of the <a href="qchart.html" translate="no">QChart</a> class. It supports line, spline, area, and scatter series, as well as all the axis types supported by them. The axis can be used either as a radial or an angular axis. In QML, the corresponding type is <a href="qml-qtcharts-polarchartview.html" translate="no">PolarChartView</a>.</p>
+<p>For more information, see <a href="qtcharts-polarchart-example.html" translate="no">Creating Polar Charts</a> and <a href="qtcharts-qmlpolarchart-example.html" translate="no">Using Polar Charts with QML</a>.</p>
+<h2 id="axes">Axes</h2>
+<p>Qt Charts supports the following axis types:</p>
+<ul>
+<li>Value axis</li>
+<li>Category axis</li>
+<li>Bar category axis</li>
+<li>Date-time axis</li>
+<li>Logarithmic value axis</li>
+</ul>
+<p>An axis can be set up to show a line with tick marks, grid lines, and shades. The values on the axis are drawn at the positions of tick marks. All axis types are specializations of the <a href="qabstractaxis.html" translate="no">QAbstractAxis</a> class or the <a href="qml-qtcharts-abstractaxis.html" translate="no">AbstractAxis</a> QML type.</p>
+<p>A value axis adds real values to a chart's axis. It is implemented using the <a href="qvalueaxis.html" translate="no">QValueAxis</a> class or the <a href="qml-qtcharts-valueaxis.html" translate="no">ValueAxis</a> QML type.</p>
+<p>A category axis is implemented using the <a href="qcategoryaxis.html" translate="no">QCategoryAxis</a> class or the <a href="qml-qtcharts-categoryaxis.html" translate="no">CategoryAxis</a> QML type. It has named ranges and adjustable range widths.</p>
+<p>The bar category axis is similar to a category axis, but the range width is the same for all ranges. A bar category axis is implemented using the <a href="qbarcategoryaxis.html" translate="no">QBarCategoryAxis</a> class or the <a href="qml-qtcharts-barcategoryaxis.html" translate="no">BarCategoryAxis</a> QML type.</p>
+<p>A date-time axis adds dates and times to a chart's axis. It is implemented using the <a href="qdatetimeaxis.html" translate="no">QDateTimeAxis</a> class or the <a href="qml-qtcharts-datetimeaxis.html" translate="no">DateTimeAxis</a> QML type.</p>
+<p>A logarithmic axis adds a logarithmic scale to a chart's axis. A logarithmic scale is a nonlinear scale that is based on orders of magnitude, so that each tick mark on the axis is the previous tick mark multiplied by a value. A logarithmic axis is implemented using the <a href="qlogvalueaxis.html" translate="no">QLogValueAxis</a> class or the <a href="qml-qtcharts-logvalueaxis.html" translate="no">LogValueAxis</a> QML type.</p>
+<p>Multiple axes can be defined for one chart. The axes can be placed down, up, left, or right of the chart. Further, the axes can be of different types. However, mixing axis types that would result in different domains is not supported, such as specifying <a href="qvalueaxis.html" translate="no">QValueAxis</a> and <a href="qlogvalueaxis.html" translate="no">QLogValueAxis</a> on the same orientation.</p>
+<p>For more information, see <a href="qtcharts-datetimeaxis-example.html" translate="no">Line Charts with Date and Time Axes</a>, <a href="qtcharts-logvalueaxis-example.html" translate="no">Using Logarithmic Value Axes</a>, <a href="qtcharts-multiaxis-example.html" translate="no">Using Multiple Axes</a>, and <a href="qtcharts-qmlaxes-example.html" translate="no">Using Axes with QML</a>.</p>
+<h2 id="legend">Legend</h2>
+<p>A legend is a graphical object that displays the legend of a chart. Legend objects cannot be created or deleted, but they can be referenced via the <a href="qchart.html" translate="no">QChart</a> class or the <a href="qml-qtcharts-chartview.html" translate="no">ChartView</a> QML type. The legend state is updated by <a href="qchart.html" translate="no">QChart</a> or <a href="qml-qtcharts-chartview.html" translate="no">ChartView</a> when series change.</p>
+<p>A legend can be positioned below or above the chart, as well as to the left or right of it. By default, the legend is attached to the chart view, but it can be detached to a separate graphics item that can be moved around freely.</p>
+<p>It is possible to hide either individual markers from the legend or the whole legend.</p>
+<p>Legend markers can be modified by using the <a href="qlegendmarker.html" translate="no">QLegendMarker</a> base class and the subclasses for each series type: <a href="qarealegendmarker.html" translate="no">QAreaLegendMarker</a>, <a href="qbarlegendmarker.html" translate="no">QBarLegendMarker</a>, <a href="qboxplotlegendmarker.html" translate="no">QBoxPlotLegendMarker</a>, <a href="qcandlesticklegendmarker.html" translate="no">QCandlestickLegendMarker</a>, and <a href="qxylegendmarker.html" translate="no">QXYLegendMarker</a>.</p>
+<p>In QML, legend markers can be modified by creating custom legends, as illustrated by the <a href="qtcharts-qmlcustomlegend-example.html" translate="no">Customizing Legends</a> example.</p>
+<h2 id="interacting-with-charts">Interacting with Charts</h2>
+<p>End users can interact with charts by dynamically adding values to them, drilling down into data, zooming into and out of charts, scrolling charts, and clicking items in charts or hovering the mouse over them.</p>
+<h3 id="drawing-data-dynamically">Drawing Data Dynamically</h3>
+<p>It is possible to add data to charts dynamically and to make the chart view scroll automatically to display the new data.</p>
+<p>For more information, see <a href="qtcharts-splinechart-example.html" translate="no">Creating Spline Charts</a>.</p>
+<h3 id="drilling-down-into-data">Drilling Down into Data</h3>
+<p>Drilldown effects can be implemented to bar or pie charts, for example. When users select an item in the chart, a more detailed view of the item is displayed. This is implemented by deleting the first series and adding another one.</p>
+<p>For more information, see <a href="stackedbarchartdrilldown.html" translate="no">Implementing Drilldown</a>.</p>
+<h3 id="zooming-and-scrolling">Zooming and Scrolling</h3>
+<p>Users can use the keyboard for zooming and scrolling. They can scroll charts by using the arrow keys and zoom into or out of charts by using the plus and minus keys. In addition, <a href="../qtwidgets/qrubberband.html" translate="no">QRubberBand</a> can be used for selecting the area to zoom into.</p>
+<p>On touch devices, gestures can be used for panning and zooming.</p>
+<p>For more information, see <a href="qtcharts-zoomlinechart-example.html" translate="no">Zoom Line Example</a>.</p>
+<h3 id="clicking-and-hovering">Clicking and Hovering</h3>
+<p>You can connect slots to signals emitted when end users click items in charts or hover the mouse over them. This enables you to add elements, such as callouts, to the charts.</p>
+<p>For more information, see <a href="qtcharts-callout-example.html" translate="no">Drawing a Callout on Top of a Chart</a>.</p>
+<h2 id="themes">Themes</h2>
+<p>A theme is a built-in collection of UI style related settings applied to all the visual elements of a chart, such as colors, pens, brushes, and fonts of series, as well as axes, title, and legend.</p>
+<p class="centerAlign"><img src="images/examples_chartthemes_blue_cerulean.png" alt="" /></p><p>Qt Charts comes with the following predefined themes:</p>
+<ul>
+<li>Light theme, which is the default theme</li>
+<li>Cerulean blue theme</li>
+<li>Dark theme</li>
+<li>Sand brown theme</li>
+<li>Natural color system (NCS) blue theme</li>
+<li>High contrast theme</li>
+<li>Icy blue theme</li>
+<li>Qt theme</li>
+</ul>
+<p>The themes can be customized by changing the colors, pens, brushes, and fonts. New themes can be added by modifying the Qt Charts source code.</p>
+<div class="admonition note">
+<p><b>Note: </b>Changing the theme will overwrite all customization previously applied to the series.</p>
+</div>
+<p>For more information, see the <a href="qtcharts-chartthemes-example.html" translate="no">Creating Charts With Themes</a>.</p>
+</div>
+<!-- @@@qtcharts-overview.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-quickball.qdoc -->
+  <meta name="description" content="Demonstrates how to create a simple game using Quick3D.">
+  <title>Qt Quick 3D - Quick Ball Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Quick Ball Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Quick Ball Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ pragma ComponentBehavior: Bound
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick.Particles
+ import QtQuick3D.Particles3D
+ import QtQuick.Controls
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">id</span>: <span class="name">mainWindow</span>
+
+     <span class="comment">// Scaling helpper</span>
+     readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">px</span>: <span class="number">0.2</span> <span class="operator">+</span> <span class="name">Math</span>.<span class="name">min</span>(<span class="name">width</span>, <span class="name">height</span>) <span class="operator">/</span> <span class="number">800</span>
+     <span class="comment">// This is false until the first game has started</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">playingStarted</span>: <span class="number">false</span>
+     <span class="comment">// This is true whenever game is on</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">gameOn</span>: <span class="number">false</span>
+     <span class="comment">// Sizes of our 3D models</span>
+     readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">ballSize</span>: <span class="number">40</span>
+     readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">targetSize</span>: <span class="number">120</span>
+     <span class="comment">// Playing time in seconds</span>
+     readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">gameTime</span>: <span class="number">60</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">currentTime</span>: <span class="number">0</span>
+     <span class="comment">// Amount of balls per game</span>
+     readonly property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">gameBalls</span>: <span class="number">20</span>
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">currentBalls</span>: <span class="number">0</span>
+     <span class="comment">// Scores</span>
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">score</span>: <span class="number">0</span>
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">timeBonus</span>: <span class="number">0</span>
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">ballsBonus</span>: <span class="number">0</span>
+
+     <span class="name">width</span>: <span class="number">800</span>
+     <span class="name">height</span>: <span class="number">600</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+     <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Quick3D Quick Ball&quot;</span>)
+     <span class="name">color</span>: <span class="string">&quot;#000000&quot;</span>
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">view3D</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="keyword">function </span><span class="name">createLevel1</span>() {
+             <span class="comment">// Simple level of target items</span>
+             var level1 = [{ &quot;x&quot;: <span class="number">0</span>, &quot;y&quot;: <span class="number">100</span>, &quot;z&quot;: -<span class="number">100</span>, &quot;points&quot;: <span class="number">10</span> },
+                           { &quot;x&quot;: -<span class="number">300</span>, &quot;y&quot;: <span class="number">100</span>, &quot;z&quot;: -<span class="number">400</span>, &quot;points&quot;: <span class="number">10</span> },
+                           { &quot;x&quot;: <span class="number">300</span>, &quot;y&quot;: <span class="number">100</span>, &quot;z&quot;: -<span class="number">400</span>, &quot;points&quot;: <span class="number">10</span> },
+                           { &quot;x&quot;: -<span class="number">200</span>, &quot;y&quot;: <span class="number">400</span>, &quot;z&quot;: -<span class="number">600</span>, &quot;points&quot;: <span class="number">20</span> },
+                           { &quot;x&quot;: <span class="number">0</span>, &quot;y&quot;: <span class="number">400</span>, &quot;z&quot;: -<span class="number">600</span>, &quot;points&quot;: <span class="number">20</span> },
+                           { &quot;x&quot;: <span class="number">200</span>, &quot;y&quot;: <span class="number">400</span>, &quot;z&quot;: -<span class="number">600</span>, &quot;points&quot;: <span class="number">20</span> },
+                           { &quot;x&quot;: <span class="number">0</span>, &quot;y&quot;: <span class="number">700</span>, &quot;z&quot;: -<span class="number">600</span>, &quot;points&quot;: <span class="number">30</span> }];
+             <span class="name">targetsNode</span>.<span class="name">addTargets</span>(<span class="name">level1</span>);
+         }
+
+         <span class="keyword">function </span><span class="name">startGame</span>() {
+             <span class="name">ballModel</span>.<span class="name">resetBall</span>();
+             <span class="name">targetsNode</span>.<span class="name">resetTargets</span>();
+             <span class="name">createLevel1</span>();
+             <span class="name">score</span> <span class="operator">=</span> <span class="name">timeBonus</span> <span class="operator">=</span> <span class="name">ballsBonus</span> <span class="operator">=</span> <span class="number">0</span>;
+             <span class="name">currentBalls</span> <span class="operator">=</span> <span class="name">gameBalls</span>;
+             <span class="name">gameOn</span> <span class="operator">=</span> <span class="number">true</span>;
+             <span class="name">playingStarted</span> <span class="operator">=</span> <span class="number">true</span>;
+         }
+
+         <span class="keyword">function </span><span class="name">endGame</span>() {
+             <span class="keyword">if</span> (<span class="name">targetsNode</span>.<span class="name">currentTargets</span> <span class="operator">==</span> <span class="number">0</span>) {
+                 <span class="comment">// If we managed to get all targets down -&gt; bonus points!</span>
+                 <span class="name">timeBonus</span> <span class="operator">=</span> <span class="name">mainWindow</span>.<span class="name">currentTime</span>;
+                 <span class="name">ballsBonus</span> <span class="operator">=</span> <span class="name">currentBalls</span> <span class="operator">*</span> <span class="number">10</span>;
+             }
+             <span class="name">gameOn</span> <span class="operator">=</span> <span class="number">false</span>;
+         }
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">antialiasingMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">MSAA</span>
+             <span class="name">antialiasingQuality</span>: <span class="name">SceneEnvironment</span>.<span class="name">High</span>
+         }
+
+         <span class="name">camera</span>: <span class="name">viewCamera</span>
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">id</span>: <span class="name">viewCamera</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">200</span>, <span class="number">800</span>);
+
+             <span class="comment">// Rotate camera a bit</span>
+             SequentialAnimation on <span class="name">eulerRotation</span>.y {
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">to</span>: <span class="number">2</span>
+                     <span class="name">duration</span>: <span class="number">2000</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">to</span>: -<span class="number">2</span>
+                     <span class="name">duration</span>: <span class="number">2000</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-pointlight.html" translate="no">PointLight</a></span> {
+             <span class="name">x</span>: <span class="number">400</span>
+             <span class="name">y</span>: <span class="number">1200</span>
+             <span class="name">castsShadow</span>: <span class="number">true</span>
+             <span class="name">shadowMapQuality</span>: <span class="name">Light</span>.<span class="name">ShadowMapQualityHigh</span>
+             <span class="name">shadowFactor</span>: <span class="number">50</span>
+             <span class="name">quadraticFade</span>: <span class="number">2</span>
+             <span class="name">ambientColor</span>: <span class="string">&quot;#202020&quot;</span>
+             <span class="name">brightness</span>: <span class="name">mainWindow</span>.<span class="name">gameOn</span> ? <span class="number">200</span> : <span class="number">40</span>
+             Behavior on <span class="name">brightness</span> {
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">duration</span>: <span class="number">1000</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                 }
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">enabled</span>: <span class="name">mainWindow</span>.<span class="name">gameOn</span> <span class="operator">&amp;&amp;</span> !<span class="name">ballModel</span>.<span class="name">ballMoving</span>
+             <span class="name">onPressed</span>: {
+                 <span class="name">ballModel</span>.<span class="name">moveBall</span>(<span class="name">mouseX</span>, <span class="name">mouseY</span>);
+             }
+             <span class="name">onPositionChanged</span>: {
+                 <span class="name">ballModel</span>.<span class="name">moveBall</span>(<span class="name">mouseX</span>, <span class="name">mouseY</span>);
+             }
+             <span class="name">onReleased</span>: {
+                 <span class="name">ballModel</span>.<span class="name">throwBall</span>();
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">id</span>: <span class="name">ballModel</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">directionX</span>: <span class="number">0</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">directionY</span>: <span class="number">0</span>
+             <span class="comment">// How many ms the ball flies</span>
+             readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">speed</span>: <span class="number">2000</span>
+             readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">ballScale</span>: <span class="name">mainWindow</span>.<span class="name">ballSize</span> <span class="operator">/</span> <span class="number">100</span>
+             property <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span> <span class="name">moves</span>: []
+             readonly property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">maxMoves</span>: <span class="number">5</span>
+             readonly property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">ballMoving</span>: <span class="name">ballAnimation</span>.<span class="name">running</span>
+
+             <span class="name">source</span>: <span class="string">&quot;#Sphere&quot;</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">ballScale</span>, <span class="name">ballScale</span>, <span class="name">ballScale</span>)
+
+             <span class="name">materials</span>: <span class="name">DefaultMaterial</span> {
+                 <span class="name">diffuseMap</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/ball.jpg&quot;</span>
+                 }
+                 <span class="name">normalMap</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/ball_n.jpg&quot;</span>
+                 }
+                 <span class="name">bumpAmount</span>: <span class="number">1.0</span>
+             }
+
+             <span class="keyword">function </span><span class="name">resetBall</span>() {
+                 <span class="name">moves</span> <span class="operator">=</span> [];
+                 <span class="name">x</span> <span class="operator">=</span> <span class="number">0</span>;
+                 <span class="name">y</span> <span class="operator">=</span> <span class="name">mainWindow</span>.<span class="name">ballSize</span><span class="operator">/</span><span class="number">2</span>;
+                 <span class="name">z</span> <span class="operator">=</span> <span class="number">400</span>;
+             }
+
+             <span class="keyword">function </span><span class="name">moveBall</span>(posX, posY) {
+                 var pos = <span class="name">view3D</span>.<span class="name">mapTo3DScene</span>(<span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">posX</span>, <span class="name">posY</span>, <span class="name">ballModel</span>.<span class="name">z</span> <span class="operator">+</span> <span class="name">mainWindow</span>.<span class="name">ballSize</span>));
+                 <span class="name">pos</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">max</span>(<span class="name">mainWindow</span>.<span class="name">ballSize</span> <span class="operator">/</span> <span class="number">2</span>, <span class="name">pos</span>.<span class="name">y</span>);
+                 var point = {&quot;x&quot;: <span class="name">pos</span>.<span class="name">x</span>, &quot;y&quot;: <span class="name">pos</span>.<span class="name">y</span> };
+                 <span class="name">moves</span>.<span class="name">push</span>(<span class="name">point</span>);
+                 <span class="keyword">if</span> (<span class="name">moves</span>.<span class="name">length</span> <span class="operator">&gt;</span> <span class="name">maxMoves</span>) <span class="name">moves</span>.<span class="name">shift</span>();
+                 <span class="comment">// Apply position into ball model</span>
+                 <span class="name">ballModel</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">pos</span>.<span class="name">x</span>;
+                 <span class="name">ballModel</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">pos</span>.<span class="name">y</span>;
+             }
+
+             <span class="keyword">function </span><span class="name">throwBall</span>() {
+                 mainWindow.currentBalls--;
+                 var moveX = <span class="number">0</span>;
+                 var moveY = <span class="number">0</span>;
+                 <span class="keyword">if</span> (<span class="name">moves</span>.<span class="name">length</span> <span class="operator">&gt;=</span> <span class="number">2</span>) {
+                     var first = <span class="name">moves</span>.<span class="name">shift</span>();
+                     var last = <span class="name">moves</span>.<span class="name">pop</span>();
+                     <span class="name">moveX</span> <span class="operator">=</span> <span class="name">last</span>.<span class="name">x</span> <span class="operator">-</span> <span class="name">first</span>.<span class="name">x</span>;
+                     <span class="name">moveY</span> <span class="operator">=</span> <span class="name">last</span>.<span class="name">y</span> <span class="operator">-</span> <span class="name">first</span>.<span class="name">y</span>;
+                     <span class="keyword">if</span> (<span class="name">moveY</span> <span class="operator">&lt;</span> <span class="number">0</span>) <span class="name">moveY</span> <span class="operator">=</span> <span class="number">0</span>;
+                 }
+                 <span class="name">directionX</span> <span class="operator">=</span> <span class="name">moveX</span> <span class="operator">*</span> <span class="number">20</span>;
+                 <span class="name">directionY</span> <span class="operator">=</span> <span class="name">moveY</span> <span class="operator">*</span> <span class="number">4</span>;
+                 <span class="name">ballAnimation</span>.<span class="name">start</span>();
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-parallelanimation.html" translate="no">ParallelAnimation</a></span> {
+                 <span class="name">id</span>: <span class="name">ballAnimation</span>
+                 <span class="name">running</span>: <span class="number">false</span>
+                 <span class="comment">// Move forward</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">target</span>: <span class="name">ballModel</span>
+                     <span class="name">property</span>: <span class="string">&quot;z&quot;</span>
+                     <span class="name">duration</span>: <span class="name">ballModel</span>.<span class="name">speed</span>
+                     <span class="name">to</span>: -<span class="name">ballModel</span>.<span class="name">directionY</span> <span class="operator">*</span> <span class="number">5</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">OutQuad</span>
+                 }
+                 <span class="comment">// Move up &amp; down with a bounce</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">target</span>: <span class="name">ballModel</span>
+                         <span class="name">property</span>: <span class="string">&quot;y&quot;</span>
+                         <span class="name">duration</span>: <span class="name">ballModel</span>.<span class="name">speed</span> <span class="operator">*</span> (<span class="number">1</span> <span class="operator">/</span> <span class="number">3</span>)
+                         <span class="name">to</span>: <span class="name">ballModel</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">ballModel</span>.<span class="name">directionY</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">OutQuad</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">target</span>: <span class="name">ballModel</span>
+                         <span class="name">property</span>: <span class="string">&quot;y&quot;</span>
+                         <span class="name">duration</span>: <span class="name">ballModel</span>.<span class="name">speed</span> <span class="operator">*</span> (<span class="number">2</span> <span class="operator">/</span> <span class="number">3</span>)
+                         <span class="name">to</span>: <span class="name">mainWindow</span>.<span class="name">ballSize</span> <span class="operator">/</span> <span class="number">4</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">OutBounce</span>
+                     }
+                 }
+                 <span class="comment">// Move sideways</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">target</span>: <span class="name">ballModel</span>
+                     <span class="name">property</span>: <span class="string">&quot;x&quot;</span>
+                     <span class="name">duration</span>: <span class="name">ballModel</span>.<span class="name">speed</span>
+                     <span class="name">to</span>: <span class="name">ballModel</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">ballModel</span>.<span class="name">directionX</span>
+                 }
+
+                 <span class="name">onFinished</span>: {
+                     <span class="keyword">if</span> (<span class="name">mainWindow</span>.<span class="name">currentBalls</span> <span class="operator">&lt;=</span> <span class="number">0</span>)
+                         <span class="name">view3D</span>.<span class="name">endGame</span>();
+                     <span class="name">ballModel</span>.<span class="name">resetBall</span>();
+                 }
+             }
+
+             NumberAnimation on <span class="name">eulerRotation</span>.z {
+                 <span class="name">running</span>: <span class="name">ballModel</span>.<span class="name">ballMoving</span>
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="name">from</span>: <span class="name">ballModel</span>.<span class="name">directionX</span> <span class="operator">&lt;</span> <span class="number">0</span> ? <span class="number">0</span> : <span class="number">720</span>
+                 <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">duration</span>: <span class="number">10000</span> <span class="operator">/</span> (<span class="number">2</span> <span class="operator">+</span> <span class="name">Math</span>.<span class="name">abs</span>(<span class="name">ballModel</span>.<span class="name">directionX</span> <span class="operator">*</span> <span class="number">0.05</span>))
+             }
+
+             <span class="name">onZChanged</span>: {
+                 <span class="comment">// Loop through target items and detect collisions</span>
+                 var hitMargin = <span class="name">mainWindow</span>.<span class="name">ballSize</span> <span class="operator">/</span> <span class="number">2</span> <span class="operator">+</span> <span class="name">mainWindow</span>.<span class="name">targetSize</span> <span class="operator">/</span> <span class="number">2</span>;
+                 <span class="keyword">for</span> (var i = 0; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">targetsNode</span>.<span class="name">targets</span>.<span class="name">length</span>; ++<span class="name">i</span>) {
+                     var target = <span class="name">targetsNode</span>.<span class="name">targets</span>[<span class="name">i</span>];
+                     var targetPos = <span class="name">target</span>.<span class="name">scenePosition</span>;
+                     var hit = <span class="name">ballModel</span>.<span class="name">scenePosition</span>.<span class="name">fuzzyEquals</span>(<span class="name">targetPos</span>, <span class="name">hitMargin</span>);
+                     <span class="keyword">if</span> (<span class="name">hit</span>) {
+                         <span class="name">target</span>.<span class="name">hit</span>();
+                         <span class="keyword">if</span> (<span class="name">targetsNode</span>.<span class="name">currentTargets</span> <span class="operator">&lt;=</span> <span class="number">0</span>)
+                             <span class="name">view3D</span>.<span class="name">endGame</span>();
+                     }
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">targetsNode</span>
+
+             property <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span> <span class="name">targets</span>: []
+             property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">currentTargets</span>: <span class="number">0</span>
+
+             <span class="keyword">function </span><span class="name">addTargets</span>(items) {
+                 <span class="name">items</span>.<span class="name">forEach</span>(<span class="keyword">function </span>(item) {
+                     let instance = <span class="name">targetComponent</span>.<span class="name">createObject</span>(
+                             <span class="name">targetsNode</span>, { &quot;x&quot;: <span class="name">item</span>.<span class="name">x</span>, &quot;startPosY&quot;: <span class="name">item</span>.<span class="name">y</span>, &quot;z&quot;: <span class="name">item</span>.<span class="name">z</span>, &quot;points&quot;: <span class="name">item</span>.<span class="name">points</span>});
+                     <span class="name">targets</span>.<span class="name">push</span>(<span class="name">instance</span>);
+                 });
+                 <span class="name">currentTargets</span> <span class="operator">=</span> <span class="name">targets</span>.<span class="name">length</span>;
+             }
+
+             <span class="keyword">function </span><span class="name">removeTarget</span>(item) {
+                 var index = <span class="name">targets</span>.<span class="name">indexOf</span>(<span class="name">item</span>);
+                 <span class="name">targets</span>.<span class="name">splice</span>(<span class="name">index</span>, <span class="number">1</span>);
+                 <span class="name">currentTargets</span> <span class="operator">=</span> <span class="name">targets</span>.<span class="name">length</span>;
+             }
+
+             <span class="keyword">function </span><span class="name">resetTargets</span>() {
+                 <span class="keyword">while</span> (<span class="name">targets</span>.<span class="name">length</span> <span class="operator">&gt;</span> <span class="number">0</span>)
+                     <span class="name">targets</span>.<span class="name">pop</span>().<span class="name">destroy</span>();
+                 <span class="name">currentTargets</span> <span class="operator">=</span> <span class="name">targets</span>.<span class="name">length</span>;
+             }
+         }
+
+         <span class="type"><a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a></span> {
+             <span class="name">id</span>: <span class="name">targetComponent</span>
+             <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                 <span class="name">id</span>: <span class="name">targetNode</span>
+
+                 property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">points</span>: <span class="number">0</span>
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">hide</span>: <span class="number">0</span>
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">startPosY</span>: <span class="number">0</span>
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">posY</span>: <span class="number">0</span>
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">pointsOpacity</span>: <span class="number">0</span>
+
+                 <span class="keyword">function </span><span class="name">hit</span>() {
+                     <span class="name">targetsNode</span>.<span class="name">removeTarget</span>(this);
+                     <span class="name">mainWindow</span>.<span class="name">score</span> <span class="operator">+=</span> <span class="name">points</span>;
+                     <span class="name">hitAnimation</span>.<span class="name">start</span>();
+                     var burstPos = <span class="name">targetNode</span>.<span class="name">mapPositionToScene</span>(<span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>));
+                     <span class="name">hitParticleEmitter</span>.<span class="name">burst</span>(<span class="number">100</span>, <span class="number">200</span>, <span class="name">burstPos</span>);
+                 }
+
+                 <span class="name">y</span>: <span class="name">startPosY</span> <span class="operator">+</span> <span class="name">posY</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+                     <span class="name">running</span>: <span class="name">mainWindow</span>.<span class="name">gameOn</span> <span class="operator">&amp;&amp;</span> !<span class="name">hitAnimation</span>.<span class="name">running</span>
+                     <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">target</span>: <span class="name">targetNode</span>
+                         <span class="name">property</span>: <span class="string">&quot;posY&quot;</span>
+                         <span class="name">from</span>: <span class="number">0</span>
+                         <span class="name">to</span>: <span class="number">150</span>
+                         <span class="name">duration</span>: <span class="number">3000</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">target</span>: <span class="name">targetNode</span>
+                         <span class="name">property</span>: <span class="string">&quot;posY&quot;</span>
+                         <span class="name">to</span>: <span class="number">0</span>
+                         <span class="name">duration</span>: <span class="number">1500</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                     }
+                 }
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+                     <span class="name">id</span>: <span class="name">hitAnimation</span>
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">target</span>: <span class="name">targetNode</span>
+                         <span class="name">property</span>: <span class="string">&quot;hide&quot;</span>
+                         <span class="name">to</span>: <span class="number">1</span>
+                         <span class="name">duration</span>: <span class="number">800</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">target</span>: <span class="name">targetNode</span>
+                         <span class="name">property</span>: <span class="string">&quot;pointsOpacity&quot;</span>
+                         <span class="name">to</span>: <span class="number">1</span>
+                         <span class="name">duration</span>: <span class="number">1000</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                         <span class="name">target</span>: <span class="name">targetNode</span>
+                         <span class="name">property</span>: <span class="string">&quot;pointsOpacity&quot;</span>
+                         <span class="name">to</span>: <span class="number">0</span>
+                         <span class="name">duration</span>: <span class="number">200</span>
+                         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-scriptaction.html" translate="no">ScriptAction</a></span> {
+                         <span class="name">script</span>: <span class="name">targetNode</span>.<span class="name">destroy</span>();
+                     }
+                 }
+
+                 <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                     <span class="name">id</span>: <span class="name">targetModel</span>
+
+                     readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">targetScale</span>: (<span class="number">1</span> <span class="operator">+</span> <span class="name">targetNode</span>.<span class="name">hide</span>) <span class="operator">*</span> (<span class="name">mainWindow</span>.<span class="name">targetSize</span> <span class="operator">/</span> <span class="number">100</span>)
+
+                     <span class="name">source</span>: <span class="string">&quot;#Cube&quot;</span>
+                     <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">targetScale</span>, <span class="name">targetScale</span>, <span class="name">targetScale</span>)
+                     <span class="name">opacity</span>: <span class="number">0.99</span> <span class="operator">-</span> <span class="name">targetNode</span>.<span class="name">hide</span> <span class="operator">*</span> <span class="number">2</span>
+                     <span class="name">materials</span>: <span class="name">DefaultMaterial</span> {
+                         <span class="name">diffuseMap</span>: <span class="name">Texture</span> {
+                             <span class="name">source</span>: <span class="string">&quot;images/qt_logo.jpg&quot;</span>
+                         }
+                         <span class="name">normalMap</span>: <span class="name">Texture</span> {
+                             <span class="name">source</span>: <span class="string">&quot;images/qt_logo_n.jpg&quot;</span>
+                         }
+                         <span class="name">bumpAmount</span>: <span class="number">1.0</span>
+                     }
+                     Vector3dAnimation on <span class="name">eulerRotation</span> {
+                         <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                         <span class="name">duration</span>: <span class="number">5000</span>
+                         <span class="name">from</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+                         <span class="name">to</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">360</span>, <span class="number">360</span>, <span class="number">360</span>)
+                     }
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                     <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+                     <span class="name">scale</span>: <span class="number">1</span> <span class="operator">+</span> <span class="name">targetNode</span>.<span class="name">pointsOpacity</span>
+                     <span class="name">opacity</span>: <span class="name">targetNode</span>.<span class="name">pointsOpacity</span>
+                     <span class="name">text</span>: <span class="name">targetNode</span>.<span class="name">points</span>
+                     <span class="name">font</span>.pixelSize: <span class="number">60</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+                     <span class="name">color</span>: <span class="string">&quot;#808000&quot;</span>
+                     <span class="name">style</span>: <span class="name">Text</span>.<span class="name">Outline</span>
+                     <span class="name">styleColor</span>: <span class="string">&quot;#f0f000&quot;</span>
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">50</span>, <span class="number">50</span>, <span class="number">1</span>)
+             <span class="name">eulerRotation</span>.x: -<span class="number">90</span>
+             <span class="name">materials</span>: <span class="name">DefaultMaterial</span> {
+                 <span class="name">diffuseMap</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/grass.jpg&quot;</span>
+                     <span class="name">tilingModeHorizontal</span>: <span class="name">Texture</span>.<span class="name">Repeat</span>
+                     <span class="name">tilingModeVertical</span>: <span class="name">Texture</span>.<span class="name">Repeat</span>
+                     <span class="name">scaleU</span>: <span class="number">25.0</span>
+                     <span class="name">scaleV</span>: <span class="number">25.0</span>
+                 }
+                 <span class="name">normalMap</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/grass_n.jpg&quot;</span>
+                 }
+                 <span class="name">bumpAmount</span>: <span class="number">0.6</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">id</span>: <span class="name">sky</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">scaleX</span>: <span class="number">100</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">scaleY</span>: <span class="number">20</span>
+             <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">sky</span>.<span class="name">scaleX</span>, <span class="name">sky</span>.<span class="name">scaleY</span>, <span class="number">1</span>)
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">960</span>, -<span class="number">2000</span>)
+             <span class="comment">// We don't want shadows casted into sky</span>
+             <span class="name">receivesShadows</span>: <span class="number">false</span>
+             <span class="name">materials</span>: <span class="name">DefaultMaterial</span> {
+                 <span class="name">diffuseMap</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/sky.jpg&quot;</span>
+                 }
+             }
+             <span class="comment">// Star particles</span>
+             <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+                 <span class="name">z</span>: <span class="number">500</span>
+                 <span class="name">y</span>: <span class="number">30</span>
+                 <span class="comment">// Stars are far away, scale up to half the resolution</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">2</span> <span class="operator">/</span> <span class="name">sky</span>.<span class="name">scaleX</span>, <span class="number">2</span> <span class="operator">/</span> <span class="name">sky</span>.<span class="name">scaleY</span>, <span class="number">1</span>)
+                 <span class="type"><a href="../qtquick/qml-qtquick-particles-particlesystem.html" translate="no">ParticleSystem</a></span> {
+                     <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+                     <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+                     <span class="name">width</span>: <span class="number">3000</span>
+                     <span class="name">height</span>: <span class="number">400</span>
+                     <span class="type"><a href="../qtquick/qml-qtquick-particles-imageparticle.html" translate="no">ImageParticle</a></span> {
+                         <span class="name">source</span>: <span class="string">&quot;qrc:///particleresources/star.png&quot;</span>
+                         <span class="name">rotationVariation</span>: <span class="number">360</span>
+                         <span class="name">color</span>: <span class="string">&quot;#ffffa0&quot;</span>
+                         <span class="name">colorVariation</span>: <span class="number">0.1</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-particles-emitter.html" translate="no">Emitter</a></span> {
+                         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                         <span class="name">emitRate</span>: <span class="number">4</span>
+                         <span class="name">lifeSpan</span>: <span class="number">6000</span>
+                         <span class="name">lifeSpanVariation</span>: <span class="number">4000</span>
+                         <span class="name">size</span>: <span class="number">30</span>
+                         <span class="name">sizeVariation</span>: <span class="number">20</span>
+                     }
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-particles3d-particlesystem3d.html" translate="no">ParticleSystem3D</a></span> {
+             <span class="name">id</span>: <span class="name">psystem</span>
+             <span class="type"><a href="qml-qtquick3d-particles3d-spriteparticle3d.html" translate="no">SpriteParticle3D</a></span> {
+                 <span class="name">id</span>: <span class="name">sprite</span>
+                 <span class="name">sprite</span>: <span class="name">Texture</span> {
+                     <span class="name">source</span>: <span class="string">&quot;images/particle.png&quot;</span>
+                 }
+                 <span class="name">color</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>)
+                 <span class="name">colorVariation</span>: <span class="name">Qt</span>.<span class="name">vector4d</span>(<span class="number">0.4</span>, <span class="number">0.6</span>, <span class="number">0.0</span>, <span class="number">0.0</span>)
+                 <span class="name">unifiedColorVariation</span>: <span class="number">true</span>
+                 <span class="name">maxAmount</span>: <span class="number">200</span>
+             }
+             <span class="type"><a href="qml-qtquick3d-particles3d-particleemitter3d.html" translate="no">ParticleEmitter3D</a></span> {
+                 <span class="name">id</span>: <span class="name">hitParticleEmitter</span>
+                 <span class="name">particle</span>: <span class="name">sprite</span>
+                 <span class="name">particleScale</span>: <span class="number">4.0</span>
+                 <span class="name">particleScaleVariation</span>: <span class="number">2.0</span>
+                 <span class="name">particleRotationVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">180</span>)
+                 <span class="name">particleRotationVelocityVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">250</span>)
+                 <span class="name">velocity</span>: <span class="name">VectorDirection3D</span> {
+                     <span class="name">direction</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">300</span>, <span class="number">0</span>)
+                     <span class="name">directionVariation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">200</span>, <span class="number">150</span>, <span class="number">100</span>)
+                 }
+                 <span class="name">lifeSpan</span>: <span class="number">800</span>
+                 <span class="name">lifeSpanVariation</span>: <span class="number">200</span>
+                 <span class="name">depthBias</span>: <span class="number">100</span>
+             }
+             <span class="type"><a href="qml-qtquick3d-particles3d-gravity3d.html" translate="no">Gravity3D</a></span> {
+                 <span class="name">magnitude</span>: <span class="number">600</span>
+             }
+         }
+     }
+
+     <span class="comment">// Game time counter</span>
+     <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+         <span class="name">target</span>: <span class="name">mainWindow</span>
+         <span class="name">property</span>: <span class="string">&quot;currentTime&quot;</span>
+         <span class="name">running</span>: <span class="name">mainWindow</span>.<span class="name">gameOn</span>
+         <span class="name">duration</span>: <span class="name">mainWindow</span>.<span class="name">gameTime</span> <span class="operator">*</span> <span class="number">1000</span>
+         <span class="name">from</span>: <span class="name">mainWindow</span>.<span class="name">gameTime</span>
+         <span class="name">to</span>: <span class="number">0</span>
+         <span class="name">onFinished</span>: {
+             <span class="name">view3D</span>.<span class="name">endGame</span>();
+         }
+     }
+
+     <span class="comment">// Show time, balls and score</span>
+     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+         <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+         <span class="name">height</span>: <span class="number">60</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+             <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+             <span class="name">anchors</span>.leftMargin: <span class="number">20</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">font</span>.pixelSize: <span class="number">26</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+             <span class="name">style</span>: <span class="name">Text</span>.<span class="name">Outline</span>
+             <span class="name">styleColor</span>: <span class="string">&quot;#000000&quot;</span>
+             <span class="name">text</span>: <span class="name">mainWindow</span>.<span class="name">currentTime</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+             <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+             <span class="name">anchors</span>.verticalCenterOffset: <span class="number">1</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">anchors</span>.right: <span class="name">ballCountText</span>.<span class="name">left</span>
+             <span class="name">anchors</span>.rightMargin: <span class="number">8</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">width</span>: <span class="number">26</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">height</span>: <span class="name">width</span>
+             <span class="name">mipmap</span>: <span class="number">true</span>
+             <span class="name">source</span>: <span class="string">&quot;images/ball_icon.png&quot;</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="name">id</span>: <span class="name">ballCountText</span>
+             <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+             <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.rightMargin: <span class="number">20</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">font</span>.pixelSize: <span class="number">26</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+             <span class="name">style</span>: <span class="name">Text</span>.<span class="name">Outline</span>
+             <span class="name">styleColor</span>: <span class="string">&quot;#000000&quot;</span>
+             <span class="name">text</span>: <span class="name">mainWindow</span>.<span class="name">currentBalls</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+             <span class="name">font</span>.pixelSize: <span class="number">36</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+             <span class="name">style</span>: <span class="name">Text</span>.<span class="name">Outline</span>
+             <span class="name">styleColor</span>: <span class="string">&quot;#000000&quot;</span>
+             <span class="name">text</span>: <span class="name">mainWindow</span>.<span class="name">score</span>
+         }
+     }
+
+     <span class="comment">// Game logo</span>
+     <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+         <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+         <span class="name">width</span>: <span class="name">Math</span>.<span class="name">min</span>(<span class="name">parent</span>.<span class="name">width</span> <span class="operator">*</span> <span class="number">0.6</span>, <span class="name">sourceSize</span>.<span class="name">width</span>)
+         <span class="name">height</span>: <span class="name">width</span> <span class="operator">*</span> <span class="number">0.6</span>
+         <span class="name">fillMode</span>: <span class="name">Image</span>.<span class="name">PreserveAspectFit</span>
+         <span class="name">source</span>: <span class="string">&quot;images/quickball.png&quot;</span>
+         <span class="name">opacity</span>: !<span class="name">mainWindow</span>.<span class="name">gameOn</span>
+         <span class="name">scale</span>: <span class="number">2.0</span> <span class="operator">-</span> <span class="name">opacity</span>
+         Behavior on <span class="name">opacity</span> {
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">duration</span>: <span class="number">400</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         }
+     }
+
+     <span class="comment">// Show bonus and total score when the game ends</span>
+     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+         property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">show</span>: <span class="name">mainWindow</span>.<span class="name">playingStarted</span> <span class="operator">&amp;&amp;</span> !<span class="name">mainWindow</span>.<span class="name">gameOn</span>
+
+         <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+         <span class="name">anchors</span>.verticalCenterOffset: -<span class="number">200</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+         <span class="name">onShowChanged</span>: {
+             <span class="keyword">if</span> (<span class="name">show</span>) {
+                 <span class="name">showScoreAnimation</span>.<span class="name">start</span>();
+             } <span class="keyword">else</span> {
+                 <span class="name">showScoreAnimation</span>.<span class="name">stop</span>();
+                 <span class="name">timeBonusText</span>.<span class="name">opacity</span> <span class="operator">=</span> <span class="number">0</span>;
+                 <span class="name">ballsBonusText</span>.<span class="name">opacity</span> <span class="operator">=</span> <span class="number">0</span>;
+                 <span class="name">totalScoreText</span>.<span class="name">opacity</span> <span class="operator">=</span> <span class="number">0</span>;
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+             <span class="name">id</span>: <span class="name">showScoreAnimation</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">target</span>: <span class="name">timeBonusText</span>
+                 <span class="name">property</span>: <span class="string">&quot;opacity&quot;</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">duration</span>: <span class="number">1000</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">target</span>: <span class="name">ballsBonusText</span>
+                 <span class="name">property</span>: <span class="string">&quot;opacity&quot;</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">duration</span>: <span class="number">1000</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">target</span>: <span class="name">totalScoreText</span>
+                 <span class="name">property</span>: <span class="string">&quot;opacity&quot;</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">duration</span>: <span class="number">1000</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="name">id</span>: <span class="name">timeBonusText</span>
+             <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+             <span class="name">y</span>: <span class="name">opacity</span> <span class="operator">*</span> <span class="number">60</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">font</span>.pixelSize: <span class="number">26</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+             <span class="name">style</span>: <span class="name">Text</span>.<span class="name">Outline</span>
+             <span class="name">styleColor</span>: <span class="string">&quot;#000000&quot;</span>
+             <span class="name">textFormat</span>: <span class="name">Text</span>.<span class="name">StyledText</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;TIME BONUS &lt;b&gt;%1&lt;/b&gt;&quot;</span>).<span class="name">arg</span>(<span class="name">mainWindow</span>.<span class="name">timeBonus</span>)
+             <span class="name">opacity</span>: <span class="number">0</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="name">id</span>: <span class="name">ballsBonusText</span>
+             <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+             <span class="name">y</span>: <span class="name">timeBonusText</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">opacity</span> <span class="operator">*</span> <span class="number">40</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">font</span>.pixelSize: <span class="number">26</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+             <span class="name">style</span>: <span class="name">Text</span>.<span class="name">Outline</span>
+             <span class="name">styleColor</span>: <span class="string">&quot;#000000&quot;</span>
+             <span class="name">textFormat</span>: <span class="name">Text</span>.<span class="name">StyledText</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;BALLS BONUS &lt;b&gt;%1&lt;/b&gt;&quot;</span>).<span class="name">arg</span>(<span class="name">mainWindow</span>.<span class="name">ballsBonus</span>)
+             <span class="name">opacity</span>: <span class="number">0</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="name">id</span>: <span class="name">totalScoreText</span>
+             <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+             <span class="name">y</span>: <span class="name">ballsBonusText</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">opacity</span> <span class="operator">*</span> <span class="number">60</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">font</span>.pixelSize: <span class="number">66</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+             <span class="name">color</span>: <span class="string">&quot;#ffffff&quot;</span>
+             <span class="name">style</span>: <span class="name">Text</span>.<span class="name">Outline</span>
+             <span class="name">styleColor</span>: <span class="string">&quot;#000000&quot;</span>
+             <span class="name">textFormat</span>: <span class="name">Text</span>.<span class="name">StyledText</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;SCORE &lt;b&gt;%1&lt;/b&gt;&quot;</span>).<span class="name">arg</span>(<span class="name">mainWindow</span>.<span class="name">score</span> <span class="operator">+</span> <span class="name">mainWindow</span>.<span class="name">timeBonus</span> <span class="operator">+</span> <span class="name">mainWindow</span>.<span class="name">ballsBonus</span>)
+             <span class="name">opacity</span>: <span class="number">0</span>
+         }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-roundbutton.html" translate="no">RoundButton</a></span> {
+         <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.bottomMargin: <span class="number">40</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+         <span class="name">width</span>: <span class="number">140</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+         <span class="name">height</span>: <span class="number">60</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+         <span class="name">visible</span>: !<span class="name">mainWindow</span>.<span class="name">gameOn</span>
+         <span class="name">font</span>.pixelSize: <span class="number">26</span> <span class="operator">*</span> <span class="name">mainWindow</span>.<span class="name">px</span>
+         <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;START&quot;</span>)
+         <span class="name">onClicked</span>: {
+             <span class="name">view3D</span>.<span class="name">startGame</span>();
+         }
+     }
+ }
+</pre>

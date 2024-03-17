@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- ssl.qdoc -->
+  <meta name="description" content="Setting up a secure Remote Object network using QSslSockets.">
+  <title>SSL Server and Client | Qt Remote Objects 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtremoteobjects-index.html" translate="no">Qt Remote Objects</a></li>
+<li><a href="qtremoteobjects-examples.html" translate="no">Qt Remote Objects Examples</a></li>
+<li>SSL Server and Client</li>
+<li id="buildversion"><a href="qtremoteobjects-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#ssl-server">SSL Server</a></li>
+<li class="level1"><a href="#ssl-client">SSL Client</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">SSL Server and Client</h1>
+<!-- $$$ssl-brief -->
+<p>Setting up a secure Remote Object network using QSslSockets.</p>
+<!-- @@@ssl -->
+<!-- $$$ssl-description -->
+<div class="descr" id="details">
+<p>Encrypting communication is critical when you need to pass data through a network you don't have full control over. The two applications in this example show how to share remote objects over an SSL connection, and how to access them.</p>
+<p class="centerAlign"><img src="images/ssl-example.webp" alt="" /></p><p>Both <i>sslserver</i> and <i>sslcppclient</i> use a custom root CA certificate to validate each other's certificates all located in sslserver/cert.</p>
+<h4 id="ssl-server">SSL Server</h4>
+<p>The <i>sslserver</i> is configured with certificates and a private key.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> config <span class="operator">=</span> <span class="type"><a href="../qtnetwork/qsslconfiguration.html" translate="no">QSslConfiguration</a></span><span class="operator">::</span>defaultConfiguration();
+ config<span class="operator">.</span>setCaCertificates(<span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span><span class="operator">::</span>fromPath(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;:/sslcert/rootCA.pem&quot;</span>)));
+ <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> certificateFile(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;:/sslcert/server.crt&quot;</span>));
+ <span class="keyword">if</span> (certificateFile<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly <span class="operator">|</span> <span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>Text))
+     config<span class="operator">.</span>setLocalCertificate(<span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span>(certificateFile<span class="operator">.</span>readAll()<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>Pem));
+ <span class="keyword">else</span>
+     <a href="../qtcore/qtlogging.html#qFatal" translate="no">qFatal</a>(<span class="string">&quot;Could not open certificate file&quot;</span>);
+ <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> keyFile(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;:/sslcert/server.key&quot;</span>));
+ <span class="keyword">if</span> (keyFile<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly <span class="operator">|</span> <span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>Text)) {
+     <span class="type"><a href="../qtnetwork/qsslkey.html" translate="no">QSslKey</a></span> key(keyFile<span class="operator">.</span>readAll()<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>Rsa<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>Pem<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qssl.html" translate="no">QSsl</a></span><span class="operator">::</span>PrivateKey);
+     <span class="keyword">if</span> (key<span class="operator">.</span>isNull())
+         <a href="../qtcore/qtlogging.html#qFatal" translate="no">qFatal</a>(<span class="string">&quot;Key is not valid&quot;</span>);
+     config<span class="operator">.</span>setPrivateKey(key);
+ } <span class="keyword">else</span> {
+     <a href="../qtcore/qtlogging.html#qFatal" translate="no">qFatal</a>(<span class="string">&quot;Could not open key file&quot;</span>);
+ }
+ config<span class="operator">.</span>setPeerVerifyMode(<span class="type"><a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a></span><span class="operator">::</span>VerifyPeer);
+ <span class="type"><a href="../qtnetwork/qsslconfiguration.html" translate="no">QSslConfiguration</a></span><span class="operator">::</span>setDefaultConfiguration(config);
+</pre>
+<p>Then it creates a <a href="qremoteobjecthost.html" translate="no">QRemoteObjectHost</a> object and a <a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a> object. The <a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a> object listens on port 65511. Then setHostUrl is called on the <a href="qremoteobjecthost.html" translate="no">QRemoteObjectHost</a> object with the URL of the <a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a> object.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qremoteobjecthost.html" translate="no">QRemoteObjectHost</a></span> host;
+ <span class="type"><a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a></span> server;
+ server<span class="operator">.</span>listen(<span class="type"><a href="../qtnetwork/qhostaddress.html" translate="no">QHostAddress</a></span><span class="operator">::</span>Any<span class="operator">,</span> <span class="number">65511</span>);
+ host<span class="operator">.</span>setHostUrl(server<span class="operator">.</span>serverAddress()<span class="operator">.</span>toString()<span class="operator">,</span> <span class="type"><a href="qremoteobjecthost.html" translate="no">QRemoteObjectHost</a></span><span class="operator">::</span>AllowExternalRegistration);
+</pre>
+<p>A lambda is used to handle the errorOccurred signal by outputting the error to the terminal. A second lambda is connected to the pendingConnectionAvailable signal, which connects an error handler, and calls addHostSideConnection on the <a href="qremoteobjecthost.html" translate="no">QRemoteObjectHost</a> object with the incoming socket as argument to make the host object use the socket for communication.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(<span class="operator">&amp;</span>server<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a></span><span class="operator">::</span>errorOccurred<span class="operator">,</span>
+                  <span class="operator">[</span><span class="operator">]</span>(<span class="type"><a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a></span> <span class="operator">*</span>socket<span class="operator">,</span> <span class="type"><a href="../qtnetwork/qabstractsocket.html" translate="no">QAbstractSocket</a></span><span class="operator">::</span>SocketError error) {
+                      Q_UNUSED(socket);
+                      <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;QSslServer::errorOccurred&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> error;
+                  });
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(<span class="operator">&amp;</span>server<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtnetwork/qsslserver.html" translate="no">QSslServer</a></span><span class="operator">::</span>pendingConnectionAvailable<span class="operator">,</span> <span class="operator">[</span><span class="operator">&amp;</span>server<span class="operator">,</span> <span class="operator">&amp;</span>host<span class="operator">]</span>() {
+     <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;New connection available&quot;</span>;
+     <span class="type"><a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a></span> <span class="operator">*</span>socket <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(server<span class="operator">.</span>nextPendingConnection());
+     Q_ASSERT(socket);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a></span><span class="operator">::</span>errorOccurred<span class="operator">,</span>
+                      <span class="operator">[</span><span class="operator">]</span>(<span class="type"><a href="../qtnetwork/qabstractsocket.html" translate="no">QAbstractSocket</a></span><span class="operator">::</span>SocketError error) {
+                          <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;QSslSocket::error&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> error;
+                      });
+     host<span class="operator">.</span>addHostSideConnection(socket);
+ });
+</pre>
+<p>Finally, a MinuteTimer object is created and enableRemoting is called on the <a href="qremoteobjecthost.html" translate="no">QRemoteObjectHost</a> object with the MinuteTimer object as argument to enable it to be shared.</p>
+<pre class="cpp" translate="no">
+ MinuteTimer timer;
+ host<span class="operator">.</span>enableRemoting(<span class="operator">&amp;</span>timer);
+</pre>
+<h4 id="ssl-client">SSL Client</h4>
+<p>The <i>sslcppclient</i> sets the root CA certificate and then creates a Tester object.</p>
+<pre class="cpp" translate="no">
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
+ {
+     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span> a(argc<span class="operator">,</span> argv);
+
+     <span class="keyword">auto</span> config <span class="operator">=</span> <span class="type"><a href="../qtnetwork/qsslconfiguration.html" translate="no">QSslConfiguration</a></span><span class="operator">::</span>defaultConfiguration();
+     config<span class="operator">.</span>setCaCertificates(<span class="type"><a href="../qtnetwork/qsslcertificate.html" translate="no">QSslCertificate</a></span><span class="operator">::</span>fromPath(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;:/sslcert/rootCA.pem&quot;</span>)));
+     <span class="type"><a href="../qtnetwork/qsslconfiguration.html" translate="no">QSslConfiguration</a></span><span class="operator">::</span>setDefaultConfiguration(config);
+
+     Tester t;
+     <span class="keyword">return</span> a<span class="operator">.</span>exec();
+ }
+</pre>
+<p>In the Tester constructor a temporary <a href="qremoteobjectnode.html" translate="no">QRemoteObjectNode</a> object is created, and setupConnection is used to create and configure a <a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a> object. An error handler is connected, and the <a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a> is used by the <a href="qremoteobjectnode.html" translate="no">QRemoteObjectNode</a> object by calling addClientSideConnection on it.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qremoteobjectnode.html" translate="no">QRemoteObjectNode</a></span> m_client;
+ <span class="keyword">auto</span> socket <span class="operator">=</span> setupConnection();
+ connect(socket<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a></span><span class="operator">::</span>errorOccurred<span class="operator">,</span>
+         socket<span class="operator">,</span> <span class="operator">[</span><span class="operator">]</span>(<span class="type"><a href="../qtnetwork/qabstractsocket.html" translate="no">QAbstractSocket</a></span><span class="operator">::</span>SocketError error){
+     <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;QSslSocket::error&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> error;
+ }) ;
+ m_client<span class="operator">.</span>addClientSideConnection(socket);
+</pre>
+<p>Then three <a href="../qtcore/qscopedpointer.html" translate="no">QScopedPointer</a> that are members of the Tester class are connected to three replicas of MinuteTimer by using acquire on the <a href="qremoteobjectnode.html" translate="no">QRemoteObjectNode</a> object. Finally <a href="../qtcore/qtimer.html#singleShot" translate="no">QTimer::singleShot</a> is used four times to call reset after a delay.</p>
+<pre class="cpp" translate="no">
+ ptr1<span class="operator">.</span>reset(m_client<span class="operator">.</span>acquire<span class="operator">&lt;</span> MinuteTimerReplica <span class="operator">&gt;</span>());
+ ptr2<span class="operator">.</span>reset(m_client<span class="operator">.</span>acquire<span class="operator">&lt;</span> MinuteTimerReplica <span class="operator">&gt;</span>());
+ ptr3<span class="operator">.</span>reset(m_client<span class="operator">.</span>acquire<span class="operator">&lt;</span> MinuteTimerReplica <span class="operator">&gt;</span>());
+ <span class="type"><a href="../qtcore/qtimer.html" translate="no">QTimer</a></span><span class="operator">::</span>singleShot(<span class="number">0</span><span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Tester<span class="operator">::</span>clear);
+ <span class="type"><a href="../qtcore/qtimer.html" translate="no">QTimer</a></span><span class="operator">::</span>singleShot(<span class="number">1</span><span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Tester<span class="operator">::</span>clear);
+ <span class="type"><a href="../qtcore/qtimer.html" translate="no">QTimer</a></span><span class="operator">::</span>singleShot(<span class="number">10000</span><span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Tester<span class="operator">::</span>clear);
+ <span class="type"><a href="../qtcore/qtimer.html" translate="no">QTimer</a></span><span class="operator">::</span>singleShot(<span class="number">11000</span><span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Tester<span class="operator">::</span>clear);
+</pre>
+<p>When Tester::clear is called for the first three times, one pointer is checked that it is bound and then reset, for a different pointer each time. When it is called for the fourth time it causes the application to quit.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> clear()
+ {
+     <span class="keyword">static</span> <span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>;
+     <span class="keyword">if</span> (i <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>) {
+         i<span class="operator">+</span><span class="operator">+</span>;
+         <span class="keyword">if</span> (ptr1<span class="operator">.</span>isNull())
+             <a href="../qtcore/qtlogging.html#qCritical" translate="no">qCritical</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Pointer 1 was not set&quot;</span>;
+         ptr1<span class="operator">.</span>reset();
+     } <span class="keyword">else</span> <span class="keyword">if</span> (i <span class="operator">=</span><span class="operator">=</span> <span class="number">1</span>) {
+         i<span class="operator">+</span><span class="operator">+</span>;
+         <span class="keyword">if</span> (ptr2<span class="operator">.</span>isNull())
+             <a href="../qtcore/qtlogging.html#qCritical" translate="no">qCritical</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Pointer 2 was not set&quot;</span>;
+         ptr2<span class="operator">.</span>reset();
+     } <span class="keyword">else</span> <span class="keyword">if</span> (i <span class="operator">=</span><span class="operator">=</span> <span class="number">2</span>) {
+         i<span class="operator">+</span><span class="operator">+</span>;
+         <span class="keyword">if</span> (ptr3<span class="operator">.</span>isNull())
+             <a href="../qtcore/qtlogging.html#qCritical" translate="no">qCritical</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Pointer 3 was not set&quot;</span>;
+         ptr3<span class="operator">.</span>reset();
+     } <span class="keyword">else</span> {
+         qApp<span class="operator">-</span><span class="operator">&gt;</span>quit();
+     }
+ }
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtremoteobjects.git/tree/examples/remoteobjects/ssl?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@ssl -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

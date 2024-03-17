@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- q3dbars.cpp -->
+  <meta name="description" content="The Q3DBars class provides methods for rendering 3D bar graphs.">
+  <title>Q3DBars Class | Qt Data Visualization 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtdatavisualization-index.html" translate="no">Qt Data Visualization</a></li>
+<li><a href="qtdatavisualization-module.html" translate="no">C++ Classes</a></li>
+<li>Q3DBars</li>
+<li id="buildversion"><a href="qtdatavisualization-index.html" translate="no">Qt Data Visualization | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#signals">Signals</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+<li class="level2"><a href="#how-to-construct-a-minimal-q3dbars-graph">How to construct a minimal Q3DBars graph</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">Q3DBars Class</h1>
+<!-- $$$Q3DBars-brief -->
+<p>The Q3DBars class provides methods for rendering 3D bar graphs. <a href="#details">More...</a></p>
+<!-- @@@Q3DBars -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign">  <span class="preprocessor">#include &lt;Q3DBars&gt;</span></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> CMake:</td><td class="memItemRight bottomAlign"> find_package(Qt6 REQUIRED COMPONENTS DataVisualization) <br/>
+target_link_libraries(mytarget PRIVATE Qt6::DataVisualization)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> qmake:</td><td class="memItemRight bottomAlign"> QT += datavisualization</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> QtDataVisualization 1.0</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <a href="qabstract3dgraph.html" translate="no">QAbstract3DGraph</a></td></tr>
+</table></div>
+<ul>
+<li><a href="q3dbars-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<div class="table"><table class="propsummary" translate="no">
+<tr><td class="topAlign"><ul>
+<li class="fn" translate="no"><b><a href="q3dbars.html#barSeriesMargin-prop" translate="no">barSeriesMargin</a></b> : QSizeF</li>
+<li class="fn" translate="no"><b><a href="q3dbars.html#barSpacing-prop" translate="no">barSpacing</a></b> : QSizeF</li>
+<li class="fn" translate="no"><b><a href="q3dbars.html#barSpacingRelative-prop" translate="no">barSpacingRelative</a></b> : bool</li>
+<li class="fn" translate="no"><b><a href="q3dbars.html#barThickness-prop" translate="no">barThickness</a></b> : float</li>
+<li class="fn" translate="no"><b><a href="q3dbars.html#columnAxis-prop" translate="no">columnAxis</a></b> : QCategory3DAxis*</li>
+<li class="fn" translate="no"><b><a href="q3dbars.html#floorLevel-prop" translate="no">floorLevel</a></b> : float</li>
+</ul></td><td class="topAlign"><ul>
+<li class="fn" translate="no"><b><a href="q3dbars.html#multiSeriesUniform-prop" translate="no">multiSeriesUniform</a></b> : bool</li>
+<li class="fn" translate="no"><b><a href="q3dbars.html#primarySeries-prop" translate="no">primarySeries</a></b> : QBar3DSeries*</li>
+<li class="fn" translate="no"><b><a href="q3dbars.html#rowAxis-prop" translate="no">rowAxis</a></b> : QCategory3DAxis*</li>
+<li class="fn" translate="no"><b><a href="q3dbars.html#selectedSeries-prop" translate="no">selectedSeries</a></b> : QBar3DSeries* const</li>
+<li class="fn" translate="no"><b><a href="q3dbars.html#valueAxis-prop" translate="no">valueAxis</a></b> : QValue3DAxis*</li>
+</ul>
+</td></tr>
+</table></div>
+<h2 id="public-functions">Public Functions</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#Q3DBars" translate="no">Q3DBars</a></b>(const QSurfaceFormat *<i>format</i> = nullptr, QWindow *<i>parent</i> = nullptr)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> virtual </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#dtor.Q3DBars" translate="no">~Q3DBars</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#addAxis" translate="no">addAxis</a></b>(QAbstract3DAxis *<i>axis</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#addSeries" translate="no">addSeries</a></b>(QBar3DSeries *<i>series</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QList&lt;QAbstract3DAxis *&gt; </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#axes" translate="no">axes</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QSizeF </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barSeriesMargin-prop" translate="no">barSeriesMargin</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QSizeF </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barSpacing-prop" translate="no">barSpacing</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> float </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barThickness-prop" translate="no">barThickness</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QCategory3DAxis *</td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#columnAxis-prop" translate="no">columnAxis</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> float </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#floorLevel-prop" translate="no">floorLevel</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#insertSeries" translate="no">insertSeries</a></b>(int <i>index</i>, QBar3DSeries *<i>series</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barSpacingRelative-prop" translate="no">isBarSpacingRelative</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#multiSeriesUniform-prop" translate="no">isMultiSeriesUniform</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QBar3DSeries *</td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#primarySeries-prop" translate="no">primarySeries</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#releaseAxis" translate="no">releaseAxis</a></b>(QAbstract3DAxis *<i>axis</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#removeSeries" translate="no">removeSeries</a></b>(QBar3DSeries *<i>series</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QCategory3DAxis *</td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#rowAxis-prop" translate="no">rowAxis</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QBar3DSeries *</td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#selectedSeries-prop" translate="no">selectedSeries</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QList&lt;QBar3DSeries *&gt; </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#seriesList" translate="no">seriesList</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barSeriesMargin-prop" translate="no">setBarSeriesMargin</a></b>(const QSizeF &amp;<i>margin</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barSpacing-prop" translate="no">setBarSpacing</a></b>(const QSizeF &amp;<i>spacing</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barSpacingRelative-prop" translate="no">setBarSpacingRelative</a></b>(bool <i>relative</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barThickness-prop" translate="no">setBarThickness</a></b>(float <i>thicknessRatio</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#setColumnAxis" translate="no">setColumnAxis</a></b>(QCategory3DAxis *<i>axis</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#floorLevel-prop" translate="no">setFloorLevel</a></b>(float <i>level</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#multiSeriesUniform-prop" translate="no">setMultiSeriesUniform</a></b>(bool <i>uniform</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#setPrimarySeries" translate="no">setPrimarySeries</a></b>(QBar3DSeries *<i>series</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#setRowAxis" translate="no">setRowAxis</a></b>(QCategory3DAxis *<i>axis</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#valueAxis-prop" translate="no">setValueAxis</a></b>(QValue3DAxis *<i>axis</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QValue3DAxis *</td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#valueAxis-prop" translate="no">valueAxis</a></b>() const</td></tr>
+</table></div>
+<h2 id="signals">Signals</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barSeriesMargin-prop" translate="no">barSeriesMarginChanged</a></b>(const QSizeF &amp;<i>margin</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barSpacing-prop" translate="no">barSpacingChanged</a></b>(const QSizeF &amp;<i>spacing</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barSpacingRelative-prop" translate="no">barSpacingRelativeChanged</a></b>(bool <i>relative</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#barThickness-prop" translate="no">barThicknessChanged</a></b>(float <i>thicknessRatio</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#columnAxis-prop" translate="no">columnAxisChanged</a></b>(QCategory3DAxis *<i>axis</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#floorLevel-prop" translate="no">floorLevelChanged</a></b>(float <i>level</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#multiSeriesUniform-prop" translate="no">multiSeriesUniformChanged</a></b>(bool <i>uniform</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#primarySeries-prop" translate="no">primarySeriesChanged</a></b>(QBar3DSeries *<i>series</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#rowAxis-prop" translate="no">rowAxisChanged</a></b>(QCategory3DAxis *<i>axis</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#selectedSeries-prop" translate="no">selectedSeriesChanged</a></b>(QBar3DSeries *<i>series</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="q3dbars.html#valueAxis-prop" translate="no">valueAxisChanged</a></b>(QValue3DAxis *<i>axis</i>)</td></tr>
+</table></div>
+<!-- $$$Q3DBars-description -->
+<div class="descr">
+<h2 id="details">Detailed Description</h2>
+<p>This class enables developers to render bar graphs in 3D and to view them by rotating the scene freely. Rotation is done by holding down the right mouse button and moving the mouse. Zooming is done by mouse wheel. Selection, if enabled, is done by left mouse button. The scene can be reset to default camera view by clicking mouse wheel. In touch devices rotation is done by tap-and-move, selection by tap-and-hold and zoom by pinch.</p>
+<p>If no axes are set explicitly to Q3DBars, temporary default axes with no labels are created. These default axes can be modified via axis accessors, but as soon any axis is set explicitly for the orientation, the default axis for that orientation is destroyed.</p>
+<p>Q3DBars supports more than one series visible at the same time. It is not necessary for all series to have the same amount of rows and columns. Row and column labels are taken from the first added series, unless explicitly defined to row and column axes.</p>
+<h3 id="how-to-construct-a-minimal-q3dbars-graph">How to construct a minimal Q3DBars graph</h3>
+<p>First, construct an instance of Q3DBars. Since we are running the graph as top level window in this example, we need to clear the <code translate="no">Qt::FramelessWindowHint</code> flag, which gets set by default:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="q3dbars.html#Q3DBars" translate="no">Q3DBars</a></span> bars;
+ bars<span class="operator">.</span>setFlags(bars<span class="operator">.</span>flags() <span class="operator">^</span> <span class="type">Qt</span><span class="operator">::</span>FramelessWindowHint);
+</pre>
+<p>After constructing Q3DBars, you can set the data window by changing the range on the row and column axes. It is not mandatory, as data window will default to showing all of the data in the series. If the amount of data is large, it is usually preferable to show just a portion of it. For the example, let's set the data window to show first five rows and columns:</p>
+<pre class="cpp" translate="no">
+ bars<span class="operator">.</span>rowAxis()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0</span><span class="operator">,</span> <span class="number">4</span>);
+ bars<span class="operator">.</span>columnAxis()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0</span><span class="operator">,</span> <span class="number">4</span>);
+</pre>
+<p>Now Q3DBars is ready to receive data to be rendered. Create a series with one row of 5 values:</p>
+<pre class="cpp" translate="no">
+ QBar3DSeries <span class="operator">*</span>series <span class="operator">=</span> <span class="keyword">new</span> QBar3DSeries;
+ <span class="type"><a href="qbardataproxy.html#QBarDataRow-typedef" translate="no">QBarDataRow</a></span> <span class="operator">*</span>data <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataRow-typedef" translate="no">QBarDataRow</a></span>;
+ <span class="operator">*</span>data <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">1.0f</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">3.0f</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">7.5f</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">5.0f</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">2.2f</span>;
+ series<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>addRow(data);
+ bars<span class="operator">.</span>addSeries(series);
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>We set the data window to 5 x 5, but we are adding only one row of data. This is ok, the rest of the rows will just be blank.</p>
+</div>
+<p>Finally you will need to set it visible:</p>
+<pre class="cpp" translate="no">
+ bars<span class="operator">.</span>show();
+</pre>
+<p>The complete code needed to create and display this graph is:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &lt;QtDataVisualization&gt;</span>
+
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
+ {
+     qputenv(<span class="string">&quot;QSG_RHI_BACKEND&quot;</span><span class="operator">,</span> <span class="string">&quot;opengl&quot;</span>);
+     <span class="type"><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a></span> app(argc<span class="operator">,</span> argv);
+
+     <span class="type"><a href="q3dbars.html#Q3DBars" translate="no">Q3DBars</a></span> bars;
+     bars<span class="operator">.</span>setFlags(bars<span class="operator">.</span>flags() <span class="operator">^</span> <span class="type">Qt</span><span class="operator">::</span>FramelessWindowHint);
+     bars<span class="operator">.</span>rowAxis()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0</span><span class="operator">,</span> <span class="number">4</span>);
+     bars<span class="operator">.</span>columnAxis()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0</span><span class="operator">,</span> <span class="number">4</span>);
+     QBar3DSeries <span class="operator">*</span>series <span class="operator">=</span> <span class="keyword">new</span> QBar3DSeries;
+     <span class="type"><a href="qbardataproxy.html#QBarDataRow-typedef" translate="no">QBarDataRow</a></span> <span class="operator">*</span>data <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataRow-typedef" translate="no">QBarDataRow</a></span>;
+     <span class="operator">*</span>data <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">1.0f</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">3.0f</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">7.5f</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">5.0f</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">2.2f</span>;
+     series<span class="operator">-</span><span class="operator">&gt;</span>dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>addRow(data);
+     bars<span class="operator">.</span>addSeries(series);
+     bars<span class="operator">.</span>show();
+
+     <span class="keyword">return</span> app<span class="operator">.</span>exec();
+ }
+</pre>
+<p>And this is what those few lines of code produce:</p>
+<p class="centerAlign"><img src="images/q3dbars-minimal.png" alt="" /></p><p>The scene can be rotated, zoomed into, and a bar can be selected to view its value, but no other interaction is included in this minimal code example. You can learn more by familiarizing yourself with the examples provided, like the <a href="qtdatavis3d-graphgallery-example.html#bar-graph" translate="no">Bar Graph</a>.</p>
+</div>
+<p><b>See also </b><a href="q3dscatter.html" translate="no">Q3DScatter</a>, <a href="q3dsurface.html" translate="no">Q3DSurface</a>, and <a href="qtdatavisualization-module.html" translate="no">Qt Data Visualization C++ Classes</a>.</p>
+<!-- @@@Q3DBars -->
+<div class="prop">
+<h2>Property Documentation</h2>
+<!-- $$$barSeriesMargin-prop$$$barSeriesMargin$$$setBarSeriesMarginconstQSizeF&$$$barSeriesMarginChangedconstQSizeF& -->
+<h3 class="fn" translate="no" id="barSeriesMargin-prop"><code translate="no">[since 6.3] </code><span class="name">barSeriesMargin</span> : <span class="type"><a href="../qtcore/qsizef.html" translate="no">QSizeF</a></span></h3>
+<p>Margin between series columns in X and Z dimensions. Sensible values are on the range [0,1).</p>
+<p>Preset to <code translate="no">(0.0, 0.0)</code> by default. This property enables showing bars from different series side by side, but with space between columns.</p>
+<p>This property was introduced in Qt 6.3.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QSizeF </td><td class="memItemRight bottomAlign"><span class="name"><b>barSeriesMargin</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>setBarSeriesMargin</b></span>(const QSizeF &amp;<i>margin</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>barSeriesMarginChanged</b></span>(const QSizeF &amp;<i>margin</i>)</td></tr>
+</table></div>
+<p><b>See also </b><a href="q3dbars.html#barSpacing-prop" translate="no">barSpacing</a>.</p>
+<!-- @@@barSeriesMargin -->
+<!-- $$$barSpacing-prop$$$barSpacing$$$setBarSpacingconstQSizeF&$$$barSpacingChangedconstQSizeF& -->
+<h3 class="fn" translate="no" id="barSpacing-prop"><span class="name">barSpacing</span> : <span class="type"><a href="../qtcore/qsizef.html" translate="no">QSizeF</a></span></h3>
+<p>Bar spacing in the X and Z dimensions.</p>
+<p>Preset to <code translate="no">(1.0, 1.0)</code> by default. Spacing is affected by the <a href="q3dbars.html#barSpacingRelative-prop" translate="no">barSpacingRelative</a> property.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QSizeF </td><td class="memItemRight bottomAlign"><span class="name"><b>barSpacing</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>setBarSpacing</b></span>(const QSizeF &amp;<i>spacing</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>barSpacingChanged</b></span>(const QSizeF &amp;<i>spacing</i>)</td></tr>
+</table></div>
+<p><b>See also </b><a href="q3dbars.html#barSpacingRelative-prop" translate="no">barSpacingRelative</a>, <a href="q3dbars.html#multiSeriesUniform-prop" translate="no">multiSeriesUniform</a>, and <a href="q3dbars.html#barSeriesMargin-prop" translate="no">barSeriesMargin</a>.</p>
+<!-- @@@barSpacing -->
+<!-- $$$barSpacingRelative-prop$$$isBarSpacingRelative$$$setBarSpacingRelativebool$$$barSpacingRelativeChangedbool -->
+<h3 class="fn" translate="no" id="barSpacingRelative-prop"><span class="name">barSpacingRelative</span> : <span class="type">bool</span></h3>
+<p>This property holds whether spacing is absolute or relative to bar thickness.</p>
+<p>If it is <code translate="no">true</code>, the value of <code translate="no">0.0</code> means that the bars are placed side-to-side, <code translate="no">1.0</code> means that a space as wide as the thickness of one bar is left between the bars, and so on. Preset to <code translate="no">true</code>.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> bool </td><td class="memItemRight bottomAlign"><span class="name"><b>isBarSpacingRelative</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>setBarSpacingRelative</b></span>(bool <i>relative</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>barSpacingRelativeChanged</b></span>(bool <i>relative</i>)</td></tr>
+</table></div>
+<!-- @@@barSpacingRelative -->
+<!-- $$$barThickness-prop$$$barThickness$$$setBarThicknessfloat$$$barThicknessChangedfloat -->
+<h3 class="fn" translate="no" id="barThickness-prop"><span class="name">barThickness</span> : <span class="type">float</span></h3>
+<p>This property holds the bar thickness ratio between the X and Z dimensions.</p>
+<p>The value <code translate="no">1.0</code> means that the bars are as wide as they are deep, whereas <code translate="no">0.5</code> makes them twice as deep as they are wide. Preset to <code translate="no">1.0</code> by default.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> float </td><td class="memItemRight bottomAlign"><span class="name"><b>barThickness</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>setBarThickness</b></span>(float <i>thicknessRatio</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>barThicknessChanged</b></span>(float <i>thicknessRatio</i>)</td></tr>
+</table></div>
+<!-- @@@barThickness -->
+<!-- $$$columnAxis-prop$$$columnAxis$$$setColumnAxisQCategory3DAxis*$$$columnAxisChangedQCategory3DAxis* -->
+<h3 class="fn" translate="no" id="columnAxis-prop"><span class="name">columnAxis</span> : <span class="type"><a href="qcategory3daxis.html" translate="no">QCategory3DAxis</a></span>*</h3>
+<p>This property holds the axis attached to the active column.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QCategory3DAxis *</td><td class="memItemRight bottomAlign"><span class="name"><b>columnAxis</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b><a href="q3dbars.html#setColumnAxis" translate="no">setColumnAxis</a></b></span>(QCategory3DAxis *<i>axis</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>columnAxisChanged</b></span>(QCategory3DAxis *<i>axis</i>)</td></tr>
+</table></div>
+<!-- @@@columnAxis -->
+<!-- $$$floorLevel-prop$$$floorLevel$$$setFloorLevelfloat$$$floorLevelChangedfloat -->
+<h3 class="fn" translate="no" id="floorLevel-prop"><span class="name">floorLevel</span> : <span class="type">float</span></h3>
+<p>This property holds the floor level for the bar graph in Y-axis data coordinates.</p>
+<p>The actual floor level will be restricted by the Y-axis minimum and maximum values. Defaults to zero.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> float </td><td class="memItemRight bottomAlign"><span class="name"><b>floorLevel</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>setFloorLevel</b></span>(float <i>level</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>floorLevelChanged</b></span>(float <i>level</i>)</td></tr>
+</table></div>
+<!-- @@@floorLevel -->
+<!-- $$$multiSeriesUniform-prop$$$isMultiSeriesUniform$$$setMultiSeriesUniformbool$$$multiSeriesUniformChangedbool -->
+<h3 class="fn" translate="no" id="multiSeriesUniform-prop"><span class="name">multiSeriesUniform</span> : <span class="type">bool</span></h3>
+<p>This property holds whether bars are to be scaled with proportions set to a single series bar even if there are multiple series displayed.</p>
+<p>If set to <code translate="no">true</code>, <a href="q3dbars.html#barSpacing-prop" translate="no">bar spacing</a> will be correctly applied only to the X-axis. Preset to <code translate="no">false</code> by default.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> bool </td><td class="memItemRight bottomAlign"><span class="name"><b>isMultiSeriesUniform</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>setMultiSeriesUniform</b></span>(bool <i>uniform</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>multiSeriesUniformChanged</b></span>(bool <i>uniform</i>)</td></tr>
+</table></div>
+<!-- @@@multiSeriesUniform -->
+<!-- $$$primarySeries-prop$$$primarySeries$$$setPrimarySeriesQBar3DSeries*$$$primarySeriesChangedQBar3DSeries* -->
+<h3 class="fn" translate="no" id="primarySeries-prop"><span class="name">primarySeries</span> : <span class="type"><a href="qbar3dseries.html" translate="no">QBar3DSeries</a></span>*</h3>
+<p>This property holds the primary series of the graph.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QBar3DSeries *</td><td class="memItemRight bottomAlign"><span class="name"><b>primarySeries</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b><a href="q3dbars.html#setPrimarySeries" translate="no">setPrimarySeries</a></b></span>(QBar3DSeries *<i>series</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>primarySeriesChanged</b></span>(QBar3DSeries *<i>series</i>)</td></tr>
+</table></div>
+<!-- @@@primarySeries -->
+<!-- $$$rowAxis-prop$$$rowAxis$$$setRowAxisQCategory3DAxis*$$$rowAxisChangedQCategory3DAxis* -->
+<h3 class="fn" translate="no" id="rowAxis-prop"><span class="name">rowAxis</span> : <span class="type"><a href="qcategory3daxis.html" translate="no">QCategory3DAxis</a></span>*</h3>
+<p>This property holds the axis attached to the active row.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QCategory3DAxis *</td><td class="memItemRight bottomAlign"><span class="name"><b>rowAxis</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b><a href="q3dbars.html#setRowAxis" translate="no">setRowAxis</a></b></span>(QCategory3DAxis *<i>axis</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>rowAxisChanged</b></span>(QCategory3DAxis *<i>axis</i>)</td></tr>
+</table></div>
+<!-- @@@rowAxis -->
+<!-- $$$selectedSeries-prop$$$selectedSeries$$$selectedSeriesChangedQBar3DSeries* -->
+<h3 class="fn" translate="no" id="selectedSeries-prop"><code translate="no">[read-only] </code><span class="name">selectedSeries</span> : <span class="type"><a href="qbar3dseries.html" translate="no">QBar3DSeries</a></span>* const</h3>
+<p>This property holds the selected series or a null value.</p>
+<p>If selectionMode has the <code translate="no">SelectionMultiSeries</code> flag set, this property holds the series that owns the selected bar.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QBar3DSeries *</td><td class="memItemRight bottomAlign"><span class="name"><b>selectedSeries</b></span>() const</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>selectedSeriesChanged</b></span>(QBar3DSeries *<i>series</i>)</td></tr>
+</table></div>
+<!-- @@@selectedSeries -->
+<!-- $$$valueAxis-prop$$$valueAxis$$$setValueAxisQValue3DAxis*$$$valueAxisChangedQValue3DAxis* -->
+<h3 class="fn" translate="no" id="valueAxis-prop"><span class="name">valueAxis</span> : <span class="type"><a href="qvalue3daxis.html" translate="no">QValue3DAxis</a></span>*</h3>
+<p>Sets the active value axis (the Y-axis) to <i translate="no">axis</i>. Implicitly calls <a href="q3dbars.html#addAxis" translate="no">addAxis</a>() to transfer the ownership of <i translate="no">axis</i> to this graph.</p>
+<p>If <i translate="no">axis</i> is null, a temporary default axis with no labels and an automatically adjusting range is created. This temporary axis is destroyed if another axis is set explicitly to the same orientation.</p>
+<p><b>Access functions:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> QValue3DAxis *</td><td class="memItemRight bottomAlign"><span class="name"><b>valueAxis</b></span>() const</td></tr>
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>setValueAxis</b></span>(QValue3DAxis *<i>axis</i>)</td></tr>
+</table></div>
+<p><b>Notifier signal:</b></p>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft topAlign rightAlign"> void </td><td class="memItemRight bottomAlign"><span class="name"><b>valueAxisChanged</b></span>(QValue3DAxis *<i>axis</i>)</td></tr>
+</table></div>
+<p><b>See also </b><a href="q3dbars.html#addAxis" translate="no">addAxis</a>() and <a href="q3dbars.html#releaseAxis" translate="no">releaseAxis</a>().</p>
+<!-- @@@valueAxis -->
+</div>
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$Q3DBars[overload1]$$$Q3DBarsconstQSurfaceFormat*QWindow* -->
+<h3 class="fn" translate="no" id="Q3DBars"><code translate="no">[explicit] </code>Q3DBars::<span class="name">Q3DBars</span>(const <span class="type"><a href="../qtgui/qsurfaceformat.html" translate="no">QSurfaceFormat</a></span> *<i>format</i> = nullptr, <span class="type"><a href="../qtgui/qwindow.html#QWindow" translate="no">QWindow</a></span> *<i>parent</i> = nullptr)</h3>
+<p>Constructs a new 3D bar graph with optional <i translate="no">parent</i> window and surface <i translate="no">format</i>.</p>
+<!-- @@@Q3DBars -->
+<!-- $$$~Q3DBars[overload1]$$$~Q3DBars -->
+<h3 class="fn" translate="no" id="dtor.Q3DBars"><code translate="no">[virtual noexcept] </code>Q3DBars::<span class="name">~Q3DBars</span>()</h3>
+<p>Destroys the 3D bar graph.</p>
+<!-- @@@~Q3DBars -->
+<!-- $$$addAxis[overload1]$$$addAxisQAbstract3DAxis* -->
+<h3 class="fn" translate="no" id="addAxis"><span class="type">void</span> Q3DBars::<span class="name">addAxis</span>(<span class="type"><a href="qabstract3daxis.html" translate="no">QAbstract3DAxis</a></span> *<i>axis</i>)</h3>
+<p>Adds <i translate="no">axis</i> to the graph. The axes added via addAxis are not yet taken to use, addAxis is simply used to give the ownership of the <i translate="no">axis</i> to the graph. The <i translate="no">axis</i> must not be null or added to another graph.</p>
+<p><b>See also </b><a href="q3dbars.html#releaseAxis" translate="no">releaseAxis</a>(), <a href="q3dbars.html#valueAxis-prop" translate="no">setValueAxis</a>(), <a href="q3dbars.html#setRowAxis" translate="no">setRowAxis</a>(), and <a href="q3dbars.html#setColumnAxis" translate="no">setColumnAxis</a>().</p>
+<!-- @@@addAxis -->
+<!-- $$$addSeries[overload1]$$$addSeriesQBar3DSeries* -->
+<h3 class="fn" translate="no" id="addSeries"><span class="type">void</span> Q3DBars::<span class="name">addSeries</span>(<span class="type"><a href="qbar3dseries.html" translate="no">QBar3DSeries</a></span> *<i>series</i>)</h3>
+<p>Adds the <i translate="no">series</i> to the graph. A graph can contain multiple series, but only one set of axes, so the rows and columns of all series must match for the visualized data to be meaningful. If the graph has multiple visible series, only the primary series will generate the row or column labels on the axes in cases where the labels are not explicitly set to the axes. If the newly added series has specified a selected bar, it will be highlighted and any existing selection will be cleared. Only one added series can have an active selection.</p>
+<p><b>See also </b><a href="q3dbars.html#seriesList" translate="no">seriesList</a>(), <a href="q3dbars.html#primarySeries-prop" translate="no">primarySeries</a>, and <a href="qabstract3dgraph.html#hasSeries" translate="no">QAbstract3DGraph::hasSeries</a>().</p>
+<!-- @@@addSeries -->
+<!-- $$$axes[overload1]$$$axes -->
+<h3 class="fn" translate="no" id="axes"><span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span>&lt;<span class="type"><a href="qabstract3daxis.html" translate="no">QAbstract3DAxis</a></span> *&gt; Q3DBars::<span class="name">axes</span>() const</h3>
+<p>Returns the list of all added axes.</p>
+<p><b>See also </b><a href="q3dbars.html#addAxis" translate="no">addAxis</a>().</p>
+<!-- @@@axes -->
+<!-- $$$insertSeries[overload1]$$$insertSeriesintQBar3DSeries* -->
+<h3 class="fn" translate="no" id="insertSeries"><span class="type">void</span> Q3DBars::<span class="name">insertSeries</span>(<span class="type">int</span> <i>index</i>, <span class="type"><a href="qbar3dseries.html" translate="no">QBar3DSeries</a></span> *<i>series</i>)</h3>
+<p>Inserts the <i translate="no">series</i> into the position <i translate="no">index</i> in the series list. If the <i translate="no">series</i> has already been added to the list, it is moved to the new <i translate="no">index</i>.</p>
+<div class="admonition note">
+<p><b>Note: </b>When moving a series to a new <i translate="no">index</i> that is after its old index, the new position in list is calculated as if the series was still in its old index, so the final index is actually the <i translate="no">index</i> decremented by one.</p>
+</div>
+<p><b>See also </b><a href="q3dbars.html#addSeries" translate="no">addSeries</a>(), <a href="q3dbars.html#seriesList" translate="no">seriesList</a>(), and <a href="qabstract3dgraph.html#hasSeries" translate="no">QAbstract3DGraph::hasSeries</a>().</p>
+<!-- @@@insertSeries -->
+<!-- $$$releaseAxis[overload1]$$$releaseAxisQAbstract3DAxis* -->
+<h3 class="fn" translate="no" id="releaseAxis"><span class="type">void</span> Q3DBars::<span class="name">releaseAxis</span>(<span class="type"><a href="qabstract3daxis.html" translate="no">QAbstract3DAxis</a></span> *<i>axis</i>)</h3>
+<p>Releases the ownership of the <i translate="no">axis</i> back to the caller, if it is added to this graph. If the released <i translate="no">axis</i> is in use, a new default axis will be created and set active.</p>
+<p>If the default axis is released and added back later, it behaves as any other axis would.</p>
+<p><b>See also </b><a href="q3dbars.html#addAxis" translate="no">addAxis</a>(), <a href="q3dbars.html#valueAxis-prop" translate="no">setValueAxis</a>(), <a href="q3dbars.html#setRowAxis" translate="no">setRowAxis</a>(), and <a href="q3dbars.html#setColumnAxis" translate="no">setColumnAxis</a>().</p>
+<!-- @@@releaseAxis -->
+<!-- $$$removeSeries[overload1]$$$removeSeriesQBar3DSeries* -->
+<h3 class="fn" translate="no" id="removeSeries"><span class="type">void</span> Q3DBars::<span class="name">removeSeries</span>(<span class="type"><a href="qbar3dseries.html" translate="no">QBar3DSeries</a></span> *<i>series</i>)</h3>
+<p>Removes the <i translate="no">series</i> from the graph.</p>
+<p><b>See also </b><a href="qabstract3dgraph.html#hasSeries" translate="no">QAbstract3DGraph::hasSeries</a>().</p>
+<!-- @@@removeSeries -->
+<!-- $$$seriesList[overload1]$$$seriesList -->
+<h3 class="fn" translate="no" id="seriesList"><span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span>&lt;<span class="type"><a href="qbar3dseries.html" translate="no">QBar3DSeries</a></span> *&gt; Q3DBars::<span class="name">seriesList</span>() const</h3>
+<p>Returns the list of series added to this graph.</p>
+<p><b>See also </b><a href="qabstract3dgraph.html#hasSeries" translate="no">QAbstract3DGraph::hasSeries</a>().</p>
+<!-- @@@seriesList -->
+<!-- $$$setColumnAxis -->
+<h3 class="fn" translate="no" id="setColumnAxis"><span class="type">void</span> Q3DBars::<span class="name">setColumnAxis</span>(<span class="type"><a href="qcategory3daxis.html" translate="no">QCategory3DAxis</a></span> *<i>axis</i>)</h3>
+<p>Sets the axis of the active column to <i translate="no">axis</i>. Implicitly calls <a href="q3dbars.html#addAxis" translate="no">addAxis</a>() to transfer the ownership of the axis to this graph.</p>
+<p>If <i translate="no">axis</i> is null, a temporary default axis with no labels is created. This temporary axis is destroyed if another axis is set explicitly to the same orientation.</p>
+<div class="admonition note"><p><b>Note: </b>Setter function for property <a href="q3dbars.html#columnAxis-prop" translate="no">columnAxis</a>. </p>
+</div><p><b>See also </b><a href="q3dbars.html#columnAxis-prop" translate="no">columnAxis</a>(), <a href="q3dbars.html#addAxis" translate="no">addAxis</a>(), and <a href="q3dbars.html#releaseAxis" translate="no">releaseAxis</a>().</p>
+<!-- @@@setColumnAxis -->
+<!-- $$$setPrimarySeries -->
+<h3 class="fn" translate="no" id="setPrimarySeries"><span class="type">void</span> Q3DBars::<span class="name">setPrimarySeries</span>(<span class="type"><a href="qbar3dseries.html" translate="no">QBar3DSeries</a></span> *<i>series</i>)</h3>
+<p>Sets <i translate="no">series</i> as the primary series of the graph. The primary series determines the row and column axis labels when the labels are not explicitly set to the axes.</p>
+<p>If the specified series is not yet added to the graph, setting it as the primary series will also implicitly add it to the graph.</p>
+<p>If the primary series itself is removed from the graph, this property resets to default.</p>
+<p>If <i translate="no">series</i> is null, this property resets to default. Defaults to the first added series or zero if no series are added to the graph.</p>
+<div class="admonition note"><p><b>Note: </b>Setter function for property <a href="q3dbars.html#primarySeries-prop" translate="no">primarySeries</a>. </p>
+</div><p><b>See also </b><a href="q3dbars.html#primarySeries-prop" translate="no">primarySeries</a>().</p>
+<!-- @@@setPrimarySeries -->
+<!-- $$$setRowAxis -->
+<h3 class="fn" translate="no" id="setRowAxis"><span class="type">void</span> Q3DBars::<span class="name">setRowAxis</span>(<span class="type"><a href="qcategory3daxis.html" translate="no">QCategory3DAxis</a></span> *<i>axis</i>)</h3>
+<p>Sets the axis of the active row to <i translate="no">axis</i>. Implicitly calls <a href="q3dbars.html#addAxis" translate="no">addAxis</a>() to transfer the ownership of the axis to this graph.</p>
+<p>If <i translate="no">axis</i> is null, a temporary default axis with no labels is created. This temporary axis is destroyed if another axis is set explicitly to the same orientation.</p>
+<div class="admonition note"><p><b>Note: </b>Setter function for property <a href="q3dbars.html#rowAxis-prop" translate="no">rowAxis</a>. </p>
+</div><p><b>See also </b><a href="q3dbars.html#rowAxis-prop" translate="no">rowAxis</a>(), <a href="q3dbars.html#addAxis" translate="no">addAxis</a>(), and <a href="q3dbars.html#releaseAxis" translate="no">releaseAxis</a>().</p>
+<!-- @@@setRowAxis -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- skinning.qdoc -->
+  <meta name="description" content="Demonstrates how to render a simple skinning animation in Qt Quick 3D.">
+  <title>Qt Quick 3D - Simple Skinning Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Simple Skinning Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Simple Skinning Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef SKINGEOMETRY_H</span>
+ <span class="preprocessor">#define SKINGEOMETRY_H</span>
+
+ <span class="preprocessor">#include &lt;QtQuick3D/qquick3d.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtQuick3D/qquick3dgeometry.h&gt;</span>
+
+ <span class="preprocessor">#include &lt;QVector3D&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/QList&gt;</span>
+
+ <span class="keyword">class</span> SkinGeometry : <span class="keyword">public</span> QQuick3DGeometry
+ {
+     Q_OBJECT
+     QML_NAMED_ELEMENT(SkinGeometry)
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>QVector3D<span class="operator">&gt;</span> positions READ positions WRITE setPositions NOTIFY positionsChanged)
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#qint32-typedef" translate="no">qint32</a></span><span class="operator">&gt;</span> joints READ joints WRITE setJoints NOTIFY jointsChanged)
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span> weights READ weights WRITE setWeights NOTIFY weightsChanged)
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span><span class="operator">&gt;</span> indexes READ indexes WRITE setIndexes NOTIFY indexesChanged)
+
+ <span class="keyword">public</span>:
+     SkinGeometry(QQuick3DObject <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>QVector3D<span class="operator">&gt;</span> positions() <span class="keyword">const</span>;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#qint32-typedef" translate="no">qint32</a></span><span class="operator">&gt;</span> joints() <span class="keyword">const</span>;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span> weights() <span class="keyword">const</span>;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span><span class="operator">&gt;</span> indexes() <span class="keyword">const</span>;
+
+ <span class="keyword">public</span> Q_SLOTS:
+     <span class="type">void</span> setPositions(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>QVector3D<span class="operator">&gt;</span> <span class="operator">&amp;</span>positions);
+     <span class="type">void</span> setJoints(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#qint32-typedef" translate="no">qint32</a></span><span class="operator">&gt;</span> <span class="operator">&amp;</span>joints);
+     <span class="type">void</span> setWeights(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>weights);
+     <span class="type">void</span> setIndexes(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span><span class="operator">&gt;</span> <span class="operator">&amp;</span>indexes);
+
+ Q_SIGNALS:
+     <span class="type">void</span> positionsChanged();
+     <span class="type">void</span> jointsChanged();
+     <span class="type">void</span> weightsChanged();
+     <span class="type">void</span> indexesChanged();
+
+ <span class="keyword">protected</span>:
+     <span class="type">QSSGRenderGraphObject</span> <span class="operator">*</span>updateSpatialNode(<span class="type">QSSGRenderGraphObject</span> <span class="operator">*</span>node) override;
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>QVector3D<span class="operator">&gt;</span> m_positions;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#qint32-typedef" translate="no">qint32</a></span><span class="operator">&gt;</span> m_joints;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span> m_weights;
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span><span class="operator">&gt;</span> m_indexes;
+
+     <span class="type">bool</span> m_vertexDirty <span class="operator">=</span> <span class="keyword">false</span>;
+     <span class="type">bool</span> m_indexDirty <span class="operator">=</span> <span class="keyword">false</span>;
+
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> m_vertexBuffer;
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> m_indexBuffer;
+ };
+
+ <span class="preprocessor">#endif // SKINGEOMETRY_H</span>
+</pre>

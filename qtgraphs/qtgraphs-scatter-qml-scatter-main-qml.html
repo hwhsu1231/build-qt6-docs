@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- scatter.qdoc -->
+  <meta name="description" content="Using Scatter3D in a QML application.">
+  <title>Simple Scatter Graph | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Simple Scatter Graph</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Simple Scatter Graph</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtGraphs
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">mainView</span>
+     <span class="name">width</span>: <span class="number">1600</span>
+     <span class="name">height</span>: <span class="number">1200</span>
+
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">portraitMode</span>: <span class="name">width</span> <span class="operator">&lt;</span> <span class="name">height</span>
+     <span class="comment">// Adjust the button width based on screen orientation:</span>
+     <span class="comment">// If we're in portrait mode, just fit two buttons side-by-side, otherwise</span>
+     <span class="comment">// fit all of the buttons side-by-side.</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">buttonWidth</span>: <span class="name">mainView</span>.<span class="name">portraitMode</span> ? (<span class="name">mainView</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">2</span> <span class="operator">-</span> <span class="number">8</span>)
+                                                      : (<span class="name">mainView</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">6</span> <span class="operator">-</span> <span class="number">6</span>)
+
+     <span class="type">Data</span> {
+         <span class="name">id</span>: <span class="name">seriesData</span>
+     }
+
+     <span class="type"><a href="qml-qtgraphs-theme3d.html" translate="no">Theme3D</a></span> {
+         <span class="name">id</span>: <span class="name">themeQt</span>
+         <span class="name">type</span>: <span class="name">Theme3D</span>.<span class="name">ThemeQt</span>
+         <span class="name">font</span>.pointSize: <span class="number">40</span>
+     }
+
+     <span class="type"><a href="qml-qtgraphs-theme3d.html" translate="no">Theme3D</a></span> {
+         <span class="name">id</span>: <span class="name">themeRetro</span>
+         <span class="name">type</span>: <span class="name">Theme3D</span>.<span class="name">ThemeRetro</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+         <span class="name">id</span>: <span class="name">dataView</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+         <span class="comment">// Adjust the space based on screen orientation:</span>
+         <span class="comment">// If we're in portrait mode, we have 3 rows of buttons, otherwise they are all in one row.</span>
+         <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span> <span class="operator">-</span> (<span class="name">mainView</span>.<span class="name">portraitMode</span> ? <span class="name">shadowToggle</span>.<span class="name">implicitHeight</span> <span class="operator">*</span> <span class="number">3</span> <span class="operator">+</span> <span class="number">25</span>
+                                                        : <span class="name">shadowToggle</span>.<span class="name">implicitHeight</span> <span class="operator">+</span> <span class="number">10</span>)
+
+         <span class="type"><a href="qml-qtgraphs-scatter3d.html" translate="no">Scatter3D</a></span> {
+             <span class="name">id</span>: <span class="name">scatterGraph</span>
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">theme</span>: <span class="name">themeQt</span>
+             <span class="name">shadowQuality</span>: <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityHigh</span>
+             <span class="name">scene</span>.activeCamera.cameraPreset: <span class="name">Camera3D</span>.<span class="name">CameraPresetFront</span>
+             <span class="name">axisX</span>.segmentCount: <span class="number">3</span>
+             <span class="name">axisX</span>.subSegmentCount: <span class="number">2</span>
+             <span class="name">axisX</span>.labelFormat: <span class="string">&quot;%.2f&quot;</span>
+             <span class="name">axisZ</span>.segmentCount: <span class="number">2</span>
+             <span class="name">axisZ</span>.subSegmentCount: <span class="number">2</span>
+             <span class="name">axisZ</span>.labelFormat: <span class="string">&quot;%.2f&quot;</span>
+             <span class="name">axisY</span>.segmentCount: <span class="number">2</span>
+             <span class="name">axisY</span>.subSegmentCount: <span class="number">2</span>
+             <span class="name">axisY</span>.labelFormat: <span class="string">&quot;%.2f&quot;</span>
+             <span class="type"><a href="qml-qtgraphs-scatter3dseries.html" translate="no">Scatter3DSeries</a></span> {
+                 <span class="name">id</span>: <span class="name">scatterSeries</span>
+                 <span class="name">itemLabelFormat</span>: <span class="string">&quot;Series 1: X:@xLabel Y:@yLabel Z:@zLabel&quot;</span>
+
+                 <span class="type"><a href="qml-qtgraphs-itemmodelscatterdataproxy.html" translate="no">ItemModelScatterDataProxy</a></span> {
+                     <span class="name">itemModel</span>: <span class="name">seriesData</span>.<span class="name">model</span>
+                     <span class="name">xPosRole</span>: <span class="string">&quot;xPos&quot;</span>
+                     <span class="name">yPosRole</span>: <span class="string">&quot;yPos&quot;</span>
+                     <span class="name">zPosRole</span>: <span class="string">&quot;zPos&quot;</span>
+                 }
+             }
+
+             <span class="type"><a href="qml-qtgraphs-scatter3dseries.html" translate="no">Scatter3DSeries</a></span> {
+                 <span class="name">id</span>: <span class="name">scatterSeriesTwo</span>
+                 <span class="name">itemLabelFormat</span>: <span class="string">&quot;Series 2: X:@xLabel Y:@yLabel Z:@zLabel&quot;</span>
+                 <span class="name">itemSize</span>: <span class="number">0.05</span>
+                 <span class="name">mesh</span>: <span class="name">Abstract3DSeries</span>.<span class="name">MeshCube</span>
+
+                 <span class="type"><a href="qml-qtgraphs-itemmodelscatterdataproxy.html" translate="no">ItemModelScatterDataProxy</a></span> {
+                     <span class="name">itemModel</span>: <span class="name">seriesData</span>.<span class="name">modelTwo</span>
+                     <span class="name">xPosRole</span>: <span class="string">&quot;xPos&quot;</span>
+                     <span class="name">yPosRole</span>: <span class="string">&quot;yPos&quot;</span>
+                     <span class="name">zPosRole</span>: <span class="string">&quot;zPos&quot;</span>
+                 }
+             }
+             <span class="type"><a href="qml-qtgraphs-scatter3dseries.html" translate="no">Scatter3DSeries</a></span> {
+                 <span class="name">id</span>: <span class="name">scatterSeriesThree</span>
+                 <span class="name">itemLabelFormat</span>: <span class="string">&quot;Series 3: X:@xLabel Y:@yLabel Z:@zLabel&quot;</span>
+                 <span class="name">itemSize</span>: <span class="number">0.1</span>
+                 <span class="name">mesh</span>: <span class="name">Abstract3DSeries</span>.<span class="name">MeshMinimal</span>
+
+                 <span class="type"><a href="qml-qtgraphs-itemmodelscatterdataproxy.html" translate="no">ItemModelScatterDataProxy</a></span> {
+                     <span class="name">itemModel</span>: <span class="name">seriesData</span>.<span class="name">modelThree</span>
+                     <span class="name">xPosRole</span>: <span class="string">&quot;xPos&quot;</span>
+                     <span class="name">yPosRole</span>: <span class="string">&quot;yPos&quot;</span>
+                     <span class="name">zPosRole</span>: <span class="string">&quot;zPos&quot;</span>
+                 }
+             }
+         }
+     }
+
+     <span class="type">Button</span> {
+         <span class="name">id</span>: <span class="name">shadowToggle</span>
+         <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">buttonWidth</span> <span class="comment">// Calculated elsewhere based on screen orientation</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.margins: <span class="number">5</span>
+         <span class="name">text</span>: <span class="string">&quot;Hide Shadows&quot;</span>
+         <span class="name">onClicked</span>: {
+             <span class="keyword">if</span> (<span class="name">scatterGraph</span>.<span class="name">shadowQuality</span> <span class="operator">===</span> <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityNone</span>) {
+                 <span class="name">scatterGraph</span>.<span class="name">shadowQuality</span> <span class="operator">=</span> <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityHigh</span>;
+                 <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Hide Shadows&quot;</span>;
+             } <span class="keyword">else</span> {
+                 <span class="name">scatterGraph</span>.<span class="name">shadowQuality</span> <span class="operator">=</span> <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityNone</span>;
+                 <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show Shadows&quot;</span>;
+             }
+         }
+     }
+
+     <span class="type">Button</span> {
+         <span class="name">id</span>: <span class="name">smoothToggle</span>
+         <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">buttonWidth</span>
+         <span class="name">anchors</span>.left: <span class="name">shadowToggle</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.margins: <span class="number">5</span>
+         <span class="name">text</span>: <span class="string">&quot;Use Smooth for Series One&quot;</span>
+         <span class="name">onClicked</span>: {
+             <span class="keyword">if</span> (!<span class="name">scatterSeries</span>.<span class="name">meshSmooth</span>) {
+                 <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Use Flat for Series One&quot;</span>;
+                 <span class="name">scatterSeries</span>.<span class="name">meshSmooth</span> <span class="operator">=</span> <span class="number">true</span>;
+             } <span class="keyword">else</span> {
+                 <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Use Smooth for Series One&quot;</span>;
+                 <span class="name">scatterSeries</span>.<span class="name">meshSmooth</span> <span class="operator">=</span> <span class="number">false</span>;
+             }
+         }
+     }
+
+     <span class="type">Button</span> {
+         <span class="name">id</span>: <span class="name">cameraToggle</span>
+         <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">buttonWidth</span>
+         <span class="name">anchors</span>.left: <span class="name">mainView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">smoothToggle</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.top: <span class="name">mainView</span>.<span class="name">portraitMode</span> ? <span class="name">smoothToggle</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.margins: <span class="number">5</span>
+         <span class="name">text</span>: <span class="string">&quot;Change Camera Placement&quot;</span>
+         <span class="name">onClicked</span>: {
+             <span class="keyword">if</span> (<span class="name">scatterGraph</span>.<span class="name">scene</span>.<span class="name">activeCamera</span>.<span class="name">cameraPreset</span> <span class="operator">===</span> <span class="name">Camera3D</span>.<span class="name">CameraPresetFront</span>) {
+                 <span class="name">scatterGraph</span>.<span class="name">scene</span>.<span class="name">activeCamera</span>.<span class="name">cameraPreset</span> <span class="operator">=</span>
+                         <span class="name">Camera3D</span>.<span class="name">CameraPresetIsometricRightHigh</span>;
+             } <span class="keyword">else</span> {
+                 <span class="name">scatterGraph</span>.<span class="name">scene</span>.<span class="name">activeCamera</span>.<span class="name">cameraPreset</span> <span class="operator">=</span> <span class="name">Camera3D</span>.<span class="name">CameraPresetFront</span>;
+             }
+         }
+     }
+
+     <span class="type">Button</span> {
+         <span class="name">id</span>: <span class="name">themeToggle</span>
+         <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">buttonWidth</span>
+         <span class="name">anchors</span>.left: <span class="name">cameraToggle</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.top: <span class="name">mainView</span>.<span class="name">portraitMode</span> ? <span class="name">smoothToggle</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.margins: <span class="number">5</span>
+         <span class="name">text</span>: <span class="string">&quot;Change Theme&quot;</span>
+         <span class="name">onClicked</span>: {
+             <span class="keyword">if</span> (<span class="name">scatterGraph</span>.<span class="name">theme</span>.<span class="name">type</span> <span class="operator">===</span> <span class="name">Theme3D</span>.<span class="name">ThemeRetro</span>)
+                 <span class="name">scatterGraph</span>.<span class="name">theme</span> <span class="operator">=</span> <span class="name">themeQt</span>;
+             <span class="keyword">else</span>
+                 <span class="name">scatterGraph</span>.<span class="name">theme</span> <span class="operator">=</span> <span class="name">themeRetro</span>;
+             <span class="keyword">if</span> (<span class="name">scatterGraph</span>.<span class="name">theme</span>.<span class="name">backgroundEnabled</span>)
+                 <span class="name">backgroundToggle</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Hide Background&quot;</span>;
+             <span class="keyword">else</span>
+                 <span class="name">backgroundToggle</span>.<span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show Background&quot;</span>;
+         }
+     }
+
+     <span class="type">Button</span> {
+         <span class="name">id</span>: <span class="name">backgroundToggle</span>
+         <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">buttonWidth</span>
+         <span class="name">anchors</span>.left: <span class="name">mainView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">themeToggle</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.top: <span class="name">mainView</span>.<span class="name">portraitMode</span> ? <span class="name">themeToggle</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.margins: <span class="number">5</span>
+         <span class="name">text</span>: <span class="string">&quot;Hide Background&quot;</span>
+         <span class="name">onClicked</span>: {
+             <span class="keyword">if</span> (<span class="name">scatterGraph</span>.<span class="name">theme</span>.<span class="name">backgroundEnabled</span>) {
+                 <span class="name">scatterGraph</span>.<span class="name">theme</span>.<span class="name">backgroundEnabled</span> <span class="operator">=</span> <span class="number">false</span>;
+                 <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Show Background&quot;</span>;
+             } <span class="keyword">else</span> {
+                 <span class="name">scatterGraph</span>.<span class="name">theme</span>.<span class="name">backgroundEnabled</span> <span class="operator">=</span> <span class="number">true</span>;
+                 <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Hide Background&quot;</span>;
+             }
+         }
+     }
+
+     <span class="type">Button</span> {
+         <span class="name">id</span>: <span class="name">exitButton</span>
+         <span class="name">width</span>: <span class="name">mainView</span>.<span class="name">buttonWidth</span>
+         <span class="name">anchors</span>.left: <span class="name">backgroundToggle</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.top: <span class="name">mainView</span>.<span class="name">portraitMode</span> ? <span class="name">themeToggle</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.margins: <span class="number">5</span>
+         <span class="name">text</span>: <span class="string">&quot;Quit&quot;</span>
+         <span class="name">onClicked</span>: <span class="name">Qt</span>.<span class="name">quit</span>();
+     }
+ }
+</pre>

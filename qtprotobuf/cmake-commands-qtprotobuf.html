@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- cmake-commands.qdoc -->
+  <title>CMake Commands in Qt6 Protobuf | Qt Protobuf 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtprotobuf-index.html" translate="no">Qt Protobuf</a></li>
+<li>CMake Commands in Qt6 Protobuf</li>
+<li id="buildversion"><a href="qtprotobuf-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level2"><a href="#qml-extended-protobuf-example">QML extended protobuf example:</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">CMake Commands in Qt6 Protobuf</h1>
+<!-- $$$cmake-commands-qtprotobuf-description -->
+<div class="descr" id="details">
+<p>You should call the following CMake commands to use the Qt6::Protobuf module in your project:</p>
+<pre class="cpp plain" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS Protobuf)
+
+ target_link_libraries(mytarget PRIVATE Qt6::Protobuf)
+</pre>
+<p>You can use <i>qt-add-protobuf</i> CMake macros. The macros implicitly call Protobuf code generation for qt-project.</p>
+<p>The macros usage examples:</p>
+<pre class="cpp plain" translate="no">
+ cmake_minimum_required(VERSION 3.16..&#x2e;3&#x2e;22)
+ project(MyThings)
+
+ find_package(Qt6 REQUIRED COMPONENTS Protobuf)
+ qt_standard_project_setup()
+
+ qt_add_protobuf(MyMessages
+     GENERATE_PACKAGE_SUBFOLDERS
+     PROTO_FILES
+         path/to/message.proto
+         path/to/other_message.proto
+     PROTO_INCLUDES
+         /path/to/proto/include
+ )
+
+ qt_add_executable(MyApp main.cpp)
+
+ target_link_libraries(MyApp PRIVATE MyMessages)
+</pre>
+<p>In the example above, we generate a library called <code translate="no">MyMessages</code>, which contains the message types defined in the paths passed to the <code translate="no">PROTO_FILES</code> option. The <code translate="no">GENERATE_PACKAGE_SUBFOLDERS</code> option to generate a folder structure for the generated files. And the <code translate="no">PROTO_INCLUDES</code> option tells protoc to look for dependencies or imports in the specified directories. We create a target for an executable called <code translate="no">MyApp</code>, which we link to the <code translate="no">MyMessages</code> library.</p>
+<h3 id="qml-extended-protobuf-example">QML extended protobuf example:</h3>
+<pre class="cpp plain" translate="no">
+ cmake_minimum_required(VERSION 3.16..&#x2e;3&#x2e;22)
+ project(MyThings)
+
+ find_package(Qt6 REQUIRED COMPONENTS Protobuf Quick)
+ qt_standard_project_setup()
+
+ qt_add_protobuf(MyMessagesPlugin
+     QML
+     QML_URI my.messages.module.uri
+     PROTO_FILES
+         path/to/message.proto
+         path/to/other_message.proto
+     PROTO_INCLUDES
+         /path/to/proto/include
+ )
+
+ qt_add_qml_module(MyApp
+     URI example.uri
+     VERSION 1.0
+     QML_FILES qml/main.qml
+ )
+
+ qt_add_executable(MyApp main.cpp)
+ target_link_libraries(MyApp PRIVATE Quick)
+</pre>
+<p>In the QML extended example above, we generate a QML module called <code translate="no">MyMessagesPlugin</code>, which contains the message types defined in the paths passed to the <code translate="no">PROTO_FILES</code> option. We use the <code translate="no">QML</code> option, that enables proto message types registration in the <code translate="no">QML</code> context. The registered types will be available in <code translate="no">QML</code> by importing a path that is set by the <code translate="no">QML_URI</code>. Finally, we create a target for an executable called <code translate="no">MyApp</code>, which has a QML module for the graphical part and loads <code translate="no">MyMessagesPlugin</code> into the main.qml file via the <code translate="no">my.messages.module.uri</code> import.</p>
+</div>
+<p><b>See also </b><a href="../qtcmake/cmake-command-reference.html" translate="no">CMake Command Reference</a>.</p>
+<!-- @@@cmake-commands-qtprotobuf -->
+<div class="table"><table class="annotated">
+<tr class="odd topAlign"><td class="tblName" translate="no"><p><a href="qt-add-protobuf.html">qt_add_protobuf</a></p></td><td class="tblDescr"><p>Generates Qt-based C++ source code using a protobuf schema</p></td></tr>
+</table></div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

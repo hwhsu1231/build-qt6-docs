@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- geojson_viewer.qdoc -->
+  <meta name="description" content="The GeoJson viewer example demonstrates how to manipulate MapItems, handle user input and I/O to and from a GeoJson file.">
+  <title>GeoJson Viewer (C++/QML) | Qt Location 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtlocation-index.html" translate="no">Qt Location</a></li>
+<li><a href="qtlocation-examples.html" translate="no">Qt Location Examples</a></li>
+<li>GeoJson Viewer (C++/QML)</li>
+<li id="buildversion"><a href="qtlocation-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#creating-a-mapview">Creating a MapView</a></li>
+<li class="level1"><a href="#setting-up-the-geojson-model-display-mapitems">Setting up the GeoJson Model / Display MapItems</a></li>
+<li class="level1"><a href="#writing-mapitems-to-geojson">Writing MapItems to GeoJson</a></li>
+<li class="level1"><a href="#user-interaction-with-mapitems">User Interaction with MapItems</a></li>
+<li class="level1"><a href="#adding-new-items">Adding new Items</a></li>
+<li class="level1"><a href="#removing-items">Removing Items</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">GeoJson Viewer (C++/QML)</h1>
+<!-- $$$geojson_viewer-brief -->
+<p>The GeoJson viewer example demonstrates how to manipulate MapItems, handle user input and I/O to and from a GeoJson file.</p>
+<!-- @@@geojson_viewer -->
+<!-- $$$geojson_viewer-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/geojson_viewer.png" alt="" /></p><p>The example displays a map with various MapItems. The MapItems are either imported from a GeoJson file, using the <a href="qgeojson.html" translate="no">QGeoJson</a> API of <a href="qtlocation-module.html" translate="no">QtLocation</a> or drawn by the user using <a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandlers</a>.</p>
+<p>Examples for GeoJson files can be found in the directory data within the example directory. They are read and written using the <a href="qgeojson.html#importGeoJson" translate="no">importGeoJson</a> and <a href="qgeojson.html#exportGeoJson" translate="no">exportGeoJson</a> functions.</p>
+<p>To draw a MapItem, right click on an empty part of the map and select an item type of your choice in the appearing menu. The next clicks will define the chosen item. The example allows to draw <a href="qml-qtlocation-mapcircle.html" translate="no">MapCircles</a>, <a href="qml-qtlocation-maprectangle.html" translate="no">MapRectangles</a>, <a href="qml-qtlocation-mappolygon.html" translate="no">MapPolygons</a> and <a href="qml-qtlocation-mappolyline.html" translate="no">MapPolylines</a>. Items that are fully defined by two points, i.e&#x2e; circles and rectangles, are drawn with two clicks of the left mouse button. Items that are defined by multiple points, i.e&#x2e; polygons and polylines, are created by an arbitrary amount of left button clicks and completed with the right mouse button. Items drawn this way are saved as points, polygons and polylines to fit the GeoJson specification, see <a href="https://geojson.org/" translate="no">https://geojson.org/</a>.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="creating-a-mapview">Creating a MapView</h4>
+<p>First we create a base map on which all items can be placed on. We take advantage of a <a href="qml-qtlocation-mapview.html" translate="no">MapView</a> element that combines a basic <a href="qml-qtlocation-map.html" translate="no">Map</a> with input handling (mouse wheel, drag, etc.)&#x2e; The underlying <a href="qml-qtlocation-map.html" translate="no">Map</a> can be accessed with <a href="qml-qtlocation-mapview.html#map-prop" translate="no">map</a> property. If you miss a property in <a href="qml-qtlocation-mapview.html" translate="no">MapView</a> it can be most likely accessed with <a href="qml-qtlocation-mapview.html#map-prop" translate="no">MapView.map</a>.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtlocation-mapview.html" translate="no">MapView</a></span> {
+     <span class="name">id</span>: <span class="name">view</span>
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+     <span class="name">map</span>.plugin: <span class="name">Plugin</span> { <span class="name">name</span>: <span class="string">&quot;osm&quot;</span> }
+     <span class="name">map</span>.zoomLevel: <span class="number">4</span>
+</pre>
+<h4 id="setting-up-the-geojson-model-display-mapitems">Setting up the GeoJson Model / Display MapItems</h4>
+<p>In order to display file contents on the map we will use a design pattern known as <a href="../qtwidgets/model-view-programming.html" translate="no">Model/View Programming</a>. First we need to set up a suitable view, in this example a <a href="qml-qtlocation-mapitemview.html" translate="no">MapItemView</a> element. Its parent must be set to the underlying map of the <a href="qml-qtlocation-mapview.html" translate="no">MapView</a> to correctly display all items placed in it.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtlocation-mapitemview.html" translate="no">MapItemView</a></span> {
+     <span class="name">id</span>: <span class="name">miv</span>
+     <span class="name">parent</span>: <span class="name">view</span>.<span class="name">map</span>
+</pre>
+<p>Next we need a suitable model, representing a GeoJson file. The GeoJson file is converted into a tree of <a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMaps</a> and <a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantLists</a> within a C++ class in this example.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> GeoJsoner: <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span> model MEMBER m_importedGeoJson NOTIFY modelChanged)
+</pre>
+<p>The class contains a member <code translate="no">model</code> which will be set after reading a GeoJson file.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a></span> modelList <span class="operator">=</span> <span class="type"><a href="qgeojson.html" translate="no">QGeoJson</a></span><span class="operator">::</span>importGeoJson(loadDoc);
+ m_importedGeoJson <span class="operator">=</span>  modelList;
+ <span class="keyword">emit</span> modelChanged();
+</pre>
+<p>The class is made available to the QML Engine to further process the model in QML.</p>
+<pre class="cpp" translate="no">
+ qmlRegisterType<span class="operator">&lt;</span>GeoJsoner<span class="operator">&gt;</span>(<span class="string">&quot;Qt.GeoJson&quot;</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="string">&quot;GeoJsoner&quot;</span>);
+</pre>
+<p>The <a href="qml-qtlocation-mapitemview.html#model-prop" translate="no">model</a> property of the <a href="qml-qtlocation-mapitemview.html" translate="no">MapItemView</a> element can then be set to the <a href="../qtcore/qvariant.html" translate="no">QVariant</a> representation of the model:</p>
+<pre class="qml" translate="no">
+ <span class="name">model</span>: <span class="name">geoJsoner</span>.<span class="name">model</span>
+</pre>
+<p>Finally we need a delegate, translating the model data into a representation of items, filling the <a href="qml-qtlocation-mapitemview.html" translate="no">MapItemView</a>. It is set to the <a href="qml-qtlocation-mapitemview.html#delegate-prop" translate="no">delegate</a> property of the <a href="qml-qtlocation-mapitemview.html" translate="no">MapItemView</a>:</p>
+<pre class="qml" translate="no">
+ <span class="name">delegate</span>: <span class="name">GeoJsonDelegate</span> {
+ }
+</pre>
+<p>We use a <a href="../qtqmlmodels/qml-qt-labs-qmlmodels-delegatechooser.html" translate="no">DelegateChooser</a> element defined the file <code translate="no">GeoJsonDelegate.qml</code> to take into account the varying representation of different geometry types of GeoJson objects.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtqmlmodels/qml-qt-labs-qmlmodels-delegatechooser.html" translate="no">DelegateChooser</a></span> {
+     <span class="name">id</span>: <span class="name">dc</span>
+     <span class="name">role</span>: <span class="string">&quot;type&quot;</span>
+</pre>
+<p>Various <a href="../qtqmlmodels/qml-qt-labs-qmlmodels-delegatechoice.html" translate="no">DelegateChoices</a> are included, each representing a different geometry type to be found in a GeoJson file. The property <a href="../qtqmlmodels/qml-qt-labs-qmlmodels-delegatechooser.html#role-prop" translate="no">role</a> will be matched with <a href="../qtqmlmodels/qml-qt-labs-qmlmodels-delegatechoice.html#roleValue-prop" translate="no">DelegateChoice.roleValue</a> to determine the correct delegate.</p>
+<p>As an example, a point, described with <code translate="no">&quot;type&quot;:&quot;Point&quot;</code> in GeoJson, is represented by a <a href="qml-qtlocation-mapcircle.html" translate="no">MapCircle</a> on the <a href="qml-qtlocation-mapitemview.html" translate="no">MapItemView</a>:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtqmlmodels/qml-qt-labs-qmlmodels-delegatechoice.html" translate="no">DelegateChoice</a></span> {
+     <span class="name">roleValue</span>: <span class="string">&quot;Point&quot;</span>
+     <span class="name">delegate</span>: <span class="name">MapCircle</span> {
+         property <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span> <span class="name">geojsonType</span>: <span class="string">&quot;Point&quot;</span>
+         property <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span> <span class="name">props</span>: <span class="name">modelData</span>.<span class="name">properties</span>
+         <span class="name">geoShape</span>: <span class="name">modelData</span>.<span class="name">data</span>
+         <span class="name">radius</span>: (<span class="name">props</span> <span class="operator">&amp;&amp;</span> <span class="name">props</span>.<span class="name">radius</span>) <span class="operator">||</span> <span class="number">20</span><span class="operator">*</span><span class="number">1000</span>
+         <span class="name">border</span>.width: <span class="number">2</span>
+         <span class="name">border</span>.color: <span class="name">hh</span>.<span class="name">hovered</span> ? <span class="string">&quot;magenta&quot;</span> : <span class="name">Qt</span>.<span class="name">darker</span>(<span class="name">color</span>)
+         <span class="name">opacity</span>: <span class="name">dc</span>.<span class="name">defaultOpacity</span>
+         <span class="name">color</span>: (<span class="name">props</span> <span class="operator">&amp;&amp;</span> <span class="name">props</span>.<span class="name">color</span>) <span class="operator">||</span> (<span class="name">parent</span> <span class="operator">&amp;&amp;</span> <span class="name">parent</span>.<span class="name">props</span> <span class="operator">&amp;&amp;</span> <span class="name">parent</span>.<span class="name">props</span>.<span class="name">color</span>) <span class="operator">||</span> <span class="name">dc</span>.<span class="name">defaultColor</span>
+</pre>
+<p>Properties of the <a href="qml-qtlocation-mapcircle.html" translate="no">MapCircle</a>, such as <a href="qml-qtlocation-mapcircle.html#color-prop" translate="no">color</a> or <a href="qml-qtlocation-mapcircle.html#radius-prop" translate="no">radius</a> are attempted to be read from the GeoJson file that is available in form of the modelData property. However, this is not a strict standard of GeoJson and fallback values are set for all properties.</p>
+<h4 id="writing-mapitems-to-geojson">Writing MapItems to GeoJson</h4>
+<p>To write MapItems to a GeoJson file we first will convert the Mapitems into a representation of <a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMaps</a> and <a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantLists</a>. This is conducted in C++ in this example, as part of the <code translate="no">GeoJsoner</code> class used before:</p>
+<pre class="cpp" translate="no">
+ Q_INVOKABLE <span class="type"><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a></span> toVariant(<span class="type">QDeclarativeGeoMapItemView</span> <span class="operator">*</span>mapItemView)
+ {
+     <span class="type"><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a></span> res;
+     <span class="type">QDeclarativeGeoMapItemView</span> <span class="operator">*</span>root <span class="operator">=</span> mapItemView;
+     <span class="type"><a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMap</a></span> miv <span class="operator">=</span> extractor<span class="operator">::</span>toVariant(root);
+     <span class="keyword">if</span> (<span class="operator">!</span>miv<span class="operator">.</span>isEmpty())
+         res<span class="operator">.</span>append(miv);
+     <span class="keyword">return</span> res;
+ }
+</pre>
+<p><code translate="no">extractor</code> is a helper class that converts Mapitems into <a href="../qtcore/qvariant.html" translate="no">QVariant</a> representations, for example the <a href="qml-qtlocation-mapcircle.html" translate="no">MapCircle</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">static</span> <span class="type"><a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMap</a></span> toVariant(<span class="type">QDeclarativeCircleMapItem</span> <span class="operator">*</span>mapCircle)
+ {
+     <span class="type"><a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMap</a></span> pt;
+     pt<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="string">&quot;Point&quot;</span>;
+     pt<span class="operator">[</span><span class="string">&quot;data&quot;</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span><span class="operator">::</span>fromValue(mapCircle<span class="operator">-</span><span class="operator">&gt;</span>geoShape());
+     <span class="type"><a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMap</a></span> propMap <span class="operator">=</span> mapCircle<span class="operator">-</span><span class="operator">&gt;</span>property(<span class="string">&quot;props&quot;</span>)<span class="operator">.</span>toMap();
+     propMap<span class="operator">[</span><span class="string">&quot;radius&quot;</span><span class="operator">]</span> <span class="operator">=</span> mapCircle<span class="operator">-</span><span class="operator">&gt;</span>radius();
+     pt<span class="operator">[</span><span class="string">&quot;properties&quot;</span><span class="operator">]</span> <span class="operator">=</span> propMap;
+     <span class="keyword">return</span> pt;
+ }
+</pre>
+<p>In a second step the <a href="../qtcore/qvariant.html" translate="no">QVariant</a> representation can be dumped into a file using <a href="../qtcore/qjsondocument.html" translate="no">QJsonDocument</a>.</p>
+<pre class="cpp" translate="no">
+ Q_INVOKABLE <span class="type">void</span> dumpGeoJSON(<span class="type"><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a></span> geoJson<span class="operator">,</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> url)
+ {
+     <span class="type"><a href="../qtcore/qjsondocument.html" translate="no">QJsonDocument</a></span> json <span class="operator">=</span> <span class="type"><a href="qgeojson.html" translate="no">QGeoJson</a></span><span class="operator">::</span>exportGeoJson(geoJson);
+     <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> jsonFile(url<span class="operator">.</span>toLocalFile());
+     jsonFile<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>WriteOnly);
+     jsonFile<span class="operator">.</span>write(json<span class="operator">.</span>toJson());
+     jsonFile<span class="operator">.</span>close();
+ }
+</pre>
+<p>The two C++ functions that are required for writing files can be called from QML, thanks to the definition as <a href="../qtcore/qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>:</p>
+<pre class="qml" translate="no">
+ <span class="name">onAccepted</span>: {
+     <span class="name">geoJsoner</span>.<span class="name">dumpGeoJSON</span>(<span class="name">geoJsoner</span>.<span class="name">toVariant</span>(<span class="name">miv</span>), <span class="name">fileWriteDialog</span>.<span class="name">selectedFile</span>);
+ }
+</pre>
+<p>Note that we could use <code translate="no">geoJsoner.model</code> instead of rebuilding the <a href="../qtcore/qvariant.html" translate="no">QVariant</a> representation. However, the latter is done for demonstration purposes here.</p>
+<h4 id="user-interaction-with-mapitems">User Interaction with MapItems</h4>
+<p>To handle user interactions we will use <a href="../qtquick/qml-qtquick-pointhandler.html" translate="no">PointHandlers</a>. They are especially well suited for the task as they conform to the exact shape of the underlying item, in contrast to <a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a>, which always covers a square shape. MapItems that are imported from a GeoJson file get their own <a href="../qtquick/qml-qtquick-hoverhandler.html" translate="no">HoverHandler</a> and <a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a> directly in the delegate:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+     <span class="name">onTapped</span>: {
+         <span class="keyword">if</span> (<span class="name">props</span> <span class="operator">!==</span> <span class="name">undefined</span>)
+             <span class="name">console</span>.<span class="name">log</span>(<span class="name">props</span>.<span class="name">name</span>)
+         <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">parent</span>.<span class="name">parent</span>.<span class="name">geojsonType</span> <span class="operator">==</span> <span class="string">&quot;MultiPoint&quot;</span>)
+             <span class="name">console</span>.<span class="name">log</span>(<span class="name">parent</span>.<span class="name">parent</span>.<span class="name">props</span>.<span class="name">name</span>)
+         <span class="keyword">else</span>
+             <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;NO NAME!&quot;</span>, <span class="name">props</span>)
+     }
+ }
+ <span class="type"><a href="../qtquick/qml-qtquick-hoverhandler.html" translate="no">HoverHandler</a></span> {
+     <span class="name">id</span>: <span class="name">hh</span>
+ }
+</pre>
+<p>The <a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a> is used to write some information about the item on the console when the item is tapped. The <a href="../qtquick/qml-qtquick-hoverhandler.html" translate="no">HoverHandler</a> is used to highlight items that lie beneath the mouse pointer. This is implemented by describing the property <a href="qml-qtlocation-mapcircle.html#border.color-prop" translate="no">border.color</a> depending on the property / state <a href="../qtquick/qml-qtquick-hoverhandler.html#hovered-prop" translate="no">hovered</a> of the <a href="../qtquick/qml-qtquick-hoverhandler.html" translate="no">HoverHandler</a>.</p>
+<h4 id="adding-new-items">Adding new Items</h4>
+<p>A combination of <a href="../qtquick/qml-qtquick-hoverhandler.html" translate="no">HoverHandler</a> and <a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a> for the <a href="qml-qtlocation-mapview.html" translate="no">MapView</a> allows us to react to mouse movements and clicks by the user.</p>
+<p>If the <a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a> emits a <a href="../qtquick/qml-qtquick-taphandler.html#singleTapped-signal" translate="no">singleTapped</a> signal, we will create or modify a new MapItem on <a href="../qtcore/qt.html#MouseButton-enum" translate="no">LeftButton</a> and finish the MapItem on <a href="../qtcore/qt.html#MouseButton-enum" translate="no">RightButton</a>. If there is no item to finish then the <a href="../qtcore/qt.html#MouseButton-enum" translate="no">RightButton</a> will open a menu.</p>
+<pre class="qml" translate="no">
+ <span class="name">onSingleTapped</span>: (<span class="keyword"></span>eventPoint, button) =&gt; {
+     <span class="name">lastCoordinate</span> <span class="operator">=</span> <span class="name">view</span>.<span class="name">map</span>.<span class="name">toCoordinate</span>(<span class="name">tapHandler</span>.<span class="name">point</span>.<span class="name">position</span>)
+     <span class="keyword">if</span> (<span class="name">button</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">RightButton</span>) {
+         <span class="keyword">if</span> (<span class="name">view</span>.<span class="name">unfinishedItem</span> <span class="operator">!==</span> <span class="name">undefined</span>) {
+             <span class="name">view</span>.<span class="name">finishGeoItem</span>()
+         } <span class="keyword">else</span>
+             <span class="name">mapPopupMenu</span>.<span class="name">show</span>(<span class="name">lastCoordinate</span>)
+     } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">button</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">LeftButton</span>) {
+         <span class="keyword">if</span> (<span class="name">view</span>.<span class="name">unfinishedItem</span> <span class="operator">!==</span> <span class="name">undefined</span>) {
+             <span class="keyword">if</span> (<span class="name">view</span>.<span class="name">unfinishedItem</span>.<span class="name">addGeometry</span>(<span class="name">view</span>.<span class="name">map</span>.<span class="name">toCoordinate</span>(<span class="name">tapHandler</span>.<span class="name">point</span>.<span class="name">position</span>), <span class="number">false</span>)) {
+                 <span class="name">view</span>.<span class="name">finishGeoItem</span>()
+             }
+         }
+     }
+ }
+</pre>
+<p>The <a href="../qtquick/qml-qtquick-singlepointhandler.html#point-prop" translate="no">pointChanged</a> signal is used to temporarily update a MapItem, giving the user a preview.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-hoverhandler.html" translate="no">HoverHandler</a></span> {
+     <span class="name">id</span>: <span class="name">hoverHandler</span>
+     property <span class="type"><a href="../qtqml/qml-variant.html" translate="no">variant</a></span> <span class="name">currentCoordinate</span>
+     <span class="name">grabPermissions</span>: <span class="name">PointerHandler</span>.<span class="name">CanTakeOverFromItems</span> <span class="operator">|</span> <span class="name">PointerHandler</span>.<span class="name">CanTakeOverFromHandlersOfDifferentType</span>
+
+     <span class="name">onPointChanged</span>: {
+         <span class="name">currentCoordinate</span> <span class="operator">=</span> <span class="name">view</span>.<span class="name">map</span>.<span class="name">toCoordinate</span>(<span class="name">hoverHandler</span>.<span class="name">point</span>.<span class="name">position</span>)
+         <span class="keyword">if</span> (<span class="name">view</span>.<span class="name">unfinishedItem</span> <span class="operator">!==</span> <span class="name">undefined</span>)
+             <span class="name">view</span>.<span class="name">unfinishedItem</span>.<span class="name">addGeometry</span>(<span class="name">view</span>.<span class="name">map</span>.<span class="name">toCoordinate</span>(<span class="name">hoverHandler</span>.<span class="name">point</span>.<span class="name">position</span>), <span class="number">true</span>)
+     }
+ }
+</pre>
+<p>Mapitems are generated from prototypes that are defined in separate qml files. They are created using the <a href="../qtqml/qml-qtqml-qt.html#createComponent-method" translate="no">createComponent</a> function and added to the map with <a href="qml-qtlocation-map.html#addMapItem-method" translate="no">addMapItem</a>. A reference to the new item is stored for further manipulation by the user.</p>
+<pre class="qml" translate="no">
+ <span class="keyword">function </span><span class="name">addGeoItem</span>(item)
+ {
+     var co = <span class="name">Qt</span>.<span class="name">createComponent</span>(<span class="string">'mapitems/'</span><span class="operator">+</span><span class="name">item</span><span class="operator">+</span><span class="string">'.qml'</span>)
+     <span class="keyword">if</span> (<span class="name">co</span>.<span class="name">status</span> <span class="operator">===</span> <span class="name">Component</span>.<span class="name">Ready</span>) {
+         <span class="name">unfinishedItem</span> <span class="operator">=</span> <span class="name">co</span>.<span class="name">createObject</span>(<span class="name">map</span>)
+         <span class="name">unfinishedItem</span>.<span class="name">setGeometry</span>(<span class="name">tapHandler</span>.<span class="name">lastCoordinate</span>)
+         <span class="name">unfinishedItem</span>.<span class="name">addGeometry</span>(<span class="name">hoverHandler</span>.<span class="name">currentCoordinate</span>, <span class="number">false</span>)
+         <span class="name">view</span>.<span class="name">map</span>.<span class="name">addMapItem</span>(<span class="name">unfinishedItem</span>)
+     } <span class="keyword">else</span> {
+         <span class="name">console</span>.<span class="name">log</span>(<span class="name">item</span> <span class="operator">+</span> <span class="string">&quot; is not supported right now, please call us later.&quot;</span>)
+     }
+ }
+</pre>
+<p>Adding the item to the <a href="qml-qtlocation-map.html" translate="no">Map</a> is sufficient to display the item. However, in order to further use the item (e.g&#x2e; saving it to a file), it has has to be registered with the model. This is done after editing is finished:</p>
+<pre class="qml" translate="no">
+ <span class="keyword">function </span><span class="name">finishGeoItem</span>()
+ {
+     <span class="name">unfinishedItem</span>.<span class="name">finishAddGeometry</span>()
+     <span class="name">geoJsoner</span>.<span class="name">addItem</span>(<span class="name">unfinishedItem</span>)
+     <span class="name">map</span>.<span class="name">removeMapItem</span>(<span class="name">unfinishedItem</span>)
+     <span class="name">unfinishedItem</span> <span class="operator">=</span> <span class="name">undefined</span>
+ }
+</pre>
+<p>The class GeoJsoner converts the new item into a <a href="../qtcore/qvariant.html" translate="no">QVariant</a> representation and inserts the respective result into the existing <a href="../qtcore/qvariant.html" translate="no">QVariant</a> representation of all items:</p>
+<pre class="cpp" translate="no">
+ Q_INVOKABLE <span class="type">void</span> addItem(<span class="type"><a href="../qtquick/qquickitem.html" translate="no">QQuickItem</a></span> <span class="operator">*</span>item)
+ {
+     <span class="type"><a href="../qtcore/qvariant.html" translate="no">QVariant</a></span> entry;
+     <span class="keyword">if</span> (<span class="type">QDeclarativePolylineMapItem</span> <span class="operator">*</span>polyline <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type">QDeclarativePolylineMapItem</span> <span class="operator">*</span><span class="operator">&gt;</span>(item)) {
+         entry <span class="operator">=</span> extractor<span class="operator">::</span>toVariant(polyline);
+     } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="type">QDeclarativePolygonMapItem</span> <span class="operator">*</span>polygon <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type">QDeclarativePolygonMapItem</span> <span class="operator">*</span><span class="operator">&gt;</span>(item)) {
+         entry <span class="operator">=</span> extractor<span class="operator">::</span>toVariant(polygon);
+     } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="type">QDeclarativeCircleMapItem</span> <span class="operator">*</span>circle <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type">QDeclarativeCircleMapItem</span> <span class="operator">*</span><span class="operator">&gt;</span>(item)) {
+         entry <span class="operator">=</span> extractor<span class="operator">::</span>toVariant(circle);
+     } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="type">QDeclarativeRectangleMapItem</span> <span class="operator">*</span>rectangle <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type">QDeclarativeRectangleMapItem</span> <span class="operator">*</span><span class="operator">&gt;</span>(item)) {
+         entry <span class="operator">=</span> extractor<span class="operator">::</span>toVariant(rectangle);
+     } <span class="keyword">else</span> {
+         <span class="keyword">return</span>;
+     }
+     <span class="type"><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a></span> geoJson <span class="operator">=</span> m_importedGeoJson<span class="operator">.</span>toList();
+     <span class="keyword">if</span> (<span class="operator">!</span>geoJson<span class="operator">.</span>isEmpty()){
+         <span class="type"><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a></span> geoData <span class="operator">=</span> (geoJson<span class="operator">[</span><span class="number">0</span><span class="operator">]</span><span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;type&quot;</span><span class="operator">]</span> <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;FeatureCollection&quot;</span>) <span class="operator">?</span> geoJson<span class="operator">[</span><span class="number">0</span><span class="operator">]</span><span class="operator">.</span>toMap()<span class="operator">[</span><span class="string">&quot;data&quot;</span><span class="operator">]</span><span class="operator">.</span>toList() : geoJson;
+         geoData<span class="operator">.</span>append(entry);
+         geoJson<span class="operator">[</span><span class="number">0</span><span class="operator">]</span> <span class="operator">=</span> <span class="type"><a href="../qtcore/qvariant.html#QVariantMap-typedef" translate="no">QVariantMap</a></span>{{<span class="string">&quot;type&quot;</span><span class="operator">,</span> <span class="string">&quot;FeatureCollection&quot;</span>}<span class="operator">,</span> {<span class="string">&quot;data&quot;</span><span class="operator">,</span> geoData}};
+     }
+     <span class="keyword">else</span> {
+         geoJson<span class="operator">.</span>append(entry);
+     }
+     m_importedGeoJson <span class="operator">=</span> geoJson;
+     <span class="keyword">emit</span> modelChanged();
+ }
+</pre>
+<h4 id="removing-items">Removing Items</h4>
+<p>To remove all items from the map, we simply reset the model to an empty <a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a>. This is possible because we registered all new items with the model and items not added to the mode will not be affected. This is implemented in C++,</p>
+<pre class="cpp" translate="no">
+ Q_INVOKABLE <span class="type">void</span> clear()
+ {
+     m_importedGeoJson <span class="operator">=</span> <span class="type"><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a></span>();
+     <span class="keyword">emit</span> modelChanged();
+ }
+</pre>
+<p>and executed from QML</p>
+<pre class="qml" translate="no">
+ <span class="keyword">function </span><span class="name">clearAllItems</span>()
+ {
+     <span class="name">geoJsoner</span>.<span class="name">clear</span>();
+ }
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtlocation.git/tree/examples/location/geojson_viewer?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@geojson_viewer -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

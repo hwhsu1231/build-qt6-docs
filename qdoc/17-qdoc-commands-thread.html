@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qdoc-manual-contextcmds.qdoc -->
+  <title>Thread Support | QDoc Manual 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qdoc-index.html" translate="no">QDoc Manual</a></li>
+<li>Thread Support</li>
+<li id="buildversion"><a href="qdoc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="16-qdoc-commands-status.html" />
+  <link rel="next" href="18-qdoc-commands-relating.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="16-qdoc-commands-status.html">Status</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="18-qdoc-commands-relating.html">Relating Things</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#example">Example</a></li>
+<li class="level1"><a href="#commands">Commands</a></li>
+<li class="level2"><a href="#threadsafe">\threadsafe</a></li>
+<li class="level2"><a href="#reentrant">\reentrant</a></li>
+<li class="level2"><a href="#nonreentrant">\nonreentrant</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Thread Support</h1>
+<!-- $$$17-qdoc-commands-thread.html-description -->
+<div class="descr" id="details">
+<p>The thread support commands are for specifying the level of support for multithreaded programming in a class or function. There are three levels of support: <code translate="no">threadsafe</code>, <code translate="no">reentrant</code> and <code translate="no">nonreentrant</code>.</p>
+<p>The default is <code translate="no">nonreentrant</code> which means that the associated class or function cannot be called by multiple threads. <code translate="no">Reentrant</code> and <code translate="no">threadsafe</code> are levels primarily used for classes.</p>
+<p><code translate="no">Reentrant</code> means that all the functions in the referenced class can be called simultaneously by multiple threads, provided that each invocation of the functions reference unique data. While <code translate="no">threadsafe</code> means that all the functions in the referenced class can be called simultaneously by multiple threads even when each invocation references shared data.</p>
+<p>When a class is marked <a href="17-qdoc-commands-thread.html#reentrant-command" translate="no">\reentrant</a> or <a href="17-qdoc-commands-thread.html#threadsafe-command" translate="no">\threadsafe</a>, functions in that class can be marked <code translate="no">nonreentrant</code> using the <a href="17-qdoc-commands-thread.html#nonreentrant-command" translate="no">\nonreentrant</a> command.</p>
+<h2 id="example">Example</h2>
+<span id="reentrant-example"></span><pre class="cpp plain" translate="no">
+ /*!
+     \class QLocale
+     \brief The QLocale class converts between numbers and their
+     string representations in various languages.
+
+     \reentrant
+     \ingroup i18n
+     \ingroup text
+
+     QLocale is initialized with a language/country pair in its
+     constructor and offers number-to-string and string-to-number
+     conversion functions similar to those in QString.
+
+     ..&#x2e;
+
+     \nonreentrant
+
+     Sets the global default locale to \a locale. These values are
+     used when a QLocale object is constructed with no
+     arguments. If this function is not called, the system's locale
+     is used.
+
+     \warning In a multithreaded application, the default locale
+     should be set at application startup, before any non-GUI
+     threads are created.
+
+     \sa system(), c()
+ */
+ void QLocale::setDefault(const QLocale &amp;locale)
+ {
+     default_d = locale.d;
+ }
+</pre>
+<p>QDoc generates a notification when a class is declared reentrant, and lists the exceptions (the declared nonreentrant functions). A link to the general documentation on <a href="17-qdoc-commands-thread.html#reentrant" translate="no">reentrancy and thread-safety</a> is included. In addition a warning, &quot;<b>Warning</b>: This function is not reentrant.&quot;, is generated in the nonreentrant functions' documentation.</p>
+<p>QDoc will generate the same notification and warnings when a class is declared threadsafe.</p>
+<p>For more information see the general documentation on <a href="17-qdoc-commands-thread.html#reentrant" translate="no">reentrancy and thread-safety</a>.</p>
+<h2 id="commands">Commands</h2>
+<span id="threadsafe-command"></span><h3 id="threadsafe">\threadsafe</h3>
+<p>The \threadsafe command includes a line in the documentation to indicate that the associated class or function is <i>threadsafe</i> and can be called simultaneously by multiple threads, even when separate invocations reference shared data.</p>
+<p>The command must stand on its own line.</p>
+<p>The documentation generated from this command will be similar to the what is generated for the <a href="17-qdoc-commands-thread.html#reentrant-command" translate="no">\reentrant</a> command. See the example above in the <a href="17-qdoc-commands-thread.html#reentrant-example" translate="no">introduction</a>.</p>
+<p>See also <a href="17-qdoc-commands-thread.html#reentrant-command" translate="no">\reentrant</a> and <a href="17-qdoc-commands-thread.html#nonreentrant-command" translate="no">\nonreentrant</a>.</p>
+<span id="reentrant-command"></span><h3 id="reentrant">\reentrant</h3>
+<p>The \reentrant command indicates that the associated class or function can be called simultaneously by multiple threads, provided that each invocation references its own data. See the <a href="17-qdoc-commands-thread.html#reentrant-example" translate="no">example</a> above.</p>
+<p>The command must stand on its own line.</p>
+<p>See also <a href="17-qdoc-commands-thread.html#nonreentrant-command" translate="no">\nonreentrant</a> and <a href="17-qdoc-commands-thread.html#threadsafe-command" translate="no">\threadsafe</a>.</p>
+<span id="nonreentrant-command"></span><h3 id="nonreentrant">\nonreentrant</h3>
+<p>The \nonreentrant command indicates that the associated class or function cannot be called by multiple threads. Nonreentrant is the default case.</p>
+<p>The command must stand on its own line.</p>
+<p>When a class is marked <a href="17-qdoc-commands-thread.html#reentrant-command" translate="no">\reentrant</a> or <a href="17-qdoc-commands-thread.html#threadsafe-command" translate="no">\threadsafe</a>, functions in that class can be marked <code translate="no">nonreentrant</code> using this command in the <a href="13-qdoc-commands-topics.html#fn-command" translate="no">\fn</a> comment of the functions to be excluded.</p>
+<p>See also <a href="17-qdoc-commands-thread.html#reentrant-command" translate="no">\reentrant</a> and <a href="17-qdoc-commands-thread.html#threadsafe-command" translate="no">\threadsafe</a>.</p>
+</div>
+<!-- @@@17-qdoc-commands-thread.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="16-qdoc-commands-status.html">Status</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="18-qdoc-commands-relating.html">Relating Things</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

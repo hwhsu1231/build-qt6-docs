@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- chat.qdoc -->
+  <meta name="description" content="Using the Qt GRPC client API in the user applications.">
+  <title>Chat | Qt GRPC 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgrpc-index.html" translate="no">Qt GRPC</a></li>
+<li><a href="qtgrpc-examples.html" translate="no">Qt GRPC Examples</a></li>
+<li>Chat</li>
+<li id="buildversion"><a href="qtgrpc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Chat</h1>
+<!-- $$$chat-brief -->
+<p>Using the Qt GRPC client API in the user applications.</p>
+<!-- @@@chat -->
+<!-- $$$chat-description -->
+<div class="descr" id="details">
+<p><i>Chat</i> explains how to authenticate chat users and send and receive short messages between chat clients. The application supports the following message formats:</p>
+<ul>
+<li>Text - use message input field to send the message.</li>
+<li>Image - copy the image buffer to the clipboard to send the message using the <code translate="no">'Ctrl + V'</code> shortcut.</li>
+</ul>
+<p>The chat client uses a simple RPC protocol described in the protobuf scheme:</p>
+<pre class="cpp" translate="no">
+ package qtgrpc.examples.chat;
+
+ message ChatMessage
+ {
+     enum ContentType {
+         Unknown = 0;
+         Text = 1;
+         Image = 2;
+     };
+     uint64 timestamp = 1;
+     bytes content = 2;
+     ContentType type = 3;
+     string from = 4;
+ }
+
+ message ChatMessages
+ {
+     repeated ChatMessage messages = 1;
+ }
+
+ message User
+ {
+     string name = 1;
+     string password = 2;
+ }
+
+ message Users {
+     repeated User users = 1;
+ }
+
+ message None { }
+
+ service SimpleChat
+ {
+     rpc messageList(None) returns (stream ChatMessages) { }
+     rpc sendMessage(ChatMessage) returns (None) { }
+ }
+</pre>
+<p>On the login screen, enter user credentials:</p>
+<p class="centerAlign"><img src="images/chatlogin.webp" alt="" /></p><div class="admonition note">
+<p><b>Note: </b>The list of users is predefined on the server side and is constant. The password for all users is <code translate="no">qwerty</code>.</p>
+</div>
+<p>The chat client authenticates to the server using <code translate="no">user-name</code> and <code translate="no">user-password</code> HTTP headers. These fields are set by the QGrpcMetadata. Each gRPC message includes the user credentials in the message header. QGrpcMetadata is passed to the <a href="qgrpchttp2channel.html" translate="no">QGrpcHttp2Channel</a> inside <a href="qgrpcchanneloptions.html" translate="no">QGrpcChannelOptions</a> once and reused implicitily:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qgrpcchanneloptions.html" translate="no">QGrpcChannelOptions</a></span> channelOptions(url);
+ <span class="type">QGrpcMetadata</span> metadata <span class="operator">=</span> {
+     { <span class="string">&quot;user-name&quot;</span><span class="operator">,</span> { name<span class="operator">.</span>toUtf8() } }<span class="operator">,</span>
+     { <span class="string">&quot;user-password&quot;</span><span class="operator">,</span> { password<span class="operator">.</span>toUtf8() } }<span class="operator">,</span>
+ };
+ channelOptions<span class="operator">.</span>withMetadata(metadata);
+ std<span class="operator">::</span>shared_ptr<span class="operator">&lt;</span><span class="type"><a href="qabstractgrpcchannel.html" translate="no">QAbstractGrpcChannel</a></span><span class="operator">&gt;</span> channel <span class="operator">=</span> std<span class="operator">::</span>make_shared<span class="operator">&lt;</span>QGrpcHttp2Channel<span class="operator">&gt;</span>(
+         channelOptions);
+</pre>
+<p>The chat client starts the communication with the server using a subscription to gRPC server streaming:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> stream <span class="operator">=</span> m_client<span class="operator">-</span><span class="operator">&gt;</span>streamMessageList(qtgrpc<span class="operator">::</span>examples<span class="operator">::</span>chat<span class="operator">::</span>None());
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(stream<span class="operator">.</span>get()<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qgrpcstream.html" translate="no">QGrpcStream</a></span><span class="operator">::</span>errorOccurred<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                  <span class="operator">[</span><span class="keyword">this</span><span class="operator">,</span> stream<span class="operator">]</span>(<span class="keyword">const</span> <span class="type"><a href="qgrpcstatus.html" translate="no">QGrpcStatus</a></span> <span class="operator">&amp;</span>status) {
+                      <a href="../qtcore/qtlogging.html#qCritical" translate="no">qCritical</a>()
+                              <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Stream error(&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> status<span class="operator">.</span>code() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;):&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> status<span class="operator">.</span>message();
+                      <span class="keyword">if</span> (status<span class="operator">.</span>code() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="qgrpcstatus.html" translate="no">QGrpcStatus</a></span><span class="operator">::</span>Unauthenticated)
+                          <span class="keyword">emit</span> authFailed();
+                  });
+
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(stream<span class="operator">.</span>get()<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qgrpcstream.html" translate="no">QGrpcStream</a></span><span class="operator">::</span>finished<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                  <span class="operator">[</span><span class="keyword">this</span><span class="operator">,</span> stream<span class="operator">]</span>() { setState(Disconnected); });
+
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(
+         stream<span class="operator">.</span>get()<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qgrpcstream.html" translate="no">QGrpcStream</a></span><span class="operator">::</span>messageReceived<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">,</span> name<span class="operator">,</span> password<span class="operator">,</span> stream<span class="operator">]</span>() {
+             <span class="keyword">if</span> (m_userName <span class="operator">!</span><span class="operator">=</span> name) {
+                 m_userName <span class="operator">=</span> name;
+                 m_password <span class="operator">=</span> password;
+                 <span class="keyword">emit</span> userNameChanged();
+             }
+             setState(Connected);
+             m_messages<span class="operator">.</span>append(stream<span class="operator">-</span><span class="operator">&gt;</span>read<span class="operator">&lt;</span>qtgrpc<span class="operator">::</span>examples<span class="operator">::</span>chat<span class="operator">::</span>ChatMessages<span class="operator">&gt;</span>()<span class="operator">.</span>messages());
+         });
+</pre>
+<p>The <a href="qgrpcstream.html" translate="no">QGrpcStream</a> handler provides the signals that the client application should connect to.</p>
+<p>The <a href="qgrpcoperation.html#errorOccurred" translate="no">QGrpcStream::errorOccurred</a> signal indicates the error that occurred either on the server side or in the communication channel. Typically, an error results in the connection to the server being closed and the <a href="qgrpcoperation.html#finished" translate="no">QGrpcStream::finished</a> signal being emitted.</p>
+<p>When the server sends new messages to the stream, <a href="qgrpcstream.html" translate="no">QGrpcStream</a> emits the <a href="qgrpcstream.html#messageReceived" translate="no">QGrpcStream::messageReceived</a> signal. The slot connected to this signal processes the chat message. Messages that are received from the <code translate="no">SimpleChat/messageList</code> server stream are collected in the custom <a href="../qtcore/qabstractlistmodel.html" translate="no">QAbstractListModel</a> model and displayed to the user.</p>
+<p>When the <a href="qgrpcoperation.html#finished" translate="no">QGrpcStream::finished</a> signal is emitted, there is nothing more you can do with this stream instance, so you need to initiate a new subscription.</p>
+<p>After a successful subscription, the chat client switches to the conversation screen and allows you to see and send short messages:</p>
+<p class="centerAlign"><img src="images/chatconversation.webp" alt="" /></p><p>To send the message, use a unary RPC call <code translate="no">SimpleChat/sendMessage</code>. The client application first sets fields of the <code translate="no">ChatMessage</code> protobuf message and then calls the client method:</p>
+<pre class="cpp" translate="no">
+ qtgrpc<span class="operator">::</span>examples<span class="operator">::</span>chat<span class="operator">::</span>ChatMessage msg;
+ msg<span class="operator">.</span>setContent(content<span class="operator">.</span>toUtf8());
+ msg<span class="operator">.</span>setType(qtgrpc<span class="operator">::</span>examples<span class="operator">::</span>chat<span class="operator">::</span>ChatMessage<span class="operator">::</span>Text);
+ msg<span class="operator">.</span>setTimestamp(<span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span><span class="operator">::</span>currentMSecsSinceEpoch());
+ msg<span class="operator">.</span>setFrom(m_userName);
+ m_client<span class="operator">-</span><span class="operator">&gt;</span>sendMessage(msg);
+</pre>
+<p>Then, the gRPC server processes the client messages and broadcasts them to all the connected clients through the <code translate="no">SimpleChat/messageList</code> stream.</p>
+<div class="admonition note">
+<p><b>Note: </b>This example uses the reference gRPC C++ API in the server implementation.</p>
+</div>
+<p><a href="https://code.qt.io/cgit/qt/qtgrpc.git/tree/examples/grpc/chat?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@chat -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

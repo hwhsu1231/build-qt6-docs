@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtopcua.qdoc -->
+  <title>Qt OPC UA Overview | Qt OPC UA 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtopcua-index.html" translate="no">Qt OPC UA</a></li>
+<li>Qt OPC UA Overview</li>
+<li id="buildversion"><a href="qtopcua-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#implemented-features-from-the-opc-ua-protocol">Implemented Features from the OPC UA Protocol</a></li>
+<li class="level1"><a href="#data-types">Data Types</a></li>
+<li class="level1"><a href="#classes-and-ownership">Classes and Ownership</a></li>
+<li class="level1"><a href="#logging-categories">Logging Categories</a></li>
+<li class="level2"><a href="#open62541-specific-logging-categories">Open62541 specific Logging Categories</a></li>
+<li class="level1"><a href="#licenses">Licenses</a></li>
+<li class="level2"><a href="#open62541">Open62541</a></li>
+<li class="level2"><a href="#ua-cpp">UA CPP</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt OPC UA Overview</h1>
+<!-- $$$qtopcua-overview.html-description -->
+<div class="descr" id="details">
+<p>OPC UA is a protocol for data modelling and exchange of data in industrial applications.</p>
+<p>An OPC UA server offers access to data that is organized in a mesh of nodes connected by references. The use of different reference types and nodes containing metadata enable a client to navigate and interpret the data without knowing their structure in advance.</p>
+<p>Each node has a unique identifier and attributes that can be read and written. Among others, there are <i>Variable</i> nodes that store values and callable <i>Method</i> nodes with attached nodes describing parameters and return values. <i>Notifications</i> in case of events and monitoring of Variable nodes for value changes are offered too.</p>
+<p>Complex objects can be created by combining nodes using references. Inheritance is also possible. OPC UA offers support for pre-made models that can be extended to fit special needs.</p>
+<p>OPC UA is the platform-independent successor of OPC Classic intended for usage on all levels, from embedded sensors up to manufacturing execution and enterprise resource planning systems. It has a service-oriented architecture based on standardized messages for service requests and responses. There are different ways for these messages to be encoded and transported over the network. The most common way is binary encoding over TCP.</p>
+<h2 id="implemented-features-from-the-opc-ua-protocol">Implemented Features from the OPC UA Protocol</h2>
+<p>The following table summarizes the features of OPC UA that are supported by Qt OPC UA.</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Feature</th><th >Open62541 plugin</th><th >UACpp plugin</th></tr></thead>
+<tr valign="top" class="odd"><td >Read</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="even"><td >Batch read</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="odd"><td >Write</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="even"><td >Batch write</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="odd"><td >Multidimensional arrays</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="even"><td >Browse</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="odd"><td >Data change subscriptions</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="even"><td >Event subscriptions</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="odd"><td >Modify subscriptions / monitored Items</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="even"><td >Method calls</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="odd"><td >Browse path resolution</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="even"><td >GetEndpoints</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="odd"><td >FindServers</td><td >X</td><td >X</td></tr>
+<tr valign="top" class="even"><td >NodeManagement</td><td >X</td><td >X</td></tr>
+</table></div>
+<h2 id="data-types">Data Types</h2>
+<p>A subset of the OPC UA data types is currently supported in Qt OPC UA. Most of them are available with all backends.</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Data type</th><th >Open62541 plugin</th><th >UACpp plugin</th><th >Qt OPC UA data type</th></tr></thead>
+<tr valign="top" class="odd"><td >Int16, Int32, Int64</td><td >X</td><td >X</td><td >Directly used</td></tr>
+<tr valign="top" class="even"><td >UInt16, UInt32, UInt64</td><td >X</td><td >X</td><td >Directly used</td></tr>
+<tr valign="top" class="odd"><td >Byte</td><td >X</td><td >X</td><td >quint8</td></tr>
+<tr valign="top" class="even"><td >SByte</td><td >X</td><td >X</td><td >qint8</td></tr>
+<tr valign="top" class="odd"><td >Boolean</td><td >X</td><td >X</td><td >Directly used</td></tr>
+<tr valign="top" class="even"><td >Double</td><td >X</td><td >X</td><td >Directly used</td></tr>
+<tr valign="top" class="odd"><td >Float</td><td >X</td><td >X</td><td >Directly used</td></tr>
+<tr valign="top" class="even"><td >String</td><td >X</td><td >X</td><td ><a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td ><a href="qml-qtopcua-localizedtext.html" translate="no">LocalizedText</a></td><td >X</td><td >X</td><td ><a href="qopcualocalizedtext.html" translate="no">QOpcUaLocalizedText</a></td></tr>
+<tr valign="top" class="even"><td >DateTime</td><td >X</td><td >X</td><td ><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></td></tr>
+<tr valign="top" class="odd"><td >ByteString</td><td >X</td><td >X</td><td ><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></td></tr>
+<tr valign="top" class="even"><td >XmlElement</td><td >X</td><td >X</td><td ><a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td ><a href="qml-qtopcua-nodeid.html" translate="no">NodeId</a></td><td >X</td><td >X</td><td ><a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >GUID</td><td >X</td><td >X</td><td ><a href="../qtcore/quuid.html" translate="no">QUuid</a></td></tr>
+<tr valign="top" class="odd"><td >QualifiedName</td><td >X</td><td >X</td><td ><a href="qopcuaqualifiedname.html" translate="no">QOpcUaQualifiedName</a></td></tr>
+<tr valign="top" class="even"><td >StatusCode</td><td >X</td><td >X</td><td ><a href="qopcua.html#UaStatusCode-enum" translate="no">QOpcUa::UaStatusCode</a></td></tr>
+<tr valign="top" class="odd"><td >Range</td><td >X</td><td >X</td><td ><a href="qopcuarange.html" translate="no">QOpcUaRange</a></td></tr>
+<tr valign="top" class="even"><td >EUInformation</td><td >X</td><td >X</td><td ><a href="qopcuaeuinformation.html" translate="no">QOpcUaEUInformation</a></td></tr>
+<tr valign="top" class="odd"><td >ComplexNumber</td><td >X</td><td >X</td><td ><a href="qopcuacomplexnumber.html" translate="no">QOpcUaComplexNumber</a></td></tr>
+<tr valign="top" class="even"><td >DoubleComplexNumber</td><td >X</td><td >X</td><td ><a href="qopcuadoublecomplexnumber.html" translate="no">QOpcUaDoubleComplexNumber</a></td></tr>
+<tr valign="top" class="odd"><td >AxisInformation</td><td >X</td><td >X</td><td ><a href="qopcuaaxisinformation.html" translate="no">QOpcUaAxisInformation</a></td></tr>
+<tr valign="top" class="even"><td >XV</td><td >X</td><td >X</td><td ><a href="qopcuaxvalue.html" translate="no">QOpcUaXValue</a></td></tr>
+<tr valign="top" class="odd"><td >Argument</td><td >X</td><td >X</td><td ><a href="qopcuaargument.html" translate="no">QOpcUaArgument</a></td></tr>
+<tr valign="top" class="even"><td >ExpandedNodeId</td><td >X</td><td >X</td><td ><a href="qopcuaexpandednodeid.html" translate="no">QOpcUaExpandedNodeId</a></td></tr>
+<tr valign="top" class="odd"><td >ExtensionObject</td><td >X</td><td >X</td><td ><a href="qopcuaextensionobject.html" translate="no">QOpcUaExtensionObject</a></td></tr>
+</table></div>
+<h2 id="classes-and-ownership">Classes and Ownership</h2>
+<p>Two important classes are exposed to the user: <a href="qopcuaclient.html" translate="no">QOpcUaClient</a> and <a href="qopcuanode.html" translate="no">QOpcUaNode</a>.</p>
+<p>Objects of both classes are owned by the user and must be deleted when they are no longer needed.</p>
+<h2 id="logging-categories">Logging Categories</h2>
+<p>The following table summarizes the logging categories that are used by Qt OPC UA.</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Logging Category</th><th >Description</th></tr></thead>
+<tr valign="top" class="odd"><td >qt.opcua</td><td >Plugin independent messages generated by <a href="qopcuaprovider.html" translate="no">QOpcUaProvider</a> and <a href="qopcuaclient.html" translate="no">QOpcUaClient</a></td></tr>
+<tr valign="top" class="even"><td >qt.opcua.plugins.open62541</td><td >Messages generated by the open62541 plugin</td></tr>
+<tr valign="top" class="odd"><td >qt.opcua.plugins.uacpp</td><td >Messages generated by the UACpp plugin</td></tr>
+</table></div>
+<h3 id="open62541-specific-logging-categories">Open62541 specific Logging Categories</h3>
+<p>The open62541 sdk logging categories depend on the log level for open62541, which is configured at compile time. The default is 300, which enables: info, warning, error and critical. To obtain less or more verbose output, the open62541 sdk needs to be rebuilt with a different configuration.</p>
+<p>The following table shows the logging categories used by open62541:</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Open62541 Logging Category</th><th >Description</th></tr></thead>
+<tr valign="top" class="odd"><td >qt.opcua.plugins.open62541.sdk.network</td><td >Messages generated by the open62541 network</td></tr>
+<tr valign="top" class="even"><td >qt.opcua.plugins.open62541.sdk.securechannel</td><td >Messages generated by the open62541 channel</td></tr>
+<tr valign="top" class="odd"><td >qt.opcua.plugins.open62541.sdk.session</td><td >Messages generated by the open62541 session</td></tr>
+<tr valign="top" class="even"><td >qt.opcua.plugins.open62541.sdk.server</td><td >Messages generated by open62541 server components</td></tr>
+<tr valign="top" class="odd"><td >qt.opcua.plugins.open62541.sdk.client</td><td >Messages generated by the open62541 client</td></tr>
+<tr valign="top" class="even"><td >qt.opcua.plugins.open62541.sdk.userland</td><td >Messages generated by the open62541 userland</td></tr>
+<tr valign="top" class="odd"><td >qt.opcua.plugins.open62541.sdk.securitypolicy</td><td >Messages generated by the open62541 security policies</td></tr>
+</table></div>
+<h2 id="licenses">Licenses</h2>
+<p>The Qt OPC UA module is available under commercial licenses from <a href="http://www.qt.io/about-us/" translate="no">The Qt Company</a>. In addition, it is available under free software licenses. These free software licenses are <a href="http://www.gnu.org/licenses/lgpl-3.0.html" translate="no">GNU Lesser General Public License, version 3</a>, or the <a href="http://www.gnu.org/licenses/gpl-2.0.html" translate="no">GNU General Public License, version 2</a>. See <a href="../qtdoc/licensing.html" translate="no">Qt Licensing</a> for further details.</p>
+<p>Qt OPC UA in Qt 6.6&#x2e;0 may contain third party modules under following permissive licenses:</p>
+<div class="table"><table class="annotated">
+<tr class="odd topAlign"><td class="tblName" translate="no"><p><a href="qtopcua-attribution-open62541.html">Open62541, version 1.3&#x2e;6</a></p></td><td class="tblDescr"><p>Mozilla Public License 2.0 and Creative Commons Zero v1.0 Universal and Creative Commons Attribution Non Commercial Share Alike 4.0 International and BSD 3-Clause &quot;New&quot; or &quot;Revised&quot; License and Apache License 2.0 and MIT License</p></td></tr>
+</table></div>
+<p>Linking to external libraries involves licenses from the backend providers.</p>
+<h3 id="open62541">Open62541</h3>
+<p>The Open62541 plugin is available under the same licenses as Qt OPC UA. The Open62541 library itself is licensed under <a href="https://open62541.org" translate="no">Mozilla Public License v2.0</a>.</p>
+<p>The security support is provided by the OpenSSL plugins of the open62541 library. If the open62541 plugin is built with security support and OpenSSL is not available on the target system, the open62541 plugin will fail to load.</p>
+<h3 id="ua-cpp">UA CPP</h3>
+<p>The UA CPP plugin is available under commercial licenses from <a href="http://www.qt.io/about-us/" translate="no">The Qt Company</a>. In addition, it is available under the <a href="http://www.gnu.org/licenses/gpl-3.0.html" translate="no">GNU General Public License, version 3</a>. The UA CPP library itself is available under commercial licenses from <a href="https://www.unified-automation.com" translate="no">Unified Automation</a>.</p>
+</div>
+<!-- @@@qtopcua-overview.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

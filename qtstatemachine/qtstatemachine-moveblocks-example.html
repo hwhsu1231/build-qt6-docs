@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- moveblocks.qdoc -->
+  <meta name="description" content="The Move Blocks example shows how to animate items in a QGraphicsScene using a QStateMachine with a custom transition.">
+  <title>Move Blocks | Qt State Machine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtstatemachine-index.html" translate="no">Qt State Machine</a></li>
+<li><a href="examples-qtstatemachine.html" translate="no">Qt State Machine Examples</a></li>
+<li>Move Blocks</li>
+<li id="buildversion"><a href="qtstatemachine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#the-main-function">The <code translate="no">main()</code> Function</a></li>
+<li class="level2"><a href="#the-creategeometrystate-function">The <code translate="no">createGeometryState()</code> Function</a></li>
+<li class="level1"><a href="#the-stateswitcher-class">The StateSwitcher Class</a></li>
+<li class="level1"><a href="#the-stateswitchtransition-class">The StateSwitchTransition Class</a></li>
+<li class="level1"><a href="#the-stateswitchevent-class">The StateSwitchEvent Class</a></li>
+<li class="level1"><a href="#the-qgraphicsrectwidget-class">The QGraphicsRectWidget Class</a></li>
+<li class="level1"><a href="#moving-on">Moving On</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Move Blocks</h1>
+<!-- $$$moveblocks-brief -->
+<p>The Move Blocks example shows how to animate items in a <a href="../qtwidgets/qgraphicsscene.html" translate="no">QGraphicsScene</a> using a <a href="qstatemachine.html" translate="no">QStateMachine</a> with a custom transition.</p>
+<!-- @@@moveblocks -->
+<!-- $$$moveblocks-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/moveblocks-example.png" alt="" /></p><p>The example animates the blue blocks that you can see in the image above. The animation moves the blocks between four preset positions.</p>
+<p>The example consists of the following classes:</p>
+<ul>
+<li><code translate="no">StateSwitcher</code> inherits <a href="qstate.html" translate="no">QState</a> and can add <code translate="no">StateSwitchTransition</code>s to other states. When entered, it will randomly transition to one of these states.</li>
+<li><code translate="no">StateSwitchTransition</code> is a custom transition that triggers on <code translate="no">StateSwitchEvent</code>s.</li>
+<li><code translate="no">StateSwitchEvent</code> is a <a href="../qtcore/qevent.html" translate="no">QEvent</a> that triggers <code translate="no">StateSwitchTransition</code>s.</li>
+<li><code translate="no">QGraphicsRectWidget</code> is a <a href="../qtwidgets/qgraphicswidget.html" translate="no">QGraphicsWidget</a> that simply paints its background in a solid <a href="../qtcore/qt.html#GlobalColor-enum" translate="no">blue</a> color.</li>
+</ul>
+<p>The blocks are instances of <code translate="no">QGraphicsRectWidget</code> and are animated in a <a href="../qtwidgets/qgraphicsscene.html" translate="no">QGraphicsScene</a>. We do this by building a state graph, which we insert animations into. The graph is then executed in a <a href="qstatemachine.html" translate="no">QStateMachine</a>. All this is done in <code translate="no">main()</code>. Let's look at the <code translate="no">main()</code> function first.</p>
+<h4 id="the-main-function">The <code translate="no">main()</code> Function</h4>
+<p>After <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> has been initialized, we set up the <a href="../qtwidgets/qgraphicsscene.html" translate="no">QGraphicsScene</a> with its <code translate="no">QGraphicsRectWidget</code>s.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">auto</span> button1 <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QGraphicsRectWidget</span>;
+     <span class="keyword">auto</span> button2 <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QGraphicsRectWidget</span>;
+     <span class="keyword">auto</span> button3 <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QGraphicsRectWidget</span>;
+     <span class="keyword">auto</span> button4 <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QGraphicsRectWidget</span>;
+     button2<span class="operator">-</span><span class="operator">&gt;</span>setZValue(<span class="number">1</span>);
+     button3<span class="operator">-</span><span class="operator">&gt;</span>setZValue(<span class="number">2</span>);
+     button4<span class="operator">-</span><span class="operator">&gt;</span>setZValue(<span class="number">3</span>);
+     <span class="type"><a href="../qtwidgets/qgraphicsscene.html" translate="no">QGraphicsScene</a></span> scene(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">300</span><span class="operator">,</span> <span class="number">300</span>);
+     scene<span class="operator">.</span>setBackgroundBrush(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+     scene<span class="operator">.</span>addItem(button1);
+     scene<span class="operator">.</span>addItem(button2);
+     scene<span class="operator">.</span>addItem(button3);
+     scene<span class="operator">.</span>addItem(button4);
+</pre>
+<p>After adding the scene to a <a href="../qtwidgets/qgraphicsview.html" translate="no">QGraphicsView</a>, it is time to build the state graph. Let's first look at a statechart of what we are trying to build.</p>
+<p class="centerAlign"><img src="images/move-blocks-chart.png" alt="" /></p><p>Note that the <code translate="no">group</code> has seven sub states, but we have only included three of them in the diagram. The code that builds this graph will be examined line-by-line, and will show how the graph works. First off, we construct the <code translate="no">group</code> state:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="qstatemachine.html" translate="no">QStateMachine</a></span> machine;
+
+     <span class="keyword">auto</span> group <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qstate.html" translate="no">QState</a></span>;
+     group<span class="operator">-</span><span class="operator">&gt;</span>setObjectName(<span class="string">&quot;group&quot;</span>);
+     <span class="type"><a href="../qtcore/qtimer.html" translate="no">QTimer</a></span> timer;
+     timer<span class="operator">.</span>setInterval(<span class="number">1250</span>);
+     timer<span class="operator">.</span>setSingleShot(<span class="keyword">true</span>);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(group<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qstate.html" translate="no">QState</a></span><span class="operator">::</span>entered<span class="operator">,</span> <span class="operator">&amp;</span>timer<span class="operator">,</span> <span class="type">QOverload</span><span class="operator">&lt;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span><span class="type"><a href="../qtcore/qtimer.html" translate="no">QTimer</a></span><span class="operator">::</span>start));
+</pre>
+<p>The timer is used to add a delay between each time the blocks are moved. The timer is started when <code translate="no">group</code> is entered. As we will see later, <code translate="no">group</code> has a transition back to the <code translate="no">StateSwitcher</code> when the timer times out. <code translate="no">group</code> is the initial state in the machine, so an animation will be scheduled when the example is started.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">auto</span> state1 <span class="operator">=</span> createGeometryState(button1<span class="operator">,</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span>(<span class="number">100</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">50</span><span class="operator">,</span> <span class="number">50</span>)<span class="operator">,</span>
+                                       button2<span class="operator">,</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span>(<span class="number">150</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">50</span><span class="operator">,</span> <span class="number">50</span>)<span class="operator">,</span>
+                                       button3<span class="operator">,</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span>(<span class="number">200</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">50</span><span class="operator">,</span> <span class="number">50</span>)<span class="operator">,</span>
+                                       button4<span class="operator">,</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span>(<span class="number">250</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">50</span><span class="operator">,</span> <span class="number">50</span>)<span class="operator">,</span>
+                                       group);
+     ...
+     <span class="keyword">auto</span> state7 <span class="operator">=</span> createGeometryState(button1<span class="operator">,</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">50</span><span class="operator">,</span> <span class="number">50</span>)<span class="operator">,</span>
+                                       button2<span class="operator">,</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span>(<span class="number">250</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">50</span><span class="operator">,</span> <span class="number">50</span>)<span class="operator">,</span>
+                                       button3<span class="operator">,</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">250</span><span class="operator">,</span> <span class="number">50</span><span class="operator">,</span> <span class="number">50</span>)<span class="operator">,</span>
+                                       button4<span class="operator">,</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span>(<span class="number">250</span><span class="operator">,</span> <span class="number">250</span><span class="operator">,</span> <span class="number">50</span><span class="operator">,</span> <span class="number">50</span>)<span class="operator">,</span>
+                                       group);
+     group<span class="operator">-</span><span class="operator">&gt;</span>setInitialState(state1);
+</pre>
+<p><code translate="no">createGeometryState()</code> returns a <a href="qstate.html" translate="no">QState</a> that will set the geometry of our items upon entry. It also assigns <code translate="no">group</code> as the parent of this state.</p>
+<p>A <a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a> inserted into a transition will use the values assigned to a <a href="qstate.html" translate="no">QState</a> (with <a href="qstate.html#assignProperty" translate="no">QState::assignProperty</a>()), i.e&#x2e;, the animation will interpolate between the current values of the properties and the values in the target state. We add animated transitions to the state graph later.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtcore/qparallelanimationgroup.html" translate="no">QParallelAnimationGroup</a></span> animationGroup;
+
+     <span class="keyword">auto</span> anim <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a></span>(button4<span class="operator">,</span> <span class="string">&quot;geometry&quot;</span>);
+     anim<span class="operator">-</span><span class="operator">&gt;</span>setDuration(<span class="number">1000</span>);
+     anim<span class="operator">-</span><span class="operator">&gt;</span>setEasingCurve(<span class="type"><a href="../qtcore/qeasingcurve.html" translate="no">QEasingCurve</a></span><span class="operator">::</span>OutElastic);
+     animationGroup<span class="operator">.</span>addAnimation(anim);
+</pre>
+<p>We move the items in parallel. Each item is added to <code translate="no">animationGroup</code>, which is the animation that is inserted into the transitions.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">auto</span> subGroup <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtcore/qsequentialanimationgroup.html" translate="no">QSequentialAnimationGroup</a></span>(<span class="operator">&amp;</span>animationGroup);
+     subGroup<span class="operator">-</span><span class="operator">&gt;</span>addPause(<span class="number">100</span>);
+     anim <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a></span>(button3<span class="operator">,</span> <span class="string">&quot;geometry&quot;</span>);
+     anim<span class="operator">-</span><span class="operator">&gt;</span>setDuration(<span class="number">1000</span>);
+     anim<span class="operator">-</span><span class="operator">&gt;</span>setEasingCurve(<span class="type"><a href="../qtcore/qeasingcurve.html" translate="no">QEasingCurve</a></span><span class="operator">::</span>OutElastic);
+     subGroup<span class="operator">-</span><span class="operator">&gt;</span>addAnimation(anim);
+</pre>
+<p>The sequential animation group, <code translate="no">subGroup</code>, helps us insert a delay between the animation of each item.</p>
+<pre class="cpp" translate="no">
+     <span class="keyword">auto</span> stateSwitcher <span class="operator">=</span> <span class="keyword">new</span> StateSwitcher(<span class="operator">&amp;</span>machine);
+     stateSwitcher<span class="operator">-</span><span class="operator">&gt;</span>setObjectName(<span class="string">&quot;stateSwitcher&quot;</span>);
+     group<span class="operator">-</span><span class="operator">&gt;</span>addTransition(<span class="operator">&amp;</span>timer<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtcore/qtimer.html" translate="no">QTimer</a></span><span class="operator">::</span>timeout<span class="operator">,</span> stateSwitcher);
+     stateSwitcher<span class="operator">-</span><span class="operator">&gt;</span>addState(state1<span class="operator">,</span> <span class="operator">&amp;</span>animationGroup);
+     stateSwitcher<span class="operator">-</span><span class="operator">&gt;</span>addState(state2<span class="operator">,</span> <span class="operator">&amp;</span>animationGroup);
+     ...
+     stateSwitcher<span class="operator">-</span><span class="operator">&gt;</span>addState(state7<span class="operator">,</span> <span class="operator">&amp;</span>animationGroup);
+</pre>
+<p>A StateSwitchTransition is added to the state switcher in <code translate="no">StateSwitcher::addState()</code>. We also add the animation in this function. Since <a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a> uses the values from the states, we can insert the same <a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a> instance in all <code translate="no">StateSwitchTransition</code>s.</p>
+<p>As mentioned previously, we add a transition to the state switcher that triggers when the timer times out.</p>
+<pre class="cpp" translate="no">
+     machine<span class="operator">.</span>addState(group);
+     machine<span class="operator">.</span>setInitialState(group);
+     machine<span class="operator">.</span>start();
+</pre>
+<p>Finally, we can create the state machine, add our initial state, and start execution of the state graph.</p>
+<h5 id="the-creategeometrystate-function">The <code translate="no">createGeometryState()</code> Function</h5>
+<p>In <code translate="no">createGeometryState()</code>, we set up the geometry for each graphics item.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">static</span> <span class="type"><a href="qstate.html" translate="no">QState</a></span> <span class="operator">*</span>createGeometryState(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>w1<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span> <span class="operator">&amp;</span>rect1<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>w2<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span> <span class="operator">&amp;</span>rect2<span class="operator">,</span>
+                                    <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>w3<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span> <span class="operator">&amp;</span>rect3<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>w4<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qrect.html" translate="no">QRect</a></span> <span class="operator">&amp;</span>rect4<span class="operator">,</span>
+                                    <span class="type"><a href="qstate.html" translate="no">QState</a></span> <span class="operator">*</span>parent)
+ {
+     <span class="keyword">auto</span> result <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qstate.html" translate="no">QState</a></span>(parent);
+     result<span class="operator">-</span><span class="operator">&gt;</span>assignProperty(w1<span class="operator">,</span> <span class="string">&quot;geometry&quot;</span><span class="operator">,</span> rect1);
+     result<span class="operator">-</span><span class="operator">&gt;</span>assignProperty(w2<span class="operator">,</span> <span class="string">&quot;geometry&quot;</span><span class="operator">,</span> rect2);
+     result<span class="operator">-</span><span class="operator">&gt;</span>assignProperty(w3<span class="operator">,</span> <span class="string">&quot;geometry&quot;</span><span class="operator">,</span> rect3);
+     result<span class="operator">-</span><span class="operator">&gt;</span>assignProperty(w4<span class="operator">,</span> <span class="string">&quot;geometry&quot;</span><span class="operator">,</span> rect4);
+
+     <span class="keyword">return</span> result;
+ }
+</pre>
+<p>As mentioned before, <a href="qml-qtqml-statemachine-qabstracttransition.html" translate="no">QAbstractTransition</a> will set up an animation added with <a href="qabstracttransition.html#addAnimation" translate="no">addAnimation</a>() using property values set with <a href="qstate.html#assignProperty" translate="no">assignProperty</a>().</p>
+<h4 id="the-stateswitcher-class">The StateSwitcher Class</h4>
+<p><code translate="no">StateSwitcher</code> has state switch transitions to each <a href="qstate.html" translate="no">QState</a>s we created with <code translate="no">createGeometryState()</code>. Its job is to transition to one of these states at random when it is entered.</p>
+<p>All functions in <code translate="no">StateSwitcher</code> are inlined. We'll step through its definition.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> StateSwitcher : <span class="keyword">public</span> <span class="type"><a href="qstate.html" translate="no">QState</a></span>
+ {
+     Q_OBJECT
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> StateSwitcher(<span class="type"><a href="qstatemachine.html" translate="no">QStateMachine</a></span> <span class="operator">*</span>machine) : <span class="type"><a href="qstate.html" translate="no">QState</a></span>(machine) { }
+</pre>
+<p><code translate="no">StateSwitcher</code> is a state designed for a particular purpose and will always be a top-level state. We use <code translate="no">m_stateCount</code> to keep track of how many states we are managing, and <code translate="no">m_lastIndex</code> to remember which state was the last state to which we transitioned.</p>
+<pre class="cpp" translate="no">
+     <span class="type">void</span> onEntry(<span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span> <span class="operator">*</span>) override
+     {
+         <span class="type">int</span> n;
+         <span class="keyword">while</span> ((n <span class="operator">=</span> <span class="type"><a href="../qtcore/qrandomgenerator.html" translate="no">QRandomGenerator</a></span><span class="operator">::</span>global()<span class="operator">-</span><span class="operator">&gt;</span>bounded(m_stateCount) <span class="operator">+</span> <span class="number">1</span>) <span class="operator">=</span><span class="operator">=</span> m_lastIndex)
+         { }
+         m_lastIndex <span class="operator">=</span> n;
+         machine()<span class="operator">-</span><span class="operator">&gt;</span>postEvent(<span class="keyword">new</span> StateSwitchEvent(n));
+     }
+     <span class="type">void</span> onExit(<span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span> <span class="operator">*</span>) override {}
+</pre>
+<p>We select the next state we are going to transition to, and post a <code translate="no">StateSwitchEvent</code>, which we know will trigger the <code translate="no">StateSwitchTransition</code> to the selected state.</p>
+<pre class="cpp" translate="no">
+     <span class="type">void</span> addState(<span class="type"><a href="qstate.html" translate="no">QState</a></span> <span class="operator">*</span>state<span class="operator">,</span> <span class="type"><a href="../qtcore/qabstractanimation.html" translate="no">QAbstractAnimation</a></span> <span class="operator">*</span>animation) {
+         <span class="keyword">auto</span> trans <span class="operator">=</span> <span class="keyword">new</span> StateSwitchTransition(<span class="operator">+</span><span class="operator">+</span>m_stateCount);
+         trans<span class="operator">-</span><span class="operator">&gt;</span>setTargetState(state);
+         addTransition(trans);
+         trans<span class="operator">-</span><span class="operator">&gt;</span>addAnimation(animation);
+     }
+</pre>
+<p>This is where the magic happens. We assign a number to each state added. This number is given to both a StateSwitchTransition and to StateSwitchEvents. As we have seen, state switch events will trigger a transition with the same number.</p>
+<h4 id="the-stateswitchtransition-class">The StateSwitchTransition Class</h4>
+<p><code translate="no">StateSwitchTransition</code> inherits <a href="qml-qtqml-statemachine-qabstracttransition.html" translate="no">QAbstractTransition</a> and triggers on <code translate="no">StateSwitchEvent</code>s. It contains only inline functions, so let's take a look at its <a href="qabstracttransition.html#eventTest" translate="no">eventTest</a>() function, which is the only function that we define..</p>
+<pre class="cpp" translate="no">
+     <span class="type">bool</span> eventTest(<span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span> <span class="operator">*</span>event) override
+     {
+         <span class="keyword">return</span> (event<span class="operator">-</span><span class="operator">&gt;</span>type() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span><span class="operator">::</span>Type(StateSwitchEvent<span class="operator">::</span>StateSwitchType))
+             <span class="operator">&amp;</span><span class="operator">&amp;</span> (<span class="keyword">static_cast</span><span class="operator">&lt;</span>StateSwitchEvent <span class="operator">*</span><span class="operator">&gt;</span>(event)<span class="operator">-</span><span class="operator">&gt;</span>rand() <span class="operator">=</span><span class="operator">=</span> m_rand);
+     }
+</pre>
+<p><code translate="no">eventTest</code> is called by <a href="qstatemachine.html" translate="no">QStateMachine</a> when it checks whether a transition should be triggered&ndash;a return value of true means that it will. We simply check if our assigned number is equal to the event's number (in which case we fire away).</p>
+<h4 id="the-stateswitchevent-class">The StateSwitchEvent Class</h4>
+<p><code translate="no">StateSwitchEvent</code> inherits <a href="../qtcore/qevent.html" translate="no">QEvent</a>, and holds a number that has been assigned to a state and state switch transition by <code translate="no">StateSwitcher</code>. We have already seen how it is used to trigger <code translate="no">StateSwitchTransition</code>s in <code translate="no">StateSwitcher</code>.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> StateSwitchEvent: <span class="keyword">public</span> <span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span>
+ {
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> StateSwitchEvent(<span class="type">int</span> rand) : <span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span>(StateSwitchType)<span class="operator">,</span> m_rand(rand) { }
+
+     <span class="keyword">static</span> constexpr <span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span><span class="operator">::</span>Type StateSwitchType <span class="operator">=</span> <span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span><span class="operator">::</span>Type(<span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span><span class="operator">::</span>User <span class="operator">+</span> <span class="number">256</span>);
+
+     <span class="type">int</span> rand() <span class="keyword">const</span> { <span class="keyword">return</span> m_rand; }
+
+ <span class="keyword">private</span>:
+     <span class="type">int</span> m_rand;
+ };
+</pre>
+<p>We only have inlined functions in this class, so a look at its definition will do.</p>
+<h4 id="the-qgraphicsrectwidget-class">The QGraphicsRectWidget Class</h4>
+<p>QGraphicsRectWidget inherits <a href="../qtwidgets/qgraphicswidget.html" translate="no">QGraphicsWidget</a> and simply paints its <a href="../qtwidgets/qwidget.html#rect-prop" translate="no">rect</a>() blue. We inline <a href="../qtwidgets/qwidget.html#paintEvent" translate="no">paintEvent</a>(), which is the only function we define. Here is the QGraphicsRectWidget class definition:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> <span class="type">QGraphicsRectWidget</span> : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qgraphicswidget.html" translate="no">QGraphicsWidget</a></span>
+ {
+ <span class="keyword">public</span>:
+     <span class="type">void</span> paint(<span class="type"><a href="../qtgui/qpainter.html" translate="no">QPainter</a></span> <span class="operator">*</span>painter<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtwidgets/qstyleoptiongraphicsitem.html" translate="no">QStyleOptionGraphicsItem</a></span> <span class="operator">*</span><span class="operator">,</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>) override
+     {
+         painter<span class="operator">-</span><span class="operator">&gt;</span>fillRect(rect()<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>blue);
+     }
+ };
+</pre>
+<h4 id="moving-on">Moving On</h4>
+<p>The technique shown in this example works equally well for all <a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a>s. As long as the value to be animated is a Qt property, you can insert an animation of it into a state graph.</p>
+<p>QState::addAnimation() takes a <a href="../qtcore/qabstractanimation.html" translate="no">QAbstractAnimation</a>, so any type of animation can be inserted into the graph.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtscxml.git/tree/examples/statemachine/moveblocks?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@moveblocks -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

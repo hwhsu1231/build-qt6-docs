@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-principledmaterial.qdoc -->
+  <meta name="description" content="Demonstrates the use of Principled Material.">
+  <title>Qt Quick 3D - Principled Material Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Principled Material Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Principled Material Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+ import QtQuick3D
+
+ <span class="comment">// qmllint disable missing-property</span>
+ <span class="comment">// Disabling missing-property because the targetMaterial property</span>
+ <span class="comment">// will either be a PrincipaledMaterial or SpecularGlossyMaterial</span>
+ <span class="comment">// but the shared properties are not part of the common base class</span>
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-scrollview.html" translate="no">ScrollView</a></span> {
+     <span class="name">id</span>: <span class="name">rootView</span>
+     required property <span class="type"><a href="qml-qtquick3d-material.html" translate="no">Material</a></span> <span class="name">targetMaterial</span>
+     <span class="name">ScrollBar</span>.horizontal.policy: <span class="name">ScrollBar</span>.<span class="name">AlwaysOff</span>
+     <span class="name">width</span>: <span class="name">availableWidth</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">specularGlossyMode</span>: <span class="number">false</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">width</span>: <span class="name">rootView</span>.<span class="name">availableWidth</span>
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `# Refraction
+ The properties in this section would probably be best described as advanced
+ transparency. In the previous section on transparency we discussed alpha
+ blending, which is about blending colors together using the alpha channel of
+ the material's color. What makes the transparency effects in this section
+ different is that the goal is to handle transparency in a way that more
+ physically represents how light works. To achieve this blending requires that
+ all content that is blended with needs to be rendered to a texture in separate
+ pass. Using any properties on this page is as expensive as rendering all opaque
+ content in the scene at least twice. Once to get the background items, and again
+ including the items using the refractive transparency effects. The advantage of
+ this approach though is that we are not limited in how we can blend, but comes
+ with the caveat that only opaque items are visible through refracted objects.`
+         }
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `## Transmission
+ Transmission refers to lights ability to transmit, or pass through a surface.  Not all
+ light will penetrate a surface and some will still be reflected as a specular
+ reflection. This ability to transmit light only concerns the surface of a material, and
+ not its depth. Without the use of further properties in this section, a material that
+ has transmission alone can be assumed to be infinitely thin.
+ ### Transmission Factor
+ The Transmission Factor property controls the percentage of light that is transmitted by
+ a materials surface.  This value is a single value between 0.0 meaning no light is
+ transmitted and 1.0 meaning that 100% of the light that penetrates the surface of the
+ material is transmitted through.
+
+ Note: If you adjust the Transmission Factor to 1.0 and you still can't see
+ through the models, it could be that your material is metallic. Metallic materials
+ cannot transmit light.`
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+             <span class="name">text</span>: <span class="string">&quot;Reset Metalness to 0.0&quot;</span>
+             <span class="name">onClicked</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">metalness</span> <span class="operator">=</span> <span class="number">0.0</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Transmission Factor (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">transmissionFactor</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">transmissionFactor</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">transmissionFactor</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Transmission Map
+ Like most other single floating point value properties, the Transmission property
+ also allows for the use of a single channel of a texture to map transmission values
+ to a mesh. And like many other textures, the final value of transmission will be
+ the multiplication of Transmission Factor and the value sampled from Transmission Map.
+ So when using a Transmission Map, it typically makes sense to set the Transmission
+ Factor to 1.0.
+ `
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+             <span class="name">text</span>: <span class="string">&quot;Reset Transmission&quot;</span>
+             <span class="name">onClicked</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">transmissionFactor</span> <span class="operator">=</span> <span class="number">1.0</span>
+         }
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+             <span class="name">id</span>: <span class="name">transmissionChannelComboBox</span>
+             <span class="name">textRole</span>: <span class="string">&quot;text&quot;</span>
+             <span class="name">valueRole</span>: <span class="string">&quot;value&quot;</span>
+             <span class="name">implicitContentWidthPolicy</span>: <span class="name">ComboBox</span>.<span class="name">WidestText</span>
+             <span class="name">onActivated</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">transmissionChannel</span> <span class="operator">=</span> <span class="name">currentValue</span>
+             <span class="name">Component</span>.onCompleted: <span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">indexOfValue</span>(<span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">transmissionChannel</span>)
+             <span class="name">model</span>: [
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">R</span>, text: <span class="string">&quot;Red Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">G</span>, text: <span class="string">&quot;Green Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">B</span>, text: <span class="string">&quot;Blue Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">A</span>, text: <span class="string">&quot;Alpha Channel&quot;</span>}
+             ]
+         }
+         <span class="type">TextureSourceControl</span> {
+             <span class="name">defaultTexture</span>: <span class="string">&quot;maps/noise.png&quot;</span>
+             <span class="name">defaultClearColor</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">onTargetTextureChanged</span>: {
+                 <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">transmissionMap</span> <span class="operator">=</span> <span class="name">targetTexture</span>
+             }
+         }
+
+         <span class="type">VerticalSectionSeparator</span> {}
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+             <span class="name">visible</span>: !<span class="name">rootView</span>.<span class="name">specularGlossyMode</span>
+             <span class="type">MarkdownLabel</span> {
+                 <span class="name">text</span>: `## Index of Refraction (IOR)
+ The Index of Refraction or refraction index refers to the physical property of
+ how fast light passes through a material. This number then is used to determine
+ how light is bent or refracted when it enters a material. Since this value is
+ a physical value, it's possible to plug in the same values as real life
+ materials as well. The default value that the PrincipledMaterial uses for all
+ lighting calculations is 1.5, which is very close to window glass. Below are
+ several other materials' IOR values that will produce different results when
+ used with a refractive material (especially ones with thickness).`
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                 <span class="name">id</span>: <span class="name">iorChannelComboBox</span>
+                 <span class="name">textRole</span>: <span class="string">&quot;text&quot;</span>
+                 <span class="name">valueRole</span>: <span class="string">&quot;value&quot;</span>
+                 <span class="name">implicitContentWidthPolicy</span>: <span class="name">ComboBox</span>.<span class="name">WidestText</span>
+                 <span class="name">onActivated</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">indexOfRefraction</span> <span class="operator">=</span> <span class="name">currentValue</span>
+                 <span class="name">Component</span>.onCompleted: <span class="name">currentIndex</span> <span class="operator">=</span> <span class="number">0</span>
+                 <span class="name">model</span>: [
+                     { value: <span class="number">1.5</span>, text: <span class="string">&quot;Custom&quot;</span>},
+                     { value: <span class="number">1.4</span>, text: <span class="string">&quot;Acrylic glass&quot;</span>},
+                     { value: <span class="number">1.0</span>, text: <span class="string">&quot;Air&quot;</span>},
+                     { value: <span class="number">1.33</span>, text: <span class="string">&quot;Water&quot;</span>},
+                     { value: <span class="number">1.76</span>, text: <span class="string">&quot;Sapphire&quot;</span>},
+                     { value: <span class="number">2.42</span>, text: <span class="string">&quot;Diamond&quot;</span>}
+                 ]
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                     <span class="name">text</span>: <span class="string">&quot;IOR (&quot;</span> <span class="operator">+</span> <span class="name">iorSlider</span>.<span class="name">value</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                     <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                 }
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                     <span class="name">id</span>: <span class="name">iorSlider</span>
+                     <span class="name">from</span>: <span class="number">1.0</span>
+                     <span class="name">to</span>: <span class="number">3.0</span>
+                     <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">indexOfRefraction</span> <span class="operator">??</span> <span class="number">1.5</span>
+                     <span class="name">onValueChanged</span>: {
+                         <span class="keyword">if</span> (<span class="name">iorChannelComboBox</span>.<span class="name">currentValue</span> <span class="operator">!=</span> <span class="name">value</span>)
+                             <span class="name">iorChannelComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="number">0</span>;
+                         <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">indexOfRefraction</span> <span class="operator">=</span> <span class="name">value</span>
+                     }
+                 }
+             }
+
+             <span class="type">VerticalSectionSeparator</span> {}
+         }
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `## Thickness
+ The Thickness properties are for giving refractive materials volume.  A
+ transmissive material alone is considered to be infinitely thin so any
+ Index of Refraction values will only affect the specular and fresnel
+ effects of a material.  However when a transmissive material is given
+ volume via the thickness properties, then light passing through the
+ material is bent as it passes through.
+ ### Thickness Factor
+ The Thickness Factor property defines the thickness of the volume beneath
+ the surface of the mesh.  Unlike other factors, the Thickness Factor
+ Property is not clipped at 1.0, but rather refers to the distance in the
+ coordinate space of the mesh itself.  When used in conjunction with the
+ Thickness Map, the Thickness Factor would be the point of maximum thickness.
+ `
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Thickness Factor (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">thicknessFactor</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">100.0</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">thicknessFactor</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">thicknessFactor</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Thickness Map
+ The Thickness Map is a single channel (greyscale) texture that defines
+ the thickness (or volume) of a mesh.  The values sampled from the
+ Thickness Map are multiplied against the value of Thickness Factor to
+ get the thickness of the mesh under the surface in the meshe's coordinate
+ space.  Thickness Maps are baked in 3D content creation tools using ray
+ tracers. The process of baking thickness is similar to the process for
+ baking ambient occlusion, but the rays are cast in the opposite direction
+ of the surface normal (into the mesh).  Darker values represent thin
+ sections, and lighter values will be thicker.  Provided is a baked thickness
+ map of the Monkey model. (The other models would have uniform thicknesses).`
+         }
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+             <span class="name">id</span>: <span class="name">thicknessChannelComboBox</span>
+             <span class="name">textRole</span>: <span class="string">&quot;text&quot;</span>
+             <span class="name">valueRole</span>: <span class="string">&quot;value&quot;</span>
+             <span class="name">implicitContentWidthPolicy</span>: <span class="name">ComboBox</span>.<span class="name">WidestText</span>
+             <span class="name">onActivated</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">thicknessChannel</span> <span class="operator">=</span> <span class="name">currentValue</span>
+             <span class="name">Component</span>.onCompleted: <span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">indexOfValue</span>(<span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">thicknessChannel</span>)
+             <span class="name">model</span>: [
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">R</span>, text: <span class="string">&quot;Red Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">G</span>, text: <span class="string">&quot;Green Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">B</span>, text: <span class="string">&quot;Blue Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">A</span>, text: <span class="string">&quot;Alpha Channel&quot;</span>}
+             ]
+         }
+         <span class="type">TextureSourceControl</span> {
+             <span class="name">defaultTexture</span>: <span class="string">&quot;maps/monkey_thickness.jpg&quot;</span>
+             <span class="name">defaultClearColor</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">onTargetTextureChanged</span>: {
+                 <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">thicknessMap</span> <span class="operator">=</span> <span class="name">targetTexture</span>
+             }
+         }
+
+         <span class="type">VerticalSectionSeparator</span> {}
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `## Attenuation
+ As light passes through a volume it will be subject to absorption and scattering.
+ To simulate this interaction, two properties are provided for determining this
+ attenuation.
+ ### Attenuation Color
+ The Attenuation Color property refers to the color that white light turns into
+ due to the absorption when reaching the attenuation distance.
+ `
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Red (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationColor</span>.<span class="name">r</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationColor</span>.<span class="name">r</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationColor</span>.<span class="name">r</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Green  (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationColor</span>.<span class="name">g</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationColor</span>.<span class="name">g</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationColor</span>.<span class="name">g</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Blue (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationColor</span>.<span class="name">b</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationColor</span>.<span class="name">b</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationColor</span>.<span class="name">b</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Attenuation Distance
+ Attenuation Distance defines material density, but does so by describing the
+ average distance light must travel through the medium before interacting with a
+ particle (absorption). In this case the distance is specified in world
+ coordinate space (scene space). This distance can be any positive floating point
+ value. This means the attenuation color will start to appear when the thickness
+ is greater than the attenuation distance, with the caveat that the Attenuation
+ Color assumes white light is passing through the model, so any other light will
+ create a blended result. For this demonstration the slider value is limited to
+ 100, which should be the maximum thickness for all 3 models.`
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Attenuation Distance (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationDistance</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">100</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationDistance</span>
+                 <span class="name">onValueChanged</span>:  {
+                     <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!=</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationDistance</span>)
+                         <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">attenuationDistance</span> <span class="operator">=</span> <span class="name">value</span>
+                 }
+             }
+         }
+     }
+ }
+ <span class="comment">// qmllint enable missing-property</span>
+</pre>

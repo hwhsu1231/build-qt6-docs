@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- sharedlibrary.qdoc -->
+  <meta name="description" content="How to create shared libraries.">
+  <title>Creating Shared Libraries | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li><a href="best-practices.html" translate="no">Best Practice Guides</a></li>
+<li>Creating Shared Libraries</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#using-symbols-from-shared-libraries">Using Symbols from Shared Libraries</a></li>
+<li class="level1"><a href="#header-file-considerations">Header File Considerations</a></li>
+<li class="level1"><a href="#binary-compatibility">Binary Compatibility</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Creating Shared Libraries</h1>
+<!-- $$$sharedlibrary.html-description -->
+<div class="descr" id="details">
+<p>The following sections list certain things that should be taken into account when creating shared libraries.</p>
+<h2 id="using-symbols-from-shared-libraries">Using Symbols from Shared Libraries</h2>
+<p>Symbols - functions, variables or classes - contained in shared libraries intended to be used by <i>clients</i>, such as applications or other libraries, must be marked in a special way. These symbols are called <i>public symbols</i> that are <i>exported</i> or made publicly visible.</p>
+<p>The remaining symbols should not be visible from the outside. On most platforms, compilers will hide them by default. On some platforms, a special compiler option is required to hide these symbols.</p>
+<p>When compiling a shared library, it must be marked for <i>export</i>. To use the shared library from a client, some platforms may require a special <i>import</i> declaration as well.</p>
+<p>Depending on your target platform, Qt provides special macros that contain the necessary definitions:</p>
+<ul>
+<li><a href="../qtcore/qtcompilerdetection.html#Q_DECL_EXPORT" translate="no">Q_DECL_EXPORT</a> must be added to the declarations of symbols used when compiling a shared library.</li>
+<li><a href="../qtcore/qtcompilerdetection.html#Q_DECL_IMPORT" translate="no">Q_DECL_IMPORT</a> must be added to the declarations of symbols used when compiling a client that uses the shared library.</li>
+</ul>
+<p>Now, we need to ensure that the right macro is invoked - whether we compile a shared library itself, or just the client using the shared library. Typically, this can be solved by adding a special header.</p>
+<p>Let us assume we want to create a shared library called <i>mysharedlib</i>. A special header for this library, <code translate="no">mysharedlib_global.h</code>, looks like this:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &lt;QtCore/QtGlobal&gt;</span>
+
+ <span class="preprocessor">#if defined(MYSHAREDLIB_LIBRARY)</span>
+ <span class="preprocessor">#  define MYSHAREDLIB_EXPORT Q_DECL_EXPORT</span>
+ <span class="preprocessor">#else</span>
+ <span class="preprocessor">#  define MYSHAREDLIB_EXPORT Q_DECL_IMPORT</span>
+ <span class="preprocessor">#endif</span>
+</pre>
+<p>In each header of the library, we specify the following:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &quot;mysharedlib_global.h&quot;</span>
+
+ MYSHAREDLIB_EXPORT <span class="type">void</span> foo();
+ <span class="keyword">class</span> MYSHAREDLIB_EXPORT MyClass<span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
+</pre>
+<p>We then need to ensure that <code translate="no">MYSHAREDLIB_LIBRARY</code> is defined for the compiler when building the library itself. This is done in the build system of the library. If we use <a href="../qtcmake/cmake-manual.html" translate="no">CMake</a>, we augment the shared library target:</p>
+<pre class="cpp" translate="no">
+ target_compile_definitions(mysharedlib PRIVATE MYSHAREDLIB_LIBRARY)
+</pre>
+<p>If we use <a href="../qmake/qmake-manual.html" translate="no">qmake</a>, we add</p>
+<pre class="cpp" translate="no">
+ DEFINES <span class="operator">+</span><span class="operator">=</span> MYSHAREDLIB_LIBRARY
+</pre>
+<p>to the <code translate="no">.pro</code> file of the shared library.</p>
+<div class="admonition note">
+<p><b>Note: </b>The library wizards in <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a> and <a href="http://doc.qt.io/qtvstools/index.html" translate="no">Qt VS Tools</a> provide you with a skeleton that sets up these things for you.</p>
+</div>
+<h2 id="header-file-considerations">Header File Considerations</h2>
+<p>Typically, clients will include only the public header files of shared libraries. These libraries might be installed in a different location, when deployed. Therefore, it is important to exclude other internal header files that were used when building the shared library.</p>
+<p>For example, the library might provide a class that wraps a hardware device and contains a handle to that device, provided by some 3rd-party library:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &lt;footronics/device.h&gt;</span>
+
+ <span class="keyword">class</span> MyDevice {
+ <span class="keyword">private</span>:
+     FOOTRONICS_DEVICE_HANDLE handle;
+ };
+</pre>
+<p>A similar situation arises with forms created by Qt Designer when using aggregation or multiple inheritance:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &quot;ui_widget.h&quot;</span>
+
+ <span class="keyword">class</span> MyWidget : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> {
+ <span class="keyword">private</span>:
+     Ui<span class="operator">::</span>MyWidget m_ui;
+ };
+</pre>
+<p>When deploying the library, there should be no dependency to the internal headers <code translate="no">footronics/device.h</code> or <code translate="no">ui_widget.h</code>.</p>
+<p>This can be avoided by making use of the <i>Pointer to implementation</i> idiom described in various C++ programming books. For classes with <i>value semantics</i>, consider using <a href="../qtcore/qshareddatapointer.html" translate="no">QSharedDataPointer</a>.</p>
+<h2 id="binary-compatibility">Binary Compatibility</h2>
+<p>For clients loading a shared library, to work correctly, the memory layout of the classes being used must match exactly the memory layout of the library version that was used to compile the client. In other words, the library found by the client at runtime must be <i>binary compatible</i> with the version used at compile time.</p>
+<p>This is usually not a problem if the client is a self-contained software package that ships all the libraries it needs.</p>
+<p>However, if the client application relies on a shared library that belongs to a different installation package or to the operating system, then we need to think of a versioning scheme for shared libraries and decide at which level <i>Binary compatibility</i> is to be maintained. For example, Qt libraries of the same <i>major version number</i> are guaranteed to be binary compatible.</p>
+<p>Maintaining <i>Binary compatibility</i> places some restrictions on the changes you can make to the classes. A good explanation can be found at <a href="http://techbase.kde.org/Policies/Binary_Compatibility_Issues_With_C++" translate="no">KDE - Policies/Binary Compatibility Issues With C++</a>. These issues should be considered right from the start of library design. We recommend that the principle of <i>Information hiding</i> and the <i>Pointer to implementation</i> technique be used wherever possible.</p>
+</div>
+<!-- @@@sharedlibrary.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

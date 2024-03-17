@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- android-publishing-to-googleplay.qdoc -->
+  <meta name="description" content="Provides instructions to prepare your application for publishing.">
+  <title>Publishing to Google Play | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Publishing to Google Play</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="android-3rdparty-libs.html" />
+  <link rel="next" href="android-emojis.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="android-3rdparty-libs.html">Third-party Android Libraries</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-emojis.html">Supporting Google Emoji Font Policy</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#building-the-app">Building the App</a></li>
+<li class="level1"><a href="#uploading-the-app-to-google-play-store">Uploading the App to Google Play Store</a></li>
+<li class="level2"><a href="#publishing-single-abi-bundles">Publishing Single-ABI bundles</a></li>
+<li class="level1"><a href="#notes-on-android-project-settings">Notes on Android project settings</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Publishing to Google Play</h1>
+<!-- $$$android-publishing-to-googleplay.html-description -->
+<div class="descr" id="details">
+<p><a href="android.html" translate="no">Qt for Android</a> provides a complete solution to develop, build, and package your applications for Android. Most of these tasks, especially packaging and deployment are handled by Qt Creator providing rich developer experience.</p>
+<p>Every time you run the application using Qt Creator, an Android Application Package (APK) is created and deployed onto the target of your choice (device or emulator). With a few minor changes to packaging settings, you can publish your application on Google Play.</p>
+<h2 id="building-the-app">Building the App</h2>
+<p>The following instructions guide you to create an <code translate="no">.apk</code> or <code translate="no">.aab</code> that can go live on Google Play</p>
+<ol class="1" type="1"><li>Open your project with Qt Creator 4.11 or later choosing a <code translate="no">Release Build</code>.</li>
+<li>Select <b translate="no">Projects</b> &gt; <b translate="no">Build</b> &gt; <b translate="no">Build Android APK</b> &gt; <b translate="no">Create Templates</b> to create the Android package template files such as <code translate="no">AndroidManifest.xml</code> which is the main file of concern here.</li>
+<li>Check for the following settings in <code translate="no">AndroidManifest.xml</code>:<ul>
+<li>Set <b translate="no">Application name</b> and <b translate="no">Application icon</b>.</li>
+<li>Check the <b translate="no">Permissions</b> list has all the required permissions.</li>
+<li>Check the <b translate="no">Features</b> list has the software or hardware features that your application depends on, such as GPS or NFC.</li>
+</ul>
+<p>See <a href="android-publishing-to-googleplay.html#notes-on-android-project-settings" translate="no">Notes on Android project settings</a> for more information.</p>
+</li>
+<li>Set up a <a href="https://developer.android.com/training/articles/keystore" translate="no">keystore</a> to sign your <code translate="no">.apk</code> file. You can create a new keystore if you do not have one. For more information, see <a href="http://doc.qt.io/qtcreator/creator-deploying-android.html#specifying-settings-for-packages" translate="no">Specifying Settings for Packages in Qt Creator</a>.</li>
+<li>Locate the generated package:<ul>
+<li>For APK packages, locate the <code translate="no">.apk</code> package at:<pre class="cpp plain" translate="no">
+ &lt;$BUILD_DIR&gt;/android-build/build/outputs/apk/release/android-build-release.apk
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>In Qt Creator, select <b translate="no">Projects</b> &gt; <b translate="no">Build</b> &gt; <b translate="no">Build Steps</b> &gt; <b translate="no">Build Android APK</b> &gt; <b translate="no">Open package location after build</b> to build the application's <code translate="no">.apk</code> and open the directory containing the package.</p>
+</div>
+</li>
+<li>For AAB packages, select <b translate="no">Projects</b> &gt; <b translate="no">Build</b> &gt; <b translate="no">Build Steps</b> &gt; <b translate="no">Build Android APK</b> &gt; <b translate="no">Build .aab (Android App Bundle)</b> for Qt Creator to generate the <code translate="no">.aab</code> file, then locate the package at:<pre class="cpp plain" translate="no">
+ &lt;$BUILD_DIR&gt;/android-build/build/outputs/bundle/release/android-build-release.aab
+</pre>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="uploading-the-app-to-google-play-store">Uploading the App to Google Play Store</h2>
+<p>Log into the <a href="https://play.google.com/apps/publish" translate="no">Google Play Developer Console</a> and upload the <code translate="no">.aab</code> files, along with a description and screen captures resembling the usage of your application.</p>
+<p>For Qt versions that support building a multi-abi bundle (i.e&#x2e; Qt 5.14 and 5.15), uploading one <code translate="no">.aab</code> with all the supported architectures is enough. However, for Qt versions that don't have the multi-abi build support, publishing your app requires additional steps.</p>
+<h3 id="publishing-single-abi-bundles">Publishing Single-ABI bundles</h3>
+<p>To publish your app that is built using a single ABI kit, you need to make sure that each ABI uses a different internal version code. The version code is an internal non-public identifier for your app's release. Build each one of the architectures you want to support and set a different version code for each ABI. This can be done as follows, for CMake:</p>
+<pre class="cpp plain" translate="no">
+ set_property(TARGET scroll_example APPEND PROPERTY QT_ANDROID_VERSION_CODE &lt;unique_version&gt;)
+</pre>
+<p>Or as follows for qmake:</p>
+<pre class="cpp plain" translate="no">
+ ANDROID_VERSION_CODE = &lt;unique_version&gt;
+</pre>
+<p>The app developer can use a specific scheme for the version code, for example, the code could have chunks for the platform, the ABI, and the actual version. Then, a sample scheme would be <code translate="no">&lt;Platform&gt;&lt;ABI&gt;&lt;AppVersion&gt;</code>:</p>
+<ul>
+<li>Platform:<ul>
+<li>1 for Arm</li>
+<li>2 for Intel</li>
+</ul>
+</li>
+<li>Architecture:<ul>
+<li>32 for 32 bit</li>
+<li>64 for 64 bit</li>
+</ul>
+</li>
+</ul>
+<p>The resulting version code for a release 1.0 for arm64-v8a ABI, would be <code translate="no">16410</code>.</p>
+<p>For more information, see Google's documentation on <a href="https://developer.android.com/studio/publish/versioning#appversioning" translate="no">app versioning</a>.</p>
+<p>The following screenshot shows an example for an app targeting 4 ABIs, while each package uses a unique version code, which is different from the version name that is the public version string.</p>
+<p class="centerAlign"><img src="images/android-single-abis.png" alt="" /></p><p>For more information on packaging, see <a href="deployment-android.html" translate="no">Deploying an Application on Android</a>.</p>
+<h2 id="notes-on-android-project-settings">Notes on Android project settings</h2>
+<p>Settings for <b translate="no">Minimum required SDK</b> and <b translate="no">Target SDK</b> versions are set in the Gradle build configuration and are controlled by the following variables: For qmake:</p>
+<ul>
+<li><a href="../qmake/qmake-variable-reference.html#android-target-sdk-version" translate="no">ANDROID_TARGET_SDK_VERSION</a></li>
+<li><a href="../qmake/qmake-variable-reference.html#android-min-sdk-version" translate="no">ANDROID_MIN_SDK_VERSION</a></li>
+</ul>
+<p>For CMake:</p>
+<ul>
+<li><a href="../qtcore/cmake-target-property-qt-android-target-sdk-version.html" translate="no">QT_ANDROID_TARGET_SDK_VERSION</a></li>
+<li><a href="../qtcore/cmake-target-property-qt-android-min-sdk-version.html" translate="no">QT_ANDROID_MIN_SDK_VERSION</a></li>
+</ul>
+<p>See <a href="../qtcmake/cmake-property-reference.html" translate="no">CMake Property Reference</a> for CMake projects, and <a href="../qmake/qmake-variable-reference.html" translate="no">qmake Variable Reference</a> for Android-specific settings in qmake projects.</p>
+<div class="admonition note">
+<p><b>Note: </b>As before with Qt 5.15, you can specify these settings in <code translate="no">AndroidManifest.xml</code>. Be aware that <code translate="no">build.gradle</code> will override these if set there. See <a href="https://developer.android.com/studio/publish/versioning.html#appversioning" translate="no">Android: App Versioning</a> for more information on setting these in <code translate="no">build.gradle</code>.</p>
+</div>
+<div class="admonition note">
+<p><b>Note: </b>By default, Qt adds the permissions and the features based on the module dependencies of your application. If you do not want these default permissions and features, either deselect the checkboxes <b translate="no">Include default permissions for Qt modules</b> and <b translate="no">Include default features for Qt modules</b>, or remove the following part from the <code translate="no">AndroidManifest.xml</code> file:</p>
+</div>
+<pre class="cpp plain" translate="no">
+ &lt;!-- The following comment will be replaced upon deployment with default permissions based on the dependencies of the application.
+      Remove the comment if you do not require these default permissions. --&gt;
+ &lt;!-- %%INSERT_PERMISSIONS --&gt;
+
+ &lt;!-- The following comment will be replaced upon deployment with default features based on the dependencies of the application.
+      Remove the comment if you do not require these default features. --&gt;
+ &lt;!-- %%INSERT_FEATURES --&gt;
+</pre>
+<p>For information on the manifest, see <a href="http://developer.android.com/guide/topics/manifest/manifest-intro.html" translate="no">Android: App Manifest</a> and <a href="http://doc.qt.io/qtcreator/creator-deploying-android.html#editing-manifest-files" translate="no">Qt Creator: Editing Manifest Files</a>.</p>
+</div>
+<!-- @@@android-publishing-to-googleplay.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="android-3rdparty-libs.html">Third-party Android Libraries</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="android-emojis.html">Supporting Google Emoji Font Policy</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

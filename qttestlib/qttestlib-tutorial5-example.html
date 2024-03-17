@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qttestlib-tutorial5.qdoc -->
+  <meta name="description" content="How to write a benchmark.">
+  <title>Chapter 5: Writing a Benchmark | Qt Test 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qttest-index.html" translate="no">Qt Test</a></li>
+<li>Chapter 5: Writing a Benchmark</li>
+<li id="buildversion"><a href="qttest-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="qttestlib-tutorial4-example.html" />
+  <link rel="next" href="qttestlib-tutorial6.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="qttestlib-tutorial4-example.html">Chapter 4</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="qttestlib-tutorial6.html">Chapter 6</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#writing-a-benchmark">Writing a Benchmark</a></li>
+<li class="level1"><a href="#data-functions">Data Functions</a></li>
+<li class="level1"><a href="#building-the-executable">Building the Executable</a></li>
+<li class="level2"><a href="#building-with-cmake">Building with CMake</a></li>
+<li class="level2"><a href="#building-with-qmake">Building with qmake</a></li>
+<li class="level1"><a href="#running-the-executable">Running the Executable</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Chapter 5: Writing a Benchmark</h1>
+<!-- $$$qttestlib-tutorial5-example.html-description -->
+<div class="descr" id="details">
+<p>This chapter demonstrates how to write benchmarks using Qt Test.</p>
+<h2 id="writing-a-benchmark">Writing a Benchmark</h2>
+<p>To create a benchmark we extend a test function with a QBENCHMARK macro. A benchmark test function will then typically consist of setup code and a QBENCHMARK macro that contains the code to be measured. This test function benchmarks <a href="../qtcore/qstring.html#localeAwareCompare" translate="no">QString::localeAwareCompare</a>().</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> TestBenchmark<span class="operator">::</span>simple()
+ {
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> str1 <span class="operator">=</span> QLatin1String(<span class="string">&quot;This is a test string&quot;</span>);
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> str2 <span class="operator">=</span> QLatin1String(<span class="string">&quot;This is a test string&quot;</span>);
+
+     QCOMPARE(str1<span class="operator">.</span>localeAwareCompare(str2)<span class="operator">,</span> <span class="number">0</span>);
+
+     QBENCHMARK {
+         str1<span class="operator">.</span>localeAwareCompare(str2);
+     }
+ }
+</pre>
+<p>Setup can be done at the beginning of the function. At this point, the clock is not running. The code inside the QBENCHMARK macro will be measured, and possibly repeated several times in order to get an accurate measurement.</p>
+<p>Several <a href="qtest-overview.html#testlib-benchmarking-measurement" translate="no">back-ends</a> are available and can be selected on the command line.</p>
+<h2 id="data-functions">Data Functions</h2>
+<p>Data functions are useful for creating benchmarks that compare multiple data inputs, for example locale aware compare against standard compare.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> TestBenchmark<span class="operator">::</span>multiple_data()
+ {
+     <span class="type"><a href="qtest.html" translate="no">QTest</a></span><span class="operator">::</span>addColumn<span class="operator">&lt;</span><span class="type">bool</span><span class="operator">&gt;</span>(<span class="string">&quot;useLocaleCompare&quot;</span>);
+     <span class="type"><a href="qtest.html" translate="no">QTest</a></span><span class="operator">::</span>newRow(<span class="string">&quot;locale-aware-compare&quot;</span>) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="keyword">true</span>;
+     <span class="type"><a href="qtest.html" translate="no">QTest</a></span><span class="operator">::</span>newRow(<span class="string">&quot;standard-compare&quot;</span>) <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="keyword">false</span>;
+ }
+</pre>
+<p>The test function then uses the data to determine what to benchmark.</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> TestBenchmark<span class="operator">::</span>multiple()
+ {
+     QFETCH(<span class="type">bool</span><span class="operator">,</span> useLocaleCompare);
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> str1 <span class="operator">=</span> QLatin1String(<span class="string">&quot;This is a test string&quot;</span>);
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> str2 <span class="operator">=</span> QLatin1String(<span class="string">&quot;This is a test string&quot;</span>);
+
+     <span class="type">int</span> result;
+     <span class="keyword">if</span> (useLocaleCompare) {
+         QBENCHMARK {
+             result <span class="operator">=</span> str1<span class="operator">.</span>localeAwareCompare(str2);
+         }
+     } <span class="keyword">else</span> {
+         QBENCHMARK {
+             result <span class="operator">=</span> (str1 <span class="operator">=</span><span class="operator">=</span> str2);
+         }
+     }
+     Q_UNUSED(result);
+ }
+</pre>
+<p>The <code translate="no">if (useLocaleCompare)</code> switch is placed outside the QBENCHMARK macro to avoid measuring its overhead. Each benchmark test function can have one active QBENCHMARK macro.</p>
+<h2 id="building-the-executable">Building the Executable</h2>
+<p>You can build the test case executable using CMake or qmake.</p>
+<h3 id="building-with-cmake">Building with CMake</h3>
+<p>Configure your build settings in your CMakeLists.txt file:</p>
+<pre class="cpp" translate="no">
+ # Copyright (C) 2022 The Qt Company Ltd.
+ # SPDX-License-Identifier: BSD-3-Clause
+
+ cmake_minimum_required(VERSION 3.16)
+ project(tutorial5 LANGUAGES CXX)
+
+ if(NOT DEFINED INSTALL_EXAMPLESDIR)
+     set(INSTALL_EXAMPLESDIR &quot;examples&quot;)
+ endif()
+
+ set(INSTALL_EXAMPLEDIR &quot;${INSTALL_EXAMPLESDIR}/qtestlib/tutorial5&quot;)
+
+ find_package(Qt6 REQUIRED COMPONENTS Core Gui Test Widgets)
+
+ qt_standard_project_setup()
+
+ qt_add_executable(tutorial5
+     benchmarking.cpp
+ )
+
+ set_target_properties(tutorial5 PROPERTIES
+     WIN32_EXECUTABLE TRUE
+     MACOSX_BUNDLE TRUE
+ )
+
+ target_link_libraries(tutorial5 PRIVATE
+     Qt6::Core
+     Qt6::Gui
+     Qt6::Test
+     Qt6::Widgets
+ )
+
+ install(TARGETS tutorial5
+     RUNTIME DESTINATION &quot;${INSTALL_EXAMPLEDIR}&quot;
+     BUNDLE DESTINATION &quot;${INSTALL_EXAMPLEDIR}&quot;
+     LIBRARY DESTINATION &quot;${INSTALL_EXAMPLEDIR}&quot;
+ )
+</pre>
+<p>Next, from the command line, run either <code translate="no">cmake</code> or use the <code translate="no">qt-cmake</code> convenience script located in <code translate="no">Qt-prefix/&lt;version&gt;/&lt;platform&gt;/bin/qt-cmake</code>:</p>
+<pre class="cpp plain" translate="no">
+ &lt;Qt-prefix&gt;/&lt;version&gt;/&lt;platform&gt;/bin/qt-cmake &lt;source-dir&gt; &lt;build-dir&gt; -G Ninja
+</pre>
+<p>Then, run your preferred generator tool to build the executable. Here, we're using Ninja:</p>
+<pre class="cpp plain" translate="no">
+ ninja
+</pre>
+<h3 id="building-with-qmake">Building with qmake</h3>
+<p>Configure your build settings in your <code translate="no">.pro</code> file:</p>
+<pre class="cpp" translate="no">
+ QT += widgets testlib
+
+ SOURCES = benchmarking.cpp
+
+ # install
+ target.path = $$[QT_INSTALL_EXAMPLES]/qtestlib/tutorial5
+ INSTALLS += target
+</pre>
+<p>Next, run <code translate="no">qmake</code>, and, finally, run <code translate="no">make</code> to build your executable:</p>
+<pre class="cpp plain" translate="no">
+ qmake
+ make
+</pre>
+<h2 id="running-the-executable">Running the Executable</h2>
+<p>Running the resulting executable should give you the following output:</p>
+<pre class="cpp" translate="no">
+ <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> Start testing of TestBenchmark <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span>
+ Config: Using <span class="type"><a href="qttest-module.html" translate="no">QtTest</a></span> library <span class="operator">%</span>VERSION<span class="operator">%</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span> <span class="operator">%</span>VERSION<span class="operator">%</span>
+ PASS   : TestBenchmark<span class="operator">::</span>initTestCase()
+ PASS   : TestBenchmark<span class="operator">::</span>simple()
+ RESULT : TestBenchmark<span class="operator">::</span>simple():
+      <span class="number">0.00030</span> msecs per iteration (total: <span class="number">79</span><span class="operator">,</span> iterations: <span class="number">262144</span>)
+ PASS   : TestBenchmark<span class="operator">::</span>multiple(locale<span class="operator">-</span>aware<span class="operator">-</span>compare)
+ RESULT : TestBenchmark<span class="operator">::</span>multiple():<span class="string">&quot;locale-aware-compare&quot;</span>:
+      <span class="number">0.00029</span> msecs per iteration (total: <span class="number">78</span><span class="operator">,</span> iterations: <span class="number">262144</span>)
+ <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
+ PASS   : TestBenchmark<span class="operator">::</span>series(locale<span class="operator">-</span>aware<span class="operator">-</span>compare:<span class="number">8001</span>)
+ RESULT : TestBenchmark<span class="operator">::</span>series():<span class="string">&quot;locale-aware-compare:8001&quot;</span>:
+      <span class="number">0.039</span> msecs per iteration (total: <span class="number">81</span><span class="operator">,</span> iterations: <span class="number">2048</span>)
+ Totals: <span class="number">15</span> passed<span class="operator">,</span> <span class="number">0</span> failed<span class="operator">,</span> <span class="number">0</span> skipped<span class="operator">,</span> <span class="number">0</span> blacklisted<span class="operator">,</span> <span class="number">3971ms</span>
+ <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span> Finished testing of TestBenchmark <span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span><span class="operator">*</span>
+</pre>
+</div>
+<!-- @@@qttestlib-tutorial5-example.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="qttestlib-tutorial4-example.html">Chapter 4</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="qttestlib-tutorial6.html">Chapter 6</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- custominstancing.qdoc -->
+  <meta name="description" content="Demonstrates instancing with custom materials and a C++ instance table.">
+  <title>Qt Quick 3D - Custom Instanced Rendering | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Custom Instanced Rendering</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Custom Instanced Rendering</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+ import InstancingExample
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">1280</span>
+     <span class="name">height</span>: <span class="number">720</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">view</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">clearColor</span>: <span class="string">&quot;#8fafff&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">cameraNode</span>
+             <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+                 property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">basePos</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">750</span>)
+                 property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">halfZoomPos</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, -<span class="number">300</span>, <span class="number">400</span>)
+                 property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">zoomPos</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, -<span class="number">300</span>, <span class="number">100</span>)
+                 property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">otherZoomPos</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">200</span>, -<span class="number">300</span>, <span class="number">400</span>)
+                 <span class="name">id</span>: <span class="name">camera</span>
+                 <span class="name">position</span>: <span class="name">basePos</span>
+                 <span class="name">eulerRotation</span>.x: -<span class="number">20</span>
+             }
+         }
+
+         property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">zoomDuration</span>: <span class="number">4000</span>
+         property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">rotationDuration</span>: <span class="number">7000</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+             <span class="name">running</span>: <span class="number">true</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> { <span class="name">duration</span>: <span class="number">1000</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>; <span class="name">to</span>: <span class="number">90</span>
+                 <span class="name">target</span>: <span class="name">cameraNode</span>; <span class="name">property</span>: <span class="string">&quot;eulerRotation.y&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">rotationDuration</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> { <span class="name">duration</span>: <span class="number">500</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-vector3danimation.html" translate="no">Vector3dAnimation</a></span> {
+                 <span class="name">from</span>: <span class="name">camera</span>.<span class="name">basePos</span>; <span class="name">to</span>: <span class="name">camera</span>.<span class="name">halfZoomPos</span>
+                 <span class="name">target</span>: <span class="name">camera</span>; <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">zoomDuration</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-vector3danimation.html" translate="no">Vector3dAnimation</a></span> {
+                 <span class="name">from</span>: <span class="name">camera</span>.<span class="name">halfZoomPos</span>; <span class="name">to</span>: <span class="name">camera</span>.<span class="name">zoomPos</span>
+                 <span class="name">target</span>: <span class="name">camera</span>; <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">zoomDuration</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> { <span class="name">duration</span>: <span class="number">1000</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-vector3danimation.html" translate="no">Vector3dAnimation</a></span> {
+                 <span class="name">from</span>: <span class="name">camera</span>.<span class="name">zoomPos</span>; <span class="name">to</span>: <span class="name">camera</span>.<span class="name">basePos</span>
+                 <span class="name">target</span>: <span class="name">camera</span>; <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">zoomDuration</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> { <span class="name">duration</span>: <span class="number">500</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">from</span>: <span class="number">90</span>; <span class="name">to</span>: <span class="number">180</span>
+                 <span class="name">target</span>: <span class="name">cameraNode</span>; <span class="name">property</span>: <span class="string">&quot;eulerRotation.y&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">rotationDuration</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> { <span class="name">duration</span>: <span class="number">500</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-vector3danimation.html" translate="no">Vector3dAnimation</a></span> {
+                 <span class="name">from</span>: <span class="name">camera</span>.<span class="name">basePos</span>; <span class="name">to</span>: <span class="name">camera</span>.<span class="name">halfZoomPos</span>
+                 <span class="name">target</span>: <span class="name">camera</span>; <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">zoomDuration</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-vector3danimation.html" translate="no">Vector3dAnimation</a></span> {
+                 <span class="name">from</span>: <span class="name">camera</span>.<span class="name">halfZoomPos</span>; <span class="name">to</span>: <span class="name">camera</span>.<span class="name">zoomPos</span>
+                 <span class="name">target</span>: <span class="name">camera</span>; <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">zoomDuration</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> { <span class="name">duration</span>: <span class="number">1000</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-vector3danimation.html" translate="no">Vector3dAnimation</a></span> {
+                 <span class="name">from</span>: <span class="name">camera</span>.<span class="name">zoomPos</span>; <span class="name">to</span>: <span class="name">camera</span>.<span class="name">basePos</span>
+                 <span class="name">target</span>: <span class="name">camera</span>; <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">zoomDuration</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> { <span class="name">duration</span>: <span class="number">500</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">from</span>: <span class="number">180</span>; <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">target</span>: <span class="name">cameraNode</span>; <span class="name">property</span>: <span class="string">&quot;eulerRotation.y&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">rotationDuration</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> { <span class="name">duration</span>: <span class="number">500</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-vector3danimation.html" translate="no">Vector3dAnimation</a></span> {
+                 <span class="name">from</span>: <span class="name">camera</span>.<span class="name">basePos</span>; <span class="name">to</span>: <span class="name">camera</span>.<span class="name">otherZoomPos</span>
+                 <span class="name">target</span>: <span class="name">camera</span>; <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">zoomDuration</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> { <span class="name">duration</span>: <span class="number">1000</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-vector3danimation.html" translate="no">Vector3dAnimation</a></span> {
+                 <span class="name">from</span>: <span class="name">camera</span>.<span class="name">otherZoomPos</span>; <span class="name">to</span>: <span class="name">camera</span>.<span class="name">basePos</span>
+                 <span class="name">target</span>: <span class="name">camera</span>; <span class="name">property</span>: <span class="string">&quot;position&quot;</span>
+                 <span class="name">duration</span>: <span class="name">view</span>.<span class="name">zoomDuration</span>
+             }
+
+             <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+             <span class="name">eulerRotation</span>.x: <span class="number">250</span>
+             <span class="name">eulerRotation</span>.y: -<span class="number">30</span>
+             <span class="name">brightness</span>: <span class="number">1.0</span>
+             <span class="name">ambientColor</span>: <span class="string">&quot;#7f7f7f&quot;</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-custommaterial.html" translate="no">CustomMaterial</a></span> {
+             <span class="name">id</span>: <span class="name">cubeMaterial</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uTime</span>: <span class="name">frametimer</span>.<span class="name">elapsedTime</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-frameanimation.html" translate="no">FrameAnimation</a></span> {
+                 <span class="name">id</span>: <span class="name">frametimer</span>
+                 <span class="name">running</span>: <span class="number">true</span>
+             }
+
+             <span class="name">vertexShader</span>: <span class="string">&quot;cubeMaterial.vert&quot;</span>
+             <span class="name">fragmentShader</span>: <span class="string">&quot;cubeMaterial.frag&quot;</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">id</span>: <span class="name">instancedCube</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">cubeSize</span>: <span class="number">15</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">cubeSize</span><span class="operator">/</span><span class="number">100</span>, <span class="name">cubeSize</span><span class="operator">/</span><span class="number">100</span>, <span class="name">cubeSize</span><span class="operator">/</span><span class="number">100</span>)
+             <span class="name">source</span>: <span class="string">&quot;#Cube&quot;</span>
+             <span class="name">instancing</span>: <span class="name">CppInstanceTable</span> {
+                 <span class="name">gridSize</span>: <span class="number">65</span>
+                 <span class="name">gridSpacing</span>: <span class="name">instancedCube</span>.<span class="name">cubeSize</span>
+                 <span class="name">randomSeed</span>: <span class="number">1522562186</span>
+             }
+             <span class="name">materials</span>: [ <span class="name">cubeMaterial</span> ]
+         }
+     }
+ }
+</pre>

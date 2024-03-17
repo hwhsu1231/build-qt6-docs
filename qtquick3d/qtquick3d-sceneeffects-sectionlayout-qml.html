@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-sceneeffects.qdoc -->
+  <meta name="description" content="Demonstrates the use of ExtendedSceneEnvironment.">
+  <title>Qt Quick 3D - Scene Effects Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Scene Effects Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Scene Effects Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2022 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+     property <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span> <span class="name">title</span>: <span class="string">&quot;&quot;</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">isExpanded</span>: <span class="number">true</span>
+     default property <span class="type">alias</span> <span class="name">content</span>: <span class="name">container</span>.<span class="name">children</span>
+     <span class="name">color</span>: <span class="string">&quot;transparent&quot;</span>
+     <span class="name">border</span>.width: <span class="number">2</span>
+     <span class="name">border</span>.color: <span class="name">palette</span>.<span class="name">alternateBase</span>
+
+     <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+     <span class="name">height</span>: <span class="name">outsideLayout</span>.<span class="name">implicitHeight</span>
+     <span class="name">implicitHeight</span>: <span class="name">height</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">id</span>: <span class="name">outsideLayout</span>
+         <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+             <span class="name">id</span>: <span class="name">sectionHeader</span>
+             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             <span class="name">implicitHeight</span>: <span class="number">24</span>
+             <span class="name">color</span>: <span class="name">palette</span>.<span class="name">alternateBase</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                 <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+                     <span class="name">fillMode</span>: <span class="name">Image</span>.<span class="name">PreserveAspectFit</span>
+                     <span class="name">sourceSize</span>: <span class="name">Qt</span>.<span class="name">size</span>(<span class="name">titleText</span>.<span class="name">implicitHeight</span>, <span class="name">titleText</span>.<span class="name">implicitHeight</span>)
+                     <span class="name">source</span>: <span class="name">root</span>.<span class="name">isExpanded</span> ? <span class="string">&quot;qrc:/images/TreeExpanded.png&quot;</span> : <span class="string">&quot;qrc:/images/TreeUnexpanded.png&quot;</span>
+                 }
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                     <span class="name">id</span>: <span class="name">titleText</span>
+                     <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                     <span class="name">text</span>: <span class="name">root</span>.<span class="name">title</span>
+                 }
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+                 <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                 <span class="name">onClicked</span>: <span class="name">root</span>.<span class="name">isExpanded</span> <span class="operator">=</span> !<span class="name">root</span>.<span class="name">isExpanded</span>
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+             <span class="name">id</span>: <span class="name">container</span>
+             <span class="name">Layout</span>.margins: <span class="name">root</span>.<span class="name">border</span>.<span class="name">width</span> <span class="operator">*</span> <span class="number">2</span>
+             <span class="name">visible</span>: <span class="name">root</span>.<span class="name">isExpanded</span>
+             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+         }
+
+     }
+ }
+</pre>

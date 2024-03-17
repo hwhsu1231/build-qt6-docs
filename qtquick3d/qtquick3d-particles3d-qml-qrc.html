@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-particles3d.qdoc -->
+  <meta name="description" content="Demonstrates how to use the Qt Quick 3D Particles3D module.">
+  <title>Qt Quick 3D - Particles 3D Testbed Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Particles 3D Testbed Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Particles 3D Testbed Example</h1>
+<pre class="cpp" translate="no">
+ &lt;RCC&gt;
+     &lt;qresource prefix=&quot;/&quot;&gt;
+         &lt;file&gt;Snowing.qml&lt;/file&gt;
+         &lt;file&gt;CustomCheckBox.qml&lt;/file&gt;
+         &lt;file&gt;CustomSlider.qml&lt;/file&gt;
+         &lt;file&gt;CustomSelectionBox.qml&lt;/file&gt;
+         &lt;file&gt;main.qml&lt;/file&gt;
+         &lt;file&gt;images/arrow_icon.png&lt;/file&gt;
+         &lt;file&gt;ColorfulParticles.qml&lt;/file&gt;
+         &lt;file&gt;EmitterShapes.qml&lt;/file&gt;
+         &lt;file&gt;SystemPlayPause.qml&lt;/file&gt;
+         &lt;file&gt;images/snowflake.png&lt;/file&gt;
+         &lt;file&gt;AttractorShapes.qml&lt;/file&gt;
+         &lt;file&gt;FadingInOut.qml&lt;/file&gt;
+         &lt;file&gt;EmitAndBurst.qml&lt;/file&gt;
+         &lt;file&gt;QtLogoAnimation.qml&lt;/file&gt;
+         &lt;file&gt;Sorting.qml&lt;/file&gt;
+         &lt;file&gt;images/star.png&lt;/file&gt;
+         &lt;file&gt;images/qt_logo.png&lt;/file&gt;
+         &lt;file&gt;images/smoke.png&lt;/file&gt;
+         &lt;file&gt;images/icon_pause.png&lt;/file&gt;
+         &lt;file&gt;images/icon_play.png&lt;/file&gt;
+         &lt;file&gt;LoggingView.qml&lt;/file&gt;
+         &lt;file&gt;images/icon_logging.png&lt;/file&gt;
+         &lt;file&gt;images/icon_interval.png&lt;/file&gt;
+         &lt;file&gt;images/dot.png&lt;/file&gt;
+         &lt;file&gt;images/colorTable.png&lt;/file&gt;
+         &lt;file&gt;images/color_table2.png&lt;/file&gt;
+         &lt;file&gt;images/dust.png&lt;/file&gt;
+         &lt;file&gt;images/icon_settings.png&lt;/file&gt;
+         &lt;file&gt;images/qt_logo2.png&lt;/file&gt;
+         &lt;file&gt;images/qt_logo2_n.png&lt;/file&gt;
+         &lt;file&gt;images/smoke_sprite.png&lt;/file&gt;
+         &lt;file&gt;images/sphere.png&lt;/file&gt;
+         &lt;file&gt;TrailEmitterBurst.qml&lt;/file&gt;
+         &lt;file&gt;images/star2.png&lt;/file&gt;
+         &lt;file&gt;AlignedParticles.qml&lt;/file&gt;
+         &lt;file&gt;CustomLabel.qml&lt;/file&gt;
+         &lt;file&gt;Fire.qml&lt;/file&gt;
+         &lt;file&gt;HeartTrail.qml&lt;/file&gt;
+         &lt;file&gt;SettingsView.qml&lt;/file&gt;
+         &lt;file&gt;StartupView.qml&lt;/file&gt;
+         &lt;file&gt;images/color_table3.png&lt;/file&gt;
+         &lt;file&gt;OceanSpider.qml&lt;/file&gt;
+         &lt;file&gt;images/leather_n.png&lt;/file&gt;
+         &lt;file&gt;Speedometer.qml&lt;/file&gt;
+         &lt;file&gt;meshes/meter_background.mesh&lt;/file&gt;
+         &lt;file&gt;meshes/meter_edge.mesh&lt;/file&gt;
+         &lt;file&gt;images/speedometer_labels.png&lt;/file&gt;
+         &lt;file&gt;images/star3.png&lt;/file&gt;
+         &lt;file&gt;AnimatedSprite.qml&lt;/file&gt;
+         &lt;file&gt;images/bear_black.png&lt;/file&gt;
+         &lt;file&gt;images/explosion_01_strip13.png&lt;/file&gt;
+         &lt;file&gt;images/sprite_09.png&lt;/file&gt;
+         &lt;file&gt;ModelBlendParticles.qml&lt;/file&gt;
+         &lt;file&gt;meshes/oldqtlogo.mesh&lt;/file&gt;
+         &lt;file&gt;ModelShape.qml&lt;/file&gt;
+         &lt;file&gt;meshes/suzanne.mesh&lt;/file&gt;
+         &lt;file&gt;EmitterCustomShapes.qml&lt;/file&gt;
+         &lt;file&gt;DynamicBursts.qml&lt;/file&gt;
+         &lt;file&gt;images/color_table4.png&lt;/file&gt;
+         &lt;file&gt;images/color_table5.png&lt;/file&gt;
+         &lt;file&gt;data/qt_logo_in_4096.cbor&lt;/file&gt;
+         &lt;file&gt;data/qt_logo_out_4096.cbor&lt;/file&gt;
+         &lt;file&gt;data/heart_4096.cbor&lt;/file&gt;
+         &lt;file&gt;Lights.qml&lt;/file&gt;
+         &lt;file&gt;LineParticles.qml&lt;/file&gt;
+         &lt;file&gt;qmldir&lt;/file&gt;
+         &lt;file&gt;AppSettings.qml&lt;/file&gt;
+     &lt;/qresource&gt;
+ &lt;/RCC&gt;
+</pre>

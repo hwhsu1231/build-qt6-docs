@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;scattergraph.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QtWidgets/qboxlayout.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qcheckbox.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qcombobox.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qlabel.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qcommandlinkbutton.h&gt;</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
+
+ ScatterGraph<span class="operator">::</span>ScatterGraph()
+ {
+     m_scatterGraph <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="q3dscatter.html" translate="no">Q3DScatter</a></span>();
+     initialize();
+ }
+
+ <span class="type">void</span> ScatterGraph<span class="operator">::</span>initialize()
+ {
+     m_scatterWidget <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>;
+     <span class="keyword">auto</span> <span class="operator">*</span>hLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qhboxlayout.html" translate="no">QHBoxLayout</a></span>(m_scatterWidget);
+     <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> screenSize <span class="operator">=</span> m_scatterGraph<span class="operator">-</span><span class="operator">&gt;</span>screen()<span class="operator">-</span><span class="operator">&gt;</span>size();
+     m_scatterGraph<span class="operator">-</span><span class="operator">&gt;</span>setMinimumSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(screenSize<span class="operator">.</span>width() <span class="operator">/</span> <span class="number">2</span><span class="operator">,</span> screenSize<span class="operator">.</span>height() <span class="operator">/</span> <span class="number">1.75</span>));
+     m_scatterGraph<span class="operator">-</span><span class="operator">&gt;</span>setMaximumSize(screenSize);
+     m_scatterGraph<span class="operator">-</span><span class="operator">&gt;</span>setSizePolicy(<span class="type"><a href="../qtwidgets/qsizepolicy.html" translate="no">QSizePolicy</a></span><span class="operator">::</span>Expanding<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qsizepolicy.html" translate="no">QSizePolicy</a></span><span class="operator">::</span>Expanding);
+     m_scatterGraph<span class="operator">-</span><span class="operator">&gt;</span>setFocusPolicy(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StrongFocus);
+     m_scatterGraph<span class="operator">-</span><span class="operator">&gt;</span>setResizeMode(<span class="type"><a href="../qtquick/qquickwidget.html" translate="no">QQuickWidget</a></span><span class="operator">::</span>SizeRootObjectToView);
+     hLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(m_scatterGraph<span class="operator">,</span> <span class="number">1</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>vLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>();
+     hLayout<span class="operator">-</span><span class="operator">&gt;</span>addLayout(vLayout);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>cameraButton <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcommandlinkbutton.html" translate="no">QCommandLinkButton</a></span>(m_scatterWidget);
+     cameraButton<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Change camera preset&quot;</span>_s);
+     cameraButton<span class="operator">-</span><span class="operator">&gt;</span>setDescription(u<span class="string">&quot;Switch between a number of preset camera positions&quot;</span>_s);
+     cameraButton<span class="operator">-</span><span class="operator">&gt;</span>setIconSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>));
+
+     <span class="keyword">auto</span> <span class="operator">*</span>itemCountButton <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcommandlinkbutton.html" translate="no">QCommandLinkButton</a></span>(m_scatterWidget);
+     itemCountButton<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Toggle item count&quot;</span>_s);
+     itemCountButton<span class="operator">-</span><span class="operator">&gt;</span>setDescription(u<span class="string">&quot;Switch between 900 and 10000 data points&quot;</span>_s);
+     itemCountButton<span class="operator">-</span><span class="operator">&gt;</span>setIconSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>));
+
+     <span class="keyword">auto</span> <span class="operator">*</span>rangeButton <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcommandlinkbutton.html" translate="no">QCommandLinkButton</a></span>(m_scatterWidget);
+     rangeButton<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Toggle axis ranges&quot;</span>_s);
+     rangeButton<span class="operator">-</span><span class="operator">&gt;</span>setDescription(u<span class="string">&quot;Switch between automatic axis ranges and preset ranges&quot;</span>_s);
+     rangeButton<span class="operator">-</span><span class="operator">&gt;</span>setIconSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>));
+
+     <span class="keyword">auto</span> <span class="operator">*</span>rangeMinSlider <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(m_scatterWidget);
+     rangeMinSlider<span class="operator">-</span><span class="operator">&gt;</span>setOrientation(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal);
+     rangeMinSlider<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="operator">-</span><span class="number">10</span>);
+     rangeMinSlider<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(<span class="number">1</span>);
+     rangeMinSlider<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="operator">-</span><span class="number">10</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>rangeMaxSlider <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(m_scatterWidget);
+     rangeMaxSlider<span class="operator">-</span><span class="operator">&gt;</span>setOrientation(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal);
+     rangeMaxSlider<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+     rangeMaxSlider<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(<span class="number">10</span>);
+     rangeMaxSlider<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">10</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>backgroundCheckBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_scatterWidget);
+     backgroundCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Show background&quot;</span>_s);
+     backgroundCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>gridCheckBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_scatterWidget);
+     gridCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Show grid&quot;</span>_s);
+     gridCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>smoothCheckBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_scatterWidget);
+     smoothCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Smooth dots&quot;</span>_s);
+     smoothCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>itemStyleList <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(m_scatterWidget);
+     itemStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Sphere&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshSphere);
+     itemStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Cube&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshCube);
+     itemStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Minimal&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshMinimal);
+     itemStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Point&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshPoint);
+     itemStyleList<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(<span class="number">0</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>themeList <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(m_scatterWidget);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Qt&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Primary Colors&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Digia&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Stone Moss&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Army Blue&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Retro&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Ebony&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Isabelle&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(<span class="number">3</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>shadowQuality <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(m_scatterWidget);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;None&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Low&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Medium&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;High&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Low Soft&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Medium Soft&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;High Soft&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(<span class="number">6</span>);
+
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(cameraButton);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(itemCountButton);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(rangeButton);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Adjust axis ranges&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(rangeMinSlider);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(rangeMaxSlider);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(backgroundCheckBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(gridCheckBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(smoothCheckBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Change dot style&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(itemStyleList);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Change theme&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(themeList);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Adjust shadow quality&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(shadowQuality<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+
+     <span class="comment">// Raise the graph to the top of the widget stack, to hide UI if resized smaller</span>
+     m_scatterGraph<span class="operator">-</span><span class="operator">&gt;</span>raise();
+
+     m_modifier <span class="operator">=</span> <span class="keyword">new</span> ScatterDataModifier(m_scatterGraph<span class="operator">,</span> <span class="keyword">this</span>);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(cameraButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcommandlinkbutton.html" translate="no">QCommandLinkButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>changePresetCamera);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(itemCountButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcommandlinkbutton.html" translate="no">QCommandLinkButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>toggleItemCount);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(rangeButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcommandlinkbutton.html" translate="no">QCommandLinkButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>toggleRanges);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(rangeMinSlider<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>adjustMinimumRange);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(rangeMaxSlider<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>adjustMaximumRange);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(backgroundCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>setBackgroundEnabled);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(gridCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>setGridEnabled);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(smoothCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>setSmoothDots);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>backgroundEnabledChanged<span class="operator">,</span>
+                      backgroundCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>setChecked);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>gridEnabledChanged<span class="operator">,</span>
+                      gridCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>setChecked);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(itemStyleList<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>changeStyle);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(themeList<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>changeTheme);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(shadowQuality<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>changeShadowQuality);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>shadowQualityChanged<span class="operator">,</span> shadowQuality<span class="operator">,</span>
+                      <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>setCurrentIndex);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_scatterGraph<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="q3dscatter.html" translate="no">Q3DScatter</a></span><span class="operator">::</span>shadowQualityChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>ScatterDataModifier<span class="operator">::</span>shadowQualityUpdatedByVisual);
+ }
+</pre>

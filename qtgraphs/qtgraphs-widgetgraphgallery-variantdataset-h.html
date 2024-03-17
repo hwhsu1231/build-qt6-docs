@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef VARIANTDATASET_H</span>
+ <span class="preprocessor">#define VARIANTDATASET_H</span>
+
+ <span class="preprocessor">#include &lt;QtCore/qvariantlist.h&gt;</span>
+
+ <span class="keyword">using</span> VariantDataItem <span class="operator">=</span> <span class="type"><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a></span>;
+ <span class="keyword">using</span> VariantDataItemList <span class="operator">=</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>VariantDataItem <span class="operator">*</span><span class="operator">&gt;</span>;
+
+ <span class="keyword">class</span> VariantDataSet : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> VariantDataSet();
+     <span class="operator">~</span>VariantDataSet();
+
+     <span class="type">void</span> clear();
+
+     <span class="type">int</span> addItem(VariantDataItem <span class="operator">*</span>item);
+     <span class="type">int</span> addItems(VariantDataItemList <span class="operator">*</span>itemList);
+
+     <span class="keyword">const</span> VariantDataItemList <span class="operator">&amp;</span>itemList() <span class="keyword">const</span>;
+
+ Q_SIGNALS:
+     <span class="type">void</span> itemsAdded(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> count);
+     <span class="type">void</span> dataCleared();
+
+ <span class="keyword">private</span>:
+     VariantDataItemList m_variantData;
+
+     Q_DISABLE_COPY(VariantDataSet)
+ };
+
+ <span class="preprocessor">#endif</span>
+</pre>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- examples-selectedbar.qdoc -->
+  <meta name="description" content="Shows how to use a selection feature for the bar chart.">
+  <title>Changing the Color and State of Bars | Qt Charts 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtcharts-index.html" translate="no">Qt Charts</a></li>
+<li>Changing the Color and State of Bars</li>
+<li id="buildversion"><a href="qtcharts-index.html" translate="no">Qt Charts | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Changing the Color and State of Bars</h1>
+<!-- $$$qtcharts-selectedbar-example.html-description -->
+<div class="descr" id="details">
+<div class="admonition note">
+<p><b>Note: </b>This is part of the <a href="qtcharts-chartsgallery-example.html" translate="no">Charts with Widgets Gallery</a> example.</p>
+</div>
+<p>The example shows how to change the color and state of bars using setBarSelected().</p>
+<p class="centerAlign"><img src="images/examples_selectedbar.png" alt="" /></p><p>We create the sets and fill them with the data. Then we create a series and append data to it.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span> <span class="operator">*</span>setChicken <span class="operator">=</span> createChickenSet();
+ <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span> <span class="operator">*</span>setPork <span class="operator">=</span> createPorkSet();
+ <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span> <span class="operator">*</span>setTurkey <span class="operator">=</span> createTurkeySet();
+ <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span> <span class="operator">*</span>setHam <span class="operator">=</span> createHamSet();
+ <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> totalSum <span class="operator">=</span> setChicken<span class="operator">-</span><span class="operator">&gt;</span>sum() <span class="operator">+</span> setPork<span class="operator">-</span><span class="operator">&gt;</span>sum() <span class="operator">+</span> setTurkey<span class="operator">-</span><span class="operator">&gt;</span>sum() <span class="operator">+</span> setHam<span class="operator">-</span><span class="operator">&gt;</span>sum();
+ <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span> <span class="operator">*</span><span class="operator">&gt;</span> setList <span class="operator">=</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span> <span class="operator">*</span><span class="operator">&gt;</span>{setChicken<span class="operator">,</span> setPork<span class="operator">,</span> setTurkey<span class="operator">,</span> setHam};
+
+ <span class="keyword">auto</span> series <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbarseries.html" translate="no">QBarSeries</a></span>;
+ series<span class="operator">-</span><span class="operator">&gt;</span>append(setList);
+</pre>
+<p>We create the chart and add series to it. Also, we add a title to the chart, set animation for the chart, and align the legend.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> chart <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qchart.html" translate="no">QChart</a></span>;
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addSeries(series);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>setTitle(tr(<span class="string">&quot;Meat Consumption (Click on bars to select them)&quot;</span>));
+ chart<span class="operator">-</span><span class="operator">&gt;</span>setAnimationOptions(<span class="type"><a href="qchart.html" translate="no">QChart</a></span><span class="operator">::</span>SeriesAnimations);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>legend()<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">true</span>);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>legend()<span class="operator">-</span><span class="operator">&gt;</span>setAlignment(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignBottom);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>layout()<span class="operator">-</span><span class="operator">&gt;</span>setContentsMargins(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+</pre>
+<p>Here we set the color for the selected bars.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">const</span> <span class="keyword">auto</span> barSets <span class="operator">=</span> series<span class="operator">-</span><span class="operator">&gt;</span>barSets();
+ <span class="keyword">for</span> (<span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span> <span class="operator">*</span>barSet : barSets)
+     barSet<span class="operator">-</span><span class="operator">&gt;</span>setSelectedColor(barSet<span class="operator">-</span><span class="operator">&gt;</span>brush()<span class="operator">.</span>color()<span class="operator">.</span>darker());
+</pre>
+<p>Next step is adding axes: <a href="qbarcategoryaxis.html" translate="no">QBarCategoryAxis</a> for years of measurements and <a href="qvalueaxis.html" translate="no">QValueAxis</a> for values range.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> categories <span class="operator">=</span> createYearCategories();
+ <span class="keyword">auto</span> axisX <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbarcategoryaxis.html" translate="no">QBarCategoryAxis</a></span>;
+ axisX<span class="operator">-</span><span class="operator">&gt;</span>setCategories(categories);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addAxis(axisX<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignBottom);
+ series<span class="operator">-</span><span class="operator">&gt;</span>attachAxis(axisX);
+
+ <span class="keyword">auto</span> axisY <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qvalueaxis.html" translate="no">QValueAxis</a></span>;
+ axisY<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0</span><span class="operator">,</span> <span class="number">20</span>);
+ axisY<span class="operator">-</span><span class="operator">&gt;</span>setTitleText(tr(<span class="string">&quot;Tons&quot;</span>));
+ axisY<span class="operator">-</span><span class="operator">&gt;</span>setLabelsAngle(<span class="operator">-</span><span class="number">90</span>);
+ axisY<span class="operator">-</span><span class="operator">&gt;</span>setTitleVisible(<span class="keyword">true</span>);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addAxis(axisY<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignLeft);
+ series<span class="operator">-</span><span class="operator">&gt;</span>attachAxis(axisY);
+</pre>
+<p>Then we add the chart view to put the chart in.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> chartView <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qchartview.html" translate="no">QChartView</a></span>(chart<span class="operator">,</span> <span class="keyword">this</span>);
+ chartView<span class="operator">-</span><span class="operator">&gt;</span>setRenderHint(<span class="type"><a href="../qtgui/qpainter.html" translate="no">QPainter</a></span><span class="operator">::</span>Antialiasing);
+</pre>
+<p>Here we create a widget for labels of values of selected and unselected bars.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> labelWidget <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>(<span class="keyword">this</span>);
+ <span class="keyword">auto</span> labelLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qhboxlayout.html" translate="no">QHBoxLayout</a></span>(labelWidget);
+ labelLayout<span class="operator">-</span><span class="operator">&gt;</span>setAlignment(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignCenter);
+
+ <span class="keyword">auto</span> totalSumLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Total sum: %1 T&quot;</span>)<span class="operator">.</span>arg(totalSum)<span class="operator">,</span> <span class="keyword">this</span>);
+ labelLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(totalSumLabel);
+ totalSumLabel<span class="operator">-</span><span class="operator">&gt;</span>setContentsMargins(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">54</span><span class="operator">,</span> <span class="number">0</span>);
+
+ <span class="keyword">auto</span> selectedSumLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Selected sum: 0 T&quot;</span>)<span class="operator">,</span> <span class="keyword">this</span>);
+ labelLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(selectedSumLabel);
+
+ <span class="keyword">auto</span> unselectedSumLabel <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(tr(<span class="string">&quot;Unselected sum: %1 T&quot;</span>)<span class="operator">.</span>arg(totalSum)<span class="operator">,</span> <span class="keyword">this</span>);
+ labelLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(unselectedSumLabel);
+ unselectedSumLabel<span class="operator">-</span><span class="operator">&gt;</span>setContentsMargins(<span class="number">54</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+</pre>
+<p>We connect selecting of a specific bar with labels of values using a lambda. <code translate="no">set-&gt;toggleSelection({index})</code> sets the bar selected.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(series<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qabstractbarseries.html" translate="no">QAbstractBarSeries</a></span><span class="operator">::</span>clicked<span class="operator">,</span> series<span class="operator">,</span> <span class="operator">[</span><span class="operator">=</span><span class="operator">]</span>(<span class="type">int</span> index<span class="operator">,</span> <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span> <span class="operator">*</span>set) {
+     set<span class="operator">-</span><span class="operator">&gt;</span>toggleSelection({index});
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> selectedSum <span class="operator">=</span> <span class="number">0.</span>;
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> setList<span class="operator">.</span>size(); <span class="operator">+</span><span class="operator">+</span>i) {
+         <span class="keyword">auto</span> selectedIndices <span class="operator">=</span> setList<span class="operator">.</span>at(i)<span class="operator">-</span><span class="operator">&gt;</span>selectedBars();
+         <span class="keyword">for</span> (<span class="type">int</span> k <span class="operator">=</span> <span class="number">0</span>; k <span class="operator">&lt;</span> selectedIndices<span class="operator">.</span>size(); <span class="operator">+</span><span class="operator">+</span>k)
+             selectedSum <span class="operator">+</span><span class="operator">=</span> setList<span class="operator">.</span>at(i)<span class="operator">-</span><span class="operator">&gt;</span>at(selectedIndices<span class="operator">.</span>at(k));
+     }
+     selectedSumLabel<span class="operator">-</span><span class="operator">&gt;</span>setText(tr(<span class="string">&quot;Selected sum: %1 T&quot;</span>)<span class="operator">.</span>arg(selectedSum));
+     <span class="comment">// Because of rounding errors, selectedSum can result in being bigger than total sum</span>
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> unselectedSum <span class="operator">=</span> totalSum <span class="operator">-</span> selectedSum <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">?</span> <span class="number">0.</span> : totalSum <span class="operator">-</span> selectedSum;
+     unselectedSumLabel<span class="operator">-</span><span class="operator">&gt;</span>setText(
+         tr(<span class="string">&quot;Unselected sum: %1 T&quot;</span>)
+             <span class="operator">.</span>arg(unselectedSum)
+         );
+ });
+</pre>
+<p>Finally, we create the main layout.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> mainLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>(<span class="keyword">this</span>);
+
+ mainLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(chartView);
+ mainLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(labelWidget);
+</pre>
+</div>
+<!-- @@@qtcharts-selectedbar-example.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

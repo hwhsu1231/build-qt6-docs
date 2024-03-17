@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qdoc-manual-markupcmds.qdoc -->
+  <title>Including Images | QDoc Manual 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qdoc-index.html" translate="no">QDoc Manual</a></li>
+<li>Including Images</li>
+<li id="buildversion"><a href="qdoc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="08-qdoc-commands-creatinglinks.html" />
+  <link rel="next" href="10-qdoc-commands-tablesandlists.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="08-qdoc-commands-creatinglinks.html">Creating Links</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="10-qdoc-commands-tablesandlists.html">Tables and Lists</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#image">\image</a></li>
+<li class="level1"><a href="#inlineimage">\inlineimage</a></li>
+<li class="level1"><a href="#caption">\caption</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Including Images</h1>
+<!-- $$$09-qdoc-commands-includingimages.html-description -->
+<div class="descr" id="details">
+<p>The graphic commands makes it possible to include images in the documentation. The images can be rendered as separate paragraphs, or within running text.</p>
+<span id="image-command"></span><h2 id="image">\image</h2>
+<p>The \image command expands to the image specified by its first argument, and renders it centered as a separate paragraph.</p>
+<p>The command takes two arguments. The first argument is the name of the image file. The second argument is optional and is a simple description of the image, equivalent to the HTML alt=&quot;&quot; in an image tag. The description is used for tooltips and for browsers that don't support images, like the Lynx text browser.</p>
+<p>The remaining text <i>after</i> the file name is the optional, description argument. Be sure to follow the file name or the description with a line break. Curly brackets are required if the description argument spans multiple lines.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     Qt is a C++ toolkit for cross-platform GUI application development.
+
+     \image happyguy.jpg &quot;Happy guy&quot;
+
+     Qt provides single-source portability across Microsoft
+     Windows, macOS, Linux, and all major commercial Unix
+     variants. It is also available for embedded devices.
+ */
+</pre>
+<p>See also <a href="09-qdoc-commands-includingimages.html#inlineimage-command" translate="no">\inlineimage</a> and <a href="09-qdoc-commands-includingimages.html#caption-command" translate="no">\caption</a>.</p>
+<span id="inlineimage-command"></span><h2 id="inlineimage">\inlineimage</h2>
+<p>The \inlineimage command expands to the image specified by its argument. The image is rendered inline with the rest of the text.</p>
+<p>The command takes two arguments. The first argument is the name of the image file. The second argument is optional and is a simple description of the image within braces {}, equivalent to the HTML alt=&quot;&quot; in an image tag. The description is used for tooltips, and for when a browser doesn't support images, like the Lynx text browser.</p>
+<p>The most common use of the \inlineimage command is in lists and tables. Here is an example of including inline images in a list:</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \list 1
+       \li \inlineimage happy.gif {Oh so happy, I am a caption!}
+       \li \inlineimage happy.gif Oh so happy, but I'm not a caption.
+     \endlist
+ */
+</pre>
+<p>Here is an example of including inline images in a table:</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \table
+     \header
+         \li Qt
+         \li Qt Creator
+     \row
+         \li \inlineimage happy.gif {Oh so happy!}
+         \li \inlineimage happy.gif Oh so happy!
+     \row
+         \li \inlineimage happy.gif Oh so happy!
+         \li \inlineimage happy.gif {Oh so happy!}
+     \endtable
+ */
+</pre>
+<p>The command can also be used to insert an image inline with the text.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \inlineimage training.jpg {Qt Training} The Qt Programming course is
+     offered as a five day Open Enrollment Course. The classes are open to
+     the public. Although the course is open to anyone who wants to learn,
+     attendees should have significant experience in C++ development to
+     derive maximum benefit from the course.
+ */
+</pre>
+<p>See also <a href="09-qdoc-commands-includingimages.html#image-command" translate="no">\image</a> and <a href="09-qdoc-commands-includingimages.html#caption-command" translate="no">\caption</a>.</p>
+<span id="caption-command"></span><h2 id="caption">\caption</h2>
+<p>The \caption command provides a caption for an image.</p>
+<p>The command takes all the text up to the end of the paragraph to be the caption. Experiment until you get the effect you want.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+   \table 100%
+     \row
+       \li \image windows-pushbutton.png
+          \caption The QPushButton widget provides a command button.
+       \li \image windows-toolbutton.png
+          \caption The QToolButton class provides a quick-access button to commands
+          or options, usually used inside a QToolBar.
+    \endtable
+ */
+</pre>
+<p>See also <a href="09-qdoc-commands-includingimages.html#image-command" translate="no">\image</a> and <a href="09-qdoc-commands-includingimages.html#inlineimage-command" translate="no">\inlineimage</a></p>
+</div>
+<!-- @@@09-qdoc-commands-includingimages.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="08-qdoc-commands-creatinglinks.html">Creating Links</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="10-qdoc-commands-tablesandlists.html">Tables and Lists</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

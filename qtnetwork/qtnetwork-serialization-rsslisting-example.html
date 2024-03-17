@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- rsslisting.qdoc -->
+  <meta name="description" content="A demonstration of how to fetch and display a network resource.">
+  <title>A minimal RSS listing application | Qt Network 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtnetwork-index.html" translate="no">Qt Network</a></li>
+<li>A minimal RSS listing application</li>
+<li id="buildversion"><a href="qtnetwork-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#the-rsslisting-class">The RSSListing class</a></li>
+<li class="level2"><a href="#construction">Construction</a></li>
+<li class="level2"><a href="#the-slots">The slots</a></li>
+<li class="level2"><a href="#the-get-method">The get() method</a></li>
+<li class="level2"><a href="#the-parsexml-method">The parseXml() method</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">A minimal RSS listing application</h1>
+<!-- $$$serialization/rsslisting-brief -->
+<p>A demonstration of how to fetch and display a network resource.</p>
+<!-- @@@serialization/rsslisting -->
+<!-- $$$serialization/rsslisting-description -->
+<div class="descr" id="details">
+<p>This example shows how to fetch a resource the user has requested and display data contained in the response, illustrated by an RSS listing application. (RDF Site Summary, or Really Simple Syndication, is a standard format for communicating updates to web sites. See https://www.rssboard.org/rss-specification for details.) The user inferface in the illustration is simple, as the focus of this example is on how to use networking, but naturally a more sophisticated interface would be wanted for a serious RSS reader.</p>
+<p>The example also illustrates how to do asynchronous parsing of data as it is received, preserving state in member variables so that an incremental parser can consume chunks of data as they arrive over the network. Constituents of the parsed content may start in one chunk of data but not be completed until a later chunk, requiring the parser to retain state between calls.</p>
+<p class="centerAlign"><img src="images/rsslisting.png" alt="" /></p><p>The main program is fairly minimal. It simply instantiates a QApplication and the <code translate="no">RSSListing</code> widget, shows the latter and hands over control to the former. For the sake of illustration, it gives the widget the Qt blog's URL as default value for the resource to check.</p>
+<pre class="cpp" translate="no">
+
+</pre>
+<h4 id="the-rsslisting-class">The RSSListing class</h4>
+<pre class="cpp" translate="no">
+
+</pre>
+<p>The widget itself provides a simple user interface for specifying the URL to fetch and, once available updates are displayed, controlling the downloading of updated items. A QLineEdit provides for input of the URL, and a QTreeWidget for display of the results once fetched.</p>
+<p>The widget downloads and parses the RSS (a form of XML) asynchronously, feeding the data to an XML reader as it arrives. This supports reading of very large data sources. Because the data is streamed from the network through the XML reader, there is no need to retain the full text of the XML in memory. In other context, a similar approach can allow the user to interrupt such incremental loading.</p>
+<h5 id="construction">Construction</h5>
+<pre class="cpp" translate="no">
+
+</pre>
+<p>The constructor sets up the assorted components of the widget and connects their various signals to the slots it shall use to handle them.</p>
+<p>The user interface consists of a line edit, a push button, and a list view widget. The line edit is used for entering the URL to fetch; the push button starts the process of fetching updates. The line edit is empty by default, but the constructor's caller can override that, as our <code translate="no">main()</code> has done. In any case, the user can replace the default with the URL of another RSS feed.</p>
+<p>The list view shows the updated items reported in the RSS feed. Double-clicking on one of these sends its URL to the user's browser or other user agent using <a href="../qtgui/qdesktopservices.html#openUrl" translate="no">QDesktopServices::openUrl</a>().</p>
+<h5 id="the-slots">The slots</h5>
+<pre class="cpp" translate="no">
+
+</pre>
+<p>All slots are kept simple by delegating any hard work to private methods.</p>
+<p>When the user completes input of a URL, either by clicking the &quot;Fetch&quot; button or by pressing the return key in the line edit, the <code translate="no">fetch()</code> slot disables the &quot;Fetch&quot; button and disables further editing of the line edit. It clears the display of available updates and delegates to <code translate="no">get()</code> the initiating of an HTTP GET request.</p>
+<p>When data is received, the network reply triggers its <a href="../qtcore/qiodevice.html#readyRead" translate="no">readyRead</a>() signal, which <code translate="no">get()</code> connects to the <code translate="no">consumeData()</code> slot. This checks the response got a successful status code and, if it did, calls <code translate="no">parseXml()</code> to consume the data.</p>
+<p>If the network reply gets an error, this is delivered to the <code translate="no">error()</code> slot, which reports the error, clears the XML stream reader then disconnects from the reply and deletes it.</p>
+<p>On completion (whether successful or otherwise) of a network reply, the <code translate="no">finished()</code> slot restores the UI to be ready to accept a new URL to fetch by re-enabling the line edit and &quot;Fetch&quot; button.</p>
+<h5 id="the-get-method">The get() method</h5>
+<pre class="cpp" translate="no">
+
+</pre>
+<p>The private <code translate="no">get()</code> method is used by the <code translate="no">fetch()</code> slot to initiate an HTTP GET request. It first clears the XML stream reader and, if a reply is currently active, disconnects and deletes it. If the URL it has been passed is valid, it asks the network access manager to GET it. It connects its relevant slots to signals of the resulting reply (if any) and sets up its XML stream reader to read data from the reply - a network reply object is also a <code translate="no">QIODevice</code>, from which data can be read.</p>
+<h5 id="the-parsexml-method">The parseXml() method</h5>
+<pre class="cpp" translate="no">
+
+</pre>
+<p>When data is received, and thus made available to the XML stream reader, <code translate="no">parseXml()</code> reads from the XML stream, checking for <code translate="no">item</code> elements and, within them, <code translate="no">title</code> and <code translate="no">link</code> elements. It will use the <code translate="no">rss:about</code> attribute of an <code translate="no">item</code> as URL in the Link column of the tree-view, failing that the content of its <code translate="no">link</code> element; and it uses the content of the <code translate="no">title</code> element in the Title column of the tree-view. As each <code translate="no">item</code> element closes, its details are turned into a new row in the tree widget, with the extracted title and URL in the Title and Link columns.</p>
+<p>The variables that keep track of the parsing state - <code translate="no">linkString</code>, <code translate="no">titleString</code> and <code translate="no">currentTag</code> - are member variables of the <code translate="no">RSSListing</code> class, even though they are only accessed from this method, because this method may be called repeatedly, as new data arrives, and one chunk of received data may start an element that isn't completed until a later chunk arrives. This enables the parser to operate asynchronously as the data arrives, instead of having to wait until all the data has arrived.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtbase.git/tree/examples/network/serialization/rsslisting?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<p><b>See also </b><a href="qnetworkreply.html" translate="no">QNetworkReply</a> and <a href="../qtcore/qxmlstreamreader.html" translate="no">QXmlStreamReader</a>.</p>
+<!-- @@@serialization/rsslisting -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

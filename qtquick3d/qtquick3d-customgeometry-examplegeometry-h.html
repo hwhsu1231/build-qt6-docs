@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-customgeometry.qdoc -->
+  <meta name="description" content="Demonstrates providing custom vertex data from C++ and QML.">
+  <title>Qt Quick 3D - Custom Geometry Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Custom Geometry Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Custom Geometry Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef EXAMPLEGEOMETRY_H</span>
+ <span class="preprocessor">#define EXAMPLEGEOMETRY_H</span>
+
+ <span class="preprocessor">#include &lt;QQuick3DGeometry&gt;</span>
+
+ <span class="keyword">class</span> ExampleTriangleGeometry : <span class="keyword">public</span> QQuick3DGeometry
+ {
+     Q_OBJECT
+     QML_NAMED_ELEMENT(ExampleTriangleGeometry)
+     Q_PROPERTY(<span class="type">bool</span> normals READ normals WRITE setNormals NOTIFY normalsChanged)
+     Q_PROPERTY(<span class="type">float</span> normalXY READ normalXY WRITE setNormalXY NOTIFY normalXYChanged)
+     Q_PROPERTY(<span class="type">bool</span> uv READ uv WRITE setUV NOTIFY uvChanged)
+     Q_PROPERTY(<span class="type">float</span> uvAdjust READ uvAdjust WRITE setUVAdjust NOTIFY uvAdjustChanged)
+
+ <span class="keyword">public</span>:
+     ExampleTriangleGeometry();
+
+     <span class="type">bool</span> normals() <span class="keyword">const</span> { <span class="keyword">return</span> m_hasNormals; }
+     <span class="type">void</span> setNormals(<span class="type">bool</span> enable);
+
+     <span class="type">float</span> normalXY() <span class="keyword">const</span> { <span class="keyword">return</span> m_normalXY; }
+     <span class="type">void</span> setNormalXY(<span class="type">float</span> xy);
+
+     <span class="type">bool</span> uv() <span class="keyword">const</span> { <span class="keyword">return</span> m_hasUV; }
+     <span class="type">void</span> setUV(<span class="type">bool</span> enable);
+
+     <span class="type">float</span> uvAdjust() <span class="keyword">const</span> { <span class="keyword">return</span> m_uvAdjust; }
+     <span class="type">void</span> setUVAdjust(<span class="type">float</span> f);
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> normalsChanged();
+     <span class="type">void</span> normalXYChanged();
+     <span class="type">void</span> uvChanged();
+     <span class="type">void</span> uvAdjustChanged();
+
+ <span class="keyword">private</span>:
+     <span class="type">void</span> updateData();
+
+     <span class="type">bool</span> m_hasNormals <span class="operator">=</span> <span class="keyword">false</span>;
+     <span class="type">float</span> m_normalXY <span class="operator">=</span> <span class="number">0.0f</span>;
+     <span class="type">bool</span> m_hasUV <span class="operator">=</span> <span class="keyword">false</span>;
+     <span class="type">float</span> m_uvAdjust <span class="operator">=</span> <span class="number">0.0f</span>;
+ };
+
+ <span class="keyword">class</span> ExamplePointGeometry : <span class="keyword">public</span> QQuick3DGeometry
+ {
+     Q_OBJECT
+     QML_NAMED_ELEMENT(ExamplePointGeometry)
+
+ <span class="keyword">public</span>:
+     ExamplePointGeometry();
+
+ <span class="keyword">private</span>:
+     <span class="type">void</span> updateData();
+ };
+
+ <span class="preprocessor">#endif</span>
+</pre>

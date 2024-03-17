@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;variantbardataproxy.h&quot;</span>
+
+ VariantBarDataProxy<span class="operator">::</span>VariantBarDataProxy() <span class="operator">=</span> <span class="keyword">default</span>;
+
+ VariantBarDataProxy<span class="operator">::</span><span class="operator">~</span>VariantBarDataProxy()
+ {
+     <span class="keyword">delete</span> m_dataSet;
+ }
+
+ <span class="type">void</span> VariantBarDataProxy<span class="operator">::</span>setDataSet(VariantDataSet <span class="operator">*</span>newSet)
+ {
+     <span class="keyword">if</span> (<span class="operator">!</span>m_dataSet<span class="operator">.</span>isNull())
+         <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>disconnect(m_dataSet<span class="operator">.</span>data()<span class="operator">,</span> nullptr<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> nullptr);
+
+     m_dataSet <span class="operator">=</span> newSet;
+
+     <span class="keyword">if</span> (<span class="operator">!</span>m_dataSet<span class="operator">.</span>isNull()) {
+         <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_dataSet<span class="operator">.</span>data()<span class="operator">,</span> <span class="operator">&amp;</span>VariantDataSet<span class="operator">::</span>itemsAdded<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                          <span class="operator">&amp;</span>VariantBarDataProxy<span class="operator">::</span>handleItemsAdded);
+         <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_dataSet<span class="operator">.</span>data()<span class="operator">,</span> <span class="operator">&amp;</span>VariantDataSet<span class="operator">::</span>dataCleared<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                          <span class="operator">&amp;</span>VariantBarDataProxy<span class="operator">::</span>handleDataCleared);
+     }
+     resolveDataSet();
+ }
+
+ VariantDataSet <span class="operator">*</span>VariantBarDataProxy<span class="operator">::</span>dataSet()
+ {
+     <span class="keyword">return</span> m_dataSet<span class="operator">.</span>data();
+ }
+
+ <span class="type">void</span> VariantBarDataProxy<span class="operator">::</span>setMapping(VariantBarDataMapping <span class="operator">*</span>mapping)
+ {
+     <span class="keyword">if</span> (<span class="operator">!</span>m_mapping<span class="operator">.</span>isNull()) {
+         <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>disconnect(m_mapping<span class="operator">.</span>data()<span class="operator">,</span> <span class="operator">&amp;</span>VariantBarDataMapping<span class="operator">::</span>mappingChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                             <span class="operator">&amp;</span>VariantBarDataProxy<span class="operator">::</span>handleMappingChanged);
+     }
+
+     m_mapping <span class="operator">=</span> mapping;
+
+     <span class="keyword">if</span> (<span class="operator">!</span>m_mapping<span class="operator">.</span>isNull()) {
+         <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_mapping<span class="operator">.</span>data()<span class="operator">,</span> <span class="operator">&amp;</span>VariantBarDataMapping<span class="operator">::</span>mappingChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+                          <span class="operator">&amp;</span>VariantBarDataProxy<span class="operator">::</span>handleMappingChanged);
+     }
+
+     resolveDataSet();
+ }
+
+ VariantBarDataMapping <span class="operator">*</span>VariantBarDataProxy<span class="operator">::</span>mapping()
+ {
+     <span class="keyword">return</span> m_mapping<span class="operator">.</span>data();
+ }
+
+ <span class="type">void</span> VariantBarDataProxy<span class="operator">::</span>handleItemsAdded(<span class="type">int</span> index<span class="operator">,</span> <span class="type">int</span> count)
+ {
+     Q_UNUSED(index);
+     Q_UNUSED(count);
+
+     <span class="comment">// Resolve new items</span>
+     resolveDataSet();
+ }
+
+ <span class="type">void</span> VariantBarDataProxy<span class="operator">::</span>handleDataCleared()
+ {
+     <span class="comment">// Data cleared, reset array</span>
+     resetArray(nullptr);
+ }
+
+ <span class="type">void</span> VariantBarDataProxy<span class="operator">::</span>handleMappingChanged()
+ {
+     resolveDataSet();
+ }
+
+ <span class="comment">// Resolve entire dataset into QBarDataArray.</span>
+ <span class="type">void</span> VariantBarDataProxy<span class="operator">::</span>resolveDataSet()
+ {
+     <span class="comment">// If we have no data or mapping, or the categories are not defined, simply clear the array</span>
+     <span class="keyword">if</span> (m_dataSet<span class="operator">.</span>isNull() <span class="operator">|</span><span class="operator">|</span> m_mapping<span class="operator">.</span>isNull() <span class="operator">|</span><span class="operator">|</span> <span class="operator">!</span>m_mapping<span class="operator">-</span><span class="operator">&gt;</span>rowCategories()<span class="operator">.</span>size()
+             <span class="operator">|</span><span class="operator">|</span> <span class="operator">!</span>m_mapping<span class="operator">-</span><span class="operator">&gt;</span>columnCategories()<span class="operator">.</span>size()) {
+         resetArray(nullptr);
+         <span class="keyword">return</span>;
+     }
+     <span class="keyword">const</span> VariantDataItemList <span class="operator">&amp;</span>itemList <span class="operator">=</span> m_dataSet<span class="operator">-</span><span class="operator">&gt;</span>itemList();
+
+     <span class="type">int</span> rowIndex <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>rowIndex();
+     <span class="type">int</span> columnIndex <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>columnIndex();
+     <span class="type">int</span> valueIndex <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>valueIndex();
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>rowList <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>rowCategories();
+     <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> <span class="operator">&amp;</span>columnList <span class="operator">=</span> m_mapping<span class="operator">-</span><span class="operator">&gt;</span>columnCategories();
+
+     <span class="comment">// Sort values into rows and columns</span>
+     <span class="keyword">using</span> ColumnValueMap <span class="operator">=</span> <span class="type"><a href="../qtcore/qhash.html" translate="no">QHash</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">,</span> <span class="type">float</span><span class="operator">&gt;</span>;
+     <span class="type"><a href="../qtcore/qhash.html" translate="no">QHash</a></span> <span class="operator">&lt;</span><span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">,</span> ColumnValueMap<span class="operator">&gt;</span> itemValueMap;
+     <span class="keyword">for</span> (<span class="keyword">const</span> VariantDataItem <span class="operator">*</span>item : itemList) {
+         itemValueMap<span class="operator">[</span>item<span class="operator">-</span><span class="operator">&gt;</span>at(rowIndex)<span class="operator">.</span>toString()<span class="operator">]</span><span class="operator">[</span>item<span class="operator">-</span><span class="operator">&gt;</span>at(columnIndex)<span class="operator">.</span>toString()<span class="operator">]</span>
+                 <span class="operator">=</span> item<span class="operator">-</span><span class="operator">&gt;</span>at(valueIndex)<span class="operator">.</span>toReal();
+     }
+
+     <span class="comment">// Create a new data array in format the parent class understands</span>
+     <span class="keyword">auto</span> <span class="operator">*</span>newProxyArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataArray-typedef" translate="no">QBarDataArray</a></span>;
+     <span class="keyword">for</span> (<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>rowKey : rowList) {
+         <span class="keyword">auto</span> <span class="operator">*</span>newProxyRow <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbardataproxy.html#QBarDataRow-typedef" translate="no">QBarDataRow</a></span>(columnList<span class="operator">.</span>size());
+         <span class="keyword">for</span> (qsizetype i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> columnList<span class="operator">.</span>size(); <span class="operator">+</span><span class="operator">+</span>i)
+             (<span class="operator">*</span>newProxyRow)<span class="operator">[</span>i<span class="operator">]</span><span class="operator">.</span>setValue(itemValueMap<span class="operator">[</span>rowKey<span class="operator">]</span><span class="operator">[</span>columnList<span class="operator">.</span>at(i)<span class="operator">]</span>);
+         newProxyArray<span class="operator">-</span><span class="operator">&gt;</span>append(newProxyRow);
+     }
+
+     <span class="comment">// Finally, reset the data array in the parent class</span>
+     resetArray(newProxyArray);
+ }
+</pre>

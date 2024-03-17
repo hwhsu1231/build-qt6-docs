@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- multipage.qdoc -->
+  <meta name="description" content="A Qt Quick PDF viewer that allows scrolling through the pages.">
+  <title>PDF Multipage Viewer Example | Qt PDF 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtpdf-index.html" translate="no">Qt PDF</a></li>
+<li><a href="qtpdf-examples.html" translate="no">Qt PDF Examples</a></li>
+<li>PDF Multipage Viewer Example</li>
+<li id="buildversion"><a href="qtpdf-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#creating-the-main-window">Creating the Main Window</a></li>
+<li class="level1"><a href="#files-and-attributions">Files and Attributions</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">PDF Multipage Viewer Example</h1>
+<!-- $$$multipage-brief -->
+<p>A Qt Quick PDF viewer that allows scrolling through the pages.</p>
+<!-- @@@multipage -->
+<!-- $$$multipage-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/multipageviewer.png" alt="" /></p><p><i>PDF Multipage Viewer</i> demonstrates how to use the <a href="qml-qtquick-pdf-pdfmultipageview.html" translate="no">PdfMultiPageView</a> component to render PDF documents and search for text in them.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="creating-the-main-window">Creating the Main Window</h4>
+<p>Instantiate an <a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a>, bind its title to the title of the PDF document, and create a toolbar:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+     <span class="name">width</span>: <span class="number">800</span>
+     <span class="name">height</span>: <span class="number">1024</span>
+     <span class="name">color</span>: <span class="string">&quot;lightgrey&quot;</span>
+     <span class="name">title</span>: <span class="name">doc</span>.<span class="name">title</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+     property <span class="type">string</span> <span class="name">source</span> <span class="comment">// for main.cpp</span>
+
+     <span class="name">header</span>: <span class="name">ToolBar</span> {
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">anchors</span>.rightMargin: <span class="number">6</span>
+</pre>
+<p>The toolbar has buttons for most of the common actions:</p>
+<pre class="cpp" translate="no">
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-toolbutton.html" translate="no">ToolButton</a></span> {
+                 <span class="name">action</span>: <span class="name">Action</span> {
+                     <span class="name">shortcut</span>: <span class="name">StandardKey</span>.<span class="name">Open</span>
+                     <span class="name">icon</span>.source: <span class="string">&quot;qrc:/pdfviewer/resources/document-open.svg&quot;</span>
+                     <span class="name">onTriggered</span>: <span class="name">fileDialog</span>.<span class="name">open</span>()
+                 }
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-toolbutton.html" translate="no">ToolButton</a></span> {
+                 <span class="name">action</span>: <span class="name">Action</span> {
+                     <span class="name">shortcut</span>: <span class="name">StandardKey</span>.<span class="name">ZoomIn</span>
+                     <span class="name">enabled</span>: <span class="name">view</span>.<span class="name">renderScale</span> <span class="operator">&lt;</span> <span class="number">10</span>
+                     <span class="name">icon</span>.source: <span class="string">&quot;qrc:/pdfviewer/resources/zoom-in.svg&quot;</span>
+                     <span class="name">onTriggered</span>: <span class="name">view</span>.<span class="name">renderScale</span> <span class="operator">*=</span> <span class="name">Math</span>.<span class="name">sqrt</span>(<span class="number">2</span>)
+                 }
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-toolbutton.html" translate="no">ToolButton</a></span> {
+                 <span class="name">action</span>: <span class="name">Action</span> {
+                     <span class="name">shortcut</span>: <span class="name">StandardKey</span>.<span class="name">ZoomOut</span>
+</pre>
+<p>Declare a <a href="qml-qtquick-pdf-pdfdocument.html" translate="no">PdfDocument</a> and bind the <code translate="no">status</code> property and <code translate="no">passwordRequired</code> signal to inform the user when an error occurs or a password is required:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-dialog.html" translate="no">Dialog</a></span> {
+         <span class="name">id</span>: <span class="name">passwordDialog</span>
+         <span class="name">title</span>: <span class="string">&quot;Password&quot;</span>
+         <span class="name">standardButtons</span>: <span class="name">Dialog</span>.<span class="name">Ok</span> <span class="operator">|</span> <span class="name">Dialog</span>.<span class="name">Cancel</span>
+         <span class="name">modal</span>: <span class="number">true</span>
+         <span class="name">closePolicy</span>: <span class="name">Popup</span>.<span class="name">CloseOnEscape</span>
+         <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+         <span class="name">width</span>: <span class="number">300</span>
+
+         <span class="name">contentItem</span>: <span class="name">TextField</span> {
+             <span class="name">id</span>: <span class="name">passwordField</span>
+             <span class="name">placeholderText</span>: <span class="name">qsTr</span>(<span class="string">&quot;Please provide the password&quot;</span>)
+             <span class="name">echoMode</span>: <span class="name">TextInput</span>.<span class="name">Password</span>
+             <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+             <span class="name">onAccepted</span>: <span class="name">passwordDialog</span>.<span class="name">accept</span>()
+         }
+         <span class="name">onOpened</span>: <span class="name">passwordField</span>.<span class="name">forceActiveFocus</span>()
+         <span class="name">onAccepted</span>: <span class="name">doc</span>.<span class="name">password</span> <span class="operator">=</span> <span class="name">passwordField</span>.<span class="name">text</span>
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-dialog.html" translate="no">Dialog</a></span> {
+         <span class="name">id</span>: <span class="name">errorDialog</span>
+         <span class="name">title</span>: <span class="string">&quot;Error loading &quot;</span> <span class="operator">+</span> <span class="name">doc</span>.<span class="name">source</span>
+         <span class="name">standardButtons</span>: <span class="name">Dialog</span>.<span class="name">Close</span>
+         <span class="name">modal</span>: <span class="number">true</span>
+         <span class="name">closePolicy</span>: <span class="name">Popup</span>.<span class="name">CloseOnEscape</span>
+         <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+         <span class="name">width</span>: <span class="number">300</span>
+         <span class="name">visible</span>: <span class="name">doc</span>.<span class="name">status</span> <span class="operator">===</span> <span class="name">PdfDocument</span>.<span class="name">Error</span>
+
+         <span class="name">contentItem</span>: <span class="name">Label</span> {
+             <span class="name">id</span>: <span class="name">errorField</span>
+             <span class="name">text</span>: <span class="name">doc</span>.<span class="name">error</span>
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick-pdf-pdfdocument.html" translate="no">PdfDocument</a></span> {
+         <span class="name">id</span>: <span class="name">doc</span>
+         <span class="name">source</span>: <span class="name">Qt</span>.<span class="name">resolvedUrl</span>(<span class="name">root</span>.<span class="name">source</span>)
+         <span class="name">onPasswordRequired</span>: <span class="name">passwordDialog</span>.<span class="name">open</span>()
+     }
+</pre>
+<p>Add the main component, <a href="qml-qtquick-pdf-pdfmultipageview.html" translate="no">PdfMultiPageView</a>:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="qml-qtquick-pdf-pdfmultipageview.html" translate="no">PdfMultiPageView</a></span> {
+         <span class="name">id</span>: <span class="name">view</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">anchors</span>.leftMargin: <span class="name">sidebar</span>.<span class="name">position</span> <span class="operator">*</span> <span class="name">sidebar</span>.<span class="name">width</span>
+         <span class="name">document</span>: <span class="name">doc</span>
+         <span class="name">searchString</span>: <span class="name">searchField</span>.<span class="name">text</span>
+         <span class="name">onCurrentPageChanged</span>: <span class="name">currentPageSB</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">view</span>.<span class="name">currentPage</span> <span class="operator">+</span> <span class="number">1</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-droparea.html" translate="no">DropArea</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">keys</span>: [<span class="string">&quot;text/uri-list&quot;</span>]
+         <span class="name">onEntered</span>: (<span class="keyword"></span>drag) =&gt; {
+             <span class="name">drag</span>.<span class="name">accepted</span> <span class="operator">=</span> (<span class="name">drag</span>.<span class="name">proposedAction</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">MoveAction</span> <span class="operator">||</span> <span class="name">drag</span>.<span class="name">proposedAction</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">CopyAction</span>) <span class="operator">&amp;&amp;</span>
+                 <span class="name">drag</span>.<span class="name">hasUrls</span> <span class="operator">&amp;&amp;</span> <span class="name">drag</span>.<span class="name">urls</span>[<span class="number">0</span>].<span class="name">endsWith</span>(<span class="string">&quot;pdf&quot;</span>)
+         }
+         <span class="name">onDropped</span>: (<span class="keyword"></span>drop) =&gt; {
+             <span class="name">doc</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">drop</span>.<span class="name">urls</span>[<span class="number">0</span>]
+             <span class="name">drop</span>.<span class="name">acceptProposedAction</span>()
+         }
+     }
+</pre>
+<p>A <a href="../qtquickcontrols/qml-qtquick-controls-drawer.html" translate="no">Drawer</a> holds a <a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a> to show search results from the <a href="qml-qtquick-pdf-pdfmultipageview.html#searchModel-prop" translate="no">searchModel</a>:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-drawer.html" translate="no">Drawer</a></span> {
+         <span class="name">id</span>: <span class="name">sidebar</span>
+         <span class="name">edge</span>: <span class="name">Qt</span>.<span class="name">LeftEdge</span>
+         <span class="name">modal</span>: <span class="number">false</span>
+         <span class="name">width</span>: <span class="number">300</span>
+         <span class="name">y</span>: <span class="name">root</span>.<span class="name">header</span>.<span class="name">height</span>
+         <span class="name">height</span>: <span class="name">view</span>.<span class="name">height</span>
+         <span class="name">dim</span>: <span class="number">false</span>
+         <span class="name">clip</span>: <span class="number">true</span>
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbar.html" translate="no">TabBar</a></span> {
+             <span class="name">id</span>: <span class="name">sidebarTabs</span>
+             <span class="name">x</span>: -<span class="name">width</span>
+             <span class="name">rotation</span>: -<span class="number">90</span>
+             <span class="name">transformOrigin</span>: <span class="name">Item</span>.<span class="name">TopRight</span>
+             <span class="name">currentIndex</span>: <span class="number">2</span> <span class="comment">// bookmarks by default</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Info&quot;</span>)
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Search Results&quot;</span>)
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Bookmarks&quot;</span>)
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Pages&quot;</span>)
+             }
+         }
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-groupbox.html" translate="no">GroupBox</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">anchors</span>.leftMargin: <span class="name">sidebarTabs</span>.<span class="name">height</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-layouts-stacklayout.html" translate="no">StackLayout</a></span> {
+                 <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                 <span class="name">currentIndex</span>: <span class="name">sidebarTabs</span>.<span class="name">currentIndex</span>
+                 component InfoField: <span class="type"><a href="../qtquick/qml-qtquick-textinput.html" translate="no">TextInput</a></span> {
+                     <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+                     <span class="name">selectByMouse</span>: <span class="number">true</span>
+                     <span class="name">readOnly</span>: <span class="number">true</span>
+                     <span class="name">wrapMode</span>: <span class="name">Text</span>.<span class="name">WordWrap</span>
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-column.html" translate="no">Column</a></span> {
+                     <span class="name">spacing</span>: <span class="number">6</span>
+                     <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">-</span> <span class="number">6</span>
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> { <span class="name">font</span>.bold: <span class="number">true</span>; <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Title&quot;</span>) }
+                     <span class="type">InfoField</span> { <span class="name">text</span>: <span class="name">doc</span>.<span class="name">title</span> }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> { <span class="name">font</span>.bold: <span class="number">true</span>; <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Author&quot;</span>) }
+                     <span class="type">InfoField</span> { <span class="name">text</span>: <span class="name">doc</span>.<span class="name">author</span> }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> { <span class="name">font</span>.bold: <span class="number">true</span>; <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Subject&quot;</span>) }
+                     <span class="type">InfoField</span> { <span class="name">text</span>: <span class="name">doc</span>.<span class="name">subject</span> }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> { <span class="name">font</span>.bold: <span class="number">true</span>; <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Keywords&quot;</span>) }
+                     <span class="type">InfoField</span> { <span class="name">text</span>: <span class="name">doc</span>.<span class="name">keywords</span> }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> { <span class="name">font</span>.bold: <span class="number">true</span>; <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Producer&quot;</span>) }
+                     <span class="type">InfoField</span> { <span class="name">text</span>: <span class="name">doc</span>.<span class="name">producer</span> }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> { <span class="name">font</span>.bold: <span class="number">true</span>; <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Creator&quot;</span>) }
+                     <span class="type">InfoField</span> { <span class="name">text</span>: <span class="name">doc</span>.<span class="name">creator</span> }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> { <span class="name">font</span>.bold: <span class="number">true</span>; <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Creation date&quot;</span>) }
+                     <span class="type">InfoField</span> { <span class="name">text</span>: <span class="name">doc</span>.<span class="name">creationDate</span> }
+                     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> { <span class="name">font</span>.bold: <span class="number">true</span>; <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Modification date&quot;</span>) }
+                     <span class="type">InfoField</span> { <span class="name">text</span>: <span class="name">doc</span>.<span class="name">modificationDate</span> }
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a></span> {
+                     <span class="name">id</span>: <span class="name">searchResultsList</span>
+                     <span class="name">implicitHeight</span>: <span class="name">parent</span>.<span class="name">height</span>
+                     <span class="name">model</span>: <span class="name">view</span>.<span class="name">searchModel</span>
+                     <span class="name">currentIndex</span>: <span class="name">view</span>.<span class="name">searchModel</span>.<span class="name">currentResult</span>
+                     <span class="name">ScrollBar</span>.vertical: <span class="name">ScrollBar</span> { }
+                     <span class="name">delegate</span>: <span class="name">ItemDelegate</span> {
+                         <span class="name">id</span>: <span class="name">resultDelegate</span>
+                         required property <span class="type">int</span> <span class="name">index</span>
+                         required property <span class="type">int</span> <span class="name">page</span>
+                         required property <span class="type">string</span> <span class="name">contextBefore</span>
+                         required property <span class="type">string</span> <span class="name">contextAfter</span>
+                         <span class="name">width</span>: <span class="name">parent</span> ? <span class="name">parent</span>.<span class="name">width</span> : <span class="number">0</span>
+                         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                             <span class="name">spacing</span>: <span class="number">0</span>
+                             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                                 <span class="name">text</span>: <span class="string">&quot;Page &quot;</span> <span class="operator">+</span> (<span class="name">resultDelegate</span>.<span class="name">page</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">+</span> <span class="string">&quot;: &quot;</span>
+                             }
+                             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                                 <span class="name">text</span>: <span class="name">resultDelegate</span>.<span class="name">contextBefore</span>
+                                 <span class="name">elide</span>: <span class="name">Text</span>.<span class="name">ElideLeft</span>
+                                 <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignRight</span>
+                                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                                 <span class="name">Layout</span>.preferredWidth: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">2</span>
+                             }
+                             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                                 <span class="name">font</span>.bold: <span class="number">true</span>
+                                 <span class="name">text</span>: <span class="name">view</span>.<span class="name">searchString</span>
+                                 <span class="name">width</span>: <span class="name">implicitWidth</span>
+                             }
+                             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                                 <span class="name">text</span>: <span class="name">resultDelegate</span>.<span class="name">contextAfter</span>
+                                 <span class="name">elide</span>: <span class="name">Text</span>.<span class="name">ElideRight</span>
+                                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                                 <span class="name">Layout</span>.preferredWidth: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">2</span>
+                             }
+                         }
+                         <span class="name">highlighted</span>: <span class="name">ListView</span>.<span class="name">isCurrentItem</span>
+                         <span class="name">onClicked</span>: <span class="name">view</span>.<span class="name">searchModel</span>.<span class="name">currentResult</span> <span class="operator">=</span> <span class="name">resultDelegate</span>.<span class="name">index</span>
+                     }
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-treeview.html" translate="no">TreeView</a></span> {
+                     <span class="name">id</span>: <span class="name">bookmarksTree</span>
+                     <span class="name">implicitHeight</span>: <span class="name">parent</span>.<span class="name">height</span>
+                     <span class="name">implicitWidth</span>: <span class="name">parent</span>.<span class="name">width</span>
+                     <span class="name">columnWidthProvider</span>: <span class="keyword">function</span>() { <span class="keyword">return</span> <span class="name">width</span> }
+                     <span class="name">delegate</span>: <span class="name">TreeViewDelegate</span> {
+                         required property <span class="type">int</span> <span class="name">page</span>
+                         required property <span class="type">point</span> <span class="name">location</span>
+                         required property <span class="type">real</span> <span class="name">zoom</span>
+                         <span class="name">onClicked</span>: <span class="name">view</span>.<span class="name">goToLocation</span>(<span class="name">page</span>, <span class="name">location</span>, <span class="name">zoom</span>)
+                     }
+                     <span class="name">model</span>: <span class="name">PdfBookmarkModel</span> {
+                         <span class="name">document</span>: <span class="name">doc</span>
+                     }
+                     <span class="name">ScrollBar</span>.vertical: <span class="name">ScrollBar</span> { }
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-gridview.html" translate="no">GridView</a></span> {
+                     <span class="name">id</span>: <span class="name">thumbnailsView</span>
+                     <span class="name">implicitWidth</span>: <span class="name">parent</span>.<span class="name">width</span>
+                     <span class="name">implicitHeight</span>: <span class="name">parent</span>.<span class="name">height</span>
+                     <span class="name">model</span>: <span class="name">doc</span>.<span class="name">pageModel</span>
+                     <span class="name">cellWidth</span>: <span class="name">width</span> <span class="operator">/</span> <span class="number">2</span>
+                     <span class="name">cellHeight</span>: <span class="name">cellWidth</span> <span class="operator">+</span> <span class="number">10</span>
+                     <span class="name">delegate</span>: <span class="name">Item</span> {
+                         required property <span class="type">int</span> <span class="name">index</span>
+                         required property <span class="type">string</span> <span class="name">label</span>
+                         required property <span class="type">size</span> <span class="name">pointSize</span>
+                         <span class="name">width</span>: <span class="name">thumbnailsView</span>.<span class="name">cellWidth</span>
+                         <span class="name">height</span>: <span class="name">thumbnailsView</span>.<span class="name">cellHeight</span>
+                         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+                             <span class="name">id</span>: <span class="name">paper</span>
+                             <span class="name">width</span>: <span class="name">image</span>.<span class="name">width</span>
+                             <span class="name">height</span>: <span class="name">image</span>.<span class="name">height</span>
+                             <span class="name">x</span>: (<span class="name">parent</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">width</span>) <span class="operator">/</span> <span class="number">2</span>
+                             <span class="name">y</span>: (<span class="name">parent</span>.<span class="name">height</span> <span class="operator">-</span> <span class="name">height</span> <span class="operator">-</span> <span class="name">pageNumber</span>.<span class="name">height</span>) <span class="operator">/</span> <span class="number">2</span>
+                             <span class="type"><a href="qml-qtquick-pdf-pdfpageimage.html" translate="no">PdfPageImage</a></span> {
+                                 <span class="name">id</span>: <span class="name">image</span>
+                                 <span class="name">document</span>: <span class="name">doc</span>
+                                 <span class="name">currentFrame</span>: <span class="name">index</span>
+                                 <span class="name">asynchronous</span>: <span class="number">true</span>
+                                 <span class="name">fillMode</span>: <span class="name">Image</span>.<span class="name">PreserveAspectFit</span>
+                                 property <span class="type">bool</span> <span class="name">landscape</span>: <span class="name">pointSize</span>.<span class="name">width</span> <span class="operator">&gt;</span> <span class="name">pointSize</span>.<span class="name">height</span>
+                                 <span class="name">width</span>: <span class="name">landscape</span> ? <span class="name">thumbnailsView</span>.<span class="name">cellWidth</span> <span class="operator">-</span> <span class="number">6</span>
+                                                  : <span class="name">height</span> <span class="operator">*</span> <span class="name">pointSize</span>.<span class="name">width</span> <span class="operator">/</span> <span class="name">pointSize</span>.<span class="name">height</span>
+                                 <span class="name">height</span>: <span class="name">landscape</span> ? <span class="name">width</span> <span class="operator">*</span> <span class="name">pointSize</span>.<span class="name">height</span> <span class="operator">/</span> <span class="name">pointSize</span>.<span class="name">width</span>
+                                                   : <span class="name">thumbnailsView</span>.<span class="name">cellHeight</span> <span class="operator">-</span> <span class="number">14</span>
+                                 <span class="name">sourceSize</span>.width: <span class="name">width</span>
+                                 <span class="name">sourceSize</span>.height: <span class="name">height</span>
+                             }
+                         }
+                         <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                             <span class="name">id</span>: <span class="name">pageNumber</span>
+                             <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+                             <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+                             <span class="name">text</span>: <span class="name">label</span>
+                         }
+                         <span class="type"><a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+                             <span class="name">onTapped</span>: <span class="name">view</span>.<span class="name">goToPage</span>(<span class="name">index</span>)
+                         }
+                     }
+                 }
+             }
+         }
+     }
+</pre>
+<p>Finally, add a second toolbar as a footer, to hold the search field, search up/down buttons and some status information:</p>
+<pre class="cpp" translate="no">
+     <span class="name">footer</span>: <span class="name">ToolBar</span> {
+         <span class="name">height</span>: <span class="name">footerRow</span>.<span class="name">implicitHeight</span> <span class="operator">+</span> <span class="number">6</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="name">id</span>: <span class="name">footerRow</span>
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-toolbutton.html" translate="no">ToolButton</a></span> {
+                 <span class="name">action</span>: <span class="name">Action</span> {
+                     <span class="name">id</span>: <span class="name">sidebarOpenAction</span>
+                     <span class="name">checkable</span>: <span class="number">true</span>
+                     <span class="name">checked</span>: <span class="name">sidebar</span>.<span class="name">opened</span>
+                     <span class="name">icon</span>.source: <span class="name">checked</span> ? <span class="string">&quot;qrc:/pdfviewer/resources/sidebar-collapse-left.svg&quot;</span> : <span class="string">&quot;qrc:/pdfviewer/resources/sidebar-expand-left.svg&quot;</span>
+                     <span class="name">onTriggered</span>: <span class="name">sidebar</span>.<span class="name">open</span>()
+                 }
+                 <span class="name">ToolTip</span>.visible: <span class="name">enabled</span> <span class="operator">&amp;&amp;</span> <span class="name">hovered</span>
+                 <span class="name">ToolTip</span>.delay: <span class="number">2000</span>
+                 <span class="name">ToolTip</span>.text: <span class="string">&quot;open sidebar&quot;</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-toolbutton.html" translate="no">ToolButton</a></span> {
+                 <span class="name">action</span>: <span class="name">Action</span> {
+                     <span class="name">icon</span>.source: <span class="string">&quot;qrc:/pdfviewer/resources/go-up-search.svg&quot;</span>
+                     <span class="name">shortcut</span>: <span class="name">StandardKey</span>.<span class="name">FindPrevious</span>
+                     <span class="name">onTriggered</span>: <span class="name">view</span>.<span class="name">searchBack</span>()
+                 }
+                 <span class="name">ToolTip</span>.visible: <span class="name">enabled</span> <span class="operator">&amp;&amp;</span> <span class="name">hovered</span>
+                 <span class="name">ToolTip</span>.delay: <span class="number">2000</span>
+                 <span class="name">ToolTip</span>.text: <span class="string">&quot;find previous&quot;</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                 <span class="name">id</span>: <span class="name">searchField</span>
+                 <span class="name">placeholderText</span>: <span class="string">&quot;search&quot;</span>
+                 <span class="name">Layout</span>.minimumWidth: <span class="number">150</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                 <span class="name">Layout</span>.bottomMargin: <span class="number">3</span>
+                 <span class="name">onAccepted</span>: {
+                     <span class="name">sidebar</span>.<span class="name">open</span>()
+                     <span class="name">sidebarTabs</span>.<span class="name">setCurrentIndex</span>(<span class="number">1</span>)
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+                     <span class="name">visible</span>: <span class="name">searchField</span>.<span class="name">text</span> <span class="operator">!==</span> <span class="string">&quot;&quot;</span>
+                     <span class="name">source</span>: <span class="string">&quot;qrc:/pdfviewer/resources/edit-clear.svg&quot;</span>
+                     <span class="name">sourceSize</span>.height: <span class="name">searchField</span>.<span class="name">height</span> <span class="operator">-</span> <span class="number">6</span>
+                     <span class="type">anchors</span> {
+                         <span class="name">right</span>: <span class="name">parent</span>.<span class="name">right</span>
+                         <span class="name">verticalCenter</span>: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+                         <span class="name">margins</span>: <span class="number">3</span>
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+                         <span class="name">onTapped</span>: <span class="name">searchField</span>.<span class="name">clear</span>()
+                     }
+                 }
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-toolbutton.html" translate="no">ToolButton</a></span> {
+                 <span class="name">action</span>: <span class="name">Action</span> {
+                     <span class="name">icon</span>.source: <span class="string">&quot;qrc:/pdfviewer/resources/go-down-search.svg&quot;</span>
+                     <span class="name">shortcut</span>: <span class="name">StandardKey</span>.<span class="name">FindNext</span>
+                     <span class="name">onTriggered</span>: <span class="name">view</span>.<span class="name">searchForward</span>()
+                 }
+                 <span class="name">ToolTip</span>.visible: <span class="name">enabled</span> <span class="operator">&amp;&amp;</span> <span class="name">hovered</span>
+                 <span class="name">ToolTip</span>.delay: <span class="number">2000</span>
+                 <span class="name">ToolTip</span>.text: <span class="string">&quot;find next&quot;</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">id</span>: <span class="name">statusLabel</span>
+                 property <span class="type">size</span> <span class="name">implicitPointSize</span>: <span class="name">doc</span>.<span class="name">pagePointSize</span>(<span class="name">view</span>.<span class="name">currentPage</span>)
+                 <span class="name">text</span>: <span class="string">&quot;page &quot;</span> <span class="operator">+</span> (<span class="name">currentPageSB</span>.<span class="name">value</span>) <span class="operator">+</span> <span class="string">&quot; of &quot;</span> <span class="operator">+</span> <span class="name">doc</span>.<span class="name">pageCount</span> <span class="operator">+</span>
+                       <span class="string">&quot; scale &quot;</span> <span class="operator">+</span> <span class="name">view</span>.<span class="name">renderScale</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span>
+                       <span class="string">&quot; original &quot;</span> <span class="operator">+</span> <span class="name">implicitPointSize</span>.<span class="name">width</span>.<span class="name">toFixed</span>(<span class="number">1</span>) <span class="operator">+</span> <span class="string">&quot;x&quot;</span> <span class="operator">+</span> <span class="name">implicitPointSize</span>.<span class="name">height</span>.<span class="name">toFixed</span>(<span class="number">1</span>) <span class="operator">+</span> <span class="string">&quot; pt&quot;</span>
+                 <span class="name">visible</span>: <span class="name">doc</span>.<span class="name">pageCount</span> <span class="operator">&gt;</span> <span class="number">0</span>
+             }
+         }
+     }
+ }
+</pre>
+<h4 id="files-and-attributions">Files and Attributions</h4>
+<p><a href="https://code.qt.io/cgit/qt/qtwebengine.git/tree/examples/pdf/multipage?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@multipage -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

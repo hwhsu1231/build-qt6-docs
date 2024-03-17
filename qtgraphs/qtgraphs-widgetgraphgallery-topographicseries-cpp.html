@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;topographicseries.h&quot;</span>
+
+ <span class="comment">// Value used to encode height data as RGB value on PNG file</span>
+ <span class="keyword">const</span> <span class="type">float</span> packingFactor <span class="operator">=</span> <span class="number">11983.f</span>;
+
+ TopographicSeries<span class="operator">::</span>TopographicSeries()
+ {
+     setDrawMode(QSurface3DSeries<span class="operator">::</span>DrawSurface);
+     setFlatShadingEnabled(<span class="keyword">true</span>);
+     setBaseColor(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>white);
+ }
+
+ TopographicSeries<span class="operator">::</span><span class="operator">~</span>TopographicSeries() <span class="operator">=</span> <span class="keyword">default</span>;
+
+ <span class="type">void</span> TopographicSeries<span class="operator">::</span>setTopographyFile(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> file<span class="operator">,</span> <span class="type">float</span> width<span class="operator">,</span> <span class="type">float</span> height)
+ {
+     <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> heightMapImage(file);
+     <span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span> <span class="operator">*</span>bits <span class="operator">=</span> heightMapImage<span class="operator">.</span>bits();
+     <span class="type">int</span> imageHeight <span class="operator">=</span> heightMapImage<span class="operator">.</span>height();
+     <span class="type">int</span> imageWidth <span class="operator">=</span> heightMapImage<span class="operator">.</span>width();
+     <span class="type">int</span> widthBits <span class="operator">=</span> imageWidth <span class="operator">*</span> <span class="number">4</span>;
+     <span class="type">float</span> stepX <span class="operator">=</span> width <span class="operator">/</span> <span class="type">float</span>(imageWidth);
+     <span class="type">float</span> stepZ <span class="operator">=</span> height <span class="operator">/</span> <span class="type">float</span>(imageHeight);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>dataArray <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span>;
+     dataArray<span class="operator">-</span><span class="operator">&gt;</span>reserve(imageHeight);
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> imageHeight; <span class="operator">+</span><span class="operator">+</span>i) {
+         <span class="type">int</span> p <span class="operator">=</span> i <span class="operator">*</span> widthBits;
+         <span class="type">float</span> z <span class="operator">=</span> height <span class="operator">-</span> <span class="type">float</span>(i) <span class="operator">*</span> stepZ;
+         <span class="keyword">auto</span> <span class="operator">*</span>newRow <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataRow-typedef" translate="no">QSurfaceDataRow</a></span>;
+         newRow<span class="operator">-</span><span class="operator">&gt;</span>reserve(imageWidth);
+         <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="number">0</span>; j <span class="operator">&lt;</span> imageWidth; <span class="operator">+</span><span class="operator">+</span>j) {
+             <span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span> aa <span class="operator">=</span> bits<span class="operator">[</span>p <span class="operator">+</span> <span class="number">0</span><span class="operator">]</span>;
+             <span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span> rr <span class="operator">=</span> bits<span class="operator">[</span>p <span class="operator">+</span> <span class="number">1</span><span class="operator">]</span>;
+             <span class="type"><a href="../qtcore/qttypes.html#uchar-typedef" translate="no">uchar</a></span> gg <span class="operator">=</span> bits<span class="operator">[</span>p <span class="operator">+</span> <span class="number">2</span><span class="operator">]</span>;
+             <span class="type"><a href="../qtcore/qttypes.html#uint-typedef" translate="no">uint</a></span> color <span class="operator">=</span> <span class="type"><a href="../qtcore/qttypes.html#uint-typedef" translate="no">uint</a></span>((gg <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">16</span>) <span class="operator">+</span> (rr <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">8</span>) <span class="operator">+</span> aa);
+             <span class="type">float</span> y <span class="operator">=</span> <span class="type">float</span>(color) <span class="operator">/</span> packingFactor;
+             newRow<span class="operator">-</span><span class="operator">&gt;</span>append(<span class="type"><a href="qsurfacedataitem.html" translate="no">QSurfaceDataItem</a></span>({<span class="type">float</span>(j) <span class="operator">*</span> stepX<span class="operator">,</span> y<span class="operator">,</span> z}));
+             p <span class="operator">+</span><span class="operator">=</span> <span class="number">4</span>;
+         }
+         dataArray<span class="operator">-</span><span class="operator">&gt;</span>append(newRow);
+     }
+
+     dataProxy()<span class="operator">-</span><span class="operator">&gt;</span>resetArray(dataArray);
+
+     m_sampleCountX <span class="operator">=</span> <span class="type">float</span>(imageWidth);
+     m_sampleCountZ <span class="operator">=</span> <span class="type">float</span>(imageHeight);
+ }
+</pre>

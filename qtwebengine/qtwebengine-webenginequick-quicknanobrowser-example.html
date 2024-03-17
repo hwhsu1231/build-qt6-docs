@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- quicknanobrowser.qdoc -->
+  <meta name="description" content="A web browser implemented using the WebEngineView QML type.">
+  <title>WebEngine Quick Nano Browser | Qt WebEngine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtwebengine-index.html" translate="no">Qt WebEngine</a></li>
+<li><a href="webengine-examples.html" translate="no">Qt WebEngine Quick Examples</a></li>
+<li>WebEngine Quick Nano Browser</li>
+<li id="buildversion"><a href="qtwebengine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#creating-the-main-browser-window">Creating the Main Browser Window</a></li>
+<li class="level1"><a href="#handling-certificate-errors">Handling Certificate Errors</a></li>
+<li class="level1"><a href="#handling-feature-permission-requests">Handling Feature Permission Requests</a></li>
+<li class="level1"><a href="#entering-and-leaving-fullscreen-mode">Entering and Leaving Fullscreen Mode</a></li>
+<li class="level1"><a href="#signing-requirement-for-macos">Signing Requirement for macOS</a></li>
+<li class="level1"><a href="#files-and-attributions">Files and Attributions</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">WebEngine Quick Nano Browser</h1>
+<!-- $$$webenginequick/quicknanobrowser-brief -->
+<p>A web browser implemented using the <a href="qml-qtwebengine-webengineview.html" translate="no">WebEngineView</a> QML type.</p>
+<!-- @@@webenginequick/quicknanobrowser -->
+<!-- $$$webenginequick/quicknanobrowser-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/quicknanobrowser-demo.jpg" alt="" /></p><p><i>Quick Nano Browser</i> demonstrates how to use the <a href="qtwebengine-qmlmodule.html" translate="no">Qt WebEngine QML types</a> to develop a small web browser application that consists of a browser window with a title bar, toolbar, tab view, and status bar. The web content is loaded in a web engine view within the tab view. If certificate errors occur, users are prompted for action in a message dialog. The status bar pops up to display the URL of a hovered link.</p>
+<p>A web page can issue a request for being displayed in fullscreen mode. Users can allow full screen mode by using a toolbar button. They can leave fullscreen mode by using a keyboard shortcut. Additional toolbar buttons enable moving backwards and forwards in the browser history, reloading tab content, and opening a settings menu for enabling the following features: JavaScript, plugins, fullscreen mode, off the record, HTTP disk cache, autoloading images, and ignoring certificate errors.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="creating-the-main-browser-window">Creating the Main Browser Window</h4>
+<p>When the browser main window is loaded, it creates an empty tab using the default profile. Each tab is a web engine view that fills the main window.</p>
+<p>We create the main window in the <i>BrowserWindow.qml</i> file using the <a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a> type:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a></span> {
+     <span class="name">id</span>: <span class="name">browserWindow</span>
+     property <span class="type"><a href="../qtqml/qml-qtqml-qtobject.html" translate="no">QtObject</a></span> <span class="name">applicationRoot</span>
+     property <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> <span class="name">currentWebView</span>: <span class="name">tabBar</span>.<span class="name">currentIndex</span> <span class="operator">&lt;</span> <span class="name">tabBar</span>.<span class="name">count</span> ? <span class="name">tabLayout</span>.<span class="name">children</span>[<span class="name">tabBar</span>.<span class="name">currentIndex</span>] : <span class="number">null</span>
+     ...
+     <span class="name">width</span>: <span class="number">1300</span>
+     <span class="name">height</span>: <span class="number">900</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+     <span class="name">title</span>: <span class="name">currentWebView</span> <span class="operator">&amp;&amp;</span> <span class="name">currentWebView</span>.<span class="name">title</span>
+</pre>
+<p>We use the <a href="../qtquickcontrols/qml-qtquick-controls-tabbar.html" translate="no">TabBar</a> Qt Quick control to create a tab bar anchored to the top of the window, and create a new, empty tab:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbar.html" translate="no">TabBar</a></span> {
+         <span class="name">id</span>: <span class="name">tabBar</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">Component</span>.onCompleted: <span class="name">createTab</span>(<span class="name">defaultProfile</span>)
+
+         <span class="keyword">function </span><span class="name">createTab</span>(profile, focusOnNewTab = true, url = undefined) {
+             var webview = <span class="name">tabComponent</span>.<span class="name">createObject</span>(<span class="name">tabLayout</span>, {profile: <span class="name">profile</span>});
+             var newTabButton = <span class="name">tabButtonComponent</span>.<span class="name">createObject</span>(<span class="name">tabBar</span>, {tabTitle: <span class="name">Qt</span>.<span class="name">binding</span>(<span class="keyword">function </span>() { <span class="keyword">return</span> <span class="name">webview</span>.<span class="name">title</span>; })});
+             <span class="name">tabBar</span>.<span class="name">addItem</span>(<span class="name">newTabButton</span>);
+             <span class="keyword">if</span> (<span class="name">focusOnNewTab</span>) {
+                 <span class="name">tabBar</span>.<span class="name">setCurrentIndex</span>(<span class="name">tabBar</span>.<span class="name">count</span> <span class="operator">-</span> <span class="number">1</span>);
+             }
+</pre>
+<p>The tab contains a web engine view that loads web content:</p>
+<pre class="cpp" translate="no">
+         <span class="type"><a href="../qtqml/qml-qtqml-component.html" translate="no">Component</a></span> {
+             <span class="name">id</span>: <span class="name">tabComponent</span>
+             <span class="type"><a href="qml-qtwebengine-webengineview.html" translate="no">WebEngineView</a></span> {
+                 <span class="name">id</span>: <span class="name">webEngineView</span>
+                 <span class="name">focus</span>: <span class="number">true</span>
+
+                 <span class="name">onLinkHovered</span>: <span class="keyword">function</span>(hoveredUrl) {
+                     <span class="keyword">if</span> (<span class="name">hoveredUrl</span> <span class="operator">==</span> <span class="string">&quot;&quot;</span>)
+                         <span class="name">hideStatusText</span>.<span class="name">start</span>();
+                     <span class="keyword">else</span> {
+                         <span class="name">statusText</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">hoveredUrl</span>;
+                         <span class="name">statusBubble</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                         <span class="name">hideStatusText</span>.<span class="name">stop</span>();
+                     }
+                 }
+
+                 <span class="name">states</span>: [
+                     <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+                         <span class="name">name</span>: <span class="string">&quot;FullScreen&quot;</span>
+                         <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                             <span class="name">target</span>: <span class="name">tabBar</span>
+                             <span class="name">visible</span>: <span class="number">false</span>
+                             <span class="name">height</span>: <span class="number">0</span>
+                         }
+                         <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                             <span class="name">target</span>: <span class="name">navigationBar</span>
+                             <span class="name">visible</span>: <span class="number">false</span>
+                         }
+                     }
+                 ]
+                 <span class="name">settings</span>.localContentCanAccessRemoteUrls: <span class="number">true</span>
+                 <span class="name">settings</span>.localContentCanAccessFileUrls: <span class="number">false</span>
+                 <span class="name">settings</span>.autoLoadImages: <span class="name">appSettings</span>.<span class="name">autoLoadImages</span>
+                 <span class="name">settings</span>.javascriptEnabled: <span class="name">appSettings</span>.<span class="name">javaScriptEnabled</span>
+                 <span class="name">settings</span>.errorPageEnabled: <span class="name">appSettings</span>.<span class="name">errorPageEnabled</span>
+                 <span class="name">settings</span>.pluginsEnabled: <span class="name">appSettings</span>.<span class="name">pluginsEnabled</span>
+                 <span class="name">settings</span>.fullScreenSupportEnabled: <span class="name">appSettings</span>.<span class="name">fullScreenSupportEnabled</span>
+                 <span class="name">settings</span>.autoLoadIconsForPage: <span class="name">appSettings</span>.<span class="name">autoLoadIconsForPage</span>
+                 <span class="name">settings</span>.touchIconsEnabled: <span class="name">appSettings</span>.<span class="name">touchIconsEnabled</span>
+                 <span class="name">settings</span>.webRTCPublicInterfacesOnly: <span class="name">appSettings</span>.<span class="name">webRTCPublicInterfacesOnly</span>
+                 <span class="name">settings</span>.pdfViewerEnabled: <span class="name">appSettings</span>.<span class="name">pdfViewerEnabled</span>
+
+                 <span class="name">onCertificateError</span>: <span class="keyword">function</span>(error) {
+                     <span class="name">error</span>.<span class="name">defer</span>();
+                     <span class="name">sslDialog</span>.<span class="name">enqueue</span>(<span class="name">error</span>);
+                 }
+
+                 <span class="name">onNewWindowRequested</span>: <span class="keyword">function</span>(request) {
+                     <span class="keyword">if</span> (!<span class="name">request</span>.<span class="name">userInitiated</span>)
+                         <span class="name">console</span>.<span class="name">warn</span>(<span class="string">&quot;Blocked a popup window.&quot;</span>);
+                     <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">request</span>.<span class="name">destination</span> <span class="operator">===</span> <span class="name">WebEngineNewWindowRequest</span>.<span class="name">InNewTab</span>) {
+                         var tab = <span class="name">tabBar</span>.<span class="name">createTab</span>(<span class="name">currentWebView</span>.<span class="name">profile</span>, <span class="number">true</span>, <span class="name">request</span>.<span class="name">requestedUrl</span>);
+                         <span class="name">tab</span>.<span class="name">acceptAsNewWindow</span>(<span class="name">request</span>);
+                     } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">request</span>.<span class="name">destination</span> <span class="operator">===</span> <span class="name">WebEngineNewWindowRequest</span>.<span class="name">InNewBackgroundTab</span>) {
+                         var backgroundTab = <span class="name">tabBar</span>.<span class="name">createTab</span>(<span class="name">currentWebView</span>.<span class="name">profile</span>, <span class="number">false</span>);
+                         <span class="name">backgroundTab</span>.<span class="name">acceptAsNewWindow</span>(<span class="name">request</span>);
+                     } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">request</span>.<span class="name">destination</span> <span class="operator">===</span> <span class="name">WebEngineNewWindowRequest</span>.<span class="name">InNewDialog</span>) {
+                         var dialog = <span class="name">applicationRoot</span>.<span class="name">createDialog</span>(<span class="name">currentWebView</span>.<span class="name">profile</span>);
+                         <span class="name">dialog</span>.<span class="name">currentWebView</span>.<span class="name">acceptAsNewWindow</span>(<span class="name">request</span>);
+                     } <span class="keyword">else</span> {
+                         var window = <span class="name">applicationRoot</span>.<span class="name">createWindow</span>(<span class="name">currentWebView</span>.<span class="name">profile</span>);
+                         <span class="name">window</span>.<span class="name">currentWebView</span>.<span class="name">acceptAsNewWindow</span>(<span class="name">request</span>);
+                     }
+                 }
+
+                 <span class="name">onFullScreenRequested</span>: <span class="keyword">function</span>(request) {
+                     <span class="keyword">if</span> (<span class="name">request</span>.<span class="name">toggleOn</span>) {
+                         <span class="name">webEngineView</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;FullScreen&quot;</span>;
+                         <span class="name">browserWindow</span>.<span class="name">previousVisibility</span> <span class="operator">=</span> <span class="name">browserWindow</span>.<span class="name">visibility</span>;
+                         <span class="name">browserWindow</span>.<span class="name">showFullScreen</span>();
+                         <span class="name">fullScreenNotification</span>.<span class="name">show</span>();
+                     } <span class="keyword">else</span> {
+                         <span class="name">webEngineView</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;
+                         <span class="name">browserWindow</span>.<span class="name">visibility</span> <span class="operator">=</span> <span class="name">browserWindow</span>.<span class="name">previousVisibility</span>;
+                         <span class="name">fullScreenNotification</span>.<span class="name">hide</span>();
+                     }
+                     <span class="name">request</span>.<span class="name">accept</span>();
+                 }
+
+                 <span class="name">onRegisterProtocolHandlerRequested</span>: <span class="keyword">function</span>(request) {
+                     <span class="name">console</span>.<span class="name">log</span>(<span class="string">&quot;accepting registerProtocolHandler request for &quot;</span>
+                                 <span class="operator">+</span> <span class="name">request</span>.<span class="name">scheme</span> <span class="operator">+</span> <span class="string">&quot; from &quot;</span> <span class="operator">+</span> <span class="name">request</span>.<span class="name">origin</span>);
+                     <span class="name">request</span>.<span class="name">accept</span>();
+                 }
+
+                 <span class="name">onRenderProcessTerminated</span>: <span class="keyword">function</span>(terminationStatus, exitCode) {
+                     var status = <span class="string">&quot;&quot;</span>;
+                     <span class="keyword">switch</span> (<span class="name">terminationStatus</span>) {
+                     <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">NormalTerminationStatus</span>:
+                         <span class="name">status</span> <span class="operator">=</span> <span class="string">&quot;(normal exit)&quot;</span>;
+                         <span class="keyword">break</span>;
+                     <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">AbnormalTerminationStatus</span>:
+                         <span class="name">status</span> <span class="operator">=</span> <span class="string">&quot;(abnormal exit)&quot;</span>;
+                         <span class="keyword">break</span>;
+                     <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">CrashedTerminationStatus</span>:
+                         <span class="name">status</span> <span class="operator">=</span> <span class="string">&quot;(crashed)&quot;</span>;
+                         <span class="keyword">break</span>;
+                     <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">KilledTerminationStatus</span>:
+                         <span class="name">status</span> <span class="operator">=</span> <span class="string">&quot;(killed)&quot;</span>;
+                         <span class="keyword">break</span>;
+                     }
+
+                     <span class="name">print</span>(<span class="string">&quot;Render process exited with code &quot;</span> <span class="operator">+</span> <span class="name">exitCode</span> <span class="operator">+</span> <span class="string">&quot; &quot;</span> <span class="operator">+</span> <span class="name">status</span>);
+                     <span class="name">reloadTimer</span>.<span class="name">running</span> <span class="operator">=</span> <span class="number">true</span>;
+                 }
+
+                 <span class="name">onSelectClientCertificate</span>: <span class="keyword">function</span>(selection) {
+                     <span class="name">selection</span>.<span class="name">certificates</span>[<span class="number">0</span>].<span class="name">select</span>();
+                 }
+
+                 <span class="name">onFindTextFinished</span>: <span class="keyword">function</span>(result) {
+                     <span class="keyword">if</span> (!<span class="name">findBar</span>.<span class="name">visible</span>)
+                         <span class="name">findBar</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+
+                     <span class="name">findBar</span>.<span class="name">numberOfMatches</span> <span class="operator">=</span> <span class="name">result</span>.<span class="name">numberOfMatches</span>;
+                     <span class="name">findBar</span>.<span class="name">activeMatch</span> <span class="operator">=</span> <span class="name">result</span>.<span class="name">activeMatch</span>;
+                 }
+
+                 <span class="name">onLoadingChanged</span>: <span class="keyword">function</span>(loadRequest) {
+                     <span class="keyword">if</span> (<span class="name">loadRequest</span>.<span class="name">status</span> <span class="operator">==</span> <span class="name">WebEngineView</span>.<span class="name">LoadStartedStatus</span>)
+                         <span class="name">findBar</span>.<span class="name">reset</span>();
+                 }
+
+                 <span class="name">onFeaturePermissionRequested</span>: <span class="keyword">function</span>(securityOrigin, feature) {
+                     <span class="name">featurePermissionDialog</span>.<span class="name">securityOrigin</span> <span class="operator">=</span> <span class="name">securityOrigin</span>;
+                     <span class="name">featurePermissionDialog</span>.<span class="name">feature</span> <span class="operator">=</span> <span class="name">feature</span>;
+                     <span class="name">featurePermissionDialog</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                 }
+
+                 <span class="type"><a href="../qtqml/qml-qtqml-timer.html" translate="no">Timer</a></span> {
+                     <span class="name">id</span>: <span class="name">reloadTimer</span>
+                     <span class="name">interval</span>: <span class="number">0</span>
+                     <span class="name">running</span>: <span class="number">false</span>
+                     <span class="name">repeat</span>: <span class="number">false</span>
+                     <span class="name">onTriggered</span>: <span class="name">currentWebView</span>.<span class="name">reload</span>()
+                 }
+             }
+         }
+</pre>
+<p>We use the <a href="../qtquickcontrols/qml-qtquick-controls-action.html" translate="no">Action</a> type to create new tabs:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-action.html" translate="no">Action</a></span> {
+         <span class="name">shortcut</span>: <span class="name">StandardKey</span>.<span class="name">AddTab</span>
+         <span class="name">onTriggered</span>: {
+             <span class="name">tabBar</span>.<span class="name">createTab</span>(<span class="name">tabBar</span>.<span class="name">count</span> <span class="operator">!=</span> <span class="number">0</span> ? <span class="name">currentWebView</span>.<span class="name">profile</span> : <span class="name">defaultProfile</span>);
+             <span class="name">addressBar</span>.<span class="name">forceActiveFocus</span>();
+             <span class="name">addressBar</span>.<span class="name">selectAll</span>();
+         }
+</pre>
+<p>We use the <a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a> Qt Quick Control within a <a href="../qtquickcontrols/qml-qtquick-controls-toolbar.html" translate="no">ToolBar</a> to create an address bar that shows the current URL and where users can enter another URL:</p>
+<pre class="cpp" translate="no">
+     <span class="name">menuBar</span>: <span class="name">ToolBar</span> {
+         <span class="name">id</span>: <span class="name">navigationBar</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+     ...
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                 <span class="name">id</span>: <span class="name">addressBar</span>
+     ...
+                 <span class="name">focus</span>: <span class="number">true</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                 Binding on <span class="name">text</span> {
+                     <span class="name">when</span>: <span class="name">currentWebView</span>
+                     <span class="name">value</span>: <span class="name">currentWebView</span>.<span class="name">url</span>
+                 }
+                 <span class="name">onAccepted</span>: <span class="name">currentWebView</span>.<span class="name">url</span> <span class="operator">=</span> <span class="name">Utils</span>.<span class="name">fromUserInput</span>(<span class="name">text</span>)
+                 <span class="name">selectByMouse</span>: <span class="number">true</span>
+             }
+</pre>
+<h4 id="handling-certificate-errors">Handling Certificate Errors</h4>
+<p>If the certificate of the site being loaded triggers a certificate error, we call the <a href="qml-qtwebengine-webenginecertificateerror.html#defer-method" translate="no">defer</a>() QML method to pause the URL request and wait for user input:</p>
+<pre class="cpp" translate="no">
+                 <span class="name">onCertificateError</span>: <span class="keyword">function</span>(error) {
+                     <span class="name">error</span>.<span class="name">defer</span>();
+                     <span class="name">sslDialog</span>.<span class="name">enqueue</span>(<span class="name">error</span>);
+                 }
+</pre>
+<p>We use the Dialog type to prompt users to continue or cancel the loading of the web page. If users select <b translate="no">Yes</b>, we call the <a href="qml-qtwebengine-webenginecertificateerror.html#acceptCertificate-method" translate="no">acceptCertificate</a>() method to continue loading content from the URL. If users select <b translate="no">No</b>, we call the <a href="qml-qtwebengine-webenginecertificateerror.html#rejectCertificate-method" translate="no">rejectCertificate</a>() method to reject the request and stop loading content from the URL:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-dialog.html" translate="no">Dialog</a></span> {
+         <span class="name">id</span>: <span class="name">sslDialog</span>
+         <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+         <span class="name">contentWidth</span>: <span class="name">Math</span>.<span class="name">max</span>(<span class="name">mainTextForSSLDialog</span>.<span class="name">width</span>, <span class="name">detailedTextForSSLDialog</span>.<span class="name">width</span>)
+         <span class="name">contentHeight</span>: <span class="name">mainTextForSSLDialog</span>.<span class="name">height</span> <span class="operator">+</span> <span class="name">detailedTextForSSLDialog</span>.<span class="name">height</span>
+         property <span class="type">var</span> <span class="name">certErrors</span>: []
+         <span class="comment">// fixme: icon!</span>
+         <span class="comment">// icon: StandardIcon.Warning</span>
+         <span class="name">standardButtons</span>: <span class="name">Dialog</span>.<span class="name">No</span> <span class="operator">|</span> <span class="name">Dialog</span>.<span class="name">Yes</span>
+         <span class="name">title</span>: <span class="string">&quot;Server's certificate not trusted&quot;</span>
+         <span class="name">contentItem</span>: <span class="name">Item</span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">id</span>: <span class="name">mainTextForSSLDialog</span>
+                 <span class="name">text</span>: <span class="string">&quot;Do you wish to continue?&quot;</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">id</span>: <span class="name">detailedTextForSSLDialog</span>
+                 <span class="name">anchors</span>.top: <span class="name">mainTextForSSLDialog</span>.<span class="name">bottom</span>
+                 <span class="name">text</span>: <span class="string">&quot;If you wish so, you may continue with an unverified certificate.\n&quot;</span> <span class="operator">+</span>
+                       <span class="string">&quot;Accepting an unverified certificate means\n&quot;</span> <span class="operator">+</span>
+                       <span class="string">&quot;you may not be connected with the host you tried to connect to.\n&quot;</span> <span class="operator">+</span>
+                       <span class="string">&quot;Do you wish to override the security check and continue?&quot;</span>
+             }
+         }
+
+         <span class="name">onAccepted</span>: {
+             <span class="name">certErrors</span>.<span class="name">shift</span>().<span class="name">acceptCertificate</span>();
+             <span class="name">presentError</span>();
+         }
+         <span class="name">onRejected</span>: <span class="name">reject</span>()
+
+         <span class="keyword">function </span><span class="name">reject</span>(){
+             <span class="name">certErrors</span>.<span class="name">shift</span>().<span class="name">rejectCertificate</span>();
+             <span class="name">presentError</span>();
+         }
+         <span class="keyword">function </span><span class="name">enqueue</span>(error){
+             <span class="name">certErrors</span>.<span class="name">push</span>(<span class="name">error</span>);
+             <span class="name">presentError</span>();
+         }
+         <span class="keyword">function </span><span class="name">presentError</span>(){
+             <span class="name">visible</span> <span class="operator">=</span> <span class="name">certErrors</span>.<span class="name">length</span> <span class="operator">&gt;</span> <span class="number">0</span>
+         }
+     }
+</pre>
+<h4 id="handling-feature-permission-requests">Handling Feature Permission Requests</h4>
+<p>We use the <code translate="no">onFeaturePermissionRequested()</code> signal handler to handle requests for accessing a certain feature or device. The <code translate="no">securityOrigin</code> parameter identifies the requester web site, and the <code translate="no">feature</code> parameter is the requested feature. We use these to construct the message of the dialog:</p>
+<pre class="cpp" translate="no">
+                 <span class="name">onFeaturePermissionRequested</span>: <span class="keyword">function</span>(securityOrigin, feature) {
+                     <span class="name">featurePermissionDialog</span>.<span class="name">securityOrigin</span> <span class="operator">=</span> <span class="name">securityOrigin</span>;
+                     <span class="name">featurePermissionDialog</span>.<span class="name">feature</span> <span class="operator">=</span> <span class="name">feature</span>;
+                     <span class="name">featurePermissionDialog</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+                 }
+</pre>
+<p>We show a dialog where the user is asked to grant or deny access. The custom <code translate="no">questionForFeature()</code> JavaScript function generates a human-readable question about the request. If users select <b translate="no">Yes</b>, we call the <a href="qml-qtwebengine-webengineview.html#grantFeaturePermission-method" translate="no">grantFeaturePermission</a>() method with a third <code translate="no">true</code> parameter to grant the <code translate="no">securityOrigin</code> web site the permission to access the <code translate="no">feature</code>. If users select <b translate="no">No</b>, we call the same method but with the <code translate="no">false</code> parameter to deny access:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-dialog.html" translate="no">Dialog</a></span> {
+         <span class="name">id</span>: <span class="name">featurePermissionDialog</span>
+         <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+         <span class="name">width</span>: <span class="name">Math</span>.<span class="name">min</span>(<span class="name">browserWindow</span>.<span class="name">width</span>, <span class="name">browserWindow</span>.<span class="name">height</span>) <span class="operator">/</span> <span class="number">3</span> <span class="operator">*</span> <span class="number">2</span>
+         <span class="name">contentWidth</span>: <span class="name">mainTextForPermissionDialog</span>.<span class="name">width</span>
+         <span class="name">contentHeight</span>: <span class="name">mainTextForPermissionDialog</span>.<span class="name">height</span>
+         <span class="name">standardButtons</span>: <span class="name">Dialog</span>.<span class="name">No</span> <span class="operator">|</span> <span class="name">Dialog</span>.<span class="name">Yes</span>
+         <span class="name">title</span>: <span class="string">&quot;Permission Request&quot;</span>
+
+         property <span class="type">var</span> <span class="name">feature</span>;
+         property <span class="type">url</span> <span class="name">securityOrigin</span>;
+
+         <span class="name">contentItem</span>: <span class="name">Item</span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">id</span>: <span class="name">mainTextForPermissionDialog</span>
+                 <span class="name">text</span>: <span class="name">featurePermissionDialog</span>.<span class="name">questionForFeature</span>()
+             }
+         }
+
+         <span class="name">onAccepted</span>: <span class="name">currentWebView</span> <span class="operator">&amp;&amp;</span> <span class="name">currentWebView</span>.<span class="name">grantFeaturePermission</span>(<span class="name">securityOrigin</span>, <span class="name">feature</span>, <span class="number">true</span>)
+         <span class="name">onRejected</span>: <span class="name">currentWebView</span> <span class="operator">&amp;&amp;</span> <span class="name">currentWebView</span>.<span class="name">grantFeaturePermission</span>(<span class="name">securityOrigin</span>, <span class="name">feature</span>, <span class="number">false</span>)
+         <span class="name">onVisibleChanged</span>: {
+             <span class="keyword">if</span> (<span class="name">visible</span>)
+                 <span class="name">width</span> <span class="operator">=</span> <span class="name">contentWidth</span> <span class="operator">+</span> <span class="number">20</span>;
+         }
+
+         <span class="keyword">function </span><span class="name">questionForFeature</span>() {
+             var question = <span class="string">&quot;Allow &quot;</span> <span class="operator">+</span> <span class="name">securityOrigin</span> <span class="operator">+</span> <span class="string">&quot; to &quot;</span>
+
+             <span class="keyword">switch</span> (<span class="name">feature</span>) {
+             <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">Geolocation</span>:
+                 <span class="name">question</span> <span class="operator">+=</span> <span class="string">&quot;access your location information?&quot;</span>;
+                 <span class="keyword">break</span>;
+             <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">MediaAudioCapture</span>:
+                 <span class="name">question</span> <span class="operator">+=</span> <span class="string">&quot;access your microphone?&quot;</span>;
+                 <span class="keyword">break</span>;
+             <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">MediaVideoCapture</span>:
+                 <span class="name">question</span> <span class="operator">+=</span> <span class="string">&quot;access your webcam?&quot;</span>;
+                 <span class="keyword">break</span>;
+             <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">MediaVideoCapture</span>:
+                 <span class="name">question</span> <span class="operator">+=</span> <span class="string">&quot;access your microphone and webcam?&quot;</span>;
+                 <span class="keyword">break</span>;
+             <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">MouseLock</span>:
+                 <span class="name">question</span> <span class="operator">+=</span> <span class="string">&quot;lock your mouse cursor?&quot;</span>;
+                 <span class="keyword">break</span>;
+             <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">DesktopVideoCapture</span>:
+                 <span class="name">question</span> <span class="operator">+=</span> <span class="string">&quot;capture video of your desktop?&quot;</span>;
+                 <span class="keyword">break</span>;
+             <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">DesktopAudioVideoCapture</span>:
+                 <span class="name">question</span> <span class="operator">+=</span> <span class="string">&quot;capture audio and video of your desktop?&quot;</span>;
+                 <span class="keyword">break</span>;
+             <span class="keyword">case</span> <span class="name">WebEngineView</span>.<span class="name">Notifications</span>:
+                 <span class="name">question</span> <span class="operator">+=</span> <span class="string">&quot;show notification on your desktop?&quot;</span>;
+                 <span class="keyword">break</span>;
+             <span class="keyword">default</span>:
+                 <span class="name">question</span> <span class="operator">+=</span> <span class="string">&quot;access unknown or unsupported feature [&quot;</span> <span class="operator">+</span> <span class="name">feature</span> <span class="operator">+</span> <span class="string">&quot;] ?&quot;</span>;
+                 <span class="keyword">break</span>;
+             }
+
+             <span class="keyword">return</span> <span class="name">question</span>;
+         }
+     }
+</pre>
+<h4 id="entering-and-leaving-fullscreen-mode">Entering and Leaving Fullscreen Mode</h4>
+<p>We create a menu item for allowing fullscreen mode in a settings menu that we place on the tool bar. Also, we create an action for leaving fullscreen mode by using a keyboard shortcut. We call the <a href="qml-qtwebengine-fullscreenrequest.html#accept-method" translate="no">accept</a>() method to accept the fullscreen request. The methdod sets the <a href="qml-qtwebengine-webengineview.html#isFullScreen-prop" translate="no">isFullScreen</a> property to be equal to the <a href="qml-qtwebengine-fullscreenrequest.html#toggleOn-prop" translate="no">toggleOn</a> property.</p>
+<pre class="cpp" translate="no">
+                 <span class="name">onFullScreenRequested</span>: <span class="keyword">function</span>(request) {
+                     <span class="keyword">if</span> (<span class="name">request</span>.<span class="name">toggleOn</span>) {
+                         <span class="name">webEngineView</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;FullScreen&quot;</span>;
+                         <span class="name">browserWindow</span>.<span class="name">previousVisibility</span> <span class="operator">=</span> <span class="name">browserWindow</span>.<span class="name">visibility</span>;
+                         <span class="name">browserWindow</span>.<span class="name">showFullScreen</span>();
+                         <span class="name">fullScreenNotification</span>.<span class="name">show</span>();
+                     } <span class="keyword">else</span> {
+                         <span class="name">webEngineView</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;
+                         <span class="name">browserWindow</span>.<span class="name">visibility</span> <span class="operator">=</span> <span class="name">browserWindow</span>.<span class="name">previousVisibility</span>;
+                         <span class="name">fullScreenNotification</span>.<span class="name">hide</span>();
+                     }
+                     <span class="name">request</span>.<span class="name">accept</span>();
+                 }
+</pre>
+<p>When entering fullscreen mode, we display a notification using the FullScreenNotification custom type that we create in <i>FullScreenNotification.qml</i>.</p>
+<p>We use the <a href="../qtquickcontrols/qml-qtquick-controls-action.html" translate="no">Action</a> type in the settings menu to create a shortcut for leaving fullscreen mode by pressing the escape key:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtquick/qml-qt-labs-settings-settings.html" translate="no">Settings</a></span> {
+         <span class="name">id</span> : <span class="name">appSettings</span>
+         property <span class="type">alias</span> <span class="name">fullScreenSupportEnabled</span>: <span class="name">fullScreenSupportEnabled</span>.<span class="name">checked</span>
+         property <span class="type">alias</span> <span class="name">autoLoadIconsForPage</span>: <span class="name">autoLoadIconsForPage</span>.<span class="name">checked</span>
+         property <span class="type">alias</span> <span class="name">touchIconsEnabled</span>: <span class="name">touchIconsEnabled</span>.<span class="name">checked</span>
+         property <span class="type">alias</span> <span class="name">webRTCPublicInterfacesOnly</span> : <span class="name">webRTCPublicInterfacesOnly</span>.<span class="name">checked</span>
+         property <span class="type">alias</span> <span class="name">devToolsEnabled</span>: <span class="name">devToolsEnabled</span>.<span class="name">checked</span>
+         property <span class="type">alias</span> <span class="name">pdfViewerEnabled</span>: <span class="name">pdfViewerEnabled</span>.<span class="name">checked</span>
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-action.html" translate="no">Action</a></span> {
+         <span class="name">shortcut</span>: <span class="string">&quot;Escape&quot;</span>
+         <span class="name">onTriggered</span>: {
+             <span class="keyword">if</span> (<span class="name">currentWebView</span>.<span class="name">state</span> <span class="operator">==</span> <span class="string">&quot;FullScreen&quot;</span>) {
+                 <span class="name">browserWindow</span>.<span class="name">visibility</span> <span class="operator">=</span> <span class="name">browserWindow</span>.<span class="name">previousVisibility</span>;
+                 <span class="name">fullScreenNotification</span>.<span class="name">hide</span>();
+                 <span class="name">currentWebView</span>.<span class="name">triggerWebAction</span>(<span class="name">WebEngineView</span>.<span class="name">ExitFullScreen</span>);
+             }
+
+             <span class="keyword">if</span> (<span class="name">findBar</span>.<span class="name">visible</span>)
+                 <span class="name">findBar</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">false</span>;
+         }
+     }
+</pre>
+<h4 id="signing-requirement-for-macos">Signing Requirement for macOS</h4>
+<p>To allow web sites access to the location, camera, and microphone when running <i>Quick Nano Browser</i> on macOS, the application needs to be signed. This is done automatically when building, but you need to set up a valid signing identity for the build environment.</p>
+<h4 id="files-and-attributions">Files and Attributions</h4>
+<p>The example uses icons from the Tango Icon Library:</p>
+<div class="table"><table class="generic">
+ <tr valign="top" class="odd"><td ><a href="qtwebengine-attribution-quicknanobrowser-tango.html#quicknanobrowser-tango" translate="no">Tango Icon Library</a></td><td >Public Domain</td></tr>
+</table></div>
+<p><a href="https://code.qt.io/cgit/qt/qtwebengine.git/tree/examples/webenginequick/quicknanobrowser?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@webenginequick/quicknanobrowser -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

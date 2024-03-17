@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef SCATTERDATAMODIFIER_H</span>
+ <span class="preprocessor">#define SCATTERDATAMODIFIER_H</span>
+
+ <span class="preprocessor">#include &quot;axesinputhandler.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QtGraphs/q3dscatter.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qabstract3dseries.h&gt;</span>
+
+ <span class="keyword">class</span> ScatterDataModifier : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> ScatterDataModifier(<span class="type"><a href="q3dscatter.html" translate="no">Q3DScatter</a></span> <span class="operator">*</span>scatter<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent);
+     <span class="operator">~</span>ScatterDataModifier();
+
+     <span class="type">void</span> addData();
+
+ <span class="keyword">public</span> Q_SLOTS:
+     <span class="type">void</span> setBackgroundEnabled(<span class="type">int</span> enabled);
+     <span class="type">void</span> setGridEnabled(<span class="type">int</span> enabled);
+     <span class="type">void</span> setSmoothDots(<span class="type">int</span> smooth);
+     <span class="type">void</span> changePresetCamera();
+     <span class="type">void</span> toggleItemCount();
+     <span class="type">void</span> toggleRanges();
+     <span class="type">void</span> adjustMinimumRange(<span class="type">float</span> range);
+     <span class="type">void</span> adjustMaximumRange(<span class="type">float</span> range);
+     <span class="type">void</span> changeStyle(<span class="type">int</span> style);
+     <span class="type">void</span> changeTheme(<span class="type">int</span> theme);
+     <span class="type">void</span> changeShadowQuality(<span class="type">int</span> quality);
+     <span class="type">void</span> shadowQualityUpdatedByVisual(QAbstract3DGraph<span class="operator">::</span>ShadowQuality shadowQuality);
+
+ Q_SIGNALS:
+     <span class="type">void</span> backgroundEnabledChanged(<span class="type">bool</span> enabled);
+     <span class="type">void</span> gridEnabledChanged(<span class="type">bool</span> enabled);
+     <span class="type">void</span> shadowQualityChanged(<span class="type">int</span> quality);
+
+ <span class="keyword">private</span>:
+     QVector3D randVector();
+     <span class="type"><a href="q3dscatter.html" translate="no">Q3DScatter</a></span> <span class="operator">*</span>m_graph <span class="operator">=</span> nullptr;
+     QAbstract3DSeries<span class="operator">::</span>Mesh m_style <span class="operator">=</span> QAbstract3DSeries<span class="operator">::</span>MeshSphere;
+     <span class="type">bool</span> m_smooth <span class="operator">=</span> <span class="keyword">true</span>;
+     <span class="type">int</span> m_itemCount;
+     <span class="type">float</span> m_curveDivider;
+
+     AxesInputHandler <span class="operator">*</span>m_inputHandler;
+     <span class="type">bool</span> m_autoAdjust <span class="operator">=</span> <span class="keyword">true</span>;
+ };
+
+ <span class="preprocessor">#endif</span>
+</pre>

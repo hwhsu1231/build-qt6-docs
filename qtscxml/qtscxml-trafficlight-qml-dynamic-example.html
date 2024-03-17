@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- trafficlight-qml-dynamic.qdoc -->
+  <meta name="description" content="A Qt Quick application that uses a dynamically loaded state machine to implement a traffic light.">
+  <title>SCXML Traffic Light (Dynamic, QML) | Qt SCXML 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtscxml-index.html" translate="no">Qt SCXML</a></li>
+<li><a href="examples-qtscxml.html" translate="no">Qt SCXML Examples</a></li>
+<li>SCXML Traffic Light (Dynamic, QML)</li>
+<li id="buildversion"><a href="qtscxml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#dynamically-loading-the-state-machine">Dynamically Loading the State Machine</a></li>
+<li class="level1"><a href="#connecting-to-states">Connecting to States</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">SCXML Traffic Light (Dynamic, QML)</h1>
+<!-- $$$trafficlight-qml-dynamic-brief -->
+<p>A Qt Quick application that uses a dynamically loaded state machine to implement a traffic light.</p>
+<!-- @@@trafficlight-qml-dynamic -->
+<!-- $$$trafficlight-qml-dynamic-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/trafficlight.png" alt="" /></p><p><i>Traffic Light QML</i> demonstrates how to connect to the active properties of a state in a dynamically loaded state machine.</p>
+<p>The UI is created using Qt Quick.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="dynamically-loading-the-state-machine">Dynamically Loading the State Machine</h4>
+<p>We link against the Qt SCXML module by adding the following lines to the example's build files.</p>
+<p>To <i>.pro</i> when using qmake:</p>
+<pre class="cpp" translate="no">
+ QT += qml scxml
+</pre>
+<p>To <i>CMakeLists.txt</i> when using cmake:</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS Core Gui Qml Scxml)
+ target_link_libraries(trafficlight-qml-dynamic PRIVATE
+     Qt6::Core
+     Qt6::Gui
+     Qt6::Qml
+     Qt6::Scxml
+ )
+</pre>
+<p>We dynamically create the state machine in the main QML file:</p>
+<pre class="cpp" translate="no">
+ import QtScxml
+ import TrafficLightApplication
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">width</span>: <span class="name">lights</span>.<span class="name">width</span>
+     <span class="name">height</span>: <span class="name">lights</span>.<span class="name">height</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+
+     <span class="type">Lights</span> {
+         <span class="name">id</span>: <span class="name">lights</span>
+         <span class="name">stateMachine</span>: <span class="name">loader</span>.<span class="name">stateMachine</span>
+         <span class="comment">// Suppress qmllint warning, dynamic statemachine properties not known at compile-time</span>
+         <span class="comment">// qmllint disable missing-property</span>
+         <span class="name">button</span>.source: <span class="name">stateMachine</span>.<span class="name">working</span> ? <span class="string">&quot;pause.png&quot;</span> : <span class="string">&quot;play.png&quot;</span>
+         <span class="name">button</span>.onClicked: <span class="name">stateMachine</span>.<span class="name">submitEvent</span>(<span class="name">stateMachine</span>.<span class="name">working</span> ? <span class="string">&quot;smash&quot;</span> : <span class="string">&quot;repair&quot;</span>);
+         <span class="comment">// qmllint enable missing-property</span>
+     }
+
+     <span class="type"><a href="qml-qtscxml-statemachineloader.html" translate="no">StateMachineLoader</a></span> {
+         <span class="name">id</span>: <span class="name">loader</span>
+         <span class="name">source</span>: <span class="name">Qt</span>.<span class="name">resolvedUrl</span>(<span class="string">&quot;statemachine.scxml&quot;</span>)
+     }
+ }
+</pre>
+<h4 id="connecting-to-states">Connecting to States</h4>
+<p>In the SCXML file, we specify states for each light: red, yellow, and green. In the <code translate="no">&lt;onentry&gt;</code> element, we specify the event to send when entering the state and the delay in seconds before sending the event. In the <code translate="no">&lt;transition&gt;</code> element, we specify the event that triggers the transition to the state specified by the <code translate="no">target</code> attribute:</p>
+<pre class="cpp" translate="no">
+         &lt;state id=&quot;red&quot;&gt;
+             &lt;onentry&gt;
+                 &lt;send event=&quot;startGoingGreen&quot; delay=&quot;3s&quot;/&gt;
+             &lt;/onentry&gt;
+             &lt;transition event=&quot;startGoingGreen&quot; target=&quot;redGoingGreen&quot;/&gt;
+         &lt;/state&gt;
+
+         &lt;state id=&quot;yellow&quot; initial=&quot;greenGoingRed&quot;&gt;
+             &lt;state id=&quot;redGoingGreen&quot;&gt;
+                 &lt;onentry&gt;
+                     &lt;send event=&quot;goGreen&quot; delay=&quot;1s&quot;/&gt;
+                 &lt;/onentry&gt;
+                 &lt;transition event=&quot;goGreen&quot; target=&quot;green&quot;/&gt;
+             &lt;/state&gt;
+
+             &lt;state id=&quot;greenGoingRed&quot;&gt;
+                 &lt;onentry&gt;
+                     &lt;send event=&quot;goRed&quot; delay=&quot;1s&quot;/&gt;
+                 &lt;/onentry&gt;
+                 &lt;transition event=&quot;goRed&quot; target=&quot;red&quot;/&gt;
+             &lt;/state&gt;
+         &lt;/state&gt;
+
+         &lt;state id=&quot;green&quot;&gt;
+             &lt;onentry&gt;
+                 &lt;send event=&quot;startGoingRed&quot; delay=&quot;3s&quot;/&gt;
+             &lt;/onentry&gt;
+             &lt;transition event=&quot;startGoingRed&quot; target=&quot;greenGoingRed&quot;/&gt;
+         &lt;/state&gt;
+</pre>
+<p>We connect to the states as follows:</p>
+<pre class="cpp" translate="no">
+     <span class="name">states</span>: [
+         <span class="comment">// Suppress qmllint warning, dynamic statemachine properties not known at compile-time</span>
+         <span class="comment">// qmllint disable missing-property</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Red&quot;</span>
+             <span class="name">when</span>: <span class="name">lights</span>.<span class="name">stateMachine</span>.<span class="name">red</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">redLight</span>.opacity: <span class="number">1</span> }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;RedGoingGreen&quot;</span>
+             <span class="name">when</span>: <span class="name">lights</span>.<span class="name">stateMachine</span>.<span class="name">redGoingGreen</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">redLight</span>.opacity: <span class="number">1</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">yellowLight</span>.opacity: <span class="number">1</span> }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Yellow&quot;</span>
+             <span class="name">when</span>: <span class="name">lights</span>.<span class="name">stateMachine</span>.<span class="name">yellow</span> <span class="operator">||</span> <span class="name">lights</span>.<span class="name">stateMachine</span>.<span class="name">blinking</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">yellowLight</span>.opacity: <span class="number">1</span> }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Green&quot;</span>
+             <span class="name">when</span>: <span class="name">lights</span>.<span class="name">stateMachine</span>.<span class="name">green</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">greenLight</span>.opacity: <span class="number">1</span> }
+         }
+         <span class="comment">// qmllint enable missing-property</span>
+     ]
+</pre>
+<p><a href="https://code.qt.io/cgit/qt/qtscxml.git/tree/examples/scxml/trafficlight-qml-dynamic?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@trafficlight-qml-dynamic -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

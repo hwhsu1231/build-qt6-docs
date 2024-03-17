@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- axishandling.qdoc -->
+  <meta name="description" content="Implementing axis dragging with a custom input handler in QML, and creating a custom axis formatter.">
+  <title>Axis Handling | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Axis Handling</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+<li class="level1"><a href="#axis-dragging">Axis Dragging</a></li>
+<li class="level2"><a href="#overriding-default-input-handling">Overriding Default Input Handling</a></li>
+<li class="level2"><a href="#translating-mouse-movement-to-axis-range-change">Translating Mouse Movement to Axis Range Change</a></li>
+<li class="level2"><a href="#other-features">Other Features</a></li>
+<li class="level1"><a href="#axis-formatters">Axis Formatters</a></li>
+<li class="level2"><a href="#custom-axis-formatter">Custom Axis Formatter</a></li>
+<li class="level2"><a href="#qml">QML</a></li>
+<li class="level1"><a href="#example-contents">Example Contents</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Axis Handling</h1>
+<!-- $$$axishandling-brief -->
+<p>Implementing axis dragging with a custom input handler in QML, and creating a custom axis formatter.</p>
+<!-- @@@axishandling -->
+<!-- $$$axishandling-description -->
+<div class="descr" id="details">
+<p><i>Axis Handling</i> demonstrates two different custom features with axes. The features have their own tabs in the application.</p>
+<p>The following sections concentrate on those features only and skip explaining the basic functionality - for more detailed QML example documentation, see <a href="qtgraphs-scatter-example.html" translate="no">Simple Scatter Graph</a>.</p>
+<p class="centerAlign"><img src="images/axishandling-example.png" alt="" /></p><h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<h4 id="axis-dragging">Axis Dragging</h4>
+<p>In the <b translate="no">Axis Dragging</b> tab, implement a custom input handler in QML that enables you to drag axis labels to change axis ranges. Further, use orthographic projection and dynamically update the properties of a custom item.</p>
+<h5 id="overriding-default-input-handling">Overriding Default Input Handling</h5>
+<p>To deactivate the default input handling mechanism, set the active input handler of <a href="qml-qtgraphs-scatter3d.html" translate="no">Scatter3D</a> graph to <code translate="no">null</code>:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtgraphs-scatter3d.html" translate="no">Scatter3D</a></span> {
+     <span class="name">id</span>: <span class="name">scatterGraph</span>
+     <span class="name">inputHandler</span>: <span class="number">null</span>
+     ...
+</pre>
+<p>Then, add a <a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a> and set it to fill the parent, which is the same <code translate="no">Item</code> our <code translate="no">scatterGraph</code> is contained in. Also, set it to accept only left mouse button presses, as in this example the other buttons are not needed:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+     <span class="name">anchors</span>.fill: <span class="name">parent</span>
+     <span class="name">hoverEnabled</span>: <span class="number">true</span>
+     <span class="name">acceptedButtons</span>: <span class="name">Qt</span>.<span class="name">LeftButton</span>
+     ...
+</pre>
+<p>Then, listen to mouse presses, and when caught, send a selection query to the graph:</p>
+<pre class="qml" translate="no">
+ <span class="name">onPressed</span>: (<span class="keyword"></span>mouse)=&gt; {
+                <span class="name">scatterGraph</span>.<span class="name">scene</span>.<span class="name">selectionQueryPosition</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">point</span>(<span class="name">mouse</span>.<span class="name">x</span>, <span class="name">mouse</span>.<span class="name">y</span>);
+            }
+</pre>
+<p>The <code translate="no">onPositionChanged</code> signal handler catches the current mouse position that will be needed for move distance calculation:</p>
+<pre class="qml" translate="no">
+ <span class="name">onPositionChanged</span>: (<span class="keyword"></span>mouse)=&gt; {
+                        <span class="name">currentMouseX</span> <span class="operator">=</span> <span class="name">mouse</span>.<span class="name">x</span>;
+                        <span class="name">currentMouseY</span> <span class="operator">=</span> <span class="name">mouse</span>.<span class="name">y</span>;
+     ...
+</pre>
+<p>At the end of <code translate="no">onPositionChanged</code>, save the previous mouse position for move distance calculation that will be introduced later:</p>
+<pre class="cpp" translate="no">
+ ...
+ <span class="name">previousMouseX</span> <span class="operator">=</span> <span class="name">currentMouseX</span>;
+ <span class="name">previousMouseY</span> <span class="operator">=</span> <span class="name">currentMouseY</span>;
+ }
+</pre>
+<h5 id="translating-mouse-movement-to-axis-range-change">Translating Mouse Movement to Axis Range Change</h5>
+<p>In <code translate="no">scatterGraph</code>, listen to <code translate="no">onSelectedElementChanged</code>. The signal is emitted after the selection query has been made in the <code translate="no">onPressed</code> of the <code translate="no">inputArea</code>. Set the element type into a property you defined (<code translate="no">property int selectedAxisLabel: -1</code>) in the main component, since it is of a type you are interested in:</p>
+<pre class="qml" translate="no">
+ <span class="name">onSelectedElementChanged</span>: {
+     <span class="keyword">if</span> (<span class="name">selectedElement</span> <span class="operator">&gt;=</span> <span class="name">AbstractGraph3D</span>.<span class="name">ElementAxisXLabel</span>
+             <span class="operator">&amp;&amp;</span> <span class="name">selectedElement</span> <span class="operator">&lt;=</span> <span class="name">AbstractGraph3D</span>.<span class="name">ElementAxisZLabel</span>) {
+         <span class="name">selectedAxisLabel</span> <span class="operator">=</span> <span class="name">selectedElement</span>;
+     } <span class="keyword">else</span> {
+         <span class="name">selectedAxisLabel</span> <span class="operator">=</span> -<span class="number">1</span>;
+     }
+ }
+</pre>
+<p>Then, back in the <code translate="no">onPositionChanged</code> of <code translate="no">inputArea</code>, check if a mouse button is pressed and if you have a current axis label selection. If the conditions are met, call the function that does the conversion from mouse movement to axis range update:</p>
+<pre class="cpp" translate="no">
+ ...
+ <span class="keyword">if</span> (<span class="name">pressed</span> <span class="operator">&amp;&amp;</span> <span class="name">selectedAxisLabel</span> <span class="operator">!=</span> -<span class="number">1</span>)
+     <span class="name">axisDragView</span>.<span class="name">dragAxis</span>();
+ ...
+</pre>
+<p>The conversion is easy in this case, as the camera rotation is fixed. You can use some precalculated values, calculate mouse move distance, and apply the values to the selected axis range:</p>
+<pre class="qml" translate="no">
+ <span class="keyword">function </span><span class="name">dragAxis</span>() {
+     <span class="comment">// Do nothing if previous mouse position is uninitialized</span>
+     <span class="keyword">if</span> (<span class="name">previousMouseX</span> <span class="operator">===</span> -<span class="number">1</span>)
+         <span class="keyword">return</span>;
+
+     <span class="comment">// Directional drag multipliers based on rotation. Camera is locked to 45 degrees, so we</span>
+     <span class="comment">// can use one precalculated value instead of calculating xx, xy, zx and zy individually</span>
+     var cameraMultiplier = <span class="number">0.70710678</span>;
+
+     <span class="comment">// Calculate the mouse move amount</span>
+     var moveX = <span class="name">currentMouseX</span> <span class="operator">-</span> <span class="name">previousMouseX</span>;
+     var moveY = <span class="name">currentMouseY</span> <span class="operator">-</span> <span class="name">previousMouseY</span>;
+
+     <span class="comment">// Adjust axes</span>
+     <span class="keyword">switch</span> (<span class="name">selectedAxisLabel</span>) {
+     <span class="keyword">case</span> <span class="name">AbstractGraph3D</span>.<span class="name">ElementAxisXLabel</span>:
+         var distance = ((<span class="name">moveX</span> <span class="operator">-</span> <span class="name">moveY</span>) <span class="operator">*</span> <span class="name">cameraMultiplier</span>) <span class="operator">/</span> <span class="name">dragSpeedModifier</span>;
+         <span class="comment">// Check if we need to change min or max first to avoid invalid ranges</span>
+         <span class="keyword">if</span> (<span class="name">distance</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
+             <span class="name">scatterGraph</span>.<span class="name">axisX</span>.<span class="name">min</span> <span class="operator">-=</span> <span class="name">distance</span>;
+             <span class="name">scatterGraph</span>.<span class="name">axisX</span>.<span class="name">max</span> <span class="operator">-=</span> <span class="name">distance</span>;
+         } <span class="keyword">else</span> {
+             <span class="name">scatterGraph</span>.<span class="name">axisX</span>.<span class="name">max</span> <span class="operator">-=</span> <span class="name">distance</span>;
+             <span class="name">scatterGraph</span>.<span class="name">axisX</span>.<span class="name">min</span> <span class="operator">-=</span> <span class="name">distance</span>;
+         }
+         <span class="keyword">break</span>;
+     <span class="keyword">case</span> <span class="name">AbstractGraph3D</span>.<span class="name">ElementAxisYLabel</span>:
+         <span class="name">distance</span> <span class="operator">=</span> <span class="name">moveY</span> <span class="operator">/</span> <span class="name">dragSpeedModifier</span>;
+         <span class="comment">// Check if we need to change min or max first to avoid invalid ranges</span>
+         <span class="keyword">if</span> (<span class="name">distance</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
+             <span class="name">scatterGraph</span>.<span class="name">axisY</span>.<span class="name">max</span> <span class="operator">+=</span> <span class="name">distance</span>;
+             <span class="name">scatterGraph</span>.<span class="name">axisY</span>.<span class="name">min</span> <span class="operator">+=</span> <span class="name">distance</span>;
+         } <span class="keyword">else</span> {
+             <span class="name">scatterGraph</span>.<span class="name">axisY</span>.<span class="name">min</span> <span class="operator">+=</span> <span class="name">distance</span>;
+             <span class="name">scatterGraph</span>.<span class="name">axisY</span>.<span class="name">max</span> <span class="operator">+=</span> <span class="name">distance</span>;
+         }
+         <span class="keyword">break</span>;
+     <span class="keyword">case</span> <span class="name">AbstractGraph3D</span>.<span class="name">ElementAxisZLabel</span>:
+         <span class="name">distance</span> <span class="operator">=</span> ((<span class="name">moveX</span> <span class="operator">+</span> <span class="name">moveY</span>) <span class="operator">*</span> <span class="name">cameraMultiplier</span>) <span class="operator">/</span> <span class="name">dragSpeedModifier</span>;
+         <span class="comment">// Check if we need to change min or max first to avoid invalid ranges</span>
+         <span class="keyword">if</span> (<span class="name">distance</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
+             <span class="name">scatterGraph</span>.<span class="name">axisZ</span>.<span class="name">max</span> <span class="operator">+=</span> <span class="name">distance</span>;
+             <span class="name">scatterGraph</span>.<span class="name">axisZ</span>.<span class="name">min</span> <span class="operator">+=</span> <span class="name">distance</span>;
+         } <span class="keyword">else</span> {
+             <span class="name">scatterGraph</span>.<span class="name">axisZ</span>.<span class="name">min</span> <span class="operator">+=</span> <span class="name">distance</span>;
+             <span class="name">scatterGraph</span>.<span class="name">axisZ</span>.<span class="name">max</span> <span class="operator">+=</span> <span class="name">distance</span>;
+         }
+         <span class="keyword">break</span>;
+     }
+ }
+</pre>
+<p>For a more sophisticated conversion from mouse movement to axis range update, see <a href="qtgraphs-widgetgraphgallery-example.html" translate="no">Graph Gallery</a>.</p>
+<h5 id="other-features">Other Features</h5>
+<p>The example also demonstrates how to use orthographic projection and how to update properties of a custom item on the fly.</p>
+<p>Orthographic projection is very simple. You'll just need to change the <code translate="no">orthoProjection</code> property of <code translate="no">scatterGraph</code>. The example has a button for toggling it on and off:</p>
+<pre class="qml" translate="no">
+ <span class="type">Button</span> {
+     <span class="name">id</span>: <span class="name">orthoToggle</span>
+     <span class="name">width</span>: <span class="name">axisDragView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">width</span> : <span class="name">parent</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">3</span>
+     <span class="name">text</span>: <span class="string">&quot;Display Orthographic&quot;</span>
+     <span class="name">anchors</span>.left: <span class="name">axisDragView</span>.<span class="name">portraitMode</span> ? <span class="name">parent</span>.<span class="name">left</span> : <span class="name">rangeToggle</span>.<span class="name">right</span>
+     <span class="name">anchors</span>.top: <span class="name">axisDragView</span>.<span class="name">portraitMode</span> ? <span class="name">rangeToggle</span>.<span class="name">bottom</span> : <span class="name">parent</span>.<span class="name">top</span>
+     <span class="name">onClicked</span>: {
+         <span class="keyword">if</span> (<span class="name">scatterGraph</span>.<span class="name">orthoProjection</span>) {
+             <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Display Orthographic&quot;</span>;
+             <span class="name">scatterGraph</span>.<span class="name">orthoProjection</span> <span class="operator">=</span> <span class="number">false</span>;
+             <span class="comment">// Orthographic projection disables shadows, so we need to switch them back on</span>
+             <span class="name">scatterGraph</span>.<span class="name">shadowQuality</span> <span class="operator">=</span> <span class="name">AbstractGraph3D</span>.<span class="name">ShadowQualityMedium</span>
+         } <span class="keyword">else</span> {
+             <span class="name">text</span> <span class="operator">=</span> <span class="string">&quot;Display Perspective&quot;</span>;
+             <span class="name">scatterGraph</span>.<span class="name">orthoProjection</span> <span class="operator">=</span> <span class="number">true</span>;
+         }
+     }
+ }
+</pre>
+<p>For custom items, add one to the <code translate="no">customItemList</code> of <code translate="no">scatterGraph</code>:</p>
+<pre class="qml" translate="no">
+ <span class="name">customItemList</span>: [
+     <span class="type"><a href="qml-qtgraphs-custom3ditem.html" translate="no">Custom3DItem</a></span> {
+         <span class="name">id</span>: <span class="name">qtCube</span>
+         <span class="name">meshFile</span>: <span class="string">&quot;:/qml/axishandling/cube.mesh&quot;</span>
+         <span class="name">textureFile</span>: <span class="string">&quot;:/qml/axishandling/cubetexture.png&quot;</span>
+         <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.65</span>, <span class="number">0.35</span>, <span class="number">0.65</span>)
+         <span class="name">scaling</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.3</span>, <span class="number">0.3</span>, <span class="number">0.3</span>)
+     }
+ ]
+</pre>
+<p>You implement a timer to add, remove, and rotate all the items in the graph, and use the same timer for rotating the custom item:</p>
+<pre class="qml" translate="no">
+ <span class="name">onTriggered</span>: {
+     <span class="name">rotationAngle</span> <span class="operator">=</span> <span class="name">rotationAngle</span> <span class="operator">+</span> <span class="number">1</span>;
+     <span class="name">qtCube</span>.<span class="name">setRotationAxisAndAngle</span>(<span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>), <span class="name">rotationAngle</span>);
+     ...
+</pre>
+<h4 id="axis-formatters">Axis Formatters</h4>
+<p>In the <b translate="no">Axis Formatter</b> tab, create a custom axis formatter. It also illustrates how to use predefined axis formatters.</p>
+<h5 id="custom-axis-formatter">Custom Axis Formatter</h5>
+<p>Customizing axis formatters requires subclassing the <a href="qvalue3daxisformatter.html" translate="no">QValue3DAxisFormatter</a>, which cannot be done in QML code alone. In this example, the axis interprets the float values as a timestamp and shows the date in the axis labels. To achieve this, introduce a new class called <code translate="no">CustomFormatter</code>, which subclasses the <a href="qvalue3daxisformatter.html" translate="no">QValue3DAxisFormatter</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> CustomFormatter : <span class="keyword">public</span> QValue3DAxisFormatter
+ {
+ ...
+</pre>
+<p>Since float values of a <a href="qscatter3dseries.html" translate="no">QScatter3DSeries</a> cannot be directly cast into <a href="../qtcore/qdatetime.html" translate="no">QDateTime</a> values due to difference in data width, some sort of mapping between the two is needed. To do the mapping, specify an origin date for the formatter and interpret the float values from the <a href="qscatter3dseries.html" translate="no">QScatter3DSeries</a> as date offsets to that origin value. The origin date is given as a property:</p>
+<pre class="cpp" translate="no">
+ Q_PROPERTY(<span class="type"><a href="../qtcore/qdate.html" translate="no">QDate</a></span> originDate READ originDate WRITE setOriginDate NOTIFY originDateChanged)
+</pre>
+<p>For the mapping from value to <a href="../qtcore/qdatetime.html" translate="no">QDateTime</a>, use the <code translate="no">valueToDateTime()</code> method:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> CustomFormatter<span class="operator">::</span>valueToDateTime(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> value) <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_originDate<span class="operator">.</span>startOfDay()<span class="operator">.</span>addMSecs(<span class="type"><a href="../qtcore/qttypes.html#qint64-typedef" translate="no">qint64</a></span>(oneDayMs <span class="operator">*</span> value));
+ }
+</pre>
+<p>To function as an axis formatter, <code translate="no">CustomFormatter</code> needs to reimplement some virtual methods:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">virtual</span> QValue3DAxisFormatter <span class="operator">*</span>createNewInstance() <span class="keyword">const</span>;
+ <span class="keyword">virtual</span> <span class="type">void</span> populateCopy(QValue3DAxisFormatter <span class="operator">&amp;</span>copy);
+ <span class="keyword">virtual</span> <span class="type">void</span> recalculate();
+ <span class="keyword">virtual</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> stringForValue(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> value<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>format);
+</pre>
+<p>The first two are simple, just create a new instance of <code translate="no">CustomFormatter</code> and copy the necessary data over to it. Use these two methods to create and update a cache of formatter for rendering purposes. Remember to call the superclass implementation of <code translate="no">populateCopy()</code>:</p>
+<pre class="cpp" translate="no">
+ QValue3DAxisFormatter <span class="operator">*</span>CustomFormatter<span class="operator">::</span>createNewInstance() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> <span class="keyword">new</span> CustomFormatter();
+ }
+
+ <span class="type">void</span> CustomFormatter<span class="operator">::</span>populateCopy(QValue3DAxisFormatter <span class="operator">&amp;</span>copy)
+ {
+     QValue3DAxisFormatter<span class="operator">::</span>populateCopy(copy);
+
+     CustomFormatter <span class="operator">*</span>customFormatter <span class="operator">=</span> <span class="keyword">static_cast</span><span class="operator">&lt;</span>CustomFormatter <span class="operator">*</span><span class="operator">&gt;</span>(<span class="operator">&amp;</span>copy);
+     customFormatter<span class="operator">-</span><span class="operator">&gt;</span>m_originDate <span class="operator">=</span> m_originDate;
+     customFormatter<span class="operator">-</span><span class="operator">&gt;</span>m_selectionFormat <span class="operator">=</span> m_selectionFormat;
+ }
+</pre>
+<p><code translate="no">CustomFormatter</code> does the bulk of its work in the <code translate="no">recalculate()</code> method, where our formatter calculates the grid, subgrid, and label positions, as well as formats the label strings. In the custom formatter, ignore the segment count of the axis and draw a grid line always at midnight. Subsegment count and label positioning is handled normally:</p>
+<pre class="cpp" translate="no">
+ <span class="type">void</span> CustomFormatter<span class="operator">::</span>recalculate()
+ {
+     <span class="comment">// We want our axis to always have gridlines at date breaks</span>
+
+     <span class="comment">// Convert range into QDateTimes</span>
+     <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> minTime <span class="operator">=</span> valueToDateTime(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(axis()<span class="operator">-</span><span class="operator">&gt;</span>min()));
+     <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> maxTime <span class="operator">=</span> valueToDateTime(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(axis()<span class="operator">-</span><span class="operator">&gt;</span>max()));
+
+     <span class="comment">// Find out the grid counts</span>
+     <span class="type"><a href="../qtcore/qtime.html" translate="no">QTime</a></span> midnight(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+     <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> minFullDate(minTime<span class="operator">.</span>date()<span class="operator">,</span> midnight);
+     <span class="type">int</span> gridCount <span class="operator">=</span> <span class="number">0</span>;
+     <span class="keyword">if</span> (minFullDate <span class="operator">!</span><span class="operator">=</span> minTime)
+         minFullDate <span class="operator">=</span> minFullDate<span class="operator">.</span>addDays(<span class="number">1</span>);
+     <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span> maxFullDate(maxTime<span class="operator">.</span>date()<span class="operator">,</span> midnight);
+
+     gridCount <span class="operator">+</span><span class="operator">=</span> minFullDate<span class="operator">.</span>daysTo(maxFullDate) <span class="operator">+</span> <span class="number">1</span>;
+     <span class="type">int</span> subGridCount <span class="operator">=</span> axis()<span class="operator">-</span><span class="operator">&gt;</span>subSegmentCount() <span class="operator">-</span> <span class="number">1</span>;
+
+     <span class="comment">// Reserve space for position arrays and label strings</span>
+     gridPositions()<span class="operator">.</span>resize(gridCount);
+     subGridPositions()<span class="operator">.</span>resize((gridCount <span class="operator">+</span> <span class="number">1</span>) <span class="operator">*</span> subGridCount);
+     labelPositions()<span class="operator">.</span>resize(gridCount);
+     labelStrings()<span class="operator">.</span>reserve(gridCount);
+
+     <span class="comment">// Calculate positions and format labels</span>
+     <span class="type"><a href="../qtcore/qttypes.html#qint64-typedef" translate="no">qint64</a></span> startMs <span class="operator">=</span> minTime<span class="operator">.</span>toMSecsSinceEpoch();
+     <span class="type"><a href="../qtcore/qttypes.html#qint64-typedef" translate="no">qint64</a></span> endMs <span class="operator">=</span> maxTime<span class="operator">.</span>toMSecsSinceEpoch();
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> dateNormalizer <span class="operator">=</span> endMs <span class="operator">-</span> startMs;
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> firstLineOffset <span class="operator">=</span> (minFullDate<span class="operator">.</span>toMSecsSinceEpoch() <span class="operator">-</span> startMs) <span class="operator">/</span> dateNormalizer;
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> segmentStep <span class="operator">=</span> oneDayMs <span class="operator">/</span> dateNormalizer;
+     <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> subSegmentStep <span class="operator">=</span> <span class="number">0</span>;
+     <span class="keyword">if</span> (subGridCount <span class="operator">&gt;</span> <span class="number">0</span>)
+         subSegmentStep <span class="operator">=</span> segmentStep <span class="operator">/</span> <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(subGridCount <span class="operator">+</span> <span class="number">1</span>);
+
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> gridCount; i<span class="operator">+</span><span class="operator">+</span>) {
+         <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> gridValue <span class="operator">=</span> firstLineOffset <span class="operator">+</span> (segmentStep <span class="operator">*</span> <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span>(i));
+         gridPositions()<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">=</span> <span class="type">float</span>(gridValue);
+         labelPositions()<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">=</span> <span class="type">float</span>(gridValue);
+         labelStrings() <span class="operator">&lt;</span><span class="operator">&lt;</span> minFullDate<span class="operator">.</span>addDays(i)<span class="operator">.</span>toString(axis()<span class="operator">-</span><span class="operator">&gt;</span>labelFormat());
+     }
+
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span><span class="operator">=</span> gridCount; i<span class="operator">+</span><span class="operator">+</span>) {
+         <span class="keyword">if</span> (subGridPositions()<span class="operator">.</span>size()) {
+             <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="number">0</span>; j <span class="operator">&lt;</span> subGridCount; j<span class="operator">+</span><span class="operator">+</span>) {
+                 <span class="type">float</span> position;
+                 <span class="keyword">if</span> (i)
+                     position <span class="operator">=</span>  gridPositions()<span class="operator">.</span>at(i <span class="operator">-</span> <span class="number">1</span>) <span class="operator">+</span> subSegmentStep <span class="operator">*</span> (j <span class="operator">+</span> <span class="number">1</span>);
+                 <span class="keyword">else</span>
+                     position <span class="operator">=</span>  gridPositions()<span class="operator">.</span>at(<span class="number">0</span>) <span class="operator">-</span> segmentStep <span class="operator">+</span> subSegmentStep <span class="operator">*</span> (j <span class="operator">+</span> <span class="number">1</span>);
+                 <span class="keyword">if</span> (position <span class="operator">&gt;</span> <span class="number">1.0f</span> <span class="operator">|</span><span class="operator">|</span> position <span class="operator">&lt;</span> <span class="number">0.0f</span>)
+                     position <span class="operator">=</span> gridPositions()<span class="operator">.</span>at(<span class="number">0</span>);
+                 subGridPositions()<span class="operator">[</span>i <span class="operator">*</span> subGridCount <span class="operator">+</span> j<span class="operator">]</span> <span class="operator">=</span> position;
+             }
+         }
+     }
+ }
+</pre>
+<p>The axis labels are formatted to show only the date. However, to increase the resolution of the timestamp of the selection label, specify another property for the custom formatter to allow the user to customize it:</p>
+<pre class="cpp" translate="no">
+ Q_PROPERTY(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> selectionFormat READ selectionFormat WRITE setSelectionFormat NOTIFY selectionFormatChanged)
+</pre>
+<p>This selection format property is used in the reimplemented <code translate="no">stringToValue</code> method, where the submitted format is ignored and the custom selection format substituted for it:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> CustomFormatter<span class="operator">::</span>stringForValue(<span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> value<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>format)
+ {
+     Q_UNUSED(format);
+
+     <span class="keyword">return</span> valueToDateTime(value)<span class="operator">.</span>toString(m_selectionFormat);
+ }
+</pre>
+<p>To expose our new custom formatter to the QML, declare it and make it a QML module. For information about how to do this, see <a href="qtgraphs-surfacegallery-example.html" translate="no">Surface Graph Gallery</a>.</p>
+<h5 id="qml">QML</h5>
+<p>In the QML code, define a different axis for each dimension:</p>
+<pre class="qml" translate="no">
+ <span class="name">axisZ</span>: <span class="name">valueAxis</span>
+ <span class="name">axisY</span>: <span class="name">logAxis</span>
+ <span class="name">axisX</span>: <span class="name">dateAxis</span>
+</pre>
+<p>The Z-axis is just a regular <a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a>:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a></span> {
+     <span class="name">id</span>: <span class="name">valueAxis</span>
+     <span class="name">segmentCount</span>: <span class="number">5</span>
+     <span class="name">subSegmentCount</span>: <span class="number">2</span>
+     <span class="name">labelFormat</span>: <span class="string">&quot;%.2f&quot;</span>
+     <span class="name">min</span>: <span class="number">0</span>
+     <span class="name">max</span>: <span class="number">10</span>
+ }
+</pre>
+<p>For the Y-axis, define a logarithmic axis. To make <a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a> show a logarithmic scale, specify <a href="qml-qtgraphs-logvalueaxis3dformatter.html" translate="no">LogValueAxis3DFormatter</a> for <code translate="no">formatter</code> property of the axis:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a></span> {
+     <span class="name">id</span>: <span class="name">logAxis</span>
+     <span class="name">formatter</span>: <span class="name">LogValueAxis3DFormatter</span> {
+         <span class="name">id</span>: <span class="name">logAxisFormatter</span>
+         <span class="name">base</span>: <span class="number">10</span>
+         <span class="name">autoSubGrid</span>: <span class="number">true</span>
+         <span class="name">showEdgeLabels</span>: <span class="number">true</span>
+     }
+     <span class="name">labelFormat</span>: <span class="string">&quot;%.2f&quot;</span>
+ }
+</pre>
+<p>And finally, for the X-axis use the new <code translate="no">CustomFormatter</code>:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtgraphs-valueaxis3d.html" translate="no">ValueAxis3D</a></span> {
+     <span class="name">id</span>: <span class="name">dateAxis</span>
+     <span class="name">formatter</span>: <span class="name">CustomFormatter</span> {
+         <span class="name">originDate</span>: <span class="string">&quot;2023-01-01&quot;</span>
+         <span class="name">selectionFormat</span>: <span class="string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>
+     }
+     <span class="name">subSegmentCount</span>: <span class="number">2</span>
+     <span class="name">labelFormat</span>: <span class="string">&quot;yyyy-MM-dd&quot;</span>
+     <span class="name">min</span>: <span class="number">0</span>
+     <span class="name">max</span>: <span class="number">14</span>
+ }
+</pre>
+<p>The rest of the application consists of fairly self-explanatory logic for modifying the axes and showing the graph.</p>
+<h4 id="example-contents">Example Contents</h4>
+<p>Files:</p>
+<ul>
+<li><a href="qtgraphs-axishandling-cmakelists-txt.html" translate="no">axishandling/CMakeLists.txt</a></li>
+<li><a href="qtgraphs-axishandling-axishandling-pro.html" translate="no">axishandling/axishandling.pro</a></li>
+<li><a href="qtgraphs-axishandling-axishandling-qrc.html" translate="no">axishandling/axishandling.qrc</a></li>
+<li><a href="qtgraphs-axishandling-customformatter-cpp.html" translate="no">axishandling/customformatter.cpp</a></li>
+<li><a href="qtgraphs-axishandling-customformatter-h.html" translate="no">axishandling/customformatter.h</a></li>
+<li><a href="qtgraphs-axishandling-main-cpp.html" translate="no">axishandling/main.cpp</a></li>
+<li><a href="qtgraphs-axishandling-qml-axishandling-axisdragging-qml.html" translate="no">axishandling/qml/axishandling/AxisDragging.qml</a></li>
+<li><a href="qtgraphs-axishandling-qml-axishandling-axisformatting-qml.html" translate="no">axishandling/qml/axishandling/AxisFormatting.qml</a></li>
+<li><a href="qtgraphs-axishandling-qml-axishandling-data-qml.html" translate="no">axishandling/qml/axishandling/Data.qml</a></li>
+<li><a href="qtgraphs-axishandling-qml-axishandling-main-qml.html" translate="no">axishandling/qml/axishandling/main.qml</a></li>
+<li><a href="qtgraphs-axishandling-qmldir.html" translate="no">axishandling/qmldir</a></li>
+</ul>
+<p>Images:</p>
+<ul>
+<li><a href="images/used-in-examples/axishandling/qml/axishandling/cubetexture.png" translate="no">axishandling/qml/axishandling/cubetexture.png</a></li>
+</ul>
+</div>
+<!-- @@@axishandling -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtmultimedia-index.qdoc -->
+  <meta name="description" content="The Qt Multimedia module provides APIs for playing back and recording audiovisual content">
+  <title>Qt Multimedia 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li>Qt Multimedia</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#getting-started">Getting started</a></li>
+<li class="level1"><a href="#overviews-and-important-topics">Overviews and important topics</a></li>
+<li class="level1"><a href="#qml-types">QML types</a></li>
+<li class="level1"><a href="#c-classes">C++ classes</a></li>
+<li class="level1"><a href="#licenses-and-attributions">Licenses and attributions</a></li>
+<li class="level1"><a href="#target-platform-and-backend-notes">Target platform and backend notes</a></li>
+<li class="level2"><a href="#backends">Backends</a></li>
+<li class="level2"><a href="#backend-support">Backend support</a></li>
+<li class="level2"><a href="#changing-backends">Changing backends</a></li>
+<li class="level2"><a href="#target-platform-notes">Target platform notes</a></li>
+<li class="level1"><a href="#permissions">Permissions</a></li>
+<li class="level1"><a href="#reference-and-examples">Reference and examples</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt Multimedia</h1>
+<!-- $$$qtmultimedia-index.html-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/noun_Media_166644.svg" alt="&quot;image of multimedia icons, courtesy of misirlou from the Noun Project&quot;" /></p><p>Qt Multimedia is an add-on module that provides a rich set of QML types and C++ classes to handle multimedia content. It contains an easy to use API for playing back audio and video files and rendering those on screen, as well as a comprehensive API for recording audio and video from the system's cameras and microphones.</p>
+<p>The functionality of this module is divided into the following submodules:</p>
+<div class="table"><table class="generic">
+ <tr valign="top" class="odd"><td ><a href="multimediaoverview.html" translate="no">Qt Multimedia</a></td><td >Provides an API for multimedia-specific use cases.</td></tr>
+<tr valign="top" class="even"><td ><a href="qtmultimediawidgets-index.html" translate="no">Qt Multimedia Widgets</a></td><td >Provides a widget-based multimedia API.</td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtspatialaudio/qtspatialaudio-index.html" translate="no">Qt Spatial Audio</a></td><td >Provides an API for implementing sound fields in 3D space.</td></tr>
+</table></div>
+<h2 id="getting-started">Getting started</h2>
+<p>If you are porting from Qt 5 to Qt 6 see <a href="qtmultimedia-changes-qt6.html" translate="no">Changes to Qt Multimedia</a>.</p>
+<p>If you are new to Qt Multimedia, the QML types can be <a href="https://doc.qt.io/qt-6/qtqml-syntax-imports.html" translate="no">imported</a> into an application using the following statement in your <code translate="no">.qml</code> file.</p>
+<pre class="qml" translate="no">
+ import QtMultimedia
+</pre>
+<p>To link against the C++ libraries, add the following to your project's <code translate="no">CMakeLists.txt</code> file. Substitute <code translate="no">my_project</code> with the name of your project.</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS Multimedia)
+ target_link_libraries(my_project PRIVATE Qt6<span class="operator">::</span>Multimedia)
+</pre>
+<h2 id="overviews-and-important-topics">Overviews and important topics</h2>
+<ul>
+<li><a href="qtmultimedia-changes-qt6.html" translate="no">Changes in Qt 6</a></li>
+<li><a href="multimediaoverview.html" translate="no">Multimedia Overview</a></li>
+<li><a href="audiooverview.html" translate="no">Audio Overview</a></li>
+<li><a href="../qtspatialaudio/spatialaudiooverview.html" translate="no">Spatial Audio Overview</a></li>
+<li><a href="videooverview.html" translate="no">Video Overview</a></li>
+<li><a href="cameraoverview.html" translate="no">Camera Overview</a></li>
+<li><a href="videooverview.html#supported-media-formats" translate="no">Supported Media Formats</a></li>
+</ul>
+<h2 id="qml-types">QML types</h2>
+<p>The following table outlines some important QML types.</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Type</th><th >Description</th></tr></thead>
+<tr valign="top" class="odd"><td ><a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a></td><td >Add audio/video playback functionality to a scene.</td></tr>
+<tr valign="top" class="even"><td ><a href="qml-qtmultimedia-capturesession.html" translate="no">CaptureSession</a></td><td >Create a session for capturing audio/video.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qml-qtmultimedia-camera.html" translate="no">Camera</a></td><td >Access a camera connected to the system.</td></tr>
+<tr valign="top" class="even"><td ><a href="qml-qtmultimedia-audioinput.html" translate="no">AudioInput</a></td><td >Access an audio input (microphone) connected to the system.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qml-qtmultimedia-audiooutput.html" translate="no">AudioOutput</a></td><td >Access an audio output (speaker, headphone) connected to the system.</td></tr>
+<tr valign="top" class="even"><td ><a href="qml-qtmultimedia-videooutput.html" translate="no">VideoOutput</a></td><td >Display video content.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qml-qtmultimedia-mediarecorder.html" translate="no">MediaRecorder</a></td><td >Record audio/video from the <a href="qml-qtmultimedia-capturesession.html" translate="no">CaptureSession</a>.</td></tr>
+<tr valign="top" class="even"><td ><a href="qml-qtmultimedia-imagecapture.html" translate="no">ImageCapture</a></td><td >Capture still images from the Camera.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qml-qtmultimedia-video.html" translate="no">Video</a></td><td >Add Video playback functionality to a scene. Uses <a href="qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a> and <a href="qml-qtmultimedia-videooutput.html" translate="no">VideoOutput</a> types to provide video playback functionality.</td></tr>
+<tr valign="top" class="even"><td ><a href="qml-qtmultimedia-screencapture.html" translate="no">ScreenCapture</a></td><td >Captures a screen.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qml-qtmultimedia-windowcapture.html" translate="no">WindowCapture</a></td><td >Captures a top-level window.</td></tr>
+</table></div>
+<h2 id="c-classes">C++ classes</h2>
+<p>The following table outlines some important C++ classes</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Class</th><th >Description</th></tr></thead>
+<tr valign="top" class="odd"><td ><a href="qmediaplayer.html" translate="no">QMediaPlayer</a></td><td >Playback media from a source.</td></tr>
+<tr valign="top" class="even"><td ><a href="qvideowidget.html" translate="no">QVideoWidget</a></td><td >Display video from a media player or a capture session.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qmediacapturesession.html" translate="no">QMediaCaptureSession</a></td><td >Capture audio and video.</td></tr>
+<tr valign="top" class="even"><td ><a href="qcamera.html" translate="no">QCamera</a></td><td >Access a camera connected to the system</td></tr>
+<tr valign="top" class="odd"><td ><a href="qaudioinput.html" translate="no">QAudioInput</a></td><td >Access an audio input (microphone) connected to the system.</td></tr>
+<tr valign="top" class="even"><td ><a href="qaudiooutput.html" translate="no">QAudioOutput</a></td><td >Access an audio output (speaker, headphone) connected to the system.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qimagecapture.html" translate="no">QImageCapture</a></td><td >Capture still images with a camera.</td></tr>
+<tr valign="top" class="even"><td ><a href="qmediarecorder.html" translate="no">QMediaRecorder</a></td><td >Record media content from a capture session.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qvideosink.html" translate="no">QVideoSink</a></td><td >Access and render individual video frames.</td></tr>
+<tr valign="top" class="even"><td ><a href="qaudiosink.html" translate="no">QAudioSink</a></td><td >Sends raw audio data to an audio output device.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qscreencapture.html" translate="no">QScreenCapture</a></td><td >Captures a screen.</td></tr>
+<tr valign="top" class="even"><td ><a href="qwindowcapture.html" translate="no">QWindowCapture</a></td><td >Captures a top-level window.</td></tr>
+</table></div>
+<p>For playback <a href="qmediaplayer.html" translate="no">QMediaPlayer</a>, <a href="qaudiooutput.html" translate="no">QAudioOutput</a> and QVideoOutput contain all the required functionality. The other classes are used for capturing audio and video content, where the <a href="qmediacapturesession.html" translate="no">QMediaCaptureSession</a> is the central class managing the whole capture/recording process.</p>
+<h2 id="licenses-and-attributions">Licenses and attributions</h2>
+<p>The Qt Multimedia module is available under commercial licenses from <a href="http://www.qt.io/about-us/" translate="no">The Qt Company</a>. In addition, it is available under free software licenses. Since Qt 5.6, these free software licenses are <a href="http://www.gnu.org/licenses/lgpl-3.0.html" translate="no">GNU Lesser General Public License, version 3</a>, or the <a href="http://www.gnu.org/licenses/gpl-2.0.html" translate="no">GNU General Public License, version 2</a>. See <a href="../qtdoc/licensing.html" translate="no">Qt Licensing</a> for further details.</p>
+<p>The FFmpeg backend uses the <a href="https://ffmpeg.org" translate="no">FFmpeg framework</a>. FFmpeg is licensed under LGPLv2.1, GPLv2, or later versions of the licenses. Some optional components of FFmpeg are only available under GPL. The FFmpeg backend shipped with the Qt binary packages is configured to not contain any of the components that are available under GPLv2 only.</p>
+<p>See the <a href="https://ffmpeg.org/legal.html" translate="no">FFmpeg licensing page</a> for further details.</p>
+<p>Note that video compression standards, such as the H.264 media compression standard, may be covered by patents and can incur royalty fees. Such fees are not covered by the Qt licenses.</p>
+<h2 id="target-platform-and-backend-notes">Target platform and backend notes</h2>
+<p>We aim to align the behavior on all the platforms but there are some issues to consider.</p>
+<h3 id="backends">Backends</h3>
+<p>On most platforms, there are two different backends that can be used for Qt Multimedia.</p>
+<h4 id="ffmpeg-as-the-default-backend">FFmpeg as the default backend</h4>
+<p>In this release the <a href="http://ffmpeg.org" translate="no">FFmpeg framework</a> is set as the default backend on Windows, macOS, Android, and Linux except Yocto distribution.</p>
+<p>The version shipped with Qt binary packages is <b>FFmpeg 6.0</b> and is tested by the maintainers.</p>
+<div class="admonition note">
+<p><b>Note: </b>See <a href="qtmultimedia-index.html#licenses-and-attributions" translate="no">Licenses and Attributions</a> regarding what components are removed in the package shipped by Qt.</p>
+</div>
+<h4 id="native-backends">Native backends</h4>
+<p>These are:</p>
+<ul>
+<li>gstreamer on Linux</li>
+<li>AVFoundation on macOS</li>
+<li>WMF Windows</li>
+<li>MediaCodec framework on Android</li>
+</ul>
+<div class="admonition note">
+<p><b>Note: </b>These are still available but with <b>limited</b> support.</p>
+</div>
+<h3 id="backend-support">Backend support</h3>
+<p>Maintainers will strive to fix critical issues with the native backends but don't guarantee fixing minor issues and won't implement new features for the native backends. Furthermore, even some major issues with the gstreamer backend (on Linux) won't be fixed since gstreamer is difficult to debug and is further complicated as it is dependent on Linux distributions.</p>
+<p>We aim to align the behavior on all the platforms, especially, with the FFmpeg backend. Despite this fact we still have platform-dependent issues with formats, codecs, advanced camera features, and screen capturing due to the Qt Multimedia API relying on target platform APIs. For example, with FFmpeg, there are specific problems with hardware acceleration on Linux targets with ARM architectures.</p>
+<p>Backend-dependent limitations will be documented and their status maintained in the respective classes.</p>
+<h3 id="changing-backends">Changing backends</h3>
+<p>In the case of issues with the default FFmpeg backend, we suggest testing with a native backend. You can switch to native backends by setting the <code translate="no">QT_MEDIA_BACKEND</code> environment variable to <code translate="no">windows</code>, <code translate="no">gstreamer</code> (on Linux), <code translate="no">darwin</code> (on macOS), or <code translate="no">android</code>:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">export</span> QT_MEDIA_BACKEND<span class="operator">=</span>darwin
+</pre>
+<p>In order to force assign FFmpeg as the used backend, set the variable to <code translate="no">ffmpeg</code>:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">export</span> QT_MEDIA_BACKEND<span class="operator">=</span>ffmpeg
+</pre>
+<p>On the Qt Multimedia compilation stage the default media backend can be configured via cmake variable <code translate="no">QT_DEFAULT_MEDIA_BACKEND</code>.</p>
+<h3 id="target-platform-notes">Target platform notes</h3>
+<p>The following pages list issues for specific target platforms that are not related to the multimedia backed.</p>
+<ul>
+<li><a href="qtmultimedia-apple.html" translate="no">macOS and iOS</a></li>
+<li><a href="qtmultimedia-wasm.html" translate="no">WebAssembly</a></li>
+</ul>
+<h2 id="permissions">Permissions</h2>
+<p>Starting from Qt 6.6, the Qt Multimedia module uses new <a href="../qtcore/qpermission.html" translate="no">QPermission</a> API to handle <a href="../qtcore/qcamerapermission.html" translate="no">camera</a> and <a href="../qtcore/qmicrophonepermission.html" translate="no">microphone</a> permissions. This means that Qt itself no longer queries for these permissions, so this needs to be done directly from the client application.</p>
+<p>Please refer to the <a href="../qtcore/permissions.html" translate="no">Application Permissions</a> page for an example of how to integrate the new <a href="../qtcore/qpermission.html" translate="no">QPermission</a> API into the application.</p>
+<h2 id="reference-and-examples">Reference and examples</h2>
+<ul>
+<li><a href="qtmultimedia-qmlmodule.html" translate="no">QML Types</a></li>
+<li><a href="qtmultimedia-modules.html" translate="no">C++ Classes</a></li>
+<li><a href="multimedia-examples.html" translate="no">Examples</a></li>
+</ul>
+</div>
+<!-- @@@qtmultimedia-index.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

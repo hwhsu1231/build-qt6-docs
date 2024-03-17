@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;surfacegraph.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QtWidgets/qboxlayout.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qcheckbox.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qcombobox.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qradiobutton.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qgroupbox.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qlabel.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qcommandlinkbutton.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGui/qpainter.h&gt;</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
+
+ <span class="keyword">static</span> <span class="type"><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></span> gradientBtoYPB_Pixmap()
+ {
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> grBtoY(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">100</span>);
+     grBtoY<span class="operator">.</span>setColorAt(<span class="number">1.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+     grBtoY<span class="operator">.</span>setColorAt(<span class="number">0.67f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>blue);
+     grBtoY<span class="operator">.</span>setColorAt(<span class="number">0.33f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+     grBtoY<span class="operator">.</span>setColorAt(<span class="number">0.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>yellow);
+     <span class="type"><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></span> pm(<span class="number">24</span><span class="operator">,</span> <span class="number">100</span>);
+     <span class="type"><a href="../qtgui/qpainter.html" translate="no">QPainter</a></span> pmp(<span class="operator">&amp;</span>pm);
+     pmp<span class="operator">.</span>setBrush(<span class="type"><a href="../qtgui/qbrush.html" translate="no">QBrush</a></span>(grBtoY));
+     pmp<span class="operator">.</span>setPen(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>NoPen);
+     pmp<span class="operator">.</span>drawRect(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">24</span><span class="operator">,</span> <span class="number">100</span>);
+     <span class="keyword">return</span> pm;
+ }
+
+ <span class="keyword">static</span> <span class="type"><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></span> gradientGtoRPB_Pixmap()
+ {
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> grGtoR(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">100</span>);
+     grGtoR<span class="operator">.</span>setColorAt(<span class="number">1.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkGreen);
+     grGtoR<span class="operator">.</span>setColorAt(<span class="number">0.5f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>yellow);
+     grGtoR<span class="operator">.</span>setColorAt(<span class="number">0.2f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+     grGtoR<span class="operator">.</span>setColorAt(<span class="number">0.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkRed);
+     <span class="type"><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></span> pm(<span class="number">24</span><span class="operator">,</span> <span class="number">100</span>);
+     <span class="type"><a href="../qtgui/qpainter.html" translate="no">QPainter</a></span> pmp(<span class="operator">&amp;</span>pm);
+     pmp<span class="operator">.</span>setBrush(<span class="type"><a href="../qtgui/qbrush.html" translate="no">QBrush</a></span>(grGtoR));
+     pmp<span class="operator">.</span>drawRect(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">24</span><span class="operator">,</span> <span class="number">100</span>);
+     <span class="keyword">return</span> pm;
+ }
+
+ <span class="keyword">static</span> <span class="type"><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></span> highlightPixmap()
+ {
+     constexpr <span class="type">int</span> height <span class="operator">=</span> <span class="number">400</span>;
+     constexpr <span class="type">int</span> width <span class="operator">=</span> <span class="number">110</span>;
+     constexpr <span class="type">int</span> border <span class="operator">=</span> <span class="number">10</span>;
+     <span class="type"><a href="../qtgui/qlineargradient.html" translate="no">QLinearGradient</a></span> gr(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> height <span class="operator">-</span> <span class="number">2</span> <span class="operator">*</span> border);
+     gr<span class="operator">.</span>setColorAt(<span class="number">1.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.8f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkGreen);
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.6f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>green);
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.4f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>yellow);
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.2f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>red);
+     gr<span class="operator">.</span>setColorAt(<span class="number">0.f</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>darkRed);
+
+     <span class="type"><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></span> pmHighlight(width<span class="operator">,</span> height);
+     pmHighlight<span class="operator">.</span>fill(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>transparent);
+     <span class="type"><a href="../qtgui/qpainter.html" translate="no">QPainter</a></span> pmpHighlight(<span class="operator">&amp;</span>pmHighlight);
+     pmpHighlight<span class="operator">.</span>setBrush(<span class="type"><a href="../qtgui/qbrush.html" translate="no">QBrush</a></span>(gr));
+     pmpHighlight<span class="operator">.</span>setPen(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>NoPen);
+     pmpHighlight<span class="operator">.</span>drawRect(border<span class="operator">,</span> border<span class="operator">,</span> <span class="number">35</span><span class="operator">,</span> height <span class="operator">-</span> <span class="number">2</span> <span class="operator">*</span> border);
+     pmpHighlight<span class="operator">.</span>setPen(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>black);
+     <span class="type">int</span> step <span class="operator">=</span> (height <span class="operator">-</span> <span class="number">2</span> <span class="operator">*</span> border) <span class="operator">/</span> <span class="number">5</span>;
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">6</span>; <span class="operator">+</span><span class="operator">+</span>i) {
+         <span class="type">int</span> yPos <span class="operator">=</span> i <span class="operator">*</span> step <span class="operator">+</span> border;
+         pmpHighlight<span class="operator">.</span>drawLine(border<span class="operator">,</span> yPos<span class="operator">,</span> <span class="number">55</span><span class="operator">,</span> yPos);
+         <span class="keyword">const</span> <span class="type">int</span> height <span class="operator">=</span> <span class="number">550</span> <span class="operator">-</span> (i <span class="operator">*</span> <span class="number">110</span>);
+         pmpHighlight<span class="operator">.</span>drawText(<span class="number">60</span><span class="operator">,</span> yPos <span class="operator">+</span> <span class="number">2</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(height) <span class="operator">+</span> u<span class="string">&quot; m&quot;</span>_s);
+     }
+     <span class="keyword">return</span> pmHighlight;
+ }
+
+ SurfaceGraph<span class="operator">::</span>SurfaceGraph()
+ {
+     m_surfaceGraph <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="q3dsurface.html" translate="no">Q3DSurface</a></span>();
+     initialize();
+ }
+
+ <span class="type">void</span> SurfaceGraph<span class="operator">::</span>initialize()
+ {
+     m_surfaceWidget <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>;
+     <span class="keyword">auto</span> <span class="operator">*</span>hLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qhboxlayout.html" translate="no">QHBoxLayout</a></span>(m_surfaceWidget);
+     <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> screenSize <span class="operator">=</span> m_surfaceGraph<span class="operator">-</span><span class="operator">&gt;</span>screen()<span class="operator">-</span><span class="operator">&gt;</span>size();
+     m_surfaceGraph<span class="operator">-</span><span class="operator">&gt;</span>setMinimumSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(screenSize<span class="operator">.</span>width() <span class="operator">/</span> <span class="number">2</span><span class="operator">,</span> screenSize<span class="operator">.</span>height() <span class="operator">/</span> <span class="number">1.75</span>));
+     m_surfaceGraph<span class="operator">-</span><span class="operator">&gt;</span>setMaximumSize(screenSize);
+     m_surfaceGraph<span class="operator">-</span><span class="operator">&gt;</span>setSizePolicy(<span class="type"><a href="../qtwidgets/qsizepolicy.html" translate="no">QSizePolicy</a></span><span class="operator">::</span>Expanding<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qsizepolicy.html" translate="no">QSizePolicy</a></span><span class="operator">::</span>Expanding);
+     m_surfaceGraph<span class="operator">-</span><span class="operator">&gt;</span>setFocusPolicy(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StrongFocus);
+     m_surfaceGraph<span class="operator">-</span><span class="operator">&gt;</span>setResizeMode(<span class="type"><a href="../qtquick/qquickwidget.html" translate="no">QQuickWidget</a></span><span class="operator">::</span>SizeRootObjectToView);
+     hLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(m_surfaceGraph<span class="operator">,</span> <span class="number">1</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>vLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>();
+     hLayout<span class="operator">-</span><span class="operator">&gt;</span>addLayout(vLayout);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>setAlignment(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+
+     <span class="comment">// Create control widgets</span>
+     <span class="keyword">auto</span> <span class="operator">*</span>modelGroupBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span>(u<span class="string">&quot;Model&quot;</span>_s);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>sqrtSinModelRB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span>(m_surfaceWidget);
+     sqrtSinModelRB<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Sqrt &amp;&amp; Sin&quot;</span>_s);
+     sqrtSinModelRB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>heightMapModelRB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span>(m_surfaceWidget);
+     heightMapModelRB<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Multiseries\nHeight Map&quot;</span>_s);
+     heightMapModelRB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>texturedModelRB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span>(m_surfaceWidget);
+     texturedModelRB<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Textured\nTopography&quot;</span>_s);
+     texturedModelRB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>modelVBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>;
+     modelVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(sqrtSinModelRB);
+     modelVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(heightMapModelRB);
+     modelVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(texturedModelRB);
+     modelGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setLayout(modelVBox);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>selectionGroupBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span>(u<span class="string">&quot;Graph Selection Mode&quot;</span>_s);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>modeNoneRB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span>(m_surfaceWidget);
+     modeNoneRB<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;No selection&quot;</span>_s);
+     modeNoneRB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>modeItemRB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span>(m_surfaceWidget);
+     modeItemRB<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Item&quot;</span>_s);
+     modeItemRB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>modeSliceRowRB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span>(m_surfaceWidget);
+     modeSliceRowRB<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Row Slice&quot;</span>_s);
+     modeSliceRowRB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>modeSliceColumnRB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span>(m_surfaceWidget);
+     modeSliceColumnRB<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Column Slice&quot;</span>_s);
+     modeSliceColumnRB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>selectionVBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>;
+     selectionVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(modeNoneRB);
+     selectionVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(modeItemRB);
+     selectionVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(modeSliceRowRB);
+     selectionVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(modeSliceColumnRB);
+     selectionGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setLayout(selectionVBox);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>axisGroupBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span>(u<span class="string">&quot;Axis ranges&quot;</span>_s);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>axisMinSliderX <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal);
+     axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+     axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setTickInterval(<span class="number">1</span>);
+     axisMinSliderX<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">true</span>);
+     <span class="keyword">auto</span> <span class="operator">*</span>axisMaxSliderX <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal);
+     axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+     axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setTickInterval(<span class="number">1</span>);
+     axisMaxSliderX<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">true</span>);
+     <span class="keyword">auto</span> <span class="operator">*</span>axisMinSliderZ <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal);
+     axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+     axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setTickInterval(<span class="number">1</span>);
+     axisMinSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">true</span>);
+     <span class="keyword">auto</span> <span class="operator">*</span>axisMaxSliderZ <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal);
+     axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+     axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setTickInterval(<span class="number">1</span>);
+     axisMaxSliderZ<span class="operator">-</span><span class="operator">&gt;</span>setEnabled(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>axisVBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>;
+     axisVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Column range&quot;</span>_s));
+     axisVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(axisMinSliderX);
+     axisVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(axisMaxSliderX);
+     axisVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Row range&quot;</span>_s));
+     axisVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(axisMinSliderZ);
+     axisVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(axisMaxSliderZ);
+     axisGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setLayout(axisVBox);
+
+     <span class="comment">// Mode-dependent controls</span>
+     <span class="comment">// sqrt-sin</span>
+     <span class="keyword">auto</span> <span class="operator">*</span>colorGroupBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span>(u<span class="string">&quot;Custom gradient&quot;</span>_s);
+
+     <span class="type"><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></span> pixmap <span class="operator">=</span> gradientBtoYPB_Pixmap();
+     <span class="keyword">auto</span> <span class="operator">*</span>gradientBtoYPB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span>(m_surfaceWidget);
+     gradientBtoYPB<span class="operator">-</span><span class="operator">&gt;</span>setIcon(<span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span>(pixmap));
+     gradientBtoYPB<span class="operator">-</span><span class="operator">&gt;</span>setIconSize(pixmap<span class="operator">.</span>size());
+
+     pixmap <span class="operator">=</span> gradientGtoRPB_Pixmap();
+     <span class="keyword">auto</span> <span class="operator">*</span>gradientGtoRPB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span>(m_surfaceWidget);
+     gradientGtoRPB<span class="operator">-</span><span class="operator">&gt;</span>setIcon(<span class="type"><a href="../qtgui/qicon.html" translate="no">QIcon</a></span>(pixmap));
+     gradientGtoRPB<span class="operator">-</span><span class="operator">&gt;</span>setIconSize(pixmap<span class="operator">.</span>size());
+
+     <span class="keyword">auto</span> <span class="operator">*</span>colorHBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qhboxlayout.html" translate="no">QHBoxLayout</a></span>;
+     colorHBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(gradientBtoYPB);
+     colorHBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(gradientGtoRPB);
+     colorGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setLayout(colorHBox);
+
+     <span class="comment">// Multiseries heightmap</span>
+     <span class="keyword">auto</span> <span class="operator">*</span>showGroupBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span>(u<span class="string">&quot;_show Object&quot;</span>_s);
+     showGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>checkboxShowOilRigOne <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(u<span class="string">&quot;Oil Rig 1&quot;</span>_s);
+     checkboxShowOilRigOne<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>checkboxShowOilRigTwo <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(u<span class="string">&quot;Oil Rig 2&quot;</span>_s);
+     checkboxShowOilRigTwo<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>checkboxShowRefinery <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(u<span class="string">&quot;Refinery&quot;</span>_s);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>showVBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>;
+     showVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(checkboxShowOilRigOne);
+     showVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(checkboxShowOilRigTwo);
+     showVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(checkboxShowRefinery);
+     showGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setLayout(showVBox);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>visualsGroupBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span>(u<span class="string">&quot;Visuals&quot;</span>_s);
+     visualsGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>checkboxVisualsSeeThrough <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(u<span class="string">&quot;See-Through&quot;</span>_s);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>checkboxHighlightOil <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(u<span class="string">&quot;Highlight Oil&quot;</span>_s);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>checkboxShowShadows <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(u<span class="string">&quot;Shadows&quot;</span>_s);
+     checkboxShowShadows<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>visualVBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>;
+     visualVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(checkboxVisualsSeeThrough);
+     visualVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(checkboxHighlightOil);
+     visualVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(checkboxShowShadows);
+     visualsGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setLayout(visualVBox);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>labelSelection <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Selection:&quot;</span>_s);
+     labelSelection<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>labelSelectedItem <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Nothing&quot;</span>_s);
+     labelSelectedItem<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+
+     <span class="comment">// Textured topography heightmap</span>
+     <span class="keyword">auto</span> <span class="operator">*</span>enableTexture <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(u<span class="string">&quot;Surface texture&quot;</span>_s);
+     enableTexture<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>label <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(m_surfaceWidget);
+     label<span class="operator">-</span><span class="operator">&gt;</span>setPixmap(highlightPixmap());
+
+     <span class="keyword">auto</span> <span class="operator">*</span>heightMapGroupBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span>(u<span class="string">&quot;Highlight color map&quot;</span>_s);
+     <span class="keyword">auto</span> <span class="operator">*</span>colorMapVBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>;
+     colorMapVBox<span class="operator">-</span><span class="operator">&gt;</span>addWidget(label);
+     heightMapGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setLayout(colorMapVBox);
+     heightMapGroupBox<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+
+     <span class="comment">// Populate vertical layout</span>
+     <span class="comment">// Common</span>
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(modelGroupBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(selectionGroupBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(axisGroupBox);
+
+     <span class="comment">// Sqrt Sin</span>
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(colorGroupBox);
+
+     <span class="comment">// Multiseries heightmap</span>
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(showGroupBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(visualsGroupBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(labelSelection);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(labelSelectedItem);
+
+     <span class="comment">// Textured topography</span>
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(heightMapGroupBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(enableTexture);
+
+     <span class="comment">// Raise the graph to the top of the widget stack, to hide UI if resized smaller</span>
+     m_surfaceGraph<span class="operator">-</span><span class="operator">&gt;</span>raise();
+
+     <span class="comment">// Create the controller</span>
+     m_modifier <span class="operator">=</span> <span class="keyword">new</span> SurfaceGraphModifier(m_surfaceGraph<span class="operator">,</span> labelSelectedItem<span class="operator">,</span> <span class="keyword">this</span>);
+
+     <span class="comment">// Connect widget controls to controller</span>
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(heightMapModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>enableHeightMapModel);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(sqrtSinModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>enableSqrtSinModel);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(texturedModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>enableTopographyModel);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeNoneRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleModeNone);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeItemRB<span class="operator">,</span>  <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleModeItem);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeSliceRowRB<span class="operator">,</span>  <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleModeSliceRow);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeSliceColumnRB<span class="operator">,</span>  <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleModeSliceColumn);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(axisMinSliderX<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>adjustXMin);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(axisMaxSliderX<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>adjustXMax);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(axisMinSliderZ<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>adjustZMin);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(axisMaxSliderZ<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>adjustZMax);
+
+     <span class="comment">// Mode dependent connections</span>
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(gradientBtoYPB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>pressed<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>setBlackToYellowGradient);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(gradientGtoRPB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>pressed<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>setGreenToRedGradient);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(checkboxShowOilRigOne<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleItemOne);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(checkboxShowOilRigTwo<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleItemTwo);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(checkboxShowRefinery<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleItemThree);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(checkboxVisualsSeeThrough<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleSeeThrough);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(checkboxHighlightOil<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleOilHighlight);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(checkboxShowShadows<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleShadows);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(enableTexture<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span>
+                      m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>SurfaceGraphModifier<span class="operator">::</span>toggleSurfaceTexture);
+
+     <span class="comment">// Connections to disable features depending on mode</span>
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(sqrtSinModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      colorGroupBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span><span class="operator">::</span>setVisible);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(heightMapModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      showGroupBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span><span class="operator">::</span>setVisible);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(heightMapModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      visualsGroupBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span><span class="operator">::</span>setVisible);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(heightMapModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      labelSelection<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span><span class="operator">::</span>setVisible);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(heightMapModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      labelSelectedItem<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span><span class="operator">::</span>setVisible);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(texturedModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      enableTexture<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span><span class="operator">::</span>setVisible);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(texturedModelRB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span>
+                      heightMapGroupBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qgroupbox.html" translate="no">QGroupBox</a></span><span class="operator">::</span>setVisible);
+
+     m_modifier<span class="operator">-</span><span class="operator">&gt;</span>setAxisMinSliderX(axisMinSliderX);
+     m_modifier<span class="operator">-</span><span class="operator">&gt;</span>setAxisMaxSliderX(axisMaxSliderX);
+     m_modifier<span class="operator">-</span><span class="operator">&gt;</span>setAxisMinSliderZ(axisMinSliderZ);
+     m_modifier<span class="operator">-</span><span class="operator">&gt;</span>setAxisMaxSliderZ(axisMaxSliderZ);
+
+     sqrtSinModelRB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+     modeItemRB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+     enableTexture<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+ }
+</pre>

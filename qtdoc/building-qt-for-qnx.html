@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qnx.qdoc -->
+  <meta name="description" content="Describes required packages and necessary configuration for building.">
+  <title>Building Qt for QNX | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Building Qt for QNX</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="qnx-support.html" />
+  <link rel="next" href="qnx-target-requirements.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="qnx-support.html">Qt for QNX Support</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="qnx-target-requirements.html">Qt for QNX Runtime Target Requirements</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#setting-up-qnx-sdp">Setting up QNX SDP</a></li>
+<li class="level1"><a href="#host-build">Host build</a></li>
+<li class="level1"><a href="#creating-a-toolchain-file-for-qnx">Creating a toolchain file for QNX</a></li>
+<li class="level1"><a href="#configuring-and-building-qt-for-qnx">Configuring and building Qt for QNX</a></li>
+<li class="level1"><a href="#third-party-libraries">Third party libraries</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Building Qt for QNX</h1>
+<!-- $$$building-qt-for-qnx.html-description -->
+<div class="descr" id="details">
+<h2 id="setting-up-qnx-sdp">Setting up QNX SDP</h2>
+<p>Building Qt 6 requires downloading and installing of QNX SDP 7.1 from the <a href="http://www.qnx.com/" translate="no">QNX website</a>.</p>
+<div class="admonition note">
+<p><b>Note: </b>A suitable license is required. <a href="mailto://info@qnx.com" translate="no">Contact QNX</a> for more information.</p>
+</div>
+<p>The compiler and other parts of the tool chain are provided in the SDP packages. Initialize your build environment by running the QNX setup script from your SDP installation folder in a terminal, like so:</p>
+<pre class="cpp plain" translate="no">
+ source qnxsdp-env.sh
+</pre>
+<h2 id="host-build">Host build</h2>
+<p>The cross-compiling Qt requires a host build of Qt being available. During the build, tools such as <code translate="no">moc</code>, <code translate="no">rcc</code>, <code translate="no">qmlcachegen</code>, <code translate="no">qsb</code>, are invoked from there. You can either <a href="https://doc.qt.io/qt-6/build-sources.html" translate="no">build Qt from sources</a> for the host or install host build using online installer. However, it is advisable to ensure that you can build Qt for the desktop target on the host as well. For more detailed information please see <a href="https://www.qt.io/blog/qt-6-build-system" translate="no">Cross-compiling Qt</a>.</p>
+<h2 id="creating-a-toolchain-file-for-qnx">Creating a toolchain file for QNX</h2>
+<p>To cross-compile a project with CMake a toolchain file is needed. This CMake-language file sets the right values for the platform name, compiler/linker, and many other toolchain-specific things. A minimal toolchain file can be found from CMake documentation:</p>
+<pre class="cpp plain" translate="no">
+ set(CMAKE_SYSTEM_NAME QNX)
+
+ set(arch gcc_ntoarmv7le)
+
+ set(CMAKE_C_COMPILER qcc)
+ set(CMAKE_C_COMPILER_TARGET ${arch})
+ set(CMAKE_CXX_COMPILER q++)
+ set(CMAKE_CXX_COMPILER_TARGET ${arch})
+
+ set(CMAKE_SYSROOT $ENV{QNX_TARGET})
+</pre>
+<p>The <code translate="no">arch</code> variable can be set to either <code translate="no">gcc_ntoarmv7le</code>, <code translate="no">gcc_ntoaarch64le</code> or <code translate="no">gcc_ntox86_64</code>, depending on your target architecture.</p>
+<h2 id="configuring-and-building-qt-for-qnx">Configuring and building Qt for QNX</h2>
+<p>Assuming the following:</p>
+<ul>
+<li>The toolchain file is called qnx.cmake and is located in <code translate="no">$HOME</code>.</li>
+<li>The Qt repository checked out, at minimum the qtbase module, under <code translate="no">$HOME/qt</code>.</li>
+<li>A host build of Qt in <code translate="no">$HOME/qt-host</code>.</li>
+<li>The installation location on the local system will be <code translate="no">$HOME/qnx-install</code>.</li>
+</ul>
+<p>After creating and switching to the <code translate="no">build</code> directory run:</p>
+<pre class="cpp plain" translate="no">
+ cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$HOME/qnx.cmake  \
+ -DQT_HOST_PATH=$HOME/qt_host \
+ -DCMAKE_INSTALL_PREFIX=$HOME/qnx_install \
+ $HOME/qt
+</pre>
+<p>Once configuration completes without errors,build by running:</p>
+<pre class="cpp" translate="no">
+ cmake <span class="operator">-</span><span class="operator">-</span>build <span class="operator">.</span> <span class="operator">-</span><span class="operator">-</span>parallel
+</pre>
+<p>Once built, run:</p>
+<pre class="cpp" translate="no">
+ cmake <span class="operator">-</span><span class="operator">-</span>install <span class="operator">.</span>
+</pre>
+<p>Which will install the results to <code translate="no">$HOME/qnx_install</code>.</p>
+<p>You can also configure Qt with the configure tool. Since Qt 6, this tool is a wrapper around CMake.</p>
+<h2 id="third-party-libraries">Third party libraries</h2>
+<p>Make sure that your system image contains the following additional 3rd-party libraries which are not always included in minimal QNX Neutrino RTOS images:</p>
+<ul>
+<li><code translate="no">libfontconfig</code></li>
+<li><code translate="no">libfreetype</code></li>
+<li><code translate="no">libiconv</code></li>
+<li><code translate="no">libicui18n</code></li>
+<li><code translate="no">libicudata</code></li>
+<li><code translate="no">libicuuc</code></li>
+<li><code translate="no">libpng14</code></li>
+<li><code translate="no">libxml2</code></li>
+<li><code translate="no">libsqlite3</code></li>
+<li><code translate="no">libssl</code></li>
+<li><code translate="no">libcrypto</code></li>
+</ul>
+<div class="admonition note">
+<p><b>Note: </b>This is not a complete list of shared libraries used by Qt on QNX Neutrino OS. Multiple shared libraries are already available in a typical OS image, or included by other parts of the system, for example <code translate="no">Screen</code>.</p>
+</div>
+</div>
+<p><b>See also </b><a href="configure-options.html" translate="no">Qt Configure Options</a> and <a href="configure-linux-device.html#configuring-qt" translate="no">Configuring Qt</a>.</p>
+<!-- @@@building-qt-for-qnx.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="qnx-support.html">Qt for QNX Support</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="qnx-target-requirements.html">Qt for QNX Runtime Target Requirements</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

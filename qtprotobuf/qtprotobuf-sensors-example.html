@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- sensors.qdoc -->
+  <meta name="description" content="The Sensors example shows how two applications can communicate by sending protobuf messages using UDP sockets.">
+  <title>Sensors | Qt Protobuf 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtprotobuf-index.html" translate="no">Qt Protobuf</a></li>
+<li><a href="qtprotobuf-examples.html" translate="no">Qt Protobuf Examples</a></li>
+<li>Sensors</li>
+<li id="buildversion"><a href="qtprotobuf-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Sensors</h1>
+<!-- $$$sensors-brief -->
+<p>The Sensors example shows how two applications can communicate by sending protobuf messages using UDP sockets.</p>
+<!-- @@@sensors -->
+<!-- $$$sensors-description -->
+<div class="descr" id="details">
+<p>The Sensors example consists of the following components:</p>
+<ul>
+<li><code translate="no">protobuf_sensors</code> library that you generate from the protobuf schema using the <a href="qt-add-protobuf.html" translate="no">qt_add_protobuf</a> call.</li>
+<li><code translate="no">protobuf_sensor_emulator</code> application that emulates simple sensor behavior.</li>
+<li><code translate="no">protobuf_sensors_client</code> application that displays the sensor data from the UDP socket.</li>
+</ul>
+<p>The client application binds on the <code translate="no">localhost</code> UDP port <code translate="no">65500</code> and waits for data from the emulator application.</p>
+<p class="centerAlign"><img src="images/client.webp" alt="" /></p><p>Use the emulator application to change the values of sensor data and send the data to the client's UDP port.</p>
+<p class="centerAlign"><img src="images/emulator.webp" alt="" /></p><p>The applications use the generated messages from the <code translate="no">protobuf_sensors</code> library to communicate. The library is generated from the protobuf schema described in .proto files.</p>
+<pre class="cpp" translate="no">
+ qt_add_protobuf(protobuf_sensors
+     PROTO_FILES
+         sensors.proto
+         tlv.proto
+ )
+</pre>
+<p>The first file describes the Type-Length-Value message, that wraps the sensor data:</p>
+<pre class="cpp" translate="no">
+ package qt.examples.sensors.tlv;
+
+ enum MessageType {
+     Coordinates = 0;
+     Temperature = 1;
+     WarningNotification = 2;
+ }
+
+ // Protobuf messages imply inline data size.
+ message TlvMessage
+ {
+     MessageType type = 1;
+     bytes value = 2;
+ }
+</pre>
+<p>The second .proto file contains a description of the sensor messages:</p>
+<pre class="cpp" translate="no">
+ package qt.examples.sensors;
+
+ message Coordinates
+ {
+     double longitude = 1;
+     double latitude = 2;
+     double altitude = 3;
+ }
+
+ message Temperature
+ {
+     enum Unit {
+         Farenheit = 0;
+         Celsius = 1;
+     }
+     sint32 value = 1;
+     Unit units = 2;
+ }
+
+ message WarningNotification
+ {
+     string text = 1;
+ }
+</pre>
+<p>Messages are serialized using <a href="qprotobufserializer.html" translate="no">QProtobufSerializer</a> that you instantiate in the client:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> SensorClient : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+ <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
+ <span class="keyword">private</span>:
+     <span class="type">QUdpSocket</span> m_client;
+     <span class="type"><a href="qprotobufserializer.html" translate="no">QProtobufSerializer</a></span> m_serializer;
+ };
+</pre>
+<p>And the emulator:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> SensorEmulator : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+ <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
+     <span class="type">QUdpSocket</span> m_socket;
+     <span class="type"><a href="qprotobufserializer.html" translate="no">QProtobufSerializer</a></span> m_serializer;
+ };
+</pre>
+<p>After you click the <b translate="no">Send</b> button in the emulator application, the data from <a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a> fields is converted from string format to the message field-specific format, for example, double for the fields of the Coordinates message:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(ui<span class="operator">-</span><span class="operator">&gt;</span>sendCoordinates<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>() {
+         qt<span class="operator">::</span>examples<span class="operator">::</span>sensors<span class="operator">::</span>Coordinates coord;
+         coord<span class="operator">.</span>setLatitude(ui<span class="operator">-</span><span class="operator">&gt;</span>latitudeValue<span class="operator">-</span><span class="operator">&gt;</span>text()<span class="operator">.</span>toDouble());
+         coord<span class="operator">.</span>setLongitude(ui<span class="operator">-</span><span class="operator">&gt;</span>longitudeValue<span class="operator">-</span><span class="operator">&gt;</span>text()<span class="operator">.</span>toDouble());
+         coord<span class="operator">.</span>setAltitude(ui<span class="operator">-</span><span class="operator">&gt;</span>altitudeValue<span class="operator">-</span><span class="operator">&gt;</span>text()<span class="operator">.</span>toDouble());
+         <span class="keyword">emit</span> coordinatesUpdated(coord);
+     });
+</pre>
+<p>Then the message with all the fields is serialized and wrapped with the Type-Length-Value message:</p>
+<pre class="cpp" translate="no">
+     Q_ASSERT(serializer <span class="operator">!</span><span class="operator">=</span> nullptr);
+     qt<span class="operator">::</span>examples<span class="operator">::</span>sensors<span class="operator">::</span>tlv<span class="operator">::</span>TlvMessage msg;
+     msg<span class="operator">.</span>setType(type);
+     msg<span class="operator">.</span>setValue(data);
+     <span class="keyword">return</span> msg<span class="operator">.</span>serialize(serializer);
+</pre>
+<p>The client applies the reverse operations on the received datagrams. First the Type-Length-Value message is deserialized from the datagram data:</p>
+<pre class="cpp" translate="no">
+         <span class="keyword">const</span> <span class="keyword">auto</span> datagram <span class="operator">=</span> m_client<span class="operator">.</span>receiveDatagram();
+         qt<span class="operator">::</span>examples<span class="operator">::</span>sensors<span class="operator">::</span>tlv<span class="operator">::</span>TlvMessage msg;
+         msg<span class="operator">.</span>deserialize(<span class="operator">&amp;</span>m_serializer<span class="operator">,</span> datagram<span class="operator">.</span>data());
+         <span class="keyword">if</span> (m_serializer<span class="operator">.</span>deserializationError()
+                 <span class="operator">!</span><span class="operator">=</span> <span class="type"><a href="qabstractprotobufserializer.html" translate="no">QAbstractProtobufSerializer</a></span><span class="operator">::</span>NoError) {
+             <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>()<span class="operator">.</span>nospace() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Unable to deserialize datagram (&quot;</span>
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> m_serializer<span class="operator">.</span>deserializationError() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;)&quot;</span>
+                        <span class="operator">&lt;</span><span class="operator">&lt;</span> m_serializer<span class="operator">.</span>deserializationErrorString();
+             <span class="keyword">continue</span>;
+         }
+</pre>
+<p>Then the Type-Length-Value message is deserialized into the sensor message:</p>
+<pre class="cpp" translate="no">
+             qt<span class="operator">::</span>examples<span class="operator">::</span>sensors<span class="operator">::</span>Coordinates coord;
+             coord<span class="operator">.</span>deserialize(<span class="operator">&amp;</span>m_serializer<span class="operator">,</span> msg<span class="operator">.</span>value());
+             <span class="keyword">emit</span> coordinatesUpdated(coord);
+             <span class="keyword">break</span>;
+</pre>
+<p>Finally, it is converted and displayed to the user:</p>
+<pre class="cpp" translate="no">
+     ui<span class="operator">-</span><span class="operator">&gt;</span>latitudeValue<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(coord<span class="operator">.</span>latitude()<span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">7</span>));
+     ui<span class="operator">-</span><span class="operator">&gt;</span>longitudeValue<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(coord<span class="operator">.</span>longitude()<span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">7</span>));
+     ui<span class="operator">-</span><span class="operator">&gt;</span>altitudeValue<span class="operator">-</span><span class="operator">&gt;</span>setText(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(coord<span class="operator">.</span>altitude()<span class="operator">,</span> <span class="char">'f'</span><span class="operator">,</span> <span class="number">7</span>));
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Before running the example, make sure that your operating system allows binding on UDP port <code translate="no">65500</code> and sending the data over UDP.</p>
+</div>
+<p><a href="https://code.qt.io/cgit/qt/qtgrpc.git/tree/examples/protobuf/sensors?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@sensors -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

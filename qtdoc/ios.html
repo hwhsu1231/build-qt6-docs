@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- ios.qdoc -->
+  <meta name="description" content="Provides insight into Qt's iOS port and how to use it.">
+  <title>Qt for iOS | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Qt for iOS</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#supported-configurations">Supported Configurations</a></li>
+<li class="level1"><a href="#getting-started">Getting Started</a></li>
+<li class="level2"><a href="#setting-up-the-development-environment">Setting Up the Development Environment</a></li>
+<li class="level2"><a href="#building-applications-from-the-command-line">Building Applications from the Command Line</a></li>
+<li class="level2"><a href="#building-applications-with-qt-creator">Building Applications with Qt Creator</a></li>
+<li class="level2"><a href="#running-applications-in-xcode">Running Applications in Xcode</a></li>
+<li class="level1"><a href="#using-objective-c-code-in-qt-applications">Using Objective-C Code in Qt Applications</a></li>
+<li class="level1"><a href="#examples-for-ios">Examples for iOS</a></li>
+<li class="level1"><a href="#related-topics">Related Topics</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt for iOS</h1>
+<!-- $$$ios.html-description -->
+<div class="descr" id="details">
+<p>Qt's iOS port allows you to run Qt applications on iOS devices, such as iPhones, iPads, and iPod Touches.</p>
+<span id="ios-supported-configurations"></span><h2 id="supported-configurations">Supported Configurations</h2>
+<p>The following configurations are supported.</p>
+<div class="table"><table class="generic" width="80%">
+ <thead><tr class="qt-style"><th >Target Platform</th><th >Architecture</th><th >Build Environment</th></tr></thead>
+<tr valign="top" class="odd"><td >iOS 14, 15, 16</td><td ><code translate="no">armv8</code> (<code translate="no">arm64</code>)</td><td >Xcode 14 (iOS 16 SDK)</td></tr>
+</table></div>
+<h2 id="getting-started">Getting Started</h2>
+<p>Qt supports you in building, testing, and deploying applications for iOS. Qt applications are typically defined using the <a href="../qtcmake/cmake-manual.html" translate="no">CMake</a> or <a href="../qmake/qmake-manual.html" translate="no">qmake</a> build tools. Both tools can generate an <code translate="no">.xcodeproj</code> file that can then be loaded and built from the command line, or with Xcode. <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a> also directly supports building, running, debugging, and profiling CMake and qmake projects for iOS.</p>
+<p>The minimum deployment target for Qt applications is specified in <a href="supported-platforms.html" translate="no">Supported Platforms</a>.</p>
+<h3 id="setting-up-the-development-environment">Setting Up the Development Environment</h3>
+<p>You can download the Qt installers from the <a href="http://qt.io/download" translate="no">Downloads</a> page. For more information, see <a href="gettingstarted.html" translate="no">Getting Started with Qt</a>.</p>
+<p>Before installing Qt, you first need to install Xcode. You will find it in the Mac App Store <a href="http://itunes.apple.com/us/app/xcode/id497799835?ls=1&mt=12" translate="no">here</a>.</p>
+<div class="admonition note">
+<p><b>Note: </b>As recommended by Apple, you should always use the latest Xcode version when building your applications for the App Store. In practice this means you also need the latest version of macOS to develop apps with Qt, due to Xcode's system requirements.</p>
+</div>
+<p>For running Qt applications on your Mac or in the simulator that comes with Xcode, this is all you need. However, for running applications on a mobile device and/or publishing your applications in the App Store, you must join the <a href="https://developer.apple.com/programs/" translate="no">Apple Developer Program</a>, and set up developer certificates and provisioning profiles. The easiest solution is to use a profile that takes any App ID (a <code translate="no">*</code>).</p>
+<p>Before building any Qt applications, you should test that Xcode is set up correctly, for example, by running one of the standard Xcode application templates on your device.</p>
+<h3 id="building-applications-from-the-command-line">Building Applications from the Command Line</h3>
+<p>Use CMake or qmake to define how to build your iOS application. Both CMake and qmake can generate an <code translate="no">xcodeproj</code> file, which can then be loaded and built from the command line.</p>
+<h4 id="using-cmake">Using CMake</h4>
+<p>The <code translate="no">qt-cmake</code> convenience script located in <code translate="no">&lt;Qt-dir&gt;/&lt;version&gt;/ios/bin/</code> will take care of setting up the toolchain and correct architectures for you.</p>
+<p>Using <code translate="no">qt-cmake</code> convenience script:</p>
+<pre class="cpp plain" translate="no">
+ &lt;Qt-dir&gt;/&lt;version&gt;/ios/bin/qt-cmake &lt;source-dir&gt;
+</pre>
+<p>Using the generated <code translate="no">xcodeproj</code> file, you can either use Xcode to build your application or run <code translate="no">xcodebuild</code> from the command line. For a list of available targets and schemes for your application, run the following command:</p>
+<pre class="cpp plain" translate="no">
+ xcodebuild -list -project &lt;your-app&gt;.xcodeproj
+</pre>
+<p>Then, run <code translate="no">xcodebuild build</code>, passing in your application details:</p>
+<pre class="cpp plain" translate="no">
+ xcodebuild build -allowProvisioningUpdates -project &lt;your-app&gt;.xcodeproj -scheme &lt;your-scheme&gt; -configuration Debug -destination &quot;generic/platform=iOS&quot; -destination-timeout 1 ENABLE_ONLY_ACTIVE_RESOURCES=NO
+</pre>
+<h4 id="using-qmake">Using qmake</h4>
+<p>First, define how to build the application using qmake. Then, use the generated <code translate="no">xcodeproj</code> file to build the application, either in Xcode or from the command line.</p>
+<pre class="cpp plain" translate="no">
+ qmake &lt;your-app&gt;.pro
+</pre>
+<p>qmake creates a wrapper Makefile that in turns calls <code translate="no">xcodebuild</code>, so you can run <code translate="no">make</code> to build your application:</p>
+<pre class="cpp plain" translate="no">
+ make -j8
+</pre>
+<p>Note that you must re-import the project if its setup changes, for example, when adding or removing source files.</p>
+<h5 id="customizing-xcode-project-settings">Customizing Xcode project settings</h5>
+<p>The <code translate="no">QMAKE_MAC_XCODE_SETTINGS</code> qmake variable can be used to customize Xcode settings, for example:</p>
+<pre class="cpp plain" translate="no">
+ development_team.name = DEVELOPMENT_TEAM
+ development_team.value = &lt;your-team-id&gt;
+ QMAKE_MAC_XCODE_SETTINGS += development_team
+</pre>
+<p>Other qmake variables are also useful:</p>
+<pre class="cpp plain" translate="no">
+ QMAKE_TARGET_BUNDLE_PREFIX = com.&lt;your-company&gt;
+ QMAKE_BUNDLE = &lt;your-app&gt;
+</pre>
+<h3 id="building-applications-with-qt-creator">Building Applications with Qt Creator</h3>
+<p>You can find information on how to set up and run Apple mobile device applications in Qt Creator's manual:</p>
+<ul>
+<li><a href="https://doc.qt.io/qtcreator/creator-developing-ios.html" translate="no">Connecting Apple Mobile Devices</a>.</li>
+</ul>
+<p>As mentioned previously, you must have Xcode installed.</p>
+<h3 id="running-applications-in-xcode">Running Applications in Xcode</h3>
+<p>The Xcode projects generated by qmake and CMake support running the application on both iOS devices and in the iOS simulator.</p>
+<div class="admonition note">
+<p><b>Note: </b>As the default architecture of the Qt for iOS simulator libraries is <code translate="no">x86_64</code>, the application must run under Rosetta on Apple Silicon Macs. If the Rosetta-based run destinations are not listed in Xcode's run destination menu they can be enabled via the <code translate="no">Product &gt; Destination &gt; Destination Architectures</code> menu.</p>
+</div>
+<h2 id="using-objective-c-code-in-qt-applications">Using Objective-C Code in Qt Applications</h2>
+<p>Clang, the compiler used for applications on Apple Platforms, allows mixing C++ and Objective-C code. To enable this mode use the <code translate="no">.mm</code> extension for the relevant source files and add them to your project as usual.</p>
+<p>With CMake:</p>
+<pre class="cpp plain" translate="no">
+ target_sources(myapp PRIVATE objc_code.mm)
+</pre>
+<p>With qmake:</p>
+<pre class="cpp plain" translate="no">
+ SOURCES += objc_code.mm
+</pre>
+<p>You can then use Objective-C frameworks from Apple's Developer Library in your Qt applications.</p>
+<p>To expose functionality to the rest of your application, without having to rename all your source files, declare helper functions in a header, and implement the functionality in an Objective-C++ source file:</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// objc_code.h</span>
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> localizedHostName();
+
+ <span class="comment">// objc_code.mm</span>
+ <span class="preprocessor">#include &lt;Foundation/NSHost.h&gt;</span>
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> localizedHostName()
+ {
+     <span class="keyword">return</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>fromNSString(NSHost<span class="operator">.</span>currentHost<span class="operator">.</span>localizedName);
+ }
+</pre>
+<h2 id="examples-for-ios">Examples for iOS</h2>
+<p>In Qt Creator, tested examples on iOS can be looked up. Use the <code translate="no">ios</code> keyword to search for examples in the Qt Creator Welcome mode. Note that some examples may have limited functionality.</p>
+<p>For a list of examples known to work on iOS devices, visit <a href="examples-ios.html" translate="no">Qt for iOS Examples</a>.</p>
+<h2 id="related-topics">Related Topics</h2>
+<p>The following topics provide more details about Qt for iOS:</p>
+<ul>
+<li><a href="porting-to-ios.html" translate="no">Porting a Qt Quick Application</a></li>
+<li><a href="ios-platform-notes.html" translate="no">Platform Notes</a></li>
+<li><a href="ios-building-from-source.html" translate="no">Qt for iOS - Building from Source</a></li>
+</ul>
+</div>
+<!-- @@@ios.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

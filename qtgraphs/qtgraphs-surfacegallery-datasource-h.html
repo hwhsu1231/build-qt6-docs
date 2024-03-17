@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- surfacegallery.qdoc -->
+  <meta name="description" content="Gallery with three different ways to use a Surface3D graph.">
+  <title>Surface Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Surface Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Surface Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef DATASOURCE_H</span>
+ <span class="preprocessor">#define DATASOURCE_H</span>
+
+ <span class="preprocessor">#include &lt;QtGraphs/qsurface3dseries.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtQml/qqmlregistration.h&gt;</span>
+
+ <span class="keyword">class</span> DataSource : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+     QML_ELEMENT
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> DataSource(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent <span class="operator">=</span> <span class="number">0</span>);
+     <span class="keyword">virtual</span> <span class="operator">~</span>DataSource();
+
+     Q_INVOKABLE <span class="type">void</span> generateData(<span class="type">int</span> cacheCount<span class="operator">,</span> <span class="type">int</span> rowCount<span class="operator">,</span> <span class="type">int</span> columnCount<span class="operator">,</span>
+                                   <span class="type">float</span> xMin<span class="operator">,</span> <span class="type">float</span> xMax<span class="operator">,</span>
+                                   <span class="type">float</span> yMin<span class="operator">,</span> <span class="type">float</span> yMax<span class="operator">,</span>
+                                   <span class="type">float</span> zMin<span class="operator">,</span> <span class="type">float</span> zMax);
+
+     Q_INVOKABLE <span class="type">void</span> update(QSurface3DSeries <span class="operator">*</span>series);
+ <span class="keyword">private</span>:
+     <span class="type">void</span> clearData();
+
+     <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span><span class="operator">&gt;</span> m_data;
+     <span class="type">int</span> m_index;
+     <span class="type"><a href="qsurfacedataproxy.html#QSurfaceDataArray-typedef" translate="no">QSurfaceDataArray</a></span> <span class="operator">*</span>m_resetArray;
+ };
+
+ <span class="preprocessor">#endif</span>
+</pre>

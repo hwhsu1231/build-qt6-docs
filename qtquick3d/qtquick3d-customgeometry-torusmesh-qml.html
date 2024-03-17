@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-customgeometry.qdoc -->
+  <meta name="description" content="Demonstrates providing custom vertex data from C++ and QML.">
+  <title>Qt Quick 3D - Custom Geometry Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Custom Geometry Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Custom Geometry Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D.Helpers
+
+ <span class="type">ProceduralMesh</span> {
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">rings</span>: <span class="number">50</span>
+     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">segments</span>: <span class="number">50</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">radius</span>: <span class="number">100.0</span>
+     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">tubeRadius</span>: <span class="number">10.0</span>
+     property <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span> <span class="name">meshArrays</span>: <span class="name">generateTorus</span>(<span class="name">rings</span>, <span class="name">segments</span>, <span class="name">radius</span>, <span class="name">tubeRadius</span>)
+     <span class="name">positions</span>: <span class="name">meshArrays</span>.<span class="name">verts</span>
+     <span class="name">normals</span>: <span class="name">meshArrays</span>.<span class="name">normals</span>
+     <span class="name">uv0s</span>: <span class="name">meshArrays</span>.<span class="name">uvs</span>
+     <span class="name">indexes</span>: <span class="name">meshArrays</span>.<span class="name">indices</span>
+
+     <span class="keyword">function </span><span class="name">generateTorus</span>(rings: <span class="name">int</span>, segments: int, radius: real, tubeRadius: real) : var {
+         let verts = []
+         let normals = []
+         let uvs = []
+         let indices = []
+
+         <span class="keyword">for</span> (let i = 0; <span class="name">i</span> <span class="operator">&lt;=</span> <span class="name">rings</span>; ++<span class="name">i</span>) {
+             <span class="keyword">for</span> (let j = 0; <span class="name">j</span> <span class="operator">&lt;=</span> <span class="name">segments</span>; ++<span class="name">j</span>) {
+                 const u = <span class="name">i</span> <span class="operator">/</span> <span class="name">rings</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">PI</span> <span class="operator">*</span> <span class="number">2</span>;
+                 const v = <span class="name">j</span> <span class="operator">/</span> <span class="name">segments</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">PI</span> <span class="operator">*</span> <span class="number">2</span>;
+
+                 const centerX = <span class="name">radius</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">cos</span>(<span class="name">u</span>);
+                 const centerZ = <span class="name">radius</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">sin</span>(<span class="name">u</span>);
+
+                 const posX = <span class="name">centerX</span> <span class="operator">+</span> <span class="name">tubeRadius</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">cos</span>(<span class="name">v</span>) <span class="operator">*</span> <span class="name">Math</span>.<span class="name">cos</span>(<span class="name">u</span>);
+                 const posY = <span class="name">tubeRadius</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">sin</span>(<span class="name">v</span>);
+                 const posZ = <span class="name">centerZ</span> <span class="operator">+</span> <span class="name">tubeRadius</span> <span class="operator">*</span> <span class="name">Math</span>.<span class="name">cos</span>(<span class="name">v</span>) <span class="operator">*</span> <span class="name">Math</span>.<span class="name">sin</span>(<span class="name">u</span>);
+
+                 <span class="name">verts</span>.<span class="name">push</span>(<span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">posX</span>, <span class="name">posY</span>, <span class="name">posZ</span>));
+
+                 const normal = <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">posX</span> <span class="operator">-</span> <span class="name">centerX</span>, <span class="name">posY</span>, <span class="name">posZ</span> <span class="operator">-</span> <span class="name">centerZ</span>).<span class="name">normalized</span>();
+                 <span class="name">normals</span>.<span class="name">push</span>(<span class="name">normal</span>);
+
+                 <span class="name">uvs</span>.<span class="name">push</span>(<span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="name">i</span> <span class="operator">/</span> <span class="name">rings</span>, <span class="name">j</span> <span class="operator">/</span> <span class="name">segments</span>));
+             }
+         }
+
+         <span class="keyword">for</span> (let i = 0; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">rings</span>; ++<span class="name">i</span>) {
+             <span class="keyword">for</span> (let j = 0; <span class="name">j</span> <span class="operator">&lt;</span> <span class="name">segments</span>; ++<span class="name">j</span>) {
+                 const a = (<span class="name">segments</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">*</span> <span class="name">i</span> <span class="operator">+</span> <span class="name">j</span>;
+                 const b = (<span class="name">segments</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">*</span> (<span class="name">i</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">+</span> <span class="name">j</span>;
+                 const c = (<span class="name">segments</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">*</span> (<span class="name">i</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">+</span> <span class="name">j</span> <span class="operator">+</span> <span class="number">1</span>;
+                 const d = (<span class="name">segments</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">*</span> <span class="name">i</span> <span class="operator">+</span> <span class="name">j</span> <span class="operator">+</span> <span class="number">1</span>;
+
+                 <span class="comment">// Generate two triangles for each quad in the mesh</span>
+                 <span class="comment">// Adjust order to be counter-clockwise</span>
+                 <span class="name">indices</span>.<span class="name">push</span>(<span class="name">a</span>, <span class="name">d</span>, <span class="name">b</span>);
+                 <span class="name">indices</span>.<span class="name">push</span>(<span class="name">b</span>, <span class="name">d</span>, <span class="name">c</span>);
+             }
+         }
+         <span class="keyword">return</span> { verts: <span class="name">verts</span>, normals: <span class="name">normals</span>, uvs: <span class="name">uvs</span>, indices: <span class="name">indices</span> }
+     }
+ }
+</pre>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- instancing.qdoc -->
+  <meta name="description" content="Demonstrates how to do instanced rendering in Qt Quick 3D.">
+  <title>Qt Quick 3D - Instanced Rendering Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Instanced Rendering Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Instanced Rendering Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Helpers
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">1280</span>
+     <span class="name">height</span>: <span class="number">720</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">view</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">clearColor</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">300</span>)
+             <span class="name">clipNear</span>: <span class="number">1.0</span>
+             NumberAnimation on <span class="name">z</span> {
+                 <span class="name">from</span>: <span class="number">300</span>
+                 <span class="name">to</span>: <span class="number">0</span>
+                 <span class="name">duration</span>: <span class="number">10</span> <span class="operator">*</span> <span class="number">1000</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+             <span class="name">eulerRotation</span>.x: -<span class="number">30</span>
+             <span class="name">eulerRotation</span>.y: -<span class="number">70</span>
+             <span class="name">ambientColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">1.0</span>)
+         }
+
+         <span class="type"><a href="qml-qtquick3d-helpers-randominstancing.html" translate="no">RandomInstancing</a></span> {
+             <span class="name">id</span>: <span class="name">randomInstancing</span>
+             <span class="name">instanceCount</span>: <span class="number">1500</span>
+
+             <span class="name">position</span>: <span class="name">InstanceRange</span> {
+                 <span class="name">from</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">300</span>, -<span class="number">200</span>, -<span class="number">500</span>)
+                 <span class="name">to</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">300</span>, <span class="number">200</span>, <span class="number">200</span>)
+             }
+             <span class="name">scale</span>: <span class="name">InstanceRange</span> {
+                 <span class="name">from</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)
+                 <span class="name">to</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>)
+                 <span class="name">proportional</span>: <span class="number">true</span>
+             }
+             <span class="name">rotation</span>: <span class="name">InstanceRange</span> {
+                 <span class="name">from</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">to</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">360</span>, <span class="number">360</span>, <span class="number">360</span>)
+             }
+             <span class="name">color</span>: <span class="name">InstanceRange</span> {
+                 <span class="name">from</span>: <span class="string">&quot;grey&quot;</span>
+                 <span class="name">to</span>: <span class="string">&quot;white&quot;</span>
+                 <span class="name">proportional</span>: <span class="number">true</span>
+             }
+
+             <span class="name">randomSeed</span>: <span class="number">2021</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-instancelistentry.html" translate="no">InstanceListEntry</a></span> {
+             <span class="name">id</span>: <span class="name">redShip</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">50</span>, <span class="number">10</span>, <span class="number">100</span>)
+             <span class="name">eulerRotation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">180</span>, <span class="number">0</span>)
+             <span class="name">color</span>: <span class="string">&quot;red&quot;</span>
+             NumberAnimation on <span class="name">position</span>.x {
+                 <span class="name">from</span>: <span class="number">50</span>
+                 <span class="name">to</span>: -<span class="number">70</span>
+                 <span class="name">duration</span>: <span class="number">8000</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-instancelistentry.html" translate="no">InstanceListEntry</a></span> {
+             <span class="name">id</span>: <span class="name">greenShip</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">60</span>)
+             <span class="name">eulerRotation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">10</span>, <span class="number">0</span>, <span class="number">30</span>)
+             <span class="name">color</span>: <span class="string">&quot;green&quot;</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-instancelistentry.html" translate="no">InstanceListEntry</a></span> {
+             <span class="name">id</span>: <span class="name">blueShip</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">100</span>, -<span class="number">100</span>, <span class="number">0</span>)
+             <span class="name">color</span>: <span class="string">&quot;blue&quot;</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-instancelist.html" translate="no">InstanceList</a></span> {
+             <span class="name">id</span>: <span class="name">manualInstancing</span>
+             <span class="name">instances</span>: [ <span class="name">redShip</span>, <span class="name">greenShip</span>, <span class="name">blueShip</span> ]
+         }
+
+         <span class="type">Asteroid</span> {
+             <span class="name">instancing</span>: <span class="name">randomInstancing</span>
+             NumberAnimation on <span class="name">eulerRotation</span>.x {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">duration</span>: <span class="number">11000</span>
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+             }
+         }
+
+         <span class="type">SimpleSpaceship</span> {
+             <span class="name">instancing</span>: <span class="name">manualInstancing</span>
+         }
+     }
+ }
+</pre>

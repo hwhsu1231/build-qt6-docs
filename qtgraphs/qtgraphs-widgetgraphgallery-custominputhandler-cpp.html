@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;custominputhandler.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QtGraphs/q3dcamera.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/qmath.h&gt;</span>
+
+ CustomInputHandler<span class="operator">::</span>CustomInputHandler(QAbstract3DGraph <span class="operator">*</span>graph<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent) :
+     <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span>(parent)
+ {
+     <span class="comment">// Connect to the item selection signal from graph</span>
+     connect(graph<span class="operator">,</span> <span class="operator">&amp;</span>QAbstract3DGraph<span class="operator">::</span>selectedElementChanged<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span>
+             <span class="operator">&amp;</span>CustomInputHandler<span class="operator">::</span>handleElementSelected);
+ }
+
+ <span class="type">void</span> CustomInputHandler<span class="operator">::</span>mousePressEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> <span class="operator">&amp;</span>mousePos)
+ {
+     <span class="keyword">if</span> (<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>LeftButton <span class="operator">=</span><span class="operator">=</span> event<span class="operator">-</span><span class="operator">&gt;</span>button()) {
+         m_highlight<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">false</span>);
+         m_mousePressed <span class="operator">=</span> <span class="keyword">true</span>;
+     }
+     <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span><span class="operator">::</span>mousePressEvent(event<span class="operator">,</span> mousePos);
+ }
+
+ <span class="type">void</span> CustomInputHandler<span class="operator">::</span>wheelEvent(<span class="type"><a href="../qtgui/qwheelevent.html" translate="no">QWheelEvent</a></span> <span class="operator">*</span>event)
+ {
+     <span class="type">float</span> delta <span class="operator">=</span> <span class="type">float</span>(event<span class="operator">-</span><span class="operator">&gt;</span>angleDelta()<span class="operator">.</span>y());
+
+     m_axisXMinValue <span class="operator">+</span><span class="operator">=</span> delta;
+     m_axisXMaxValue <span class="operator">-</span><span class="operator">=</span> delta;
+     m_axisZMinValue <span class="operator">+</span><span class="operator">=</span> delta;
+     m_axisZMaxValue <span class="operator">-</span><span class="operator">=</span> delta;
+     checkConstraints();
+
+     <span class="type">float</span> y <span class="operator">=</span> (m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue) <span class="operator">*</span> m_aspectRatio;
+
+     m_axisX<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisXMinValue<span class="operator">,</span> m_axisXMaxValue);
+     m_axisY<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">100.f</span><span class="operator">,</span> y);
+     m_axisZ<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisZMinValue<span class="operator">,</span> m_axisZMaxValue);
+ }
+
+ <span class="type">void</span> CustomInputHandler<span class="operator">::</span>mouseMoveEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> <span class="operator">&amp;</span>mousePos)
+ {
+     <span class="comment">// Check if we're trying to drag axis label</span>
+     <span class="keyword">if</span> (m_mousePressed <span class="operator">&amp;</span><span class="operator">&amp;</span> m_state <span class="operator">!</span><span class="operator">=</span> StateNormal) {
+         setPreviousInputPos(inputPosition());
+         setInputPosition(mousePos);
+         handleAxisDragging();
+     } <span class="keyword">else</span> {
+         <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span><span class="operator">::</span>mouseMoveEvent(event<span class="operator">,</span> mousePos);
+     }
+ }
+
+ <span class="type">void</span> CustomInputHandler<span class="operator">::</span>mouseReleaseEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> <span class="operator">&amp;</span>mousePos)
+ {
+     <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span><span class="operator">::</span>mouseReleaseEvent(event<span class="operator">,</span> mousePos);
+     m_mousePressed <span class="operator">=</span> <span class="keyword">false</span>;
+     m_state <span class="operator">=</span> StateNormal;
+ }
+
+ <span class="type">void</span> CustomInputHandler<span class="operator">::</span>handleElementSelected(QAbstract3DGraph<span class="operator">::</span>ElementType type)
+ {
+     <span class="keyword">switch</span> (type) {
+     <span class="keyword">case</span> QAbstract3DGraph<span class="operator">::</span>ElementAxisXLabel:
+         m_state <span class="operator">=</span> StateDraggingX;
+         <span class="keyword">break</span>;
+     <span class="keyword">case</span> QAbstract3DGraph<span class="operator">::</span>ElementAxisZLabel:
+         m_state <span class="operator">=</span> StateDraggingZ;
+         <span class="keyword">break</span>;
+     <span class="keyword">default</span>:
+         m_state <span class="operator">=</span> StateNormal;
+         <span class="keyword">break</span>;
+     }
+ }
+
+ <span class="type">void</span> CustomInputHandler<span class="operator">::</span>handleAxisDragging()
+ {
+     <span class="type">float</span> distance <span class="operator">=</span> <span class="number">0.f</span>;
+
+     <span class="comment">// Get scene orientation from active camera</span>
+     <span class="type">float</span> xRotation <span class="operator">=</span> scene()<span class="operator">-</span><span class="operator">&gt;</span>activeCamera()<span class="operator">-</span><span class="operator">&gt;</span>xRotation();
+
+     <span class="comment">// Calculate directional drag multipliers based on rotation</span>
+     <span class="type">float</span> xMulX <span class="operator">=</span> <a href="../qtcore/qtmath.html#qCos" translate="no">qCos</a>(qDegreesToRadians(xRotation));
+     <span class="type">float</span> xMulY <span class="operator">=</span> <a href="../qtcore/qtmath.html#qSin" translate="no">qSin</a>(qDegreesToRadians(xRotation));
+     <span class="type">float</span> zMulX <span class="operator">=</span> <a href="../qtcore/qtmath.html#qSin" translate="no">qSin</a>(qDegreesToRadians(xRotation));
+     <span class="type">float</span> zMulY <span class="operator">=</span> <a href="../qtcore/qtmath.html#qCos" translate="no">qCos</a>(qDegreesToRadians(xRotation));
+
+     <span class="comment">// Get the drag amount</span>
+     <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> move <span class="operator">=</span> inputPosition() <span class="operator">-</span> previousInputPos();
+
+     <span class="comment">// Adjust axes</span>
+     <span class="keyword">switch</span> (m_state) {
+     <span class="keyword">case</span> StateDraggingX:
+         distance <span class="operator">=</span> (move<span class="operator">.</span>x() <span class="operator">*</span> xMulX <span class="operator">-</span> move<span class="operator">.</span>y() <span class="operator">*</span> xMulY) <span class="operator">*</span> m_speedModifier;
+         m_axisXMinValue <span class="operator">-</span><span class="operator">=</span> distance;
+         m_axisXMaxValue <span class="operator">-</span><span class="operator">=</span> distance;
+         <span class="keyword">if</span> (m_axisXMinValue <span class="operator">&lt;</span> m_areaMinValue) {
+             <span class="type">float</span> dist <span class="operator">=</span> m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue;
+             m_axisXMinValue <span class="operator">=</span> m_areaMinValue;
+             m_axisXMaxValue <span class="operator">=</span> m_axisXMinValue <span class="operator">+</span> dist;
+         }
+         <span class="keyword">if</span> (m_axisXMaxValue <span class="operator">&gt;</span> m_areaMaxValue) {
+             <span class="type">float</span> dist <span class="operator">=</span> m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue;
+             m_axisXMaxValue <span class="operator">=</span> m_areaMaxValue;
+             m_axisXMinValue <span class="operator">=</span> m_axisXMaxValue <span class="operator">-</span> dist;
+         }
+         m_axisX<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisXMinValue<span class="operator">,</span> m_axisXMaxValue);
+         <span class="keyword">break</span>;
+     <span class="keyword">case</span> StateDraggingZ:
+         distance <span class="operator">=</span> (move<span class="operator">.</span>x() <span class="operator">*</span> zMulX <span class="operator">+</span> move<span class="operator">.</span>y() <span class="operator">*</span> zMulY) <span class="operator">*</span> m_speedModifier;
+         m_axisZMinValue <span class="operator">+</span><span class="operator">=</span> distance;
+         m_axisZMaxValue <span class="operator">+</span><span class="operator">=</span> distance;
+         <span class="keyword">if</span> (m_axisZMinValue <span class="operator">&lt;</span> m_areaMinValue) {
+             <span class="type">float</span> dist <span class="operator">=</span> m_axisZMaxValue <span class="operator">-</span> m_axisZMinValue;
+             m_axisZMinValue <span class="operator">=</span> m_areaMinValue;
+             m_axisZMaxValue <span class="operator">=</span> m_axisZMinValue <span class="operator">+</span> dist;
+         }
+         <span class="keyword">if</span> (m_axisZMaxValue <span class="operator">&gt;</span> m_areaMaxValue) {
+             <span class="type">float</span> dist <span class="operator">=</span> m_axisZMaxValue <span class="operator">-</span> m_axisZMinValue;
+             m_axisZMaxValue <span class="operator">=</span> m_areaMaxValue;
+             m_axisZMinValue <span class="operator">=</span> m_axisZMaxValue <span class="operator">-</span> dist;
+         }
+         m_axisZ<span class="operator">-</span><span class="operator">&gt;</span>setRange(m_axisZMinValue<span class="operator">,</span> m_axisZMaxValue);
+         <span class="keyword">break</span>;
+     <span class="keyword">default</span>:
+         <span class="keyword">break</span>;
+     }
+ }
+
+ <span class="type">void</span> CustomInputHandler<span class="operator">::</span>checkConstraints()
+ {
+     <span class="keyword">if</span> (m_axisXMinValue <span class="operator">&lt;</span> m_areaMinValue)
+         m_axisXMinValue <span class="operator">=</span> m_areaMinValue;
+     <span class="keyword">if</span> (m_axisXMaxValue <span class="operator">&gt;</span> m_areaMaxValue)
+         m_axisXMaxValue <span class="operator">=</span> m_areaMaxValue;
+     <span class="comment">// Don't allow too much zoom in</span>
+     <span class="keyword">if</span> ((m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue) <span class="operator">&lt;</span> m_axisXMinRange) {
+         <span class="type">float</span> adjust <span class="operator">=</span> (m_axisXMinRange <span class="operator">-</span> (m_axisXMaxValue <span class="operator">-</span> m_axisXMinValue)) <span class="operator">/</span> <span class="number">2.f</span>;
+         m_axisXMinValue <span class="operator">-</span><span class="operator">=</span> adjust;
+         m_axisXMaxValue <span class="operator">+</span><span class="operator">=</span> adjust;
+     }
+
+     <span class="keyword">if</span> (m_axisZMinValue <span class="operator">&lt;</span> m_areaMinValue)
+         m_axisZMinValue <span class="operator">=</span> m_areaMinValue;
+     <span class="keyword">if</span> (m_axisZMaxValue <span class="operator">&gt;</span> m_areaMaxValue)
+         m_axisZMaxValue <span class="operator">=</span> m_areaMaxValue;
+     <span class="comment">// Don't allow too much zoom in</span>
+     <span class="keyword">if</span> ((m_axisZMaxValue <span class="operator">-</span> m_axisZMinValue) <span class="operator">&lt;</span> m_axisZMinRange) {
+         <span class="type">float</span> adjust <span class="operator">=</span> (m_axisZMinRange <span class="operator">-</span> (m_axisZMaxValue <span class="operator">-</span> m_axisZMinValue)) <span class="operator">/</span> <span class="number">2.f</span>;
+         m_axisZMinValue <span class="operator">-</span><span class="operator">=</span> adjust;
+         m_axisZMaxValue <span class="operator">+</span><span class="operator">=</span> adjust;
+     }
+ }
+</pre>

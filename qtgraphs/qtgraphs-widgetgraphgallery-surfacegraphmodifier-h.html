@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef SURFACEGRAPHMODIFIER_H</span>
+ <span class="preprocessor">#define SURFACEGRAPHMODIFIER_H</span>
+
+ <span class="preprocessor">#include &lt;QtGraphs/q3dsurface.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qsurfacedataproxy.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qheightmapsurfacedataproxy.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qsurface3dseries.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qcustom3ditem.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/qcustom3dlabel.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGraphs/q3dinputhandler.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qslider.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qlabel.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/qpropertyanimation.h&gt;</span>
+
+ <span class="keyword">class</span> TopographicSeries;
+ <span class="keyword">class</span> HighlightSeries;
+ <span class="keyword">class</span> CustomInputHandler;
+
+ <span class="keyword">class</span> SurfaceGraphModifier : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+ <span class="keyword">public</span>:
+     <span class="keyword">explicit</span> SurfaceGraphModifier(<span class="type"><a href="q3dsurface.html" translate="no">Q3DSurface</a></span> <span class="operator">*</span>surface<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>label<span class="operator">,</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>parent);
+     <span class="operator">~</span>SurfaceGraphModifier();
+
+     <span class="type">void</span> toggleModeNone() { m_graph<span class="operator">-</span><span class="operator">&gt;</span>setSelectionMode(QAbstract3DGraph<span class="operator">::</span>SelectionNone); }
+     <span class="type">void</span> toggleModeItem() { m_graph<span class="operator">-</span><span class="operator">&gt;</span>setSelectionMode(QAbstract3DGraph<span class="operator">::</span>SelectionItem); }
+     <span class="type">void</span> toggleModeSliceRow() { m_graph<span class="operator">-</span><span class="operator">&gt;</span>setSelectionMode(QAbstract3DGraph<span class="operator">::</span>SelectionItemAndRow
+                                                           <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionSlice
+                                                           <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionMultiSeries); }
+     <span class="type">void</span> toggleModeSliceColumn() { m_graph<span class="operator">-</span><span class="operator">&gt;</span>setSelectionMode(QAbstract3DGraph<span class="operator">::</span>SelectionItemAndColumn
+                                                              <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionSlice
+                                                              <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionMultiSeries); }
+
+     <span class="type">void</span> setBlackToYellowGradient();
+     <span class="type">void</span> setGreenToRedGradient();
+
+     <span class="type">void</span> setAxisMinSliderX(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>slider) { m_axisMinSliderX <span class="operator">=</span> slider; }
+     <span class="type">void</span> setAxisMaxSliderX(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>slider) { m_axisMaxSliderX <span class="operator">=</span> slider; }
+     <span class="type">void</span> setAxisMinSliderZ(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>slider) { m_axisMinSliderZ <span class="operator">=</span> slider; }
+     <span class="type">void</span> setAxisMaxSliderZ(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>slider) { m_axisMaxSliderZ <span class="operator">=</span> slider; }
+
+     <span class="type">void</span> adjustXMin(<span class="type">int</span> min);
+     <span class="type">void</span> adjustXMax(<span class="type">int</span> max);
+     <span class="type">void</span> adjustZMin(<span class="type">int</span> min);
+     <span class="type">void</span> adjustZMax(<span class="type">int</span> max);
+
+ <span class="keyword">public</span> Q_SLOTS:
+     <span class="type">void</span> enableSqrtSinModel(<span class="type">bool</span> enable);
+     <span class="type">void</span> enableHeightMapModel(<span class="type">bool</span> enable);
+     <span class="type">void</span> enableTopographyModel(<span class="type">bool</span> enable);
+
+     <span class="type">void</span> toggleItemOne(<span class="type">bool</span> show);
+     <span class="type">void</span> toggleItemTwo(<span class="type">bool</span> show);
+     <span class="type">void</span> toggleItemThree(<span class="type">bool</span> show);
+     <span class="type">void</span> toggleSeeThrough(<span class="type">bool</span> seethrough);
+     <span class="type">void</span> toggleOilHighlight(<span class="type">bool</span> highlight);
+     <span class="type">void</span> toggleShadows(<span class="type">bool</span> shadows);
+     <span class="type">void</span> toggleSurfaceTexture(<span class="type">bool</span> enable);
+
+ <span class="keyword">private</span>:
+     <span class="type">void</span> setAxisXRange(<span class="type">float</span> min<span class="operator">,</span> <span class="type">float</span> max);
+     <span class="type">void</span> setAxisZRange(<span class="type">float</span> min<span class="operator">,</span> <span class="type">float</span> max);
+     <span class="type">void</span> fillSqrtSinProxy();
+     <span class="type">void</span> handleElementSelected(QAbstract3DGraph<span class="operator">::</span>ElementType type);
+     <span class="type">void</span> resetSelection();
+
+ <span class="keyword">private</span>:
+     <span class="type"><a href="q3dsurface.html" translate="no">Q3DSurface</a></span> <span class="operator">*</span>m_graph <span class="operator">=</span> nullptr;
+     <span class="type"><a href="qsurfacedataproxy.html" translate="no">QSurfaceDataProxy</a></span> <span class="operator">*</span>m_sqrtSinProxy <span class="operator">=</span> nullptr;
+     QSurface3DSeries <span class="operator">*</span>m_sqrtSinSeries <span class="operator">=</span> nullptr;
+     <span class="type"><a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a></span> <span class="operator">*</span>m_heightMapProxyOne <span class="operator">=</span> nullptr;
+     <span class="type"><a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a></span> <span class="operator">*</span>m_heightMapProxyTwo <span class="operator">=</span> nullptr;
+     <span class="type"><a href="qheightmapsurfacedataproxy.html" translate="no">QHeightMapSurfaceDataProxy</a></span> <span class="operator">*</span>m_heightMapProxyThree <span class="operator">=</span> nullptr;
+     QSurface3DSeries <span class="operator">*</span>m_heightMapSeriesOne <span class="operator">=</span> nullptr;
+     QSurface3DSeries <span class="operator">*</span>m_heightMapSeriesTwo <span class="operator">=</span> nullptr;
+     QSurface3DSeries <span class="operator">*</span>m_heightMapSeriesThree <span class="operator">=</span> nullptr;
+
+     <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>m_axisMinSliderX <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>m_axisMaxSliderX <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>m_axisMinSliderZ <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span> <span class="operator">*</span>m_axisMaxSliderZ <span class="operator">=</span> nullptr;
+     <span class="type">float</span> m_rangeMinX <span class="operator">=</span> <span class="number">0.f</span>;
+     <span class="type">float</span> m_rangeMinZ <span class="operator">=</span> <span class="number">0.f</span>;
+     <span class="type">float</span> m_stepX <span class="operator">=</span> <span class="number">0.f</span>;
+     <span class="type">float</span> m_stepZ <span class="operator">=</span> <span class="number">0.f</span>;
+     <span class="type">int</span> m_heightMapWidth <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> m_heightMapHeight <span class="operator">=</span> <span class="number">0</span>;
+
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>m_textField <span class="operator">=</span> nullptr;
+     <span class="type"><a href="../qtcore/qpropertyanimation.html" translate="no">QPropertyAnimation</a></span> <span class="operator">*</span>m_selectionAnimation <span class="operator">=</span> nullptr;
+     QCustom3DLabel <span class="operator">*</span>m_titleLabel <span class="operator">=</span> nullptr;
+     QCustom3DItem <span class="operator">*</span>m_previouslyAnimatedItem <span class="operator">=</span> nullptr;
+     QVector3D m_previousScaling <span class="operator">=</span> {};
+
+     TopographicSeries <span class="operator">*</span>m_topography <span class="operator">=</span> nullptr;
+     HighlightSeries <span class="operator">*</span>m_highlight <span class="operator">=</span> nullptr;
+     <span class="type">int</span> m_highlightWidth <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type">int</span> m_highlightHeight <span class="operator">=</span> <span class="number">0</span>;
+
+     CustomInputHandler <span class="operator">*</span>m_customInputHandler <span class="operator">=</span> nullptr;
+     <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span> <span class="operator">*</span>m_defaultInputHandler <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="q3dinputhandler.html" translate="no">Q3DInputHandler</a></span>();
+ };
+
+ <span class="preprocessor">#endif // SURFACEGRAPHMODIFIER_H</span>
+</pre>

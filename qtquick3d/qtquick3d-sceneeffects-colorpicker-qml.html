@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-sceneeffects.qdoc -->
+  <meta name="description" content="Demonstrates the use of ExtendedSceneEnvironment.">
+  <title>Qt Quick 3D - Scene Effects Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Scene Effects Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Scene Effects Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2022 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">colorPicker</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">isHovered</span>: <span class="number">false</span>
+     property <span class="type">alias</span> <span class="name">color</span>: <span class="name">root</span>.<span class="name">color</span>
+
+     <span class="name">width</span>: <span class="number">100</span>
+     <span class="name">height</span>: <span class="number">26</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         <span class="name">id</span>: <span class="name">border</span>
+         <span class="name">color</span>: <span class="string">&quot;transparent&quot;</span>
+         <span class="name">border</span>.width: <span class="number">2</span>
+         <span class="name">border</span>.color: <span class="name">colorPicker</span>.<span class="name">isHovered</span> ? <span class="name">palette</span>.<span class="name">dark</span> : <span class="name">palette</span>.<span class="name">alternateBase</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">anchors</span>.margins: <span class="number">4</span>
+             <span class="name">source</span>: <span class="string">&quot;qrc:/images/grid_8x8.png&quot;</span>
+             <span class="name">fillMode</span>: <span class="name">Image</span>.<span class="name">Tile</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">anchors</span>.margins: <span class="number">4</span>
+             <span class="name">color</span>: <span class="name">colorPicker</span>.<span class="name">color</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">hoverEnabled</span>: <span class="number">true</span>
+             <span class="name">onEntered</span>: <span class="name">colorPicker</span>.<span class="name">isHovered</span> <span class="operator">=</span> <span class="number">true</span>
+             <span class="name">onExited</span>: <span class="name">colorPicker</span>.<span class="name">isHovered</span> <span class="operator">=</span> <span class="number">false</span>
+             <span class="name">onClicked</span>: {
+                 <span class="name">colorPickerPopup</span>.<span class="name">open</span>()
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-dialog.html" translate="no">Dialog</a></span> {
+         <span class="name">id</span>: <span class="name">colorPickerPopup</span>
+         <span class="name">title</span>: <span class="string">&quot;Color Picker&quot;</span>
+
+         <span class="name">anchors</span>.centerIn: <span class="name">Overlay</span>.<span class="name">overlay</span>
+         <span class="name">modal</span>: <span class="number">true</span>
+         <span class="name">focus</span>: <span class="number">true</span>
+         <span class="name">closePolicy</span>: <span class="name">Popup</span>.<span class="name">CloseOnEscape</span> <span class="operator">|</span> <span class="name">Popup</span>.<span class="name">CloseOnPressOutsideParent</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+             <span class="name">id</span>: <span class="name">root</span>
+             property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">color</span>: <span class="string">&quot;red&quot;</span>
+             <span class="name">spacing</span>: <span class="number">0</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+                 <span class="name">implicitWidth</span>: <span class="number">135</span>
+                 <span class="name">implicitHeight</span>: <span class="number">135</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-shadereffect.html" translate="no">ShaderEffect</a></span> {
+                     <span class="name">id</span>: <span class="name">hsvWheel</span>
+                     <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+                     <span class="name">blending</span>: <span class="number">true</span>
+                     <span class="name">width</span>: <span class="number">128</span>
+                     <span class="name">height</span>: <span class="number">128</span>
+                     property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">value</span>: <span class="number">1.0</span>
+
+                     <span class="name">fragmentShader</span>: <span class="string">&quot;qrc:/shaders/huesaturation.frag.qsb&quot;</span>
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+                         <span class="name">id</span>: <span class="name">reticule</span>
+
+                         <span class="keyword">function </span><span class="name">reflectColor</span>(hue, saturation) {
+                             let angleDegrees = <span class="name">hue</span> <span class="operator">*</span> <span class="number">360</span>
+                             <span class="keyword">if</span> (<span class="name">angleDegrees</span> <span class="operator">&gt;</span> <span class="number">180</span>)
+                                 <span class="name">angleDegrees</span> <span class="operator">=</span> <span class="name">angleDegrees</span> <span class="operator">-</span> <span class="number">360</span>
+                             let angleRadians = <span class="name">angleDegrees</span> <span class="operator">*</span> (<span class="name">Math</span>.<span class="name">PI</span> <span class="operator">/</span> <span class="number">180</span>)
+                             let vector = <span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="name">Math</span>.<span class="name">cos</span>(<span class="name">angleRadians</span>), <span class="name">Math</span>.<span class="name">sin</span>(<span class="name">angleRadians</span>)).<span class="name">normalized</span>().<span class="name">times</span>(<span class="number">0.5</span>).<span class="name">times</span>(<span class="name">saturation</span>)
+                             <span class="name">vector</span> <span class="operator">=</span> <span class="name">vector</span>.<span class="name">plus</span>(<span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="number">0.5</span>, <span class="number">0.5</span>))
+                             <span class="name">reticule</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">vector</span>.<span class="name">x</span> <span class="operator">*</span> <span class="name">hsvWheel</span>.<span class="name">width</span>
+                             <span class="name">reticule</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">vector</span>.<span class="name">y</span> <span class="operator">*</span> <span class="name">hsvWheel</span>.<span class="name">width</span>
+                         }
+
+                         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+                             <span class="name">x</span>: -<span class="number">5</span>
+                             <span class="name">y</span>: -<span class="number">5</span>
+                             <span class="name">width</span>: <span class="number">10</span>
+                             <span class="name">height</span>: <span class="number">10</span>
+                             <span class="name">radius</span>: <span class="number">5</span>
+                             <span class="name">color</span>: <span class="string">&quot;transparent&quot;</span>
+                             <span class="name">border</span>.width: <span class="number">1</span>
+                             <span class="name">border</span>.color: <span class="string">&quot;black&quot;</span>
+
+                             <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+                                 <span class="name">x</span>: <span class="number">0.5</span>
+                                 <span class="name">y</span>: <span class="number">0.5</span>
+                                 <span class="name">width</span>: <span class="number">9</span>
+                                 <span class="name">height</span>: <span class="number">9</span>
+                                 <span class="name">radius</span>: <span class="number">4.5</span>
+                                 <span class="name">color</span>: <span class="name">root</span>.<span class="name">color</span>
+                                 <span class="name">border</span>.width: <span class="number">1</span>
+                                 <span class="name">border</span>.color: <span class="string">&quot;white&quot;</span>
+                             }
+                         }
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+                         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+                         <span class="keyword">function </span><span class="name">handleMouseMove</span>(x, y, width) {
+                             let normalizedX = <span class="name">x</span> <span class="operator">/</span> <span class="name">width</span> <span class="operator">-</span> <span class="number">0.5</span>;
+                             let normalizedY = <span class="name">y</span> <span class="operator">/</span> <span class="name">width</span> <span class="operator">-</span> <span class="number">0.5</span>;
+                             let angle = <span class="name">Math</span>.<span class="name">atan2</span>(<span class="name">normalizedY</span>, <span class="name">normalizedX</span>);
+                             let toCenter = <span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="name">normalizedX</span>, <span class="name">normalizedY</span>);
+                             let radius = <span class="name">toCenter</span>.<span class="name">length</span>() <span class="operator">*</span> <span class="number">2.0</span>;
+                             let degrees = <span class="name">angle</span> <span class="operator">*</span> (<span class="number">180</span> <span class="operator">/</span> <span class="name">Math</span>.<span class="name">PI</span>)
+                             <span class="keyword">if</span> (<span class="name">degrees</span> <span class="operator">&lt;</span> <span class="number">0</span>)
+                                 <span class="name">degrees</span> <span class="operator">=</span> <span class="number">360</span> <span class="operator">+</span> <span class="name">degrees</span>
+                             let hue = <span class="name">degrees</span> <span class="operator">/</span> <span class="number">360</span>
+
+                             <span class="name">root</span>.<span class="name">color</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">hsva</span>(<span class="name">hue</span>, <span class="name">radius</span>, <span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvValue</span>, <span class="name">root</span>.<span class="name">color</span>.<span class="name">a</span>)
+
+                             <span class="keyword">if</span> (<span class="name">radius</span> <span class="operator">&lt;=</span> <span class="number">1.0</span>)
+                                 <span class="keyword">return</span> <span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="name">x</span>, <span class="name">y</span>)
+                             <span class="comment">// Limit to radius of 1.0</span>
+                             <span class="name">toCenter</span> <span class="operator">=</span> <span class="name">toCenter</span>.<span class="name">normalized</span>();
+                             let halfWidth = <span class="name">width</span> <span class="operator">*</span> <span class="number">0.5</span>;
+                             let newX = <span class="name">halfWidth</span> <span class="operator">*</span> <span class="name">toCenter</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">halfWidth</span>
+                             let newY = <span class="name">halfWidth</span> <span class="operator">*</span> <span class="name">toCenter</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">halfWidth</span>
+                             <span class="keyword">return</span> <span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="name">newX</span>, <span class="name">newY</span>)
+                         }
+
+                         <span class="name">onPositionChanged</span>: (<span class="keyword"></span>mouse) =&gt; {
+                                                let pos = <span class="name">handleMouseMove</span>(<span class="name">mouse</span>.<span class="name">x</span>, <span class="name">mouse</span>.<span class="name">y</span>, <span class="name">hsvWheel</span>.<span class="name">width</span>)
+                                                <span class="name">reticule</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">pos</span>.<span class="name">x</span>;
+                                                <span class="name">reticule</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">pos</span>.<span class="name">y</span>;
+                                            }
+                     }
+                 }
+             }
+
+             <span class="name">Component</span>.onCompleted: {
+                 <span class="name">updateColorSections</span>()
+                 <span class="name">reticule</span>.<span class="name">reflectColor</span>(<span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvHue</span>, <span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvSaturation</span>)
+             }
+
+             <span class="type"><a href="../qtqml/qml-qtqml-connections.html" translate="no">Connections</a></span> {
+                 <span class="name">target</span>: <span class="name">root</span>
+                 <span class="keyword">function </span><span class="name">onColorChanged</span>() {
+                     <span class="name">root</span>.<span class="name">updateColorSections</span>()
+                 }
+             }
+
+             <span class="keyword">function </span><span class="name">updateColorSections</span>() {
+                 <span class="name">rgbSection</span>.<span class="name">redValue</span> <span class="operator">=</span> <span class="name">root</span>.<span class="name">color</span>.<span class="name">r</span> <span class="operator">*</span> <span class="number">255</span>
+                 <span class="name">rgbSection</span>.<span class="name">greenValue</span> <span class="operator">=</span> <span class="name">root</span>.<span class="name">color</span>.<span class="name">g</span> <span class="operator">*</span> <span class="number">255</span>
+                 <span class="name">rgbSection</span>.<span class="name">blueValue</span> <span class="operator">=</span> <span class="name">root</span>.<span class="name">color</span>.<span class="name">b</span> <span class="operator">*</span> <span class="number">255</span>
+                 <span class="name">hsvSection</span>.<span class="name">hueValue</span> <span class="operator">=</span> <span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvHue</span> <span class="operator">*</span> <span class="number">360</span>
+                 <span class="name">hsvSection</span>.<span class="name">saturationValue</span> <span class="operator">=</span> <span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvSaturation</span> <span class="operator">*</span> <span class="number">100</span>
+                 <span class="name">hsvSection</span>.<span class="name">valueValue</span> <span class="operator">=</span> <span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvValue</span>  <span class="operator">*</span> <span class="number">100</span>
+                 <span class="name">alphaSection</span>.<span class="name">alphaValue</span> <span class="operator">=</span> <span class="name">root</span>.<span class="name">color</span>.<span class="name">a</span> <span class="operator">*</span> <span class="number">255</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+                 <span class="name">implicitWidth</span>: <span class="number">250</span>
+                 <span class="type">SectionLayout</span> {
+                     <span class="name">title</span>: <span class="string">&quot;RGB&quot;</span>
+                     <span class="name">id</span>: <span class="name">rgbSection</span>
+                     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">redValue</span>: <span class="number">0</span>
+                     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">greenValue</span>: <span class="number">0</span>
+                     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">blueValue</span>: <span class="number">0</span>
+
+                     <span class="keyword">function </span><span class="name">updateRGB</span>() {
+                         <span class="name">root</span>.<span class="name">color</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="name">redValue</span> <span class="operator">/</span> <span class="number">255</span>, <span class="name">greenValue</span> <span class="operator">/</span> <span class="number">255</span>, <span class="name">blueValue</span> <span class="operator">/</span> <span class="number">255</span>, <span class="name">alphaSection</span>.<span class="name">alphaValue</span> <span class="operator">/</span> <span class="number">255</span>)
+                         <span class="name">reticule</span>.<span class="name">reflectColor</span>(<span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvHue</span>, <span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvSaturation</span>)
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;R:&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">redSlider</span>
+                             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">255</span>
+                             <span class="name">value</span>: <span class="name">rgbSection</span>.<span class="name">redValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">rgbSection</span>.<span class="name">redValue</span>) {
+                                     <span class="name">rgbSection</span>.<span class="name">redValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">rgbSection</span>.<span class="name">updateRGB</span>()
+                                 }
+                             }
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-spinbox.html" translate="no">SpinBox</a></span> {
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">255</span>
+                             <span class="name">value</span>: <span class="name">rgbSection</span>.<span class="name">redValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">rgbSection</span>.<span class="name">redValue</span>) {
+                                     <span class="name">rgbSection</span>.<span class="name">redValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">rgbSection</span>.<span class="name">updateRGB</span>()
+                                 }
+                             }
+                         }
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;G:&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">greenSlider</span>
+                             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">255</span>
+                             <span class="name">value</span>: <span class="name">rgbSection</span>.<span class="name">greenValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">rgbSection</span>.<span class="name">greenValue</span>) {
+                                     <span class="name">rgbSection</span>.<span class="name">greenValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">rgbSection</span>.<span class="name">updateRGB</span>()
+                                 }
+                             }
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-spinbox.html" translate="no">SpinBox</a></span> {
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">255</span>
+                             <span class="name">value</span>: <span class="name">rgbSection</span>.<span class="name">greenValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">rgbSection</span>.<span class="name">greenValue</span>) {
+                                     <span class="name">rgbSection</span>.<span class="name">greenValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">rgbSection</span>.<span class="name">updateRGB</span>()
+                                 }
+                             }
+                         }
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;B:&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">blueSlider</span>
+                             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">255</span>
+                             <span class="name">value</span>: <span class="name">rgbSection</span>.<span class="name">blueValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">rgbSection</span>.<span class="name">blueValue</span>) {
+                                     <span class="name">rgbSection</span>.<span class="name">blueValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">rgbSection</span>.<span class="name">updateRGB</span>()
+                                 }
+                             }
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-spinbox.html" translate="no">SpinBox</a></span> {
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">255</span>
+                             <span class="name">value</span>: <span class="name">rgbSection</span>.<span class="name">blueValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">rgbSection</span>.<span class="name">blueValue</span>) {
+                                     <span class="name">rgbSection</span>.<span class="name">blueValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">rgbSection</span>.<span class="name">updateRGB</span>()
+                                 }
+                             }
+                         }
+                     }
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;Hex:&quot;</span>
+                             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                             <span class="name">id</span>: <span class="name">hexTextField</span>
+                             <span class="name">maximumLength</span>: <span class="number">6</span>
+                             <span class="name">implicitWidth</span>: <span class="number">75</span>
+
+                             <span class="keyword">function </span><span class="name">updateText</span>() {
+                                 <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                     <span class="keyword">return</span>
+
+                                 let redText = <span class="name">rgbSection</span>.<span class="name">redValue</span>.<span class="name">toString</span>(<span class="number">16</span>).<span class="name">toUpperCase</span>()
+                                 let greenText = <span class="name">rgbSection</span>.<span class="name">greenValue</span>.<span class="name">toString</span>(<span class="number">16</span>).<span class="name">toUpperCase</span>()
+                                 let blueText = <span class="name">rgbSection</span>.<span class="name">blueValue</span>.<span class="name">toString</span>(<span class="number">16</span>).<span class="name">toUpperCase</span>()
+                                 <span class="keyword">if</span> (<span class="name">redText</span>.<span class="name">length</span> <span class="operator">==</span> <span class="number">1</span>)
+                                     <span class="name">redText</span> <span class="operator">=</span> <span class="string">&quot;0&quot;</span> <span class="operator">+</span> <span class="name">redText</span>
+                                 <span class="keyword">if</span> (<span class="name">greenText</span>.<span class="name">length</span> <span class="operator">==</span> <span class="number">1</span>)
+                                     <span class="name">greenText</span> <span class="operator">=</span> <span class="string">&quot;0&quot;</span> <span class="operator">+</span> <span class="name">greenText</span>
+                                 <span class="keyword">if</span> (<span class="name">blueText</span>.<span class="name">length</span> <span class="operator">==</span> <span class="number">1</span>)
+                                     <span class="name">blueText</span> <span class="operator">=</span> <span class="string">&quot;0&quot;</span> <span class="operator">+</span> <span class="name">blueText</span>
+                                 <span class="name">text</span> <span class="operator">=</span> <span class="name">redText</span> <span class="operator">+</span> <span class="name">greenText</span> <span class="operator">+</span> <span class="name">blueText</span>;
+                             }
+
+                             <span class="keyword">function </span><span class="name">expandText</span>(text) {
+                                 let newText = <span class="name">text</span>.<span class="name">toUpperCase</span>()
+                                 let expandLength = <span class="number">6</span> <span class="operator">-</span> <span class="name">newText</span>.<span class="name">length</span>
+                                 <span class="keyword">for</span> (let i = 0; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">expandLength</span>; ++<span class="name">i</span>)
+                                     <span class="name">newText</span> <span class="operator">=</span> <span class="string">&quot;0&quot;</span> <span class="operator">+</span> <span class="name">newText</span>
+                                 <span class="keyword">return</span> <span class="name">newText</span>
+                             }
+
+                             <span class="name">Component</span>.onCompleted: <span class="name">updateText</span>()
+                             <span class="name">validator</span>: <span class="name">RegularExpressionValidator</span> {
+                                 <span class="name">regularExpression</span>: /^[0-9A-Fa-f]{0,6}$/
+                             }
+                             <span class="name">onTextChanged</span>: {
+                                 <span class="keyword">if</span> (!<span class="name">acceptableInput</span>)
+                                     <span class="keyword">return</span>;
+                                 let colorText = <span class="name">expandText</span>(<span class="name">text</span>)
+                                 <span class="name">rgbSection</span>.<span class="name">redValue</span> <span class="operator">=</span> <span class="name">parseInt</span>(<span class="name">colorText</span>.<span class="name">substr</span>(<span class="number">0</span>, <span class="number">2</span>), <span class="number">16</span>)
+                                 <span class="name">rgbSection</span>.<span class="name">greenValue</span> <span class="operator">=</span> <span class="name">parseInt</span>(<span class="name">colorText</span>.<span class="name">substr</span>(<span class="number">2</span>, <span class="number">2</span>), <span class="number">16</span>)
+                                 <span class="name">rgbSection</span>.<span class="name">blueValue</span> <span class="operator">=</span> <span class="name">parseInt</span>(<span class="name">colorText</span>.<span class="name">substr</span>(<span class="number">4</span>, <span class="number">2</span>), <span class="number">16</span>)
+                                 <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                     <span class="name">rgbSection</span>.<span class="name">updateRGB</span>()
+                             }
+
+                             <span class="name">onAccepted</span>: {
+                                 <span class="name">text</span> <span class="operator">=</span> <span class="name">expandText</span>(<span class="name">text</span>)
+                             }
+
+                         }
+                         <span class="type"><a href="../qtqml/qml-qtqml-connections.html" translate="no">Connections</a></span> {
+                             <span class="name">target</span>: <span class="name">rgbSection</span>
+                             <span class="keyword">function </span><span class="name">onRedValueChanged</span>() {
+                                 <span class="name">hexTextField</span>.<span class="name">updateText</span>()
+                             }
+                             <span class="keyword">function </span><span class="name">onGreenValueChanged</span>() {
+                                 <span class="name">hexTextField</span>.<span class="name">updateText</span>()
+                             }
+                             <span class="keyword">function </span><span class="name">onBlueValueChanged</span>() {
+                                 <span class="name">hexTextField</span>.<span class="name">updateText</span>()
+                             }
+                         }
+                     }
+                 }
+
+                 <span class="type">SectionLayout</span> {
+                     <span class="name">title</span>: <span class="string">&quot;HSV&quot;</span>
+                     <span class="name">id</span>: <span class="name">hsvSection</span>
+                     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">hueValue</span>: <span class="number">0</span>
+                     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">saturationValue</span>: <span class="number">0</span>
+                     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">valueValue</span>: <span class="number">0</span>
+
+                     <span class="keyword">function </span><span class="name">updateHSV</span>() {
+                         <span class="name">root</span>.<span class="name">color</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">hsva</span>(<span class="name">hueValue</span> <span class="operator">/</span> <span class="number">360</span>, <span class="name">saturationValue</span> <span class="operator">/</span> <span class="number">100</span>, <span class="name">valueValue</span> <span class="operator">/</span> <span class="number">100</span>, <span class="name">alphaSection</span>.<span class="name">alphaValue</span> <span class="operator">/</span> <span class="number">255</span>)
+                         <span class="name">reticule</span>.<span class="name">reflectColor</span>(<span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvHue</span>, <span class="name">root</span>.<span class="name">color</span>.<span class="name">hsvSaturation</span>)
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;H:&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">hueSlider</span>
+                             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">360</span>
+                             <span class="name">value</span>: <span class="name">hsvSection</span>.<span class="name">hueValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">hsvSection</span>.<span class="name">hueValue</span>) {
+                                     <span class="name">hsvSection</span>.<span class="name">hueValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">hsvSection</span>.<span class="name">updateHSV</span>()
+                                 }
+                             }
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-spinbox.html" translate="no">SpinBox</a></span> {
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">360</span>
+                             <span class="name">value</span>: <span class="name">hsvSection</span>.<span class="name">hueValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">hsvSection</span>.<span class="name">hueValue</span>) {
+                                     <span class="name">hsvSection</span>.<span class="name">hueValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">hsvSection</span>.<span class="name">updateHSV</span>()
+                                 }
+                             }
+                         }
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;S:&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">saturationSlider</span>
+                             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">100</span>
+                             <span class="name">value</span>: <span class="name">hsvSection</span>.<span class="name">saturationValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">hsvSection</span>.<span class="name">saturationValue</span>) {
+                                     <span class="name">hsvSection</span>.<span class="name">saturationValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">hsvSection</span>.<span class="name">updateHSV</span>()
+                                 }
+                             }
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-spinbox.html" translate="no">SpinBox</a></span> {
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">100</span>
+                             <span class="name">value</span>: <span class="name">hsvSection</span>.<span class="name">saturationValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">hsvSection</span>.<span class="name">saturationValue</span>) {
+                                     <span class="name">hsvSection</span>.<span class="name">saturationValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">hsvSection</span>.<span class="name">updateHSV</span>()
+                                 }
+                             }
+                         }
+                     }
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;V:&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">valueSlider</span>
+                             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">100</span>
+                             <span class="name">value</span>: <span class="name">hsvSection</span>.<span class="name">valueValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">hsvSection</span>.<span class="name">valueValue</span>) {
+                                     <span class="name">hsvSection</span>.<span class="name">valueValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">hsvSection</span>.<span class="name">updateHSV</span>()
+                                 }
+                             }
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-spinbox.html" translate="no">SpinBox</a></span> {
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">100</span>
+                             <span class="name">value</span>: <span class="name">hsvSection</span>.<span class="name">valueValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">hsvSection</span>.<span class="name">valueValue</span>) {
+                                     <span class="name">hsvSection</span>.<span class="name">valueValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">hsvSection</span>.<span class="name">updateHSV</span>()
+                                 }
+                             }
+                         }
+                     }
+                 }
+
+                 <span class="type">SectionLayout</span> {
+                     <span class="name">title</span>: <span class="string">&quot;Opacity / Alpha&quot;</span>
+                     <span class="name">id</span>: <span class="name">alphaSection</span>
+                     property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">alphaValue</span>: <span class="number">0</span>
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                             <span class="name">text</span>: <span class="string">&quot;V:&quot;</span>
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                             <span class="name">id</span>: <span class="name">alphaSlider</span>
+                             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">255</span>
+                             <span class="name">value</span>: <span class="name">alphaSection</span>.<span class="name">alphaValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">alphaSection</span>.<span class="name">alphaValue</span>) {
+                                     <span class="name">alphaSection</span>.<span class="name">alphaValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">hsvSection</span>.<span class="name">updateHSV</span>()
+                                 }
+                             }
+                         }
+                         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-spinbox.html" translate="no">SpinBox</a></span> {
+                             <span class="name">from</span>: <span class="number">0</span>
+                             <span class="name">to</span>: <span class="number">255</span>
+                             <span class="name">value</span>: <span class="name">alphaSection</span>.<span class="name">alphaValue</span>
+                             <span class="name">onValueChanged</span>: {
+                                 <span class="keyword">if</span> (<span class="name">value</span> <span class="operator">!==</span> <span class="name">alphaSection</span>.<span class="name">alphaValue</span>) {
+                                     <span class="name">alphaSection</span>.<span class="name">alphaValue</span> <span class="operator">=</span> <span class="name">value</span>
+                                     <span class="keyword">if</span> (<span class="name">activeFocus</span>)
+                                         <span class="name">hsvSection</span>.<span class="name">updateHSV</span>()
+                                 }
+                             }
+                         }
+                     }
+                 }
+             }
+         }
+     }
+ }
+</pre>

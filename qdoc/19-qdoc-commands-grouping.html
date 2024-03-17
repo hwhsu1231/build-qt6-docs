@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qdoc-manual-contextcmds.qdoc -->
+  <title>Grouping Things | QDoc Manual 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qdoc-index.html" translate="no">QDoc Manual</a></li>
+<li>Grouping Things</li>
+<li id="buildversion"><a href="qdoc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="18-qdoc-commands-relating.html" />
+  <link rel="next" href="20-qdoc-commands-namingthings.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="18-qdoc-commands-relating.html">Relating Things</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="20-qdoc-commands-namingthings.html">Naming Things</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#commands">Commands</a></li>
+<li class="level2"><a href="#ingroup">\ingroup</a></li>
+<li class="level2"><a href="#inmodule">\inmodule</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Grouping Things</h1>
+<!-- $$$19-qdoc-commands-grouping.html-description -->
+<div class="descr" id="details">
+<p>The grouping commands relate classes to defined groups and modules. The groups are used when generating lists of related classes in the documentation, while the modules are elements of Qt's structure.</p>
+<h2 id="commands">Commands</h2>
+<span id="ingroup-command"></span><h3 id="ingroup">\ingroup</h3>
+<p>The \ingroup command indicates that the given class, page, or other entity belongs to a certain group of related documentation.</p>
+<p>An entity may belong to multiple groups.</p>
+<p>The \ingroup command's argument is a group name, but note that the command considers the rest of the line as part of its argument. Make sure that the group name is followed by a linebreak.</p>
+<pre class="cpp plain" translate="no">
+ /*!
+     \class QDir
+     \brief The QDir class provides access to directory
+            structures and their contents.
+
+     \ingroup io
+     ..&#x2e;
+ */
+</pre>
+<p>This adds the <a href="../qtcore/qdir.html" translate="no">QDir</a> class to the <code translate="no">io</code> group. An entry for <a href="../qtcore/qdir.html" translate="no">QDir</a> will then appear on the list created with, for example, the <a href="12-0-qdoc-commands-miscellaneous.html#annotatedlist-command" translate="no">\annotatedlist</a> command with an argument <code translate="no">io</code>.</p>
+<p>QDoc automatically generates links to associated groups on a C++ class, namespace, or header reference page. For example, given the above documentation for class QDir and the following <a href="13-qdoc-commands-topics.html#group-command" translate="no">\group</a> page:</p>
+<pre class="cpp plain" translate="no">
+ /*
+     \group io
+     \title Input/Output and Networking
+     ..&#x2e;
+ */
+</pre>
+<p>QDoc then outputs a statement on the <a href="../qtcore/qdir.html" translate="no">QDir</a> reference page:</p>
+<blockquote><ul>
+<li>QDir is part of <a href="../qtcore/io.html" translate="no">Input/Output and Networking</a>.</li>
+</ul>
+</blockquote>
+<p>For HTML output, QDoc also generates a link to the group page as part of the navigation bar (breadcrumbs). If multiple \ingroup commands are used, the first one that references a documented \group is selected.</p>
+<p>See also <a href="13-qdoc-commands-topics.html#group-command" translate="no">\group</a>.</p>
+<span id="inmodule-command"></span><h3 id="inmodule">\inmodule</h3>
+<p>The \inmodule command relates a class to the module specified by the command's argument.</p>
+<p>For the basic classes in Qt, a class's module is determined by its location, namely its directory. However, for extensions like ActiveQt and Qt Designer, a class must be related to a module explicitly.</p>
+<p>The command's argument is a module name, but note that the command considers the rest of the line as part of its argument. Make sure that the module name is followed by a linebreak.</p>
+<pre class="cpp" translate="no">
+ <span class="comment">/*!
+     \class QDesignerTaskMenuExtension
+     \inmodule QtDesigner
+ * /
+ </span>
+</pre>
+<p>This ensures that the <a href="../qtdesigner/qdesignertaskmenuextension.html" translate="no">QDesignerTaskMenuExtension</a> class is included in the Qt Designer module, which means, for example, that the class will appear on the list created by calling the <a href="12-0-qdoc-commands-miscellaneous.html#generatelist-command" translate="no">\generatelist</a> command with the <code translate="no">{classesbymodule QtDesigner}</code> argument.</p>
+<p>See also <a href="13-qdoc-commands-topics.html#module-command" translate="no">\module</a> and <a href="12-0-qdoc-commands-miscellaneous.html#generatelist-command" translate="no">\generatelist</a>.</p>
+</div>
+<!-- @@@19-qdoc-commands-grouping.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="18-qdoc-commands-relating.html">Relating Things</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="20-qdoc-commands-namingthings.html">Naming Things</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

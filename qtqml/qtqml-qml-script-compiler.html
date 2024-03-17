@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtqml-qml-script-compiler.qdoc -->
+  <meta name="description" content="A tool to compile functions and expressions in QML.">
+  <title>QML script compiler | Qt QML 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
+<li><a href="qtqml-qtquick-compiler-tech.html" translate="no">Qt Quick Compiler</a></li>
+<li>QML script compiler</li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="qtqml-qml-type-compiler.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="qtqml-qml-type-compiler.html">QML type compiler</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#qmlsc-and-qmlcachegen">qmlsc and qmlcachegen</a></li>
+<li class="level1"><a href="#limitations-when-compiling-javascript-to-c">Limitations when compiling JavaScript to C++</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">QML script compiler</h1>
+<!-- $$$qtqml-qml-script-compiler.html-description -->
+<div class="descr" id="details">
+<p>The QML script compiler compiles functions and expressions in QML and JavaScript files to a byte code that can be interpreted or Just-in-time compiled by the QML engine.</p>
+<p>In addition, it compiles some functions and expressions in QML files into C++ code, within limitations set by the nature of JavaScript. It generates C++ code for functions that can be exhaustively analyzed. The following flow chart explains the compilation workflow.</p>
+<p class="centerAlign"><img src="images/qmlsc-compilation-scheme.png" alt="" /></p><h2 id="qmlsc-and-qmlcachegen">qmlsc and qmlcachegen</h2>
+<p>QML script compiler is available in two versions. One is <i>qmlcachegen</i>, which is a part of the <a href="qtqml-qtquick-compiler-tech.html" translate="no">Qt Quick Compiler</a>. Another one is <i>qmlsc</i>, which is a part of the commercial-only add-on <i>Qt Quick Compiler Extensions</i>.</p>
+<p>The base functionality of the QML script compiler is available in both the <i>qmlsc</i> tool and the <i>qmlcachegen</i> tool. <i>qmlsc</i> can generate more efficient C++ code when run in <i>direct</i> mode. It is enabled by passing <code translate="no">--direct-calls</code> via <code translate="no">QT_QMLCACHEGEN_ARGUMENTS</code> to <a href="qt-add-qml-module.html" translate="no">qt_add_qml_module</a>. In direct mode <i>qmlsc</i> expects that all C++ types used in your QML code can be made available to the generated code by simple C++ include statements. This means you have to link to private Qt APIs by passing Qt::QuickPrivate, Qt::QmlPrivate, etc to link_libraries() in CMake. <i>qmlcachegen</i> does not implement direct mode and ignores the <i>&ndash;direct-calls</i> option. Furthermore, <i>qmlsc</i> accepts a <i>&ndash;static</i> option that you can also pass via <i>QT_QMLCACHEGEN_ARGUMENTS</i> in <a href="qt-add-qml-module.html" translate="no">qt_add_qml_module</a>. In <i>static</i> mode, <i>qmlsc</i> ignores shadowing of properties. This is dangerous if your code actually shadows properties, but allows for more JavaScript code to be compiled to C++. <i>qmlcachegen</i> ignores the <i>&ndash;static</i> option.</p>
+<h2 id="limitations-when-compiling-javascript-to-c">Limitations when compiling JavaScript to C++</h2>
+<p>Many JavaScript constructs cannot be efficiently represented in C++. The QML script compiler skips the C++ code generation for functions that contain such constructs and only generates byte code to be interpreted or run through the Just-in-time compiler. Most common QML expressions are rather simple: value lookups on QObjects, arithmetics, simple if/else or loop constructs. Those can easily be expressed in C++, and doing so makes your application run faster.</p>
+</div>
+<!-- @@@qtqml-qml-script-compiler.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="qtqml-qml-type-compiler.html">QML type compiler</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

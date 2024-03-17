@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- android-openssl-support.qdoc -->
+  <meta name="description" content="How to package OpenSSL libraries with a Qt for Android application.">
+  <title>Adding OpenSSL Support for Android | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Adding OpenSSL Support for Android</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="deployment-android.html" />
+  <link rel="next" href="../qtcore/android-manifest-file-configuration.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="deployment-android.html">Deploying an Application on Android</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="../qtcore/android-manifest-file-configuration.html">Qt Android Manifest File Configuration</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#building-openssl-for-android">Building OpenSSL for Android</a></li>
+<li class="level1"><a href="#using-openssl-libraries-with-qt-for-android">Using OpenSSL Libraries with Qt for Android</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Adding OpenSSL Support for Android</h1>
+<!-- $$$android-openssl-support.html-description -->
+<div class="descr" id="details">
+<p>The Qt installation package comes with OpenSSL support but the OpenSSL libraries are not part of the package due to legal restrictions in some countries. If your application depends on OpenSSL, consider packaging the SSL libraries with your Application Package (APK) as the target device may or may not have them.</p>
+<p>You can use the <a href="../qtnetwork/qsslsocket.html#supportsSsl" translate="no">QSslSocket::supportsSsl</a>() static function to check for SSL support on the target device. First include the header:</p>
+<pre class="cpp" translate="no">
+ <span class="preprocessor">#include &lt;QSslSocket&gt;</span>
+</pre>
+<p>Then use the following line to check if SSL is supported:</p>
+<pre class="cpp" translate="no">
+ <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Device supports OpenSSL: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="type"><a href="../qtnetwork/qsslsocket.html" translate="no">QSslSocket</a></span><span class="operator">::</span>supportsSsl();
+</pre>
+<p>Check Qt Creator's <code translate="no">Application Output</code> section or the Android <code translate="no">logcat</code> for the result.</p>
+<h2 id="building-openssl-for-android">Building OpenSSL for Android</h2>
+<p>A convenient Github repository with a binary and a build script can be used without the need for a manual step-by-step build. For more information, see <a href="https://github.com/KDAB/android_openssl" translate="no">OpenSSL for Android</a>. If you download the repository, you can then skip to <a href="android-openssl-support.html#using-openssl-libraries-with-qt-for-android" translate="no">Using OpenSSL Libraries with Qt for Android</a>.</p>
+<p>The following instructions guide you to build the OpenSSL libraries manually:</p>
+<ol class="1" type="1"><li>Download <a href="http://www.openssl.org/source" translate="no">OpenSSL</a> sources.</li>
+<li>Extract the sources to a folder and navigate to that folder using the CLI.<div class="admonition note">
+<p><b>Note: </b>If your development platform is Windows, you need <code translate="no">msys</code> with <code translate="no">perl</code> v5.14 or later to build OpenSSL.</p>
+</div>
+</li>
+<li>Add the Android LLVM toolchain to your path:<pre class="cpp plain" translate="no">
+ export PATH=&quot;&lt;android_ndk_path&gt;/toolchains/llvm/prebuilt/&lt;host&gt;/bin&quot;:$PATH
+</pre>
+</li>
+<li>Configure the OpenSSL sources to build for Android using the following command:<pre class="cpp plain" translate="no">
+ ./Configure shared android-&lt;arch&gt; -D__ANDROID_API__=XX
+</pre>
+<p>Where:</p>
+<ul>
+<li>&lt;arch&gt; can take a value of: <code translate="no">arm</code>, <code translate="no">arm64</code>, <code translate="no">x86</code>, <code translate="no">x86_64</code>.</li>
+<li><code translate="no">XX</code> is a two-digit number equal to the minimum API level for this Qt version: see <a href="windows.html#supported-configurations" translate="no">Qt for Android support</a>.</li>
+</ul>
+<div class="admonition note">
+<p><b>Note: </b>You must consider enabling or disabling the SSL features based on the legal restrictions in the region where your application is available. For more information about the configurable features, see <a href="http://wiki.openssl.org/index.php/Compilation_and_Installation#Configure_Options" translate="no">OpenSSL Configure Options</a>.</p>
+</div>
+</li>
+<li>Without a suffix, Android loads the system libraries <code translate="no">libcrypto.so</code> and <code translate="no">libssl.so</code>. These may be different versions from your libraries or from what Qt expects. To ensure that Qt apps can load the manually built OpenSSL libraries, run the following commands:<pre class="cpp plain" translate="no">
+ make -j$(nproc) SHLIB_VERSION_NUMBER= build_libs
+
+ cp libcrypto.so &quot;${out_path}/libcrypto_3.so&quot;
+ cp libssl.so &quot;${out_path}/libssl_3.so&quot;
+
+ cd ${out_path}
+ patchelf --set-soname libcrypto_3.so libcrypto_3.so
+ patchelf --set-soname libssl_3.so libssl_3.so
+ patchelf --replace-needed libcrypto.so libcrypto_3.so libssl_3.so
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Though the <code translate="no">libcrypto</code> and <code translate="no">libssl</code> shared libraries that are not versioned, they will have a <i>_3</i> suffix.</p>
+</div>
+<p>Then set the environment variable in your main.cpp file:</p>
+<pre class="cpp" translate="no">
+ qputenv(<span class="string">&quot;ANDROID_OPENSSL_SUFFIX&quot;</span><span class="operator">,</span> <span class="string">&quot;&lt;custom_suffix&gt;&quot;</span>);
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Android does not load versioned libraries.</p>
+</div>
+</li>
+</ol>
+<h2 id="using-openssl-libraries-with-qt-for-android">Using OpenSSL Libraries with Qt for Android</h2>
+<p>Depending on the method you obtained the OpenSSL libraries, you can use one of the following step to include those libraries in your project:</p>
+<ul>
+<li>Using the project files:<p>Using the convenience <a href="https://github.com/KDAB/android_openssl" translate="no">OpenSSL for Android</a> repository, you can directly add the include projects into your own project, by adding the following to your <code translate="no">.pro</code> file:</p>
+<pre class="cpp plain" translate="no">
+ android: include(&lt;path/to/android_openssl/openssl.pri)
+</pre>
+<p>If using CMake, add the following to your <code translate="no">CMakeLists.txt</code>:</p>
+<pre class="cpp plain" translate="no">
+ if (ANDROID)
+     FetchContent_Declare(
+       android_openssl
+       DOWNLOAD_EXTRACT_TIMESTAMP true
+       URL      https://github.com/KDAB/android_openssl/archive/refs/heads/master.zip
+     )
+     FetchContent_MakeAvailable(android_openssl)
+     include(${android_openssl_SOURCE_DIR}/android_openssl.cmake)
+ endif()
+</pre>
+<p><b>Or</b> if you cloned the repository into a subdirectory:</p>
+<pre class="cpp plain" translate="no">
+ include(&lt;path/to/android_openssl&gt;/android_openssl.cmake)
+</pre>
+<p>Then add:</p>
+<pre class="cpp plain" translate="no">
+ qt_add_executable(your_target_name ..)
+ qt_add_executable(your_second_target_name ..)
+
+ if (ANDROID)
+     add_android_openssl_libraries(your_target_name your_second_target_name)
+ endif()
+</pre>
+<p>Alternatively, you can use the following project variable to add extra libraries, such as <code translate="no">libcrypto</code> and <code translate="no">libssl</code>.</p>
+<p>For QMake use:</p>
+<pre class="cpp plain" translate="no">
+ ANDROID_EXTRA_LIBS += \
+     &lt;path_to_libs_dir&gt;/libcrypto_3.so \
+     &lt;path_to_libs_dir&gt;/libssl_3.so
+</pre>
+<p>For CMake:</p>
+<pre class="cpp plain" translate="no">
+ set_property(TARGET &lt;target name&gt; PROPERTY QT_ANDROID_EXTRA_LIBS
+     &lt;path_to_libs_dir&gt;/libcrypto_3.so
+     &lt;path_to_libs_dir&gt;/libssl_3.so)
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>When targeting multiple architectures, include OpenSSL libraries for all the targeted architectures.</p>
+</div>
+</li>
+<li>Using Qt Creator, it is possible to add extra libraries. For more information, see <a href="https://doc.qt.io/qtcreator/creator-project-qmake-libraries.html" translate="no">Qt Creator: Adding Libraries to Projects</a>.</li>
+</ul>
+</div>
+<!-- @@@android-openssl-support.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="deployment-android.html">Deploying an Application on Android</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="../qtcore/android-manifest-file-configuration.html">Qt Android Manifest File Configuration</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- skinning.qdoc -->
+  <meta name="description" content="Demonstrates how to render a simple skinning animation in Qt Quick 3D.">
+  <title>Qt Quick 3D - Simple Skinning Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Simple Skinning Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Simple Skinning Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;skingeometry.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;qmath.h&gt;</span>
+
+ <span class="keyword">struct</span> Vertex {
+     QVector3D position;
+     <span class="type"><a href="../qtcore/qttypes.html#qint32-typedef" translate="no">qint32</a></span> joints<span class="operator">[</span><span class="number">4</span><span class="operator">]</span>;
+     <span class="type">float</span> weights<span class="operator">[</span><span class="number">4</span><span class="operator">]</span>;
+
+     <span class="type">float</span> pad;
+ };
+
+ <span class="keyword">static</span> <span class="keyword">const</span> <span class="type">int</span> s_vertexSize <span class="operator">=</span> <span class="keyword">sizeof</span>(Vertex);
+ Q_STATIC_ASSERT(s_vertexSize <span class="operator">=</span><span class="operator">=</span> <span class="number">48</span>);
+
+ SkinGeometry<span class="operator">::</span>SkinGeometry(QQuick3DObject <span class="operator">*</span>parent)
+     : QQuick3DGeometry(parent)
+ {
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>PositionSemantic<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ComponentType<span class="operator">::</span>F32Type);
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>IndexSemantic<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ComponentType<span class="operator">::</span>U32Type);
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>JointSemantic<span class="operator">,</span> offsetof(Vertex<span class="operator">,</span> joints<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>)<span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ComponentType<span class="operator">::</span>I32Type);
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>WeightSemantic<span class="operator">,</span> offsetof(Vertex<span class="operator">,</span> weights<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>)<span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ComponentType<span class="operator">::</span>F32Type);
+ }
+
+ <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>QVector3D<span class="operator">&gt;</span> SkinGeometry<span class="operator">::</span>positions() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_positions;
+ }
+
+ <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#qint32-typedef" translate="no">qint32</a></span><span class="operator">&gt;</span> SkinGeometry<span class="operator">::</span>joints() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_joints;
+ }
+
+ <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span> SkinGeometry<span class="operator">::</span>weights() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_weights;
+ }
+
+ <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span><span class="operator">&gt;</span> SkinGeometry<span class="operator">::</span>indexes() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_indexes;
+ }
+
+ <span class="type">void</span> SkinGeometry<span class="operator">::</span>setPositions(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span>QVector3D<span class="operator">&gt;</span> <span class="operator">&amp;</span>positions)
+ {
+     <span class="keyword">if</span> (positions <span class="operator">=</span><span class="operator">=</span> m_positions)
+         <span class="keyword">return</span>;
+     m_positions <span class="operator">=</span> positions;
+     <span class="keyword">emit</span> positionsChanged();
+     m_vertexDirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">void</span> SkinGeometry<span class="operator">::</span>setJoints(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#qint32-typedef" translate="no">qint32</a></span><span class="operator">&gt;</span> <span class="operator">&amp;</span>joints)
+ {
+     <span class="keyword">if</span> (joints <span class="operator">=</span><span class="operator">=</span> m_joints)
+         <span class="keyword">return</span>;
+     m_joints <span class="operator">=</span> joints;
+     <span class="keyword">emit</span> jointsChanged();
+     m_vertexDirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">void</span> SkinGeometry<span class="operator">::</span>setWeights(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span> <span class="operator">&amp;</span>weights)
+ {
+     <span class="keyword">if</span> (weights <span class="operator">=</span><span class="operator">=</span> m_weights)
+         <span class="keyword">return</span>;
+     m_weights <span class="operator">=</span> weights;
+     <span class="keyword">emit</span> weightsChanged();
+     m_vertexDirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">void</span> SkinGeometry<span class="operator">::</span>setIndexes(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span><span class="operator">&gt;</span> <span class="operator">&amp;</span>indexes)
+ {
+     <span class="keyword">if</span> (indexes <span class="operator">=</span><span class="operator">=</span> m_indexes)
+         <span class="keyword">return</span>;
+     m_indexes <span class="operator">=</span> indexes;
+     <span class="keyword">emit</span> indexesChanged();
+     m_indexDirty <span class="operator">=</span> <span class="keyword">true</span>;
+ }
+
+ <span class="type">QSSGRenderGraphObject</span> <span class="operator">*</span>SkinGeometry<span class="operator">::</span>updateSpatialNode(<span class="type">QSSGRenderGraphObject</span> <span class="operator">*</span>node)
+ {
+     <span class="keyword">if</span> (m_vertexDirty) {
+         m_vertexDirty <span class="operator">=</span> <span class="keyword">false</span>;
+
+         constexpr <span class="type">float</span> maxFloat <span class="operator">=</span> std<span class="operator">::</span>numeric_limits<span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span><span class="operator">::</span>max();
+         <span class="keyword">auto</span> boundsMin <span class="operator">=</span> QVector3D(maxFloat<span class="operator">,</span> maxFloat<span class="operator">,</span> maxFloat);
+         <span class="keyword">auto</span> boundsMax <span class="operator">=</span> QVector3D(<span class="operator">-</span>maxFloat<span class="operator">,</span> <span class="operator">-</span>maxFloat<span class="operator">,</span> <span class="operator">-</span>maxFloat);
+
+         <span class="keyword">const</span> <span class="type">int</span> numVertexes <span class="operator">=</span> m_positions<span class="operator">.</span>size();
+         m_vertexBuffer<span class="operator">.</span>resize(numVertexes <span class="operator">*</span> s_vertexSize);
+         Vertex <span class="operator">*</span>vert <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span>Vertex <span class="operator">*</span><span class="operator">&gt;</span>(m_vertexBuffer<span class="operator">.</span>data());
+
+         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> numVertexes; <span class="operator">+</span><span class="operator">+</span>i) {
+             Vertex <span class="operator">&amp;</span>v <span class="operator">=</span> vert<span class="operator">[</span>i<span class="operator">]</span>;
+             v<span class="operator">.</span>position <span class="operator">=</span> m_positions<span class="operator">[</span>i<span class="operator">]</span>;
+             <span class="keyword">if</span> (m_joints<span class="operator">.</span>size() <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">4</span> <span class="operator">*</span> (i <span class="operator">+</span> <span class="number">1</span>))
+                 memcpy(v<span class="operator">.</span>joints<span class="operator">,</span> m_joints<span class="operator">.</span>constData() <span class="operator">+</span> <span class="number">4</span> <span class="operator">*</span> i<span class="operator">,</span> <span class="number">4</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type"><a href="../qtcore/qttypes.html#qint32-typedef" translate="no">qint32</a></span>));
+             <span class="keyword">else</span>
+                 v<span class="operator">.</span>joints<span class="operator">[</span><span class="number">0</span><span class="operator">]</span> <span class="operator">=</span> v<span class="operator">.</span>joints<span class="operator">[</span><span class="number">1</span><span class="operator">]</span> <span class="operator">=</span> v<span class="operator">.</span>joints<span class="operator">[</span><span class="number">2</span><span class="operator">]</span> <span class="operator">=</span> v<span class="operator">.</span>joints<span class="operator">[</span><span class="number">3</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">0</span>;
+             <span class="keyword">if</span> (m_weights<span class="operator">.</span>size() <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">4</span> <span class="operator">*</span> (i <span class="operator">+</span> <span class="number">1</span>))
+                 memcpy(v<span class="operator">.</span>weights<span class="operator">,</span> m_weights<span class="operator">.</span>constData() <span class="operator">+</span> <span class="number">4</span> <span class="operator">*</span> i<span class="operator">,</span> <span class="number">4</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>));
+             <span class="keyword">else</span>
+                 v<span class="operator">.</span>weights<span class="operator">[</span><span class="number">0</span><span class="operator">]</span> <span class="operator">=</span> v<span class="operator">.</span>weights<span class="operator">[</span><span class="number">1</span><span class="operator">]</span> <span class="operator">=</span> v<span class="operator">.</span>weights<span class="operator">[</span><span class="number">2</span><span class="operator">]</span> <span class="operator">=</span> v<span class="operator">.</span>weights<span class="operator">[</span><span class="number">3</span><span class="operator">]</span> <span class="operator">=</span> <span class="number">0.0f</span>;
+
+             boundsMin<span class="operator">.</span>setX(std<span class="operator">::</span>min(boundsMin<span class="operator">.</span>x()<span class="operator">,</span> v<span class="operator">.</span>position<span class="operator">.</span>x()));
+             boundsMin<span class="operator">.</span>setY(std<span class="operator">::</span>min(boundsMin<span class="operator">.</span>y()<span class="operator">,</span> v<span class="operator">.</span>position<span class="operator">.</span>y()));
+             boundsMin<span class="operator">.</span>setZ(std<span class="operator">::</span>min(boundsMin<span class="operator">.</span>z()<span class="operator">,</span> v<span class="operator">.</span>position<span class="operator">.</span>z()));
+
+             boundsMax<span class="operator">.</span>setX(std<span class="operator">::</span>max(boundsMax<span class="operator">.</span>x()<span class="operator">,</span> v<span class="operator">.</span>position<span class="operator">.</span>x()));
+             boundsMax<span class="operator">.</span>setY(std<span class="operator">::</span>max(boundsMax<span class="operator">.</span>y()<span class="operator">,</span> v<span class="operator">.</span>position<span class="operator">.</span>y()));
+             boundsMax<span class="operator">.</span>setZ(std<span class="operator">::</span>max(boundsMax<span class="operator">.</span>z()<span class="operator">,</span> v<span class="operator">.</span>position<span class="operator">.</span>z()));
+         }
+
+         setStride(s_vertexSize);
+         setVertexData(m_vertexBuffer);
+         setPrimitiveType(QQuick3DGeometry<span class="operator">::</span>PrimitiveType<span class="operator">::</span>Triangles);
+         setBounds(boundsMin<span class="operator">,</span> boundsMax);
+     }
+
+     <span class="keyword">if</span> (m_indexDirty) {
+         m_indexDirty <span class="operator">=</span> <span class="keyword">false</span>;
+         m_indexBuffer <span class="operator">=</span> <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span>(<span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="type">char</span> <span class="operator">*</span><span class="operator">&gt;</span>(m_indexes<span class="operator">.</span>data())<span class="operator">,</span> m_indexes<span class="operator">.</span>size() <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span>));
+         setIndexData(m_indexBuffer);
+     }
+
+     node <span class="operator">=</span> QQuick3DGeometry<span class="operator">::</span>updateSpatialNode(node);
+     <span class="keyword">return</span> node;
+ }
+</pre>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-principledmaterial.qdoc -->
+  <meta name="description" content="Demonstrates the use of Principled Material.">
+  <title>Qt Quick 3D - Principled Material Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Principled Material Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Principled Material Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+ import QtQuick3D
+
+ <span class="comment">// qmllint disable missing-property</span>
+ <span class="comment">// Disabling missing-property because the targetMaterial property</span>
+ <span class="comment">// will either be a PrincipaledMaterial or SpecularGlossyMaterial</span>
+ <span class="comment">// but the shared properties are not part of the common base class</span>
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-scrollview.html" translate="no">ScrollView</a></span> {
+     <span class="name">id</span>: <span class="name">rootView</span>
+     required property <span class="type"><a href="qml-qtquick3d-material.html" translate="no">Material</a></span> <span class="name">targetMaterial</span>
+     required property <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> <span class="name">view3D</span>
+     <span class="name">ScrollBar</span>.horizontal.policy: <span class="name">ScrollBar</span>.<span class="name">AlwaysOff</span>
+     <span class="name">width</span>: <span class="name">availableWidth</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">width</span>: <span class="name">rootView</span>.<span class="name">availableWidth</span>
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `# Material Details
+ This section describes a series of properties to add additional details to
+ a material. Not every material will need all of these properties, but for
+ specific use cases these details may be exactly what you need.
+ ## Normal
+ The Normal describes the direction a surface is facing. Each vertex of a Model
+ also profiles a normal value to define how each face should be shaded. At this
+ level though the amount of detail a material can provide is limited to the source
+ mesh's level of detail. Using more detailed meshes can be very expensive, so
+ instead a Normal Map texture can be provided to add additional surface details
+ without increasing geometry.
+ ### Normal Map
+ A Normal map is a special kind of texture where directions (normals) are stored
+ as color values. These directions are sampled from the Normal map by the material
+ and combined with the directions of a models geometry to adjust the way light
+ interacts with the material.
+ `
+         }
+         <span class="type">TextureSourceControl</span> {
+             <span class="name">defaultTexture</span>: <span class="string">&quot;maps/metallic/normal.jpg&quot;</span>
+             <span class="name">defaultClearColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">1.0</span>, <span class="number">1.0</span>)
+             <span class="name">stampMode</span>: <span class="number">true</span>
+             <span class="name">stampSource</span>: <span class="string">&quot;maps/normal_stamp.png&quot;</span>
+             <span class="name">onTargetTextureChanged</span>: {
+                 <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">normalMap</span> <span class="operator">=</span> <span class="name">targetTexture</span>
+             }
+         }
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Normal Strength
+ By adjusting the normal strength you will see that the amount of influence the
+ normal map has on the material changes.`
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Normal Strength (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">normalStrength</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">normalStrength</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">normalStrength</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+
+         <span class="type">VerticalSectionSeparator</span> {}
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `## Height
+ In addition to providing a Normal map to give the impression of more geometry
+ it is possible to also provide a height map for give even more depth to a
+ material. This can also be known as a displacement map. Normally there are two
+ approaches to displacement: Tessellation and Parallax Occlusion Mapping. The
+ PrincipledMaterial currently only supports Parallax Occlusion Mapping which
+ means that instead of adding additional geometry based the height map, instead
+ we manipulate the way textures are mapped to the geometry to give the illusion
+ of more depth. And while this approach is much cheaper than Tessellation, it
+ comes with the limitation that it really only works for flat surfaces, and does
+ not change the silhouette of a model (how it looks from the side).
+
+ So for our example, any height map you add will only have the desired effect on
+ the Cube, and only if other textures are present.
+ ### Height Amount
+ This is the amount of displacement that should be applied from the height map.
+ Unlike many of the other fields, it is unlikely that you will want to just set
+ this value to 1.0 (the max).  The amount of displacement needed for a particular
+ material will require some adjustment for taste.  A little bit goes a long way.`
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Height Amount  (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">heightAmount</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">heightAmount</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">heightAmount</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Height Map
+ The Height Map is a greyscale (single channel) texture representing to amount
+ of displacement that should be applied. A black value (0.0) means none, and
+ white (1.0) means the maximum amount, which is determined by the Height Amount
+ property.
+ `
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+             <span class="name">id</span>: <span class="name">heightChannelComboBox</span>
+             <span class="name">textRole</span>: <span class="string">&quot;text&quot;</span>
+             <span class="name">valueRole</span>: <span class="string">&quot;value&quot;</span>
+             <span class="name">implicitContentWidthPolicy</span>: <span class="name">ComboBox</span>.<span class="name">WidestText</span>
+             <span class="name">onActivated</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">heightChannel</span> <span class="operator">=</span> <span class="name">currentValue</span>
+             <span class="name">Component</span>.onCompleted: <span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">indexOfValue</span>(<span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">heightChannel</span>)
+             <span class="name">model</span>: [
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">R</span>, text: <span class="string">&quot;Red Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">G</span>, text: <span class="string">&quot;Green Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">B</span>, text: <span class="string">&quot;Blue Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">A</span>, text: <span class="string">&quot;Alpha Channel&quot;</span>}
+             ]
+         }
+         <span class="type">TextureSourceControl</span> {
+             <span class="name">defaultTexture</span>: <span class="string">&quot;maps/noise.png&quot;</span>
+             <span class="name">defaultClearColor</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">onTargetTextureChanged</span>: {
+                 <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">heightMap</span> <span class="operator">=</span> <span class="name">targetTexture</span>
+             }
+         }
+
+         <span class="type">VerticalSectionSeparator</span> {}
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `## Ambient Occlusion
+ To understand Ambient Occlusion, you must first understand occlusion. Occlusion is
+ about blocking light, or shadowing. If something is occluded it will be unable
+ to receive light, and will appear darker than parts that are un-occluded.
+ But this simplistic occlusion of light only takes into consideration the first reflection
+ of a light on a model. Light will be reflected off surfaces to other surrounding
+ surfaces multiple times. This distinction between the first reflection vs any additional
+ reflections is referred to as direct vs indirect light. Ambient Occlusion is about
+ simulating a behavior of indirect light: when a model has crevasses or corners,
+ light is less likely to be reflected into them, leading them to be darker than more
+ open faces. Realtime renderers like Qt Quick 3D don't tend to model more than the first
+ reflection of light (direct lighting) so baking an ambient occlusion map will provide
+ additional realism to materials.
+ `
+         }
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Ambient Occlusion Map
+ Ambient Occlusion maps are baked in 3D content creation tools for each model
+ using ray tracing. Since all three of our models share the same material, if
+ an appropriate map is applied, it will only look correct for one of the models
+ at a time.  In this case the only model we have to would benefit from an AO map
+ is the monkey, since it is the only one with any details that could self occlude.
+ If you apply the provided texture you will notice the crevasses around the eyes
+ and ears of the monkey model will appear slightly darker.
+ `
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+             <span class="name">id</span>: <span class="name">aoChannelComboBox</span>
+             <span class="name">textRole</span>: <span class="string">&quot;text&quot;</span>
+             <span class="name">valueRole</span>: <span class="string">&quot;value&quot;</span>
+             <span class="name">implicitContentWidthPolicy</span>: <span class="name">ComboBox</span>.<span class="name">WidestText</span>
+             <span class="name">onActivated</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">occlusionChannel</span> <span class="operator">=</span> <span class="name">currentValue</span>
+             <span class="name">Component</span>.onCompleted: <span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">indexOfValue</span>(<span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">occlusionChannel</span>)
+             <span class="name">model</span>: [
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">R</span>, text: <span class="string">&quot;Red Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">G</span>, text: <span class="string">&quot;Green Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">B</span>, text: <span class="string">&quot;Blue Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">A</span>, text: <span class="string">&quot;Alpha Channel&quot;</span>}
+             ]
+         }
+
+         <span class="type">TextureSourceControl</span> {
+             <span class="name">defaultTexture</span>: <span class="string">&quot;maps/monkey_ao.jpg&quot;</span>
+             <span class="name">defaultClearColor</span>: <span class="string">&quot;white&quot;</span>
+             <span class="name">onTargetTextureChanged</span>: {
+                 <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">occlusionMap</span> <span class="operator">=</span> <span class="name">targetTexture</span>
+             }
+         }
+
+         <span class="type">VerticalSectionSeparator</span> {}
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `## Emission
+ The emission properties are about the material's ability to produce its own
+ light. This light does not affect other materials in the scene, but does add
+ energy to the lighting calculations of the material without them coming from
+ an external source.`
+         }
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Emissive Factor
+ In the absence of an Emissive Map, the amount of light a material emits is
+ controlled by the Emissive Factor. Each channel is added as an additional
+ light contribution to the material. So if you set the value of Red to 1.0, then
+ 1.0 of red light will be added to the material's color after all other lighting
+ calculations have been done. These 3 channels are representing the amount of
+ each color that is added, but the property itself is not a color. That is
+ because colors are always clamped to values between 0.0 - 1.0, whereas these
+ factors can be any floating point values. In this example these values are clamped
+ between 0.0 and 1.0, but you can click the *Un-Clamp* button to experiment with
+ values between -1.0 and 2.0. The scene should also look slightly different
+ because some post processing effects are enabled to demonstrate handling color
+ values greater than 1.0.`
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">id</span>: <span class="name">clampEmissionButton</span>
+                 property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">clampEmission</span>: <span class="number">true</span>
+                 <span class="name">text</span>: <span class="name">clampEmission</span> ? <span class="string">&quot;Un-clamp&quot;</span> : <span class="string">&quot;Clamp&quot;</span>
+                 <span class="name">checkable</span>: <span class="number">true</span>
+                 <span class="name">checked</span>: <span class="name">clampEmission</span>
+                 <span class="name">onClicked</span>: {
+                     <span class="name">clampEmission</span> <span class="operator">=</span> !<span class="name">clampEmission</span>
+                     <span class="keyword">if</span> (<span class="name">clampEmission</span>) {
+                         <span class="name">rootView</span>.<span class="name">view3D</span>.<span class="name">environment</span>.<span class="name">tonemapMode</span> <span class="operator">=</span> <span class="name">SceneEnvironment</span>.<span class="name">TonemapModeLinear</span>
+                         <span class="name">rootView</span>.<span class="name">view3D</span>.<span class="name">environment</span>.<span class="name">enableEffects</span> <span class="operator">=</span> <span class="number">false</span>;
+                     } <span class="keyword">else</span> {
+                         <span class="name">rootView</span>.<span class="name">view3D</span>.<span class="name">environment</span>.<span class="name">tonemapMode</span> <span class="operator">=</span> <span class="name">SceneEnvironment</span>.<span class="name">TonemapModeNone</span>
+                         <span class="name">rootView</span>.<span class="name">view3D</span>.<span class="name">environment</span>.<span class="name">enableEffects</span> <span class="operator">=</span> <span class="number">true</span>;
+                     }
+                 }
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;All 0.0&quot;</span>
+                 <span class="name">onClicked</span>: {
+                     <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 }
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;All 1.0&quot;</span>
+                 <span class="name">onClicked</span>: {
+                     <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)
+                 }
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Red (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span>.<span class="name">x</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="name">clampEmissionButton</span>.<span class="name">clampEmission</span> ? <span class="number">0.0</span> : -<span class="number">1.0</span>
+                 <span class="name">to</span>: <span class="name">clampEmissionButton</span>.<span class="name">clampEmission</span> ? <span class="number">1.0</span> : <span class="number">2</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span>.<span class="name">x</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Green (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span>.<span class="name">y</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="name">clampEmissionButton</span>.<span class="name">clampEmission</span> ? <span class="number">0.0</span> : -<span class="number">1.0</span>
+                 <span class="name">to</span>: <span class="name">clampEmissionButton</span>.<span class="name">clampEmission</span> ? <span class="number">1.0</span> : <span class="number">2</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span>.<span class="name">y</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Blue (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span>.<span class="name">z</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="name">clampEmissionButton</span>.<span class="name">clampEmission</span> ? <span class="number">0.0</span> : -<span class="number">1.0</span>
+                 <span class="name">to</span>: <span class="name">clampEmissionButton</span>.<span class="name">clampEmission</span> ? <span class="number">1.0</span> : <span class="number">2</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span>.<span class="name">z</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveFactor</span>.<span class="name">z</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Emissive Map
+ If an Emissive Map is provided, then then the Emissive Factor is used as a
+ multiplier for the color values read from the Emissive Map.  This multiplied
+ value is then added to the materials color value after all other lighting calculations
+ have been preformed.`
+         }
+         <span class="type">TextureSourceControl</span> {
+             <span class="name">defaultTexture</span>: <span class="string">&quot;maps/monkey_ao.jpg&quot;</span>
+             <span class="name">defaultClearColor</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">onTargetTextureChanged</span>: {
+                 <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">emissiveMap</span> <span class="operator">=</span> <span class="name">targetTexture</span>
+             }
+         }
+     }
+ }
+ <span class="comment">// qmllint enable missing-property</span>
+</pre>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qplacecontactdetail.cpp -->
+  <meta name="description" content="The contactDetail type holds a contact detail such as a phone number or a website address.">
+  <title>contactDetail QML Value Type | Qt Location 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtlocation-index.html" translate="no">Qt Location</a></li>
+<li><a href="qtlocation-qmlmodule.html" translate="no">QML Types</a></li>
+<li>contactDetail</li>
+<li id="buildversion"><a href="qtlocation-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+<li class="level2"><a href="#examples">Examples</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">contactDetail QML Value Type</h1>
+<!-- $$$contactDetail-brief -->
+<p>The contactDetail type holds a contact detail such as a phone number or a website address. <a href="#details">More...</a></p>
+<!-- @@@contactDetail -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtLocation 6.6</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> QtLocation 5.5</td></tr></table></div><h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-contactdetail.html#label-prop" translate="no">label</a></b> : string</li>
+<li class="fn" translate="no"><b><a href="qml-contactdetail.html#value-prop" translate="no">value</a></b> : string</li>
+</ul>
+<!-- $$$contactDetail-description -->
+<h2 id="details">Detailed Description</h2>
+<p>The contactDetail provides a single detail on how one could contact a <a href="qml-qtlocation-place.html" translate="no">Place</a>. The contactDetail consists of a <a href="qml-contactdetail.html#label-prop" translate="no">label</a>, which is a localized string describing the contact method, and a <a href="qml-contactdetail.html#value-prop" translate="no">value</a> representing the actual contact detail.</p>
+<h2 id="examples">Examples</h2>
+<p>The following example demonstrates how to assign a single phone number to a place in JavaScript:</p>
+<pre class="qml" translate="no">
+ <span class="keyword">function </span><span class="name">writeSingle</span>() {
+     var phoneNumber = <span class="name">Qt</span>.<span class="name">createQmlObject</span>(<span class="string">'import QtLocation; ContactDetail {}'</span>, <span class="name">place</span>);
+     <span class="name">phoneNumber</span>.<span class="name">label</span> <span class="operator">=</span> <span class="string">&quot;Phone&quot;</span>;
+     <span class="name">phoneNumber</span>.<span class="name">value</span> <span class="operator">=</span> <span class="string">&quot;555-5555&quot;</span>
+     <span class="name">place</span>.<span class="name">contactDetails</span>.<span class="name">phone</span> <span class="operator">=</span> <span class="name">phoneNumber</span>;
+ }
+</pre>
+<p>The following demonstrates how to assign multiple phone numbers to a place in JavaScript:</p>
+<pre class="qml" translate="no">
+ <span class="keyword">function </span><span class="name">writeMultiple</span>() {
+     var bob = <span class="name">Qt</span>.<span class="name">createQmlObject</span>(<span class="string">'import QtLocation; ContactDetail {}'</span>, <span class="name">place</span>);
+     <span class="name">bob</span>.<span class="name">label</span> <span class="operator">=</span> <span class="string">&quot;Bob&quot;</span>;
+     <span class="name">bob</span>.<span class="name">value</span> <span class="operator">=</span> <span class="string">&quot;555-5555&quot;</span>
+
+     var alice = <span class="name">Qt</span>.<span class="name">createQmlObject</span>(<span class="string">'import QtLocation; ContactDetail {}'</span>, <span class="name">place</span>);
+     <span class="name">alice</span>.<span class="name">label</span> <span class="operator">=</span> <span class="string">&quot;Alice&quot;</span>;
+     <span class="name">alice</span>.<span class="name">value</span> <span class="operator">=</span> <span class="string">&quot;555-8745&quot;</span>
+
+     var numbers = new <span class="name">Array</span>();
+     <span class="name">numbers</span>.<span class="name">push</span>(<span class="name">bob</span>);
+     <span class="name">numbers</span>.<span class="name">push</span>(<span class="name">alice</span>);
+
+     <span class="name">place</span>.<span class="name">contactDetails</span>.<span class="name">phone</span> <span class="operator">=</span> <span class="name">numbers</span>;
+ }
+</pre>
+<p>Note, due to limitations of the <a href="../qtqml/qqmlpropertymap.html" translate="no">QQmlPropertyMap</a>, it is not possible to declaratively specify the contact details in QML, it can only be accomplished via JavaScript.</p>
+<!-- @@@contactDetail -->
+<h2>Property Documentation</h2>
+<!-- $$$label -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="label-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">label</span> : <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds a label describing the contact detail.</p>
+<p>The label can potentially be localized. The language is dependent on the entity that sets it, typically this is the <a href="qml-qtlocation-plugin.html" translate="no">Plugin</a>. The <a href="qml-qtlocation-plugin.html#locales-prop" translate="no">Plugin::locales</a> property defines what language is used.</p>
+</div></div><!-- @@@label -->
+<br/>
+<!-- $$$value -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="value-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">value</span> : <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This property holds the value of the contact detail which may be a phone number, an email address, a website url and so on.</p>
+</div></div><!-- @@@value -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- colorpaletteclient.qdoc -->
+  <meta name="description" content="Example of how to create a RESTful API QML client.">
+  <title>Qt Quick Demo - RESTful Color Palette API client | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Qt Quick Demo - RESTful Color Palette API client</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#application-functionality">Application functionality</a></li>
+<li class="level2"><a href="#server-selection">Server selection</a></li>
+<li class="level2"><a href="#list-users-and-colors">List users and colors</a></li>
+<li class="level2"><a href="#logging-in">Logging in</a></li>
+<li class="level2"><a href="#editing-colors">Editing colors</a></li>
+<li class="level1"><a href="#rest-implementation">REST implementation</a></li>
+<li class="level1"><a href="#running-the-example">Running the Example</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Qt Quick Demo - RESTful Color Palette API client</h1>
+<!-- $$$demos/colorpaletteclient-brief -->
+<p>Example of how to create a RESTful API QML client.</p>
+<!-- @@@demos/colorpaletteclient -->
+<!-- $$$demos/colorpaletteclient-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/colorpalette_listing.png" alt="" /></p><p>This example shows how to create a basic QML RESTful application with an imaginary color palette service. The application uses RESTful communication with the selected server to request and send data. The REST service is provided as a QML element whose child elements wrap the individual JSON data APIs provided by the server.</p>
+<h4 id="application-functionality">Application functionality</h4>
+<p>The example provides the following basic functionalities:</p>
+<ul>
+<li>Select the server to communicate with</li>
+<li>List users and colors</li>
+<li>Login and logout users</li>
+<li>Modify and create new colors</li>
+</ul>
+<h5 id="server-selection">Server selection</h5>
+<p>At start the application presents the options for the color palette server to communicate with. The predefined options are:</p>
+<ul>
+<li><a href="https://reqres.in" translate="no">reqres.in</a>, a publicly available REST API test service</li>
+<li><a href="../qthttpserver/qthttpserver-colorpalette-example.html" translate="no">Qt-based REST API server example</a> in <a href="../qthttpserver/qthttpserver-module.html" translate="no">QtHttpServer</a></li>
+</ul>
+<p>Once selected, the application issues a test HTTP GET to the color API to check if the service is accessible.</p>
+<p class="centerAlign"><img src="images/colorpalette_urlselection.png" alt="" /></p><p>One major difference between the two predefined API options is that the <a href="../qthttpserver/qthttpserver-colorpalette-example.html" translate="no">Qt-based REST API server example</a> is a stateful application which allows modifying colors, whereas the <i>reqres.in</i> is a stateless API testing service. In other words, when using the <i>reqres.in</i> backend, modifying the colors has no impact on the UI.</p>
+<h5 id="list-users-and-colors">List users and colors</h5>
+<p>The users and colors are paginated resources on the server-side. This means that the server provides the data in chunks called <i>pages</i>. The UI listing reflects this pagination and views the data on pages.</p>
+<p>Viewing the data on UI is done with standard QML views:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-listview.html" translate="no">ListView</a></span> {
+     <span class="name">model</span>: <span class="name">colors</span>.<span class="name">data</span>
+</pre>
+<p>Where the model is a list of JSON data received from the server.</p>
+<h5 id="logging-in">Logging in</h5>
+<p>Logging in happens via the login function provided by the login QML element:</p>
+<pre class="qml" translate="no">
+ <span class="name">loginService</span>.<span class="name">login</span>({&quot;email&quot; : <span class="name">userInfo</span>.<span class="name">modelData</span>.<span class="name">email</span>,
+                     &quot;password&quot; : <span class="string">&quot;apassword&quot;</span>,
+                     &quot;id&quot; : <span class="name">userInfo</span>.<span class="name">modelData</span>.<span class="name">id</span>})
+</pre>
+<p>Under the hood the login sends a HTTP POST request. Upon receiving a successful response the authorization token is extracted from the response, which in turn is then used in subsequent HTTP requests which require the token.</p>
+<h5 id="editing-colors">Editing colors</h5>
+<p>Editing and adding new colors is done in a popup:</p>
+<p class="centerAlign"><img src="images/colorpalette_editing.png" alt="" /></p><p>Note that uploading the color changes to the server requires that a user has logged in.</p>
+<h4 id="rest-implementation">REST implementation</h4>
+<p>The example illustrates one way to compose a REST service from individual resource elements. In this example the resources are the paginated <i>user</i> and <i>color</i> resources plus the login service. The resource elements are bound together by the base URL (server URL) and the shared network access manager.</p>
+<p>The basis of the REST service is the <i>RestService</i> element whose children items compose the actual service:</p>
+<pre class="qml" translate="no">
+ <span class="type">RestService</span> {
+     <span class="name">id</span>: <span class="name">paletteService</span>
+
+     <span class="type">PaginatedResource</span> {
+         <span class="name">id</span>: <span class="name">users</span>
+         <span class="name">path</span>: <span class="string">&quot;/api/users&quot;</span>
+     }
+
+     <span class="type">PaginatedResource</span> {
+         <span class="name">id</span>: <span class="name">colors</span>
+         <span class="name">path</span>: <span class="string">&quot;/api/unknown&quot;</span>
+     }
+
+     <span class="type">BasicLogin</span> {
+         <span class="name">id</span>: <span class="name">loginService</span>
+         <span class="name">loginPath</span>: <span class="string">&quot;/api/login&quot;</span>
+         <span class="name">logoutPath</span>: <span class="string">&quot;/api/logout&quot;</span>
+     }
+ }
+</pre>
+<p>Upon instantiation the <i>RestService</i> element loops its children elements and sets them up to use the same network access manager. This way the individual resources share the same access details such as the server URL and authorization token.</p>
+<p>The actual communication is done with a rest access manager which implements some convenience functionality to deal specifically with HTTP REST APIs and effectively deals with sending and receiving the <a href="../qtnetwork/qnetworkrequest.html" translate="no">QNetworkRequest</a> and <a href="../qtnetwork/qnetworkreply.html" translate="no">QNetworkReply</a> as needed.</p>
+<h4 id="running-the-example">Running the Example</h4>
+<p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtdoc.git/tree/examples/demos/colorpaletteclient?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@demos/colorpaletteclient -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

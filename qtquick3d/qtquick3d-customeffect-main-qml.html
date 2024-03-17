@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-customeffect.qdoc -->
+  <meta name="description" content="Demonstrates writing custom post-processing effects.">
+  <title>Qt Quick 3D - Custom Effect Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Custom Effect Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Custom Effect Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2019 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Helpers
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">1280</span>
+     <span class="name">height</span>: <span class="number">720</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+     <span class="name">title</span>: <span class="string">&quot;Custom Post-Processing Effect Example&quot;</span>
+     <span class="name">color</span>: <span class="string">&quot;#848895&quot;</span>
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">view3d</span>
+
+         <span class="type"><a href="qml-qtquick3d-effect.html" translate="no">Effect</a></span> {
+             <span class="name">id</span>: <span class="name">eff1</span>
+             property <span class="type"><a href="qml-qtquick3d-textureinput.html" translate="no">TextureInput</a></span> <span class="name">tex</span>: <span class="name">TextureInput</span> {
+                 <span class="name">id</span>: <span class="name">qtLogo</span>
+                 <span class="name">texture</span>: <span class="name">Texture</span> { <span class="name">source</span>: <span class="string">&quot;qt_logo_rect.png&quot;</span> }
+             }
+             <span class="name">passes</span>: <span class="name">Pass</span> {
+                 <span class="name">shaders</span>: <span class="name">Shader</span> {
+                     <span class="name">id</span>: <span class="name">fs1</span>
+                     <span class="name">stage</span>: <span class="name">Shader</span>.<span class="name">Fragment</span>
+                     <span class="name">shader</span>: <span class="string">&quot;effect.frag&quot;</span>
+                 }
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-effect.html" translate="no">Effect</a></span> {
+             <span class="name">id</span>: <span class="name">eff2</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uRed</span>: <span class="number">0.0</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+                 <span class="name">running</span>: <span class="name">radioEff2</span>.<span class="name">checked</span> <span class="operator">||</span> <span class="name">radioEff3</span>.<span class="name">checked</span>
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">target</span>: <span class="name">eff2</span>; <span class="name">property</span>: <span class="string">&quot;uRed&quot;</span>; <span class="name">from</span>: <span class="number">0</span>; <span class="name">to</span>: <span class="number">1</span>; <span class="name">duration</span>: <span class="number">2000</span> }
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">target</span>: <span class="name">eff2</span>; <span class="name">property</span>: <span class="string">&quot;uRed&quot;</span>; <span class="name">from</span>: <span class="number">1</span>; <span class="name">to</span>: <span class="number">0</span>; <span class="name">duration</span>: <span class="number">2000</span> }
+             }
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uGreen</span>: <span class="number">1.0</span>
+             <span class="type"><a href="qml-qtquick3d-shader.html" translate="no">Shader</a></span> {
+                 <span class="name">id</span>: <span class="name">vs2</span>
+                 <span class="name">stage</span>: <span class="name">Shader</span>.<span class="name">Vertex</span>
+                 <span class="name">shader</span>: <span class="string">&quot;effect2.vert&quot;</span>
+             }
+             <span class="type"><a href="qml-qtquick3d-shader.html" translate="no">Shader</a></span> {
+                 <span class="name">id</span>: <span class="name">fs2</span>
+                 <span class="name">stage</span>: <span class="name">Shader</span>.<span class="name">Fragment</span>
+                 <span class="name">shader</span>: <span class="string">&quot;effect2.frag&quot;</span>
+             }
+             <span class="name">passes</span>: <span class="name">Pass</span> {
+                 <span class="name">shaders</span>: [ <span class="name">vs2</span>, <span class="name">fs2</span> ]
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-effect.html" translate="no">Effect</a></span> {
+             <span class="name">id</span>: <span class="name">eff3</span>
+
+             property <span class="type"><a href="qml-qtquick3d-textureinput.html" translate="no">TextureInput</a></span> <span class="name">tex</span>: <span class="name">qtLogo</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uRed</span>: <span class="number">1.0</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uGreen</span>: <span class="number">0.0</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
+                 <span class="name">running</span>: <span class="name">radioEff4</span>.<span class="name">checked</span>
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">target</span>: <span class="name">eff3</span>; <span class="name">property</span>: <span class="string">&quot;uGreen&quot;</span>; <span class="name">from</span>: <span class="number">0</span>; <span class="name">to</span>: <span class="number">1</span>; <span class="name">duration</span>: <span class="number">2000</span> }
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">target</span>: <span class="name">eff3</span>; <span class="name">property</span>: <span class="string">&quot;uGreen&quot;</span>; <span class="name">from</span>: <span class="number">1</span>; <span class="name">to</span>: <span class="number">0</span>; <span class="name">duration</span>: <span class="number">2000</span> }
+             }
+
+             <span class="type"><a href="qml-qtquick3d-buffer.html" translate="no">Buffer</a></span> {
+                 <span class="name">id</span>: <span class="name">intermediateTexture</span>
+                 <span class="name">name</span>: <span class="string">&quot;intermediateTexture&quot;</span>
+                 <span class="name">format</span>: <span class="name">Buffer</span>.<span class="name">RGBA8</span>
+                 <span class="name">textureFilterOperation</span>: <span class="name">Buffer</span>.<span class="name">Linear</span>
+                 <span class="name">textureCoordOperation</span>: <span class="name">Buffer</span>.<span class="name">ClampToEdge</span>
+                 <span class="name">sizeMultiplier</span>: <span class="number">2</span> <span class="comment">// just for fun upscale and then downscale</span>
+             }
+
+             <span class="name">passes</span>: [
+                 <span class="type"><a href="qml-qtquick3d-pass.html" translate="no">Pass</a></span> {
+                     <span class="name">shaders</span>: [ <span class="name">fs1</span> ]
+                     <span class="name">output</span>: <span class="name">intermediateTexture</span>
+                 },
+                 <span class="type"><a href="qml-qtquick3d-pass.html" translate="no">Pass</a></span> {
+                     <span class="name">shaders</span>: [ <span class="name">vs2</span>, <span class="name">fs2</span> ]
+                     <span class="name">commands</span>: [
+                         <span class="type"><a href="qml-qtquick3d-bufferinput.html" translate="no">BufferInput</a></span> {
+                             <span class="name">buffer</span>: <span class="name">intermediateTexture</span>
+                         }
+                     ]
+                 }
+             ]
+         }
+
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">renderMode</span>: <span class="name">View3D</span>.<span class="name">Offscreen</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">id</span>: <span class="name">env</span>
+             <span class="name">clearColor</span>: <span class="string">&quot;skyblue&quot;</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">Color</span>
+             <span class="name">effects</span>: [ <span class="name">eff1</span> ]
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">id</span>: <span class="name">camera</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">200</span>, <span class="number">300</span>)
+             <span class="name">eulerRotation</span>.x: -<span class="number">20</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+             <span class="name">eulerRotation</span>.x: -<span class="number">20</span>
+             <span class="name">eulerRotation</span>.y: <span class="number">20</span>
+             <span class="name">ambientColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.8</span>, <span class="number">0.8</span>, <span class="number">0.8</span>, <span class="number">1.0</span>);
+         }
+
+         <span class="type"><a href="qml-qtquick3d-texture.html" translate="no">Texture</a></span> {
+             <span class="name">id</span>: <span class="name">checkers</span>
+             <span class="name">source</span>: <span class="string">&quot;checkers2.png&quot;</span>
+             <span class="name">scaleU</span>: <span class="number">20</span>
+             <span class="name">scaleV</span>: <span class="number">20</span>
+             <span class="name">tilingModeHorizontal</span>: <span class="name">Texture</span>.<span class="name">Repeat</span>
+             <span class="name">tilingModeVertical</span>: <span class="name">Texture</span>.<span class="name">Repeat</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+             <span class="name">scale</span>.x: <span class="number">10</span>
+             <span class="name">scale</span>.y: <span class="number">10</span>
+             <span class="name">eulerRotation</span>.x: -<span class="number">90</span>
+             <span class="name">materials</span>: [ <span class="type"><a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a></span> { <span class="name">diffuseMap</span>: <span class="name">checkers</span> } ]
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Cone&quot;</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">100</span>, <span class="number">0</span>, -<span class="number">200</span>)
+             <span class="name">scale</span>.y: <span class="number">3</span>
+             <span class="name">materials</span>: [ <span class="type"><a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a></span> { <span class="name">diffuseColor</span>: <span class="string">&quot;green&quot;</span> } ]
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">id</span>: <span class="name">sphere</span>
+             <span class="name">source</span>: <span class="string">&quot;#Sphere&quot;</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">100</span>, <span class="number">200</span>, -<span class="number">200</span>)
+             <span class="name">materials</span>: [ <span class="type"><a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a></span> { <span class="name">diffuseColor</span>: <span class="string">&quot;#808000&quot;</span> } ]
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">source</span>: <span class="string">&quot;#Cube&quot;</span>
+             <span class="name">position</span>.y: <span class="number">50</span>
+             <span class="name">eulerRotation</span>.y: <span class="number">20</span>
+             <span class="name">materials</span>: [ <span class="type"><a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a></span> { <span class="name">diffuseColor</span>: <span class="string">&quot;gray&quot;</span> } ]
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick3d-helpers-wasdcontroller.html" translate="no">WasdController</a></span> {
+         <span class="name">controlledObject</span>: <span class="name">camera</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+             <span class="name">text</span>: <span class="string">&quot;Use WASD and mouse to navigate&quot;</span>
+             <span class="name">font</span>.bold: <span class="number">true</span>
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-buttongroup.html" translate="no">ButtonGroup</a></span> {
+             <span class="name">buttons</span>: [ <span class="name">radioEff1</span>, <span class="name">radioEff2</span>, <span class="name">radioEff3</span>, <span class="name">radioEff4</span>, <span class="name">radioEff5</span> ]
+         }
+         <span class="comment">// qmllint disable read-only-property</span>
+         <span class="comment">// QTBUG-114144</span>
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+             <span class="name">id</span>: <span class="name">radioEff1</span>
+             <span class="name">text</span>: <span class="string">&quot;Custom effect with fragment shader only&quot;</span>
+             <span class="name">checked</span>: <span class="number">true</span>
+             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             <span class="name">onCheckedChanged</span>: {
+                 <span class="keyword">if</span> (<span class="name">checked</span>)
+                     <span class="name">env</span>.<span class="name">effects</span> <span class="operator">=</span> [ <span class="name">eff1</span> ];
+             }
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+             <span class="name">id</span>: <span class="name">radioEff2</span>
+             <span class="name">text</span>: <span class="string">&quot;Custom effect with vertex and fragment shaders&quot;</span>
+             <span class="name">checked</span>: <span class="number">false</span>
+             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             <span class="name">onCheckedChanged</span>: {
+                 <span class="keyword">if</span> (<span class="name">checked</span>)
+                     <span class="name">env</span>.<span class="name">effects</span> <span class="operator">=</span> [ <span class="name">eff2</span> ];
+             }
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+             <span class="name">id</span>: <span class="name">radioEff3</span>
+             <span class="name">text</span>: <span class="string">&quot;Both effects chained&quot;</span>
+             <span class="name">checked</span>: <span class="number">false</span>
+             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             <span class="name">onCheckedChanged</span>: {
+                 <span class="keyword">if</span> (<span class="name">checked</span>)
+                     <span class="name">env</span>.<span class="name">effects</span> <span class="operator">=</span> [ <span class="name">eff1</span>, <span class="name">eff2</span> ];
+             }
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+             <span class="name">id</span>: <span class="name">radioEff4</span>
+             <span class="name">text</span>: <span class="string">&quot;As one single, multi-pass effect&quot;</span>
+             <span class="name">checked</span>: <span class="number">false</span>
+             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             <span class="name">onCheckedChanged</span>: {
+                 <span class="keyword">if</span> (<span class="name">checked</span>)
+                     <span class="name">env</span>.<span class="name">effects</span> <span class="operator">=</span> [ <span class="name">eff3</span> ];
+             }
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a></span> {
+             <span class="name">id</span>: <span class="name">radioEff5</span>
+             <span class="name">text</span>: <span class="string">&quot;No effects&quot;</span>
+             <span class="name">checked</span>: <span class="number">false</span>
+             <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             <span class="name">onCheckedChanged</span>: {
+                 <span class="keyword">if</span> (<span class="name">checked</span>)
+                     <span class="name">env</span>.<span class="name">effects</span> <span class="operator">=</span> [];
+             }
+         }
+         <span class="comment">// qmllint disable read-only-property</span>
+     }
+ }
+</pre>

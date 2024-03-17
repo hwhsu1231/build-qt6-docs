@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-custommaterial.qdoc -->
+  <meta name="description" content="Demonstrates writing shaded custom materials.">
+  <title>Qt Quick 3D - Custom Materials Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Custom Materials Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Custom Materials Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">1280</span>
+     <span class="name">height</span>: <span class="number">720</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+     <span class="name">title</span>: <span class="string">&quot;Custom Materials Example&quot;</span>
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">v3d</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="name">camera</span>: <span class="name">camera</span>
+
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">SkyBox</span>
+             <span class="name">probeExposure</span>: <span class="number">2</span>
+             <span class="name">lightProbe</span>: <span class="name">Texture</span> {
+                 <span class="name">source</span>: <span class="string">&quot;maps/OpenfootageNET_lowerAustria01-1024.hdr&quot;</span>
+             }
+             <span class="name">skyboxBlurAmount</span>: <span class="number">0.1</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">id</span>: <span class="name">camera</span>
+             <span class="name">fieldOfView</span>: <span class="number">45</span>
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">100</span>, <span class="number">900</span>)
+         }
+
+         <span class="type"><a href="qml-qtquick3d-spotlight.html" translate="no">SpotLight</a></span> {
+             <span class="name">position</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">500</span>, <span class="number">0</span>)
+             <span class="name">eulerRotation</span>.x: -<span class="number">60</span>
+             <span class="name">color</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">1.0</span>, <span class="number">1.0</span>, <span class="number">0.1</span>, <span class="number">1.0</span>)
+             <span class="name">brightness</span>: <span class="number">50</span>
+             <span class="name">castsShadow</span>: <span class="number">true</span>
+             <span class="name">shadowMapQuality</span>: <span class="name">Light</span>.<span class="name">ShadowMapQualityHigh</span>
+         }
+
+         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">globalRotation</span>: <span class="number">0</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+             <span class="name">target</span>: <span class="name">v3d</span>
+             <span class="name">property</span>: <span class="string">&quot;globalRotation&quot;</span>
+             <span class="name">from</span>: <span class="number">0</span>
+             <span class="name">to</span>: <span class="number">360</span>
+             <span class="name">duration</span>: <span class="number">27000</span>
+             <span class="name">running</span>: <span class="number">true</span>
+             <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+         }
+
+         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">radius</span>: <span class="number">400</span>
+         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">separation</span>: <span class="number">360</span><span class="operator">/</span><span class="number">5</span>
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">id</span>: <span class="name">floor</span>
+             <span class="name">source</span>: <span class="string">&quot;#Rectangle&quot;</span>
+             <span class="name">y</span>: -<span class="number">200</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">15</span>, <span class="number">15</span>, <span class="number">1</span>)
+             <span class="name">eulerRotation</span>.x: -<span class="number">90</span>
+             <span class="name">materials</span>: [
+                 <span class="type"><a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a></span>  {
+                     <span class="name">baseColor</span>: <span class="string">&quot;white&quot;</span>
+                 }
+             ]
+         }
+
+         <span class="comment">// Start with a simple material, using the built-in implementation for everything.</span>
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">eulerRotation</span>.y: <span class="name">v3d</span>.<span class="name">globalRotation</span>
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">source</span>: <span class="string">&quot;weirdShape.mesh&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>)
+                 <span class="name">rotation</span>: <span class="name">Quaternion</span>.<span class="name">fromEulerAngles</span>(-<span class="number">90</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">x</span>: <span class="name">v3d</span>.<span class="name">radius</span>
+
+                 <span class="name">materials</span>: [
+                     <span class="type"><a href="qml-qtquick3d-custommaterial.html" translate="no">CustomMaterial</a></span> {
+                         <span class="name">shadingMode</span>: <span class="name">CustomMaterial</span>.<span class="name">Shaded</span>
+                         <span class="name">fragmentShader</span>: <span class="string">&quot;material_simple.frag&quot;</span>
+                         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">uDiffuse</span>: <span class="string">&quot;fuchsia&quot;</span>
+                         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uSpecular</span>: <span class="number">1.0</span>
+                     }
+                 ]
+             }
+         }
+
+         <span class="comment">// A metallic material using defaults for everything, except ambient light, and no uniforms.</span>
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">eulerRotation</span>.y: <span class="name">v3d</span>.<span class="name">globalRotation</span> <span class="operator">+</span> <span class="name">v3d</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">1</span>
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">source</span>: <span class="string">&quot;weirdShape.mesh&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>)
+                 <span class="name">rotation</span>: <span class="name">Quaternion</span>.<span class="name">fromEulerAngles</span>(-<span class="number">90</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">x</span>: <span class="name">v3d</span>.<span class="name">radius</span>
+
+                 <span class="name">materials</span>: [
+                     <span class="type"><a href="qml-qtquick3d-custommaterial.html" translate="no">CustomMaterial</a></span> {
+                         <span class="name">shadingMode</span>: <span class="name">CustomMaterial</span>.<span class="name">Shaded</span>
+                         <span class="name">fragmentShader</span>: <span class="string">&quot;material_metallic.frag&quot;</span>
+                     }
+                 ]
+             }
+         }
+
+         <span class="comment">// A material with custom handling of all the lights, but still using</span>
+         <span class="comment">// the built-in specular function.</span>
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">eulerRotation</span>.y: <span class="name">v3d</span>.<span class="name">globalRotation</span> <span class="operator">+</span> <span class="name">v3d</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">2</span>
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">source</span>: <span class="string">&quot;weirdShape.mesh&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>)
+                 <span class="name">rotation</span>: <span class="name">Quaternion</span>.<span class="name">fromEulerAngles</span>(-<span class="number">90</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">x</span>: <span class="name">v3d</span>.<span class="name">radius</span>
+                 <span class="name">materials</span>: [
+                     <span class="type"><a href="qml-qtquick3d-custommaterial.html" translate="no">CustomMaterial</a></span> {
+                         <span class="name">shadingMode</span>: <span class="name">CustomMaterial</span>.<span class="name">Shaded</span>
+                         <span class="name">fragmentShader</span>: <span class="string">&quot;material_customlights.frag&quot;</span>
+                         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">uDiffuse</span>: <span class="string">&quot;orange&quot;</span>
+                         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uShininess</span>: <span class="number">150</span>
+                     }
+                 ]
+             }
+         }
+
+         <span class="comment">// Custom handling of everything, including specular.</span>
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">eulerRotation</span>.y: <span class="name">v3d</span>.<span class="name">globalRotation</span>  <span class="operator">+</span> <span class="name">v3d</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">3</span>
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">source</span>: <span class="string">&quot;weirdShape.mesh&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>)
+                 <span class="name">rotation</span>: <span class="name">Quaternion</span>.<span class="name">fromEulerAngles</span>(-<span class="number">90</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">x</span>: <span class="name">v3d</span>.<span class="name">radius</span>
+                 <span class="name">materials</span>: [
+                     <span class="type"><a href="qml-qtquick3d-custommaterial.html" translate="no">CustomMaterial</a></span> {
+                         <span class="name">shadingMode</span>: <span class="name">CustomMaterial</span>.<span class="name">Shaded</span>
+                         <span class="name">fragmentShader</span>: <span class="string">&quot;material_customspecular.frag&quot;</span>
+                         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">uDiffuse</span>: <span class="string">&quot;green&quot;</span>
+                         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uShininess</span>: <span class="number">150</span>
+                     }
+                 ]
+             }
+         }
+
+         <span class="comment">// Custom lights, plus custom vertex shader</span>
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">eulerRotation</span>.y: <span class="name">v3d</span>.<span class="name">globalRotation</span> <span class="operator">+</span> <span class="name">v3d</span>.<span class="name">separation</span> <span class="operator">*</span> <span class="number">4</span>
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">source</span>: <span class="string">&quot;weirdShape.mesh&quot;</span>
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>)
+                 <span class="name">rotation</span>: <span class="name">Quaternion</span>.<span class="name">fromEulerAngles</span>(-<span class="number">90</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">x</span>: <span class="name">v3d</span>.<span class="name">radius</span>
+                 <span class="name">materials</span>: [
+                     <span class="type"><a href="qml-qtquick3d-custommaterial.html" translate="no">CustomMaterial</a></span> {
+                         <span class="name">id</span>: <span class="name">material</span>
+                         <span class="name">shadingMode</span>: <span class="name">CustomMaterial</span>.<span class="name">Shaded</span>
+                         <span class="name">vertexShader</span>: <span class="string">&quot;material_distortion.vert&quot;</span>
+                         <span class="name">fragmentShader</span>: <span class="string">&quot;material_customlights.frag&quot;</span>
+                         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uTime</span>: <span class="number">0.0</span>
+                         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uAmplitude</span>: <span class="number">0.3</span>
+                         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">uDiffuse</span>: <span class="string">&quot;yellow&quot;</span>
+                         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">uShininess</span>: <span class="number">50</span>
+                         <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                             <span class="name">target</span>: <span class="name">material</span>
+                             <span class="name">property</span>: <span class="string">&quot;uTime&quot;</span>
+                             <span class="name">from</span>: <span class="number">0.0</span>
+                             <span class="name">to</span>: <span class="number">31.4</span>
+                             <span class="name">duration</span>: <span class="number">10000</span>
+                             <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                             <span class="name">running</span>: <span class="number">true</span>
+                         }
+                     }
+                 ]
+             }
+         }
+
+         <span class="comment">// Transparent material, with a refractive effect</span>
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">id</span>: <span class="name">screenSphere</span>
+             <span class="name">source</span>: <span class="string">&quot;#Sphere&quot;</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.75</span>, <span class="number">0.75</span>, <span class="number">0.75</span>)
+             <span class="name">y</span>: <span class="number">60</span>
+             <span class="name">z</span>: <span class="number">750</span>;
+             <span class="name">materials</span>: [
+                 <span class="type"><a href="qml-qtquick3d-custommaterial.html" translate="no">CustomMaterial</a></span> {
+                     <span class="name">shadingMode</span>: <span class="name">CustomMaterial</span>.<span class="name">Shaded</span>
+                     <span class="name">fragmentShader</span>: <span class="string">&quot;material_transparent.frag&quot;</span>
+                 }
+             ]
+             SequentialAnimation on <span class="name">x</span> {
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">from</span>: <span class="number">50</span>; <span class="name">to</span>: -<span class="number">50</span>; <span class="name">duration</span>: <span class="number">20000</span> }
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">from</span>: -<span class="number">50</span>; <span class="name">to</span>: <span class="number">50</span>; <span class="name">duration</span>: <span class="number">20000</span> }
+                 <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+             }
+         }
+     }
+ }
+</pre>

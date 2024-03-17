@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- userinput.qdoc -->
+  <meta name="description" content="Example of how to accept user input and respond to it in a QML application">
+  <title>Use Case - Responding To User Input in QML | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Use Case - Responding To User Input in QML</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#supported-types-of-user-input">Supported types of user input</a></li>
+<li class="level2"><a href="#mouse-and-touch-events">Mouse and touch events</a></li>
+<li class="level2"><a href="#keyboard-and-button-events">Keyboard and button events</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Use Case - Responding To User Input in QML</h1>
+<!-- $$$qtquick-usecase-userinput.html-description -->
+<div class="descr" id="details">
+<h2 id="supported-types-of-user-input">Supported types of user input</h2>
+<p>The <a href="../qtquick/qtquick-index.html" translate="no">Qt Quick</a> module provides support for the most common types of user input, including mouse and touch events, text input, and key-press events. Other modules provide support for other types of user input.</p>
+<p>This article covers how to handle basic user input. For information about audio-visual input, see the <a href="../qtmultimedia/qtmultimedia-index.html" translate="no">Qt Multimedia</a> documentation.</p>
+<h3 id="mouse-and-touch-events">Mouse and touch events</h3>
+<p>The <a href="../qtquick/qtquickhandlers-index.html#input-handlers" translate="no">input handlers</a> let QML applications handle mouse and touch events. For example, you could create a button by adding a <a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a> to an Image, or to a <a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a> with a <a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a> object inside. The <a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a> responds to taps or clicks on any type of pointing device.</p>
+<pre class="qml" translate="no">
+ import QtQuick
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+
+     <span class="name">width</span>: <span class="number">320</span>
+     <span class="name">height</span>: <span class="number">480</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         <span class="name">color</span>: <span class="string">&quot;#272822&quot;</span>
+         <span class="name">width</span>: <span class="number">320</span>
+         <span class="name">height</span>: <span class="number">480</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         <span class="name">id</span>: <span class="name">rectangle</span>
+         <span class="name">x</span>: <span class="number">40</span>
+         <span class="name">y</span>: <span class="number">20</span>
+         <span class="name">width</span>: <span class="number">120</span>
+         <span class="name">height</span>: <span class="number">120</span>
+         <span class="name">color</span>: <span class="string">&quot;red&quot;</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+             <span class="name">onTapped</span>: <span class="name">rectangle</span>.<span class="name">width</span> <span class="operator">+=</span> <span class="number">10</span>
+         }
+     }
+ }
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>Some Item types have their own built-in input handling. For example, <a href="../qtquick/qml-qtquick-flickable.html" translate="no">Flickable</a> responds to mouse dragging, touch flicking, and mouse wheel scrolling.</p>
+</div>
+<h3 id="keyboard-and-button-events">Keyboard and button events</h3>
+<p>Button and key presses, from buttons on a device, a keypad, or a keyboard, can all be handled using the <a href="../qtquick/qml-qtquick-keys.html" translate="no">Keys</a> attached property. This attached property is available on all <a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a> derived types, and works with the <a href="../qtquick/qml-qtquick-item.html#focus-prop" translate="no">Item::focus</a> property to determine which type receives the key event. For simple key handling, you can set the focus to true on a single <a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a> and do all your key handling there.</p>
+<pre class="qml" translate="no">
+ import QtQuick
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+
+     <span class="name">width</span>: <span class="number">320</span>
+     <span class="name">height</span>: <span class="number">480</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         <span class="name">color</span>: <span class="string">&quot;#272822&quot;</span>
+         <span class="name">width</span>: <span class="number">320</span>
+         <span class="name">height</span>: <span class="number">480</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         <span class="name">id</span>: <span class="name">rectangle</span>
+         <span class="name">x</span>: <span class="number">40</span>
+         <span class="name">y</span>: <span class="number">20</span>
+         <span class="name">width</span>: <span class="number">120</span>
+         <span class="name">height</span>: <span class="number">120</span>
+         <span class="name">color</span>: <span class="string">&quot;red&quot;</span>
+
+         <span class="name">focus</span>: <span class="number">true</span>
+         <span class="name">Keys</span>.onUpPressed: <span class="name">rectangle</span>.<span class="name">y</span> <span class="operator">-=</span> <span class="number">10</span>
+         <span class="name">Keys</span>.onDownPressed: <span class="name">rectangle</span>.<span class="name">y</span> <span class="operator">+=</span> <span class="number">10</span>
+         <span class="name">Keys</span>.onLeftPressed: <span class="name">rectangle</span>.<span class="name">x</span> <span class="operator">+=</span> <span class="number">10</span>
+         <span class="name">Keys</span>.onRightPressed: <span class="name">rectangle</span>.<span class="name">x</span> <span class="operator">-=</span> <span class="number">10</span>
+     }
+ }
+</pre>
+<p>For text input, we have several QML types to choose from. <a href="../qtquick/qml-qtquick-textinput.html" translate="no">TextInput</a> provides an unstyled single-line editable text, while <a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a> is more suitable for form fields in applications. <a href="../qtquick/qml-qtquick-textedit.html" translate="no">TextEdit</a> can handle multi-line editable text, but <a href="../qtquickcontrols/qml-qtquick-controls-textarea.html" translate="no">TextArea</a> is a better alternative as it adds styling.</p>
+<p>The following snippet demonstrates how to use these types in your application:</p>
+<pre class="qml" translate="no">
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a></span> {
+     <span class="name">width</span>: <span class="number">300</span>
+     <span class="name">height</span>: <span class="number">200</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+             <span class="name">id</span>: <span class="name">singleline</span>
+             <span class="name">text</span>: <span class="string">&quot;Initial Text&quot;</span>
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span> <span class="operator">|</span> <span class="name">Qt</span>.<span class="name">AlignTop</span>
+             <span class="name">Layout</span>.margins: <span class="number">5</span>
+             <span class="name">background</span>: <span class="name">Rectangle</span> {
+                <span class="name">implicitWidth</span>: <span class="number">200</span>
+                <span class="name">implicitHeight</span>: <span class="number">40</span>
+                <span class="name">border</span>.color: <span class="name">singleline</span>.<span class="name">focus</span> ? <span class="string">&quot;#21be2b&quot;</span> : <span class="string">&quot;lightgray&quot;</span>
+                <span class="name">color</span>: <span class="name">singleline</span>.<span class="name">focus</span> ? <span class="string">&quot;lightgray&quot;</span> : <span class="string">&quot;transparent&quot;</span>
+             }
+         }
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textarea.html" translate="no">TextArea</a></span> {
+             <span class="name">id</span>: <span class="name">multiline</span>
+             <span class="name">placeholderText</span>: <span class="string">&quot;Initial text\n...\n...\n&quot;</span>
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignLeft</span>
+             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             <span class="name">Layout</span>.fillHeight: <span class="number">true</span>
+             <span class="name">Layout</span>.margins: <span class="number">5</span>
+             <span class="name">background</span>: <span class="name">Rectangle</span> {
+                <span class="name">implicitWidth</span>: <span class="number">200</span>
+                <span class="name">implicitHeight</span>: <span class="number">100</span>
+                <span class="name">border</span>.color: <span class="name">multiline</span>.<span class="name">focus</span> ? <span class="string">&quot;#21be2b&quot;</span> : <span class="string">&quot;lightgray&quot;</span>
+                <span class="name">color</span>: <span class="name">multiline</span>.<span class="name">focus</span> ? <span class="string">&quot;lightgray&quot;</span> : <span class="string">&quot;transparent&quot;</span>
+             }
+         }
+     }
+ }
+</pre>
+</div>
+<!-- @@@qtquick-usecase-userinput.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

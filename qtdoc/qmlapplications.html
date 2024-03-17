@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- applicationdevelopers.qdoc -->
+  <meta name="description" content="Essential documentation for QML application developers">
+  <title>QML Applications | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>QML Applications</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#what-is-qml">What is QML?</a></li>
+<li class="level1"><a href="#what-is-qt-quick">What is Qt Quick?</a></li>
+<li class="level2"><a href="#buttons-menus-and-other-controls">Buttons, Menus, and other Controls</a></li>
+<li class="level1"><a href="#qt-quick-projects">Qt Quick Projects</a></li>
+<li class="level1"><a href="#code-samples-and-demos">Code Samples and Demos</a></li>
+<li class="level1"><a href="#advanced-application-development-topics">Advanced Application Development Topics</a></li>
+<li class="level1"><a href="#related-topics">Related Topics</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">QML Applications</h1>
+<!-- $$$qmlapplications.html-description -->
+<div class="descr" id="details">
+<p>QML is a declarative language that allows user interfaces to be described in terms of their visual components and how they interact and relate with one another. It is a highly readable language that was designed to enable components to be interconnected in a dynamic manner, and it allows components to be easily reused and customized within a user interface. Using the <code translate="no">QtQuick</code> module, designers and developers can easily build fluid animated user interfaces in QML, and have the option of connecting these user interfaces to any back-end C++ libraries.</p>
+<h2 id="what-is-qml">What is QML?</h2>
+<p>QML is a user interface specification and programming language. It allows developers and designers alike to create highly performant, fluidly animated and visually appealing applications. QML offers a highly readable, declarative, JSON-like syntax with support for imperative JavaScript expressions combined with dynamic property bindings.</p>
+<pre class="qml" translate="no">
+ import QtQuick
+ import QtQuick.Controls
+
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a></span> {
+     <span class="name">width</span>: <span class="number">400</span>
+     <span class="name">height</span>: <span class="number">400</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+         <span class="name">id</span>: <span class="name">button</span>
+         <span class="name">text</span>: <span class="string">&quot;A Special Button&quot;</span>
+         <span class="name">background</span>: <span class="name">Rectangle</span> {
+             <span class="name">implicitWidth</span>: <span class="number">100</span>
+             <span class="name">implicitHeight</span>: <span class="number">40</span>
+             <span class="name">color</span>: <span class="name">button</span>.<span class="name">down</span> ? <span class="string">&quot;#d6d6d6&quot;</span> : <span class="string">&quot;#f6f6f6&quot;</span>
+             <span class="name">border</span>.color: <span class="string">&quot;#26282a&quot;</span>
+             <span class="name">border</span>.width: <span class="number">1</span>
+             <span class="name">radius</span>: <span class="number">4</span>
+         }
+     }
+ }
+</pre>
+<p>The QML language and engine infrastructure is provided by the <a href="../qtqml/qtqml-index.html" translate="no">Qt QML</a> module. For in-depth information about the QML language, please see the <a href="../qtqml/qtqml-index.html" translate="no">Qt QML</a> module documentation.</p>
+<p>The following pages contain more information about QML:</p>
+<ul>
+<li><a href="qmlfirststeps.html" translate="no">First Steps with QML</a> - begin using QML with these examples</li>
+<li><a href="https://doc.qt.io/qtcreator/quick-projects.html" translate="no">Creating Qt Quick Projects in Qt Creator</a></li>
+<li><a href="../qtqml/qmlreference.html" translate="no">The QML Reference</a> - reference about the QML constructs and features</li>
+<li><a href="qml-codingconventions.html" translate="no">QML Coding Conventions</a></li>
+<li><a href="qml-glossary.html" translate="no">Glossary of QML Terms</a></li>
+<li><a href="modules-qml.html" translate="no">All QML APIs by Module</a></li>
+</ul>
+<h2 id="what-is-qt-quick">What is Qt Quick?</h2>
+<p>Qt Quick is the standard library of QML types and functionality for QML. It includes visual types, interactive types, animations, models and views, particle effects and shader effects. A QML application developer can get access to all of that functionality with a single import statement.</p>
+<p>The <code translate="no">QtQuick</code> QML library is provided by the <a href="../qtquick/qtquick-index.html" translate="no">Qt Quick</a> module. For in-depth information about the various QML types and other functionality provided by Qt Quick, please see the <a href="../qtquick/qtquick-index.html" translate="no">Qt Quick</a> module documentation. Qt Quick adds visual types, animation types, and other QML types in addition to the standard QML types from Qt QML.</p>
+<ul>
+<li><a href="qtquick-usecase-visual.html" translate="no">Visual types in QML</a></li>
+<li><a href="qtquick-usecase-userinput.html" translate="no">Responding to User Input in QML</a></li>
+<li><a href="qtquick-usecase-animations.html" translate="no">Animations in QML</a></li>
+<li><a href="qtquick-usecase-text.html" translate="no">Displaying Text in QML</a></li>
+<li><a href="qtquick-usecase-layouts.html" translate="no">Layouts in QML</a></li>
+<li><a href="qtquick-usecase-styling.html" translate="no">Style and Theme Support</a></li>
+<li><a href="qtquick-usecase-integratingjs.html" translate="no">Integrating JavaScript in QML</a></li>
+</ul>
+<h3 id="buttons-menus-and-other-controls">Buttons, Menus, and other Controls</h3>
+<p>For a set of UI controls, the <a href="../qtquickcontrols/qtquickcontrols-index.html" translate="no">Qt Quick Controls</a> module implements several controls such as buttons, menus, and views. These controls come with several built-in styles that can be used, and also support the creation of custom styles.</p>
+<h2 id="qt-quick-projects">Qt Quick Projects</h2>
+<p><a href="qt-debian-packages.html#qt-creator" translate="no">Qt Creator</a> sets up project environments for the following types of Qt Quick applications:</p>
+<ul>
+<li><b>Scroll</b> - scroll-based navigation</li>
+<li><b>Stack</b> - stack-based navigation</li>
+<li><b>Swipe</b> - page-based application with swipe navigation</li>
+<li><b>Python</b> - <a href="https://doc.qt.io/qtforpython/index.html" translate="no">Qt for Python</a> projects can have QML UIs and have Qt Creator support</li>
+</ul>
+<p>For more information about Qt Quick applications, visit the following pages:</p>
+<ul>
+<li><a href="https://doc.qt.io/qtcreator/quick-projects.html" translate="no">Creating Qt Quick Projects</a></li>
+<li><a href="topics-app-development.html#design-tools" translate="no">Design Tools</a> - tools for designing UIs</li>
+</ul>
+<h2 id="code-samples-and-demos">Code Samples and Demos</h2>
+<p>To learn more about uses of QML code, there are several code samples which show how QML types are used. In addition, there are several demos which show how QML code is used in applications.</p>
+<ul>
+<li><a href="qtdoc-tutorials-alarms-example.html" translate="no">Getting Started Programming with Qt Quick</a> - a tutorial showing the creation of a simple QML text editor.</li>
+<li><a href="../qtquick/qtquick-codesamples.html" translate="no">Qt Quick Examples and Tutorials</a></li>
+</ul>
+<h2 id="advanced-application-development-topics">Advanced Application Development Topics</h2>
+<ul>
+<li><a href="../qtqml/qtqml-cppintegration-overview.html" translate="no">Overview - QML and C++ Integration</a></li>
+<li><a href="qtquick-deployment.html" translate="no">Deploying QML Applications</a></li>
+<li><a href="http://doc.qt.io/QtQuickCompiler" translate="no">Qt Quick Compiler</a></li>
+<li><a href="../qtquick/qtquick-bestpractices.html" translate="no">Best Practices for QML and Qt Quick</a></li>
+<li><a href="qtquick-performance.html" translate="no">QML Performance Considerations and Suggestions</a></li>
+<li><a href="internationalization.html" translate="no">Internationalization and Localization</a></li>
+<li>Testing and Debugging<ul>
+<li><a href="qtquick-qml-runtime.html#qml-runtime-tool" translate="no">Prototyping with the QML Runtime Tool</a></li>
+<li><a href="qtquick-debugging.html" translate="no">Debugging QML Applications</a></li>
+<li><a href="../qtqmltest/qtquicktest-index.html" translate="no">Qt Quick Test: QML Unit Testing Framework</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="related-topics">Related Topics</h2>
+<ul>
+<li><a href="qmltypes.html" translate="no">All QML Types</a></li>
+<li><a href="modules-qml.html" translate="no">All QML APIs by Module</a></li>
+<li><a href="obsoleteqmltypes.html" translate="no">Obsolete QML Types</a></li>
+</ul>
+</div>
+<!-- @@@qmlapplications.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

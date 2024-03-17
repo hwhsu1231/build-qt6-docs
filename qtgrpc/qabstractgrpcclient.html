@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qabstractgrpcclient.cpp -->
+  <meta name="description" content="The QAbstractGrpcClient class is bridge between gRPC clients and channels.">
+  <title>QAbstractGrpcClient Class | Qt GRPC 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgrpc-index.html" translate="no">Qt GRPC</a></li>
+<li><a href="qtgrpc-module.html" translate="no">C++ Classes</a></li>
+<li><a href="qtgrpc-module.html" translate="no">QtGrpc (Technical Preview)</a></li>
+<li>QAbstractGrpcClient</li>
+<li id="buildversion"><a href="qtgrpc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#protected-functions">Protected Functions</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">QAbstractGrpcClient Class</h1>
+<!-- $$$QAbstractGrpcClient-brief -->
+<p>The QAbstractGrpcClient class is bridge between gRPC clients and channels. <a href="#details">More...</a></p>
+<!-- @@@QAbstractGrpcClient -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign">  <span class="preprocessor">#include &lt;QAbstractGrpcClient&gt;</span></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> CMake:</td><td class="memItemRight bottomAlign"> find_package(Qt6 REQUIRED COMPONENTS Grpc) <br/>
+target_link_libraries(mytarget PRIVATE Qt6::Grpc)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> Qt 6.5</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <a href="../qtcore/qobject.html" translate="no">QObject</a></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Status:</td><td class="memItemRight bottomAlign"> Technical Preview<span class="status technical-preview"></span></td></tr>
+</table></div>
+<ul>
+<li><a href="qabstractgrpcclient-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="public-functions">Public Functions</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qabstractgrpcclient.html#attachChannel" translate="no">attachChannel</a></b>(const std::shared_ptr&lt;QAbstractGrpcChannel&gt; &amp;<i>channel</i>)</td></tr>
+</table></div>
+<h2 id="protected-functions">Protected Functions</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> QGrpcStatus </td><td class="memItemRight bottomAlign"><b><a href="qabstractgrpcclient.html#call" translate="no">call</a></b>(QLatin1StringView <i>method</i>, const QProtobufMessage &amp;<i>arg</i>, ReturnType &amp;<i>ret</i>, const QGrpcCallOptions &amp;<i>options</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::shared_ptr&lt;QGrpcCallReply&gt; </td><td class="memItemRight bottomAlign"><b><a href="qabstractgrpcclient.html#call-1" translate="no">call</a></b>(QLatin1StringView <i>method</i>, const QProtobufMessage &amp;<i>arg</i>, const QGrpcCallOptions &amp;<i>options</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::shared_ptr&lt;QGrpcStream&gt; </td><td class="memItemRight bottomAlign"><b><a href="qabstractgrpcclient.html#startStream" translate="no">startStream</a></b>(QLatin1StringView <i>method</i>, const QProtobufMessage &amp;<i>arg</i>, const QGrpcCallOptions &amp;<i>options</i>)</td></tr>
+</table></div>
+<!-- $$$QAbstractGrpcClient-description -->
+<div class="descr">
+<h2 id="details">Detailed Description</h2>
+<p>QAbstractGrpcClient provides a set of functions for client classes generated out of protobuf services. QAbstractGrpcClient enforces thread safety for <a href="qabstractgrpcclient.html#startStream" translate="no">startStream</a>() and <a href="qabstractgrpcclient.html#call" translate="no">call</a>() methods of generated clients. The methods <a href="qabstractgrpcclient.html#call" translate="no">QAbstractGrpcClient::call</a>() and <a href="qabstractgrpcclient.html#startStream" translate="no">QAbstractGrpcClient::startStream</a>() should only be called by the generated client classes.</p>
+</div>
+<!-- @@@QAbstractGrpcClient -->
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$attachChannel[overload1]$$$attachChannelconststd::shared_ptr<QAbstractGrpcChannel>& -->
+<h3 class="fn" translate="no" id="attachChannel"><span class="type">void</span> QAbstractGrpcClient::<span class="name">attachChannel</span>(const <span class="type">std::shared_ptr</span>&lt;<span class="type"><a href="qabstractgrpcchannel.html" translate="no">QAbstractGrpcChannel</a></span>&gt; &amp;<i>channel</i>)</h3>
+<p>Attaches <i translate="no">channel</i> to client as transport layer for gRPC.</p>
+<p>Parameters and return values will be serialized to the channel in a format it supports.</p>
+<div class="admonition note">
+<p><b>Note: </b><b>Warning</b>: Qt GRPC doesn't guarantee thread safety on the channel level. You have to invoke the channel-related functions on the same thread as <a href="qabstractgrpcclient.html" translate="no">QAbstractGrpcClient</a>.</p>
+</div>
+<!-- @@@attachChannel -->
+<!-- $$$call[overload1]$$$callQLatin1StringViewconstQProtobufMessage&ReturnType&constQGrpcCallOptions& -->
+<h3 class="fn" translate="no" id="call"><code translate="no">[protected] </code>template &lt;typename ParamType, typename ReturnType&gt; <span class="type"><a href="qgrpcstatus.html" translate="no">QGrpcStatus</a></span> QAbstractGrpcClient::<span class="name">call</span>(<span class="type"><a href="../qtcore/qlatin1stringview.html" translate="no">QLatin1StringView</a></span> <i>method</i>, const <span class="type"><a href="../qtprotobuf/qprotobufmessage.html" translate="no">QProtobufMessage</a></span> &amp;<i>arg</i>, <span class="type">ReturnType</span> &amp;<i>ret</i>, const <span class="type"><a href="qgrpccalloptions.html" translate="no">QGrpcCallOptions</a></span> &amp;<i>options</i>)</h3>
+<p>Synchronously calls the given <i translate="no">method</i> of this service client, with argument <i translate="no">arg</i> and fills <i translate="no">ret</i> with gRPC reply. Uses <i translate="no">options</i> argument to set additional parameter for the call.</p>
+<!-- @@@call -->
+<!-- $$$call$$$callQLatin1StringViewconstQProtobufMessage&constQGrpcCallOptions& -->
+<h3 class="fn" translate="no" id="call-1"><code translate="no">[protected] </code>template &lt;typename ParamType&gt; <span class="type">std::shared_ptr</span>&lt;<span class="type"><a href="qgrpccallreply.html" translate="no">QGrpcCallReply</a></span>&gt; QAbstractGrpcClient::<span class="name">call</span>(<span class="type"><a href="../qtcore/qlatin1stringview.html" translate="no">QLatin1StringView</a></span> <i>method</i>, const <span class="type"><a href="../qtprotobuf/qprotobufmessage.html" translate="no">QProtobufMessage</a></span> &amp;<i>arg</i>, const <span class="type"><a href="qgrpccalloptions.html" translate="no">QGrpcCallOptions</a></span> &amp;<i>options</i>)</h3>
+<p>Synchronously calls the given <i translate="no">method</i> of this service client, with argument <i translate="no">arg</i>. Uses <i translate="no">options</i> argument to set additional parameter for the call.</p>
+<!-- @@@call -->
+<!-- $$$startStream[overload1]$$$startStreamQLatin1StringViewconstQProtobufMessage&constQGrpcCallOptions& -->
+<h3 class="fn" translate="no" id="startStream"><code translate="no">[protected] </code>template &lt;typename ParamType&gt; <span class="type">std::shared_ptr</span>&lt;<span class="type"><a href="qgrpcstream.html" translate="no">QGrpcStream</a></span>&gt; QAbstractGrpcClient::<span class="name">startStream</span>(<span class="type"><a href="../qtcore/qlatin1stringview.html" translate="no">QLatin1StringView</a></span> <i>method</i>, const <span class="type"><a href="../qtprotobuf/qprotobufmessage.html" translate="no">QProtobufMessage</a></span> &amp;<i>arg</i>, const <span class="type"><a href="qgrpccalloptions.html" translate="no">QGrpcCallOptions</a></span> &amp;<i>options</i>)</h3>
+<p>Streams messages from the server stream <i translate="no">method</i> with the message argument <i translate="no">arg</i> to the attached channel. Uses <i translate="no">options</i> argument to set additional parameter for the call.</p>
+<!-- @@@startStream -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- sensorsshowcase.qdoc -->
+  <meta name="description" content="The Sensors Showcase example demonstrates sensor usage with visual examples.">
+  <title>Sensors Showcase | Qt Sensors 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtsensors-index.html" translate="no">Qt Sensors</a></li>
+<li><a href="qtsensors-examples.html" translate="no">Qt Sensors Examples</a></li>
+<li>Sensors Showcase</li>
+<li id="buildversion"><a href="qtsensors-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#main-menu">Main Menu</a></li>
+<li class="level1"><a href="#accelerometer-view">Accelerometer View</a></li>
+<li class="level1"><a href="#proximity-view">Proximity View</a></li>
+<li class="level1"><a href="#compass-view">Compass View</a></li>
+<li class="level1"><a href="#magnetometer-view">Magnetometer View</a></li>
+<li class="level1"><a href="#gyroscope-view">Gyroscope View</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Sensors Showcase</h1>
+<!-- $$$sensorsshowcase-brief -->
+<p>The Sensors Showcase example demonstrates sensor usage with visual examples.</p>
+<!-- @@@sensorsshowcase -->
+<!-- $$$sensorsshowcase-description -->
+<div class="descr" id="details">
+<p class="centerAlign"><img src="images/sensorsshowcase-mainview.webp" alt="" /></p><h4 id="overview">Overview</h4>
+<p>On startup, the application shows a menu with buttons for the subviews for each sensor. The sensor views instantiate the given sensor, display the sensor's values as numbers, and also visualize them with a simple graphical representation.</p>
+<h4 id="main-menu">Main Menu</h4>
+<p>The main view shows the title with the name of the application and a button for each subview laid out evenly by a <code translate="no">ColumnLayout</code>. The navigation between the subviews and the main menu is managed by a <code translate="no">StackView</code>.</p>
+<h4 id="accelerometer-view">Accelerometer View</h4>
+<p>The accelerometer view shows the current device acceleration values and moves around an image with an amount that is opposite of the device acceleration giving the image an inertia effect that is proportional with the movement of the device.</p>
+<p>Moving around the image happens in the accelerometer <code translate="no">onReadingChanged</code> method.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtsensors-accelerometer.html" translate="no">Accelerometer</a></span> {
+     <span class="name">id</span>: <span class="name">accelerometer</span>
+
+     property <span class="type">real</span> <span class="name">x</span>: <span class="number">0</span>
+     property <span class="type">real</span> <span class="name">y</span>: <span class="number">0</span>
+     property <span class="type">real</span> <span class="name">z</span>: <span class="number">0</span>
+
+     <span class="name">active</span>: <span class="number">true</span>
+     <span class="name">dataRate</span>: <span class="number">25</span>
+
+     <span class="name">onReadingChanged</span>: {
+         <span class="name">x</span> <span class="operator">=</span> (<span class="name">reading</span> <span class="operator">as</span> <span class="name">AccelerometerReading</span>).<span class="name">x</span>
+         <span class="name">y</span> <span class="operator">=</span> (<span class="name">reading</span> <span class="operator">as</span> <span class="name">AccelerometerReading</span>).<span class="name">y</span>
+         <span class="name">z</span> <span class="operator">=</span> (<span class="name">reading</span> <span class="operator">as</span> <span class="name">AccelerometerReading</span>).<span class="name">z</span>
+         <span class="name">imageTranslation</span>.<span class="name">x</span> <span class="operator">=</span> -<span class="name">x</span> <span class="operator">*</span> <span class="number">10</span>
+         <span class="name">imageTranslation</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">y</span> <span class="operator">*</span> <span class="number">10</span>
+     }
+ }
+</pre>
+<p>Whenever there is a new accelerometer value the image translation coordinates are updated accordingly.</p>
+<h4 id="proximity-view">Proximity View</h4>
+<p>The proximity view shows an image that is enlarged whenever the proximity sensor of the device is covered.</p>
+<h4 id="compass-view">Compass View</h4>
+<p>The compass view shows a compass image that is rotated according to the Compass sensor reading value making the compass turn towards north.</p>
+<h4 id="magnetometer-view">Magnetometer View</h4>
+<p>The magnetometer view displays a magnet image that is rotated around an amount that is decided by the rotation angle of the vector given by the x and y magnetometer values. This results in general in the same rotation as the compass gives, demonstrating one use case of how the magnetometer readings can be used. Since the magnetometer provides readings along all three axes, there is more freedom with how these readings can be used.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtsensors-magnetometer.html" translate="no">Magnetometer</a></span> {
+     <span class="name">id</span>: <span class="name">magnetometer</span>
+     <span class="name">active</span>: <span class="number">true</span>
+     <span class="name">dataRate</span>: <span class="number">25</span>
+     <span class="name">onReadingChanged</span>: {
+         <span class="name">root</span>.<span class="name">magnetometerX</span> <span class="operator">=</span> (<span class="name">reading</span> <span class="operator">as</span> <span class="name">MagnetometerReading</span>).<span class="name">x</span>
+         <span class="name">root</span>.<span class="name">magnetometerY</span> <span class="operator">=</span> (<span class="name">reading</span> <span class="operator">as</span> <span class="name">MagnetometerReading</span>).<span class="name">y</span>
+         <span class="name">root</span>.<span class="name">magnetometerZ</span> <span class="operator">=</span> (<span class="name">reading</span> <span class="operator">as</span> <span class="name">MagnetometerReading</span>).<span class="name">z</span>
+         <span class="name">root</span>.<span class="name">magnetRotation</span> <span class="operator">=</span>
+             ((<span class="name">Math</span>.<span class="name">atan2</span>(<span class="name">root</span>.<span class="name">magnetometerX</span>, <span class="name">root</span>.<span class="name">magnetometerY</span>) <span class="operator">/</span> <span class="name">Math</span>.<span class="name">PI</span>) <span class="operator">*</span> <span class="number">180</span>)
+     }
+ }
+</pre>
+<h4 id="gyroscope-view">Gyroscope View</h4>
+<p class="centerAlign"><img src="images/sensorsshowcase-gyroscope.webp" alt="" /></p><p>The gyroscope view also shows an image that is rotated around three axes with an amount that is calculated from the gyroscope readings. Since the gyroscope provides relative rotational change around the three spatial axes and the time between reading updates can vary, the time of the readings are stored and the rotational change is normalized based on the time passed between reading updates.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="qml-qtsensors-gyroscope.html" translate="no">Gyroscope</a></span> {
+     <span class="name">id</span>: <span class="name">gyroscope</span>
+
+     property <span class="type">var</span> <span class="name">lastTimeStamp</span>: <span class="number">0</span>
+     property <span class="type">real</span> <span class="name">x</span>: <span class="number">0</span>
+     property <span class="type">real</span> <span class="name">y</span>: <span class="number">0</span>
+     property <span class="type">real</span> <span class="name">z</span>: <span class="number">0</span>
+
+     <span class="name">active</span>: <span class="number">true</span>
+     <span class="name">dataRate</span>: <span class="number">25</span>
+
+     <span class="name">onReadingChanged</span>: {
+         <span class="name">x</span> <span class="operator">=</span> (<span class="name">reading</span> <span class="operator">as</span> <span class="name">GyroscopeReading</span>).<span class="name">x</span>
+         <span class="name">y</span> <span class="operator">=</span> (<span class="name">reading</span> <span class="operator">as</span> <span class="name">GyroscopeReading</span>).<span class="name">y</span>
+         <span class="name">z</span> <span class="operator">=</span> (<span class="name">reading</span> <span class="operator">as</span> <span class="name">GyroscopeReading</span>).<span class="name">z</span>
+         let firstCall = <span class="number">false</span>
+         <span class="keyword">if</span> (<span class="name">lastTimeStamp</span> <span class="operator">==</span> <span class="number">0</span>) {
+             <span class="name">firstCall</span> <span class="operator">=</span> <span class="number">true</span>
+         }
+         let timeSinceLast = <span class="name">reading</span>.<span class="name">timestamp</span> <span class="operator">-</span> <span class="name">lastTimeStamp</span>
+         <span class="name">lastTimeStamp</span> <span class="operator">=</span> <span class="name">reading</span>.<span class="name">timestamp</span>
+
+         <span class="comment">//Skipping the initial time jump from 0</span>
+         <span class="keyword">if</span> (<span class="name">firstCall</span> <span class="operator">===</span> <span class="number">true</span>)
+             <span class="keyword">return</span>
+         let normalizedX = <span class="name">x</span> <span class="operator">*</span> (<span class="name">timeSinceLast</span> <span class="operator">/</span> <span class="number">1000000</span>)
+         <span class="name">imageXRotation</span>.<span class="name">angle</span> <span class="operator">+=</span> <span class="name">normalizedX</span>
+         let normalizedY = <span class="name">y</span> <span class="operator">*</span> (<span class="name">timeSinceLast</span> <span class="operator">/</span> <span class="number">1000000</span>)
+         <span class="name">imageYRotation</span>.<span class="name">angle</span> <span class="operator">-=</span> <span class="name">normalizedY</span>
+         let normalizedZ = <span class="name">z</span> <span class="operator">*</span> (<span class="name">timeSinceLast</span> <span class="operator">/</span> <span class="number">1000000</span>)
+         <span class="name">imageZRotation</span>.<span class="name">angle</span> <span class="operator">+=</span> <span class="name">normalizedZ</span>
+     }
+ }
+</pre>
+<p>By pressing the reset button the image rotation is reset to 0.</p>
+<p><a href="https://code.qt.io/cgit/qt/qtsensors.git/tree/examples/sensors/sensorsshowcase?h=6.6" translate="no">Example project @ code.qt.io</a></p>
+</div>
+<!-- @@@sensorsshowcase -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

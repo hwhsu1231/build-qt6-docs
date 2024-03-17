@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- androidclasses.qdoc -->
+  <meta name="description" content="Android classes are used in the purchasing demo to enable purchasing in Android.">
+  <title>Demo Android Classes | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li>Demo Android Classes</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#classes">Classes</a></li>
+<li class="level1"><a href="#androidinappproduct">AndroidInAppProduct</a></li>
+<li class="level1"><a href="#androidinapptransaction">AndroidInAppTransaction</a></li>
+<li class="level1"><a href="#androidinapppurchasebackend">AndroidInAppPurchaseBackend</a></li>
+<li class="level2"><a href="#initialize">Initialize</a></li>
+<li class="level2"><a href="#purchasing">Purchasing</a></li>
+<li class="level1"><a href="#inapppurchase-java-and-androidjni-cpp">InAppPurchase.java and androidjni.cpp</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Demo Android Classes</h1>
+<!-- $$$qtpurchasing-androidclasses.html-description -->
+<div class="descr" id="details">
+<h2 id="classes">Classes</h2>
+<div class="table"><table class="generic">
+ <tr valign="top" class="odd"><td ><a href="qtpurchasing-androidclasses.html#androidinappproduct" translate="no">AndroidInAppProduct</a></td><td >A product registered in the store.</td></tr>
+<tr valign="top" class="even"><td ><a href="qtpurchasing-androidclasses.html#androidinapptransaction" translate="no">AndroidInAppTransaction</a></td><td >Contains information about a transaction in the external app store.</td></tr>
+<tr valign="top" class="odd"><td ><a href="qtpurchasing-androidclasses.html#androidinapppurchasebackend" translate="no">AndroidInAppPurchaseBackend</a></td><td >Comminucates with external store.</td></tr>
+<tr valign="top" class="even"><td ><code translate="no">androidjni.cpp</code> and <code translate="no">InAppPurchase.java</code></td><td >Communication between Google Play's billing system and C++.</td></tr>
+</table></div>
+<p>Check out <a href="qtpurchasing-baseclasses.html" translate="no">Base Classes</a></p>
+<h2 id="androidinappproduct">AndroidInAppProduct</h2>
+<p>AndroidInAppProduct adds purchase() for initializing purchasing process.</p>
+<h2 id="androidinapptransaction">AndroidInAppTransaction</h2>
+<p>AndroidInAppTransaction is created in the AndroidInAppPurchaseBackend using purchaseSucceeded(), purchaseFailed() and checkFinalizationStatus().</p>
+<p>AndroidInAppTransaction adds new parameters and return types. Class has finalize() function that separates Consumable and Unlockable products to be either acknowledged or consumed in the InAppPurchase.java.</p>
+<h2 id="androidinapppurchasebackend">AndroidInAppPurchaseBackend</h2>
+<p>AndroidInAppPurchaseBackend makes and receives calls from InAppPurchase.java. This class is one of the back end components in the application.</p>
+<h3 id="initialize">Initialize</h3>
+<p>Shows the products information on the store page.</p>
+<ol class="1" type="1"><li>AndroidInAppPurchaseBackend is called from InAppStore::setupBackend().</li>
+<li>At initialization AndroidInAppPurchaseBackend will give <a href="https://developer.android.com/reference/android/content/Context" translate="no">Context</a> and pointer of its self to the Java in the calls constructor and then initializes the connection to the Google Play store using the initialize() function.</li>
+<li>When the connection is successful, androidjni will call registerRedy() which emits the ready() signal to InAppStore and starts queryProducts() function to get the information of the purchasable items.</li>
+<li>When the query is done, productQueryDone() signal is emitted and the item's information will be visible on the application's store page.</li>
+</ol>
+<h3 id="purchasing">Purchasing</h3>
+<p>When pressing one of the products on the applications store page a call is routed through <code translate="no">AndroidInAppProduct::purchase()</code> to purchaseProduct() function. This then calls the Java method launchBillingFlow() which opens Goole Plays billing flow to the user.</p>
+<h2 id="inapppurchase-java-and-androidjni-cpp">InAppPurchase.java and androidjni.cpp</h2>
+<p>AndroidInAppPurchaseBackend makes calls directly to <code translate="no">InAppPurchase.java</code> and receives Java calls from androidjni. The demo application communicates with Java function using <a href="../qtcore/qjniobject.html" translate="no">QJniObject</a>.</p>
+</div>
+<p><b>See also </b><a href="https://developer.android.com/google/play/billing/integrate#java" translate="no">Integrate the Google Play Billing Library</a>, <a href="../qtcore/qjniobject.html" translate="no">QJniObject</a>, and <a href="../qtcore/qjnienvironment.html" translate="no">QJniEnvironment</a>.</p>
+<!-- @@@qtpurchasing-androidclasses.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

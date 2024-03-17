@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-principledmaterial.qdoc -->
+  <meta name="description" content="Demonstrates the use of Principled Material.">
+  <title>Qt Quick 3D - Principled Material Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Principled Material Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Principled Material Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+ import QtQuick3D
+
+ <span class="comment">// qmllint disable missing-property</span>
+ <span class="comment">// Disabling missing-property because the targetMaterial property</span>
+ <span class="comment">// will either be a PrincipaledMaterial or SpecularGlossyMaterial</span>
+ <span class="comment">// but the shared properties are not part of the common base class</span>
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-scrollview.html" translate="no">ScrollView</a></span> {
+     <span class="name">id</span>: <span class="name">rootView</span>
+     required property <span class="type"><a href="qml-qtquick3d-material.html" translate="no">Material</a></span> <span class="name">targetMaterial</span>
+     <span class="name">ScrollBar</span>.horizontal.policy: <span class="name">ScrollBar</span>.<span class="name">AlwaysOff</span>
+     <span class="name">width</span>: <span class="name">availableWidth</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">width</span>: <span class="name">rootView</span>.<span class="name">availableWidth</span>
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `# Clearcoat
+ Clearcoat when enabled gives the appearance of another protective layer on top
+ of the existing material. A real life analog would be a clear lacquer.
+
+ ## Clearcoat Amount
+ To enable the clearcoat layer, the value of Clearcoat amount must be change to
+ something greater than 0.0. There is a cost for adding a clearcoat layer
+ (basically doing all specular lighting for a second time) so is disabled by
+ default.
+ `
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Clearcoat Amount (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatAmount</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatAmount</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatAmount</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Clearcoat Map
+ The Clearcoat Map is a single channel texture in which when multiplied against
+ the Clearcoat Amount property determines what the clearcoat amount is for the
+ material.`
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+             <span class="name">id</span>: <span class="name">clearcoatChannelComboBox</span>
+             <span class="name">textRole</span>: <span class="string">&quot;text&quot;</span>
+             <span class="name">valueRole</span>: <span class="string">&quot;value&quot;</span>
+             <span class="name">implicitContentWidthPolicy</span>: <span class="name">ComboBox</span>.<span class="name">WidestText</span>
+             <span class="name">onActivated</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatChannel</span> <span class="operator">=</span> <span class="name">currentValue</span>
+             <span class="name">Component</span>.onCompleted: <span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">indexOfValue</span>(<span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatChannel</span>)
+             <span class="name">model</span>: [
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">R</span>, text: <span class="string">&quot;Red Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">G</span>, text: <span class="string">&quot;Green Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">B</span>, text: <span class="string">&quot;Blue Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">A</span>, text: <span class="string">&quot;Alpha Channel&quot;</span>}
+             ]
+         }
+
+         <span class="type">TextureSourceControl</span> {
+             <span class="name">defaultTexture</span>: <span class="string">&quot;maps/noise.png&quot;</span>
+             <span class="name">defaultClearColor</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">onTargetTextureChanged</span>: {
+                 <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatMap</span> <span class="operator">=</span> <span class="name">targetTexture</span>
+             }
+         }
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `## Clearcoat Roughness
+ Just like the base material layer, the Clearcoat layer also has has a roughness
+ property. The Clearcoat Roughness property will make the specular reflection of
+ the clearcoat layer more diffuse.`
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Clearcoat Roughness (&quot;</span> <span class="operator">+</span> <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatRoughnessAmount</span>.<span class="name">toFixed</span>(<span class="number">2</span>) <span class="operator">+</span> <span class="string">&quot;)&quot;</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatRoughnessAmount</span>
+                 <span class="name">onValueChanged</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatRoughnessAmount</span> <span class="operator">=</span> <span class="name">value</span>
+             }
+         }
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `### Clearcoat Roughness Map
+ The Clearcoat Roughness Map is a single channel texture in which when multiplied
+ against the Clearcoat Roughness Amount property determines the roughness of the clearcoat
+ layer for the material.`
+         }
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+             <span class="name">id</span>: <span class="name">clearcoatRoughnessChannelComboBox</span>
+             <span class="name">textRole</span>: <span class="string">&quot;text&quot;</span>
+             <span class="name">valueRole</span>: <span class="string">&quot;value&quot;</span>
+             <span class="name">implicitContentWidthPolicy</span>: <span class="name">ComboBox</span>.<span class="name">WidestText</span>
+             <span class="name">onActivated</span>: <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatRoughnessChannel</span> <span class="operator">=</span> <span class="name">currentValue</span>
+             <span class="name">Component</span>.onCompleted: <span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">indexOfValue</span>(<span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatRoughnessChannel</span>)
+             <span class="name">model</span>: [
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">R</span>, text: <span class="string">&quot;Red Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">G</span>, text: <span class="string">&quot;Green Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">B</span>, text: <span class="string">&quot;Blue Channel&quot;</span>},
+                 { value: <span class="name">PrincipledMaterial</span>.<span class="name">A</span>, text: <span class="string">&quot;Alpha Channel&quot;</span>}
+             ]
+         }
+
+         <span class="type">TextureSourceControl</span> {
+             <span class="name">defaultTexture</span>: <span class="string">&quot;maps/noise.png&quot;</span>
+             <span class="name">defaultClearColor</span>: <span class="string">&quot;black&quot;</span>
+             <span class="name">onTargetTextureChanged</span>: {
+                 <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatRoughnessMap</span> <span class="operator">=</span> <span class="name">targetTexture</span>
+             }
+         }
+
+         <span class="type">MarkdownLabel</span> {
+             <span class="name">text</span>: `## Clearcoat Normal Map
+ Finally, the clearcoat layer also supports applying a normal map to further
+ define the surface details. This normal map works the same way as the Normal
+ Map property of PrincipledMaterial, just only applies to the clearcoat layer.
+ It is possible that the material would have two normal maps applied in this
+ case.
+ `
+         }
+
+         <span class="type">TextureSourceControl</span> {
+             <span class="name">defaultTexture</span>: <span class="string">&quot;maps/metallic/normal.jpg&quot;</span>
+             <span class="name">defaultClearColor</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">1.0</span>, <span class="number">1.0</span>)
+             <span class="name">stampMode</span>: <span class="number">true</span>
+             <span class="name">stampSource</span>: <span class="string">&quot;maps/normal_stamp.png&quot;</span>
+             <span class="name">onTargetTextureChanged</span>: {
+                 <span class="name">rootView</span>.<span class="name">targetMaterial</span>.<span class="name">clearcoatNormalMap</span> <span class="operator">=</span> <span class="name">targetTexture</span>
+             }
+         }
+     }
+ }
+ <span class="comment">// qmllint enable missing-property</span>
+</pre>

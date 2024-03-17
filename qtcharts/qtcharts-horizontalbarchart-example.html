@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- examples-horizontalbarchart.qdoc -->
+  <meta name="description" content="Shows how to create a horizontal bar chart.">
+  <title>Creating Horizontal Bar Charts | Qt Charts 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtcharts-index.html" translate="no">Qt Charts</a></li>
+<li>Creating Horizontal Bar Charts</li>
+<li id="buildversion"><a href="qtcharts-index.html" translate="no">Qt Charts | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Creating Horizontal Bar Charts</h1>
+<!-- $$$qtcharts-horizontalbarchart-example.html-description -->
+<div class="descr" id="details">
+<div class="admonition note">
+<p><b>Note: </b>This is part of the <a href="qtcharts-chartsgallery-example.html" translate="no">Charts with Widgets Gallery</a> example.</p>
+</div>
+<p>QHorizontalBarChart shows the data in sets as separate bars, which are grouped in categories. QHorizontalBarChart works just like QBarChart, except that the bars are drawn horizontally on the chart.</p>
+<p class="centerAlign"><img src="images/examples_horizontalbarchart.png" alt="" /></p><p>The bar sets are used in the same way in all bar charts. To illustrate the difference between various bar charts, we use the same data in all examples. Data that bar chart visualizes, is defined by <a href="qbarset.html" translate="no">QBarSet</a> instances. Here we create the sets and append data to them. The data is appended here with &lt;&lt; operator. Alternatively, the append method could also be used.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> set0 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span>(<span class="string">&quot;Jane&quot;</span>);
+ <span class="keyword">auto</span> set1 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span>(<span class="string">&quot;John&quot;</span>);
+ <span class="keyword">auto</span> set2 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span>(<span class="string">&quot;Axel&quot;</span>);
+ <span class="keyword">auto</span> set3 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span>(<span class="string">&quot;Mary&quot;</span>);
+ <span class="keyword">auto</span> set4 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbarset.html" translate="no">QBarSet</a></span>(<span class="string">&quot;Samantha&quot;</span>);
+
+ <span class="operator">*</span>set0 <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">1</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">2</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">3</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">4</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">5</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">6</span>;
+ <span class="operator">*</span>set1 <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">5</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">4</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">7</span>;
+ <span class="operator">*</span>set2 <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">3</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">5</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">8</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">13</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">8</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">5</span>;
+ <span class="operator">*</span>set3 <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">5</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">6</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">7</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">3</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">4</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">5</span>;
+ <span class="operator">*</span>set4 <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">9</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">7</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">5</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">3</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">1</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="number">2</span>;
+</pre>
+<p>We create the series and append the bar sets to it. The series takes ownership of the barsets. The series groups the data from sets to categories. The first values of each set are grouped together in the first category; the second values in the second category, and so on.</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> series <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qhorizontalbarseries.html" translate="no">QHorizontalBarSeries</a></span>;
+ series<span class="operator">-</span><span class="operator">&gt;</span>append(set0);
+ series<span class="operator">-</span><span class="operator">&gt;</span>append(set1);
+ series<span class="operator">-</span><span class="operator">&gt;</span>append(set2);
+ series<span class="operator">-</span><span class="operator">&gt;</span>append(set3);
+ series<span class="operator">-</span><span class="operator">&gt;</span>append(set4);
+</pre>
+<p>Here we create the chart object and add the series to it. We set the title for chart with setTitle and then turn on animations of the series by calling setAnimationOptions(<a href="qchart.html#AnimationOption-enum" translate="no">QChart::SeriesAnimations</a>).</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">auto</span> chart <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qchart.html" translate="no">QChart</a></span>;
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addSeries(series);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>setTitle(<span class="string">&quot;Simple Horizontal Bar Chart&quot;</span>);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>setAnimationOptions(<span class="type"><a href="qchart.html" translate="no">QChart</a></span><span class="operator">::</span>SeriesAnimations);
+</pre>
+<p>To have categories displayed on axis, we need to create a <a href="qbarcategoryaxis.html" translate="no">QBarCategoryAxis</a> for that. Here we create a category axis with a list of categories and set it to be aligned to the left-hand side, acting as the y-axis, and attach it to the series. The chart takes ownership of the axis. For x-axis we use a value axis, aligned to the bottom.</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> categories {<span class="string">&quot;Jan&quot;</span><span class="operator">,</span> <span class="string">&quot;Feb&quot;</span><span class="operator">,</span> <span class="string">&quot;Mar&quot;</span><span class="operator">,</span> <span class="string">&quot;Apr&quot;</span><span class="operator">,</span> <span class="string">&quot;May&quot;</span><span class="operator">,</span> <span class="string">&quot;Jun&quot;</span>};
+ <span class="keyword">auto</span> axisY <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qbarcategoryaxis.html" translate="no">QBarCategoryAxis</a></span>;
+ axisY<span class="operator">-</span><span class="operator">&gt;</span>append(categories);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addAxis(axisY<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignLeft);
+ series<span class="operator">-</span><span class="operator">&gt;</span>attachAxis(axisY);
+ <span class="keyword">auto</span> axisX <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qvalueaxis.html" translate="no">QValueAxis</a></span>;
+ chart<span class="operator">-</span><span class="operator">&gt;</span>addAxis(axisX<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignBottom);
+ series<span class="operator">-</span><span class="operator">&gt;</span>attachAxis(axisX);
+ axisX<span class="operator">-</span><span class="operator">&gt;</span>applyNiceNumbers();
+</pre>
+<p>We also want to show the legend. To do so, we get the legend pointer from chart and set it to visible. We also place the legend to the bottom of the chart by setting its alignment to <a href="../qtcore/qt.html#AlignmentFlag-enum" translate="no">Qt::AlignBottom</a>.</p>
+<pre class="cpp" translate="no">
+ chart<span class="operator">-</span><span class="operator">&gt;</span>legend()<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">true</span>);
+ chart<span class="operator">-</span><span class="operator">&gt;</span>legend()<span class="operator">-</span><span class="operator">&gt;</span>setAlignment(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignBottom);
+</pre>
+<p>Finally we add the chart onto a view. We also turn on the antialiasing for the chartView.</p>
+<pre class="cpp" translate="no">
+ createDefaultChartView(chart);
+</pre>
+<p>The chart is ready to be shown.</p>
+</div>
+<!-- @@@qtcharts-horizontalbarchart-example.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-proceduraltexture.qdoc -->
+  <meta name="description" content="Demonstrates how to provide custom texture data from C++ or QML.">
+  <title>Qt Quick 3D - Procedural Texture Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Procedural Texture Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Procedural Texture Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2020 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;gradienttexture.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QtCore/QSize&gt;</span>
+ <span class="preprocessor">#include &lt;QtGui/QGradient&gt;</span>
+
+ GradientTexture<span class="operator">::</span>GradientTexture()
+ {
+     updateTexture();
+ }
+
+ <span class="type">int</span> GradientTexture<span class="operator">::</span>height() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_height;
+ }
+
+ <span class="type">int</span> GradientTexture<span class="operator">::</span>width() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_width;
+ }
+
+ <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> GradientTexture<span class="operator">::</span>startColor() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_startColor;
+ }
+
+ <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> GradientTexture<span class="operator">::</span>endColor() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_endColor;
+ }
+
+ <span class="type">void</span> GradientTexture<span class="operator">::</span>setHeight(<span class="type">int</span> height)
+ {
+     <span class="keyword">if</span> (m_height <span class="operator">=</span><span class="operator">=</span> height)
+         <span class="keyword">return</span>;
+
+     m_height <span class="operator">=</span> height;
+     <span class="keyword">emit</span> heightChanged(m_height);
+     updateTexture();
+ }
+
+ <span class="type">void</span> GradientTexture<span class="operator">::</span>setWidth(<span class="type">int</span> width)
+ {
+     <span class="keyword">if</span> (m_width <span class="operator">=</span><span class="operator">=</span> width)
+         <span class="keyword">return</span>;
+
+     m_width <span class="operator">=</span> width;
+     <span class="keyword">emit</span> widthChanged(m_width);
+     updateTexture();
+ }
+
+ <span class="type">void</span> GradientTexture<span class="operator">::</span>setStartColor(<span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> startColor)
+ {
+     <span class="keyword">if</span> (m_startColor <span class="operator">=</span><span class="operator">=</span> startColor)
+         <span class="keyword">return</span>;
+
+     m_startColor <span class="operator">=</span> startColor;
+     <span class="keyword">emit</span> startColorChanged(m_startColor);
+     updateTexture();
+ }
+
+ <span class="type">void</span> GradientTexture<span class="operator">::</span>setEndColor(<span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> endColor)
+ {
+     <span class="keyword">if</span> (m_endColor <span class="operator">=</span><span class="operator">=</span> endColor)
+         <span class="keyword">return</span>;
+
+     m_endColor <span class="operator">=</span> endColor;
+     <span class="keyword">emit</span> endColorChanged(m_endColor);
+     updateTexture();
+ }
+
+ <span class="type">void</span> GradientTexture<span class="operator">::</span>updateTexture()
+ {
+     setSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(m_width<span class="operator">,</span> m_height));
+     setFormat(QQuick3DTextureData<span class="operator">::</span>RGBA8);
+     setHasTransparency(<span class="keyword">false</span>);
+     setTextureData(generateTexture());
+ }
+
+ <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> GradientTexture<span class="operator">::</span>generateTexture()
+ {
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> imageData;
+     <span class="comment">// Create a horizontal gradient between startColor and endColor</span>
+
+     <span class="comment">// Create a single scanline and reuse that data for each</span>
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> gradientScanline;
+     gradientScanline<span class="operator">.</span>resize(m_width <span class="operator">*</span> <span class="number">4</span>); <span class="comment">// RGBA8</span>
+
+     <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> m_width; <span class="operator">+</span><span class="operator">+</span>x) {
+         <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> color <span class="operator">=</span> linearInterpolate(m_startColor<span class="operator">,</span> m_endColor<span class="operator">,</span> x <span class="operator">/</span> <span class="type">float</span>(m_width));
+         <span class="type">int</span> offset <span class="operator">=</span> x <span class="operator">*</span> <span class="number">4</span>;
+         gradientScanline<span class="operator">.</span>data()<span class="operator">[</span>offset <span class="operator">+</span> <span class="number">0</span><span class="operator">]</span> <span class="operator">=</span> <span class="type">char</span>(color<span class="operator">.</span>red());
+         gradientScanline<span class="operator">.</span>data()<span class="operator">[</span>offset <span class="operator">+</span> <span class="number">1</span><span class="operator">]</span> <span class="operator">=</span> <span class="type">char</span>(color<span class="operator">.</span>green());
+         gradientScanline<span class="operator">.</span>data()<span class="operator">[</span>offset <span class="operator">+</span> <span class="number">2</span><span class="operator">]</span> <span class="operator">=</span> <span class="type">char</span>(color<span class="operator">.</span>blue());
+         gradientScanline<span class="operator">.</span>data()<span class="operator">[</span>offset <span class="operator">+</span> <span class="number">3</span><span class="operator">]</span> <span class="operator">=</span> <span class="type">char</span>(<span class="number">255</span>);
+     }
+
+     <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> m_height; <span class="operator">+</span><span class="operator">+</span>y)
+         imageData <span class="operator">+</span><span class="operator">=</span> gradientScanline;
+
+     <span class="keyword">return</span> imageData;
+ }
+
+ <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> GradientTexture<span class="operator">::</span>linearInterpolate(<span class="keyword">const</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> <span class="operator">&amp;</span>color1<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> <span class="operator">&amp;</span>color2<span class="operator">,</span> <span class="type">float</span> value)
+ {
+     <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> output;
+
+     output<span class="operator">.</span>setRedF(color1<span class="operator">.</span>redF() <span class="operator">+</span> (value <span class="operator">*</span> (color2<span class="operator">.</span>redF() <span class="operator">-</span> color1<span class="operator">.</span>redF())));
+     output<span class="operator">.</span>setGreenF(color1<span class="operator">.</span>greenF() <span class="operator">+</span> (value <span class="operator">*</span> (color2<span class="operator">.</span>greenF() <span class="operator">-</span> color1<span class="operator">.</span>greenF())));
+     output<span class="operator">.</span>setBlueF(color1<span class="operator">.</span>blueF() <span class="operator">+</span> (value <span class="operator">*</span> (color2<span class="operator">.</span>blueF() <span class="operator">-</span> color1<span class="operator">.</span>blueF())));
+
+     <span class="keyword">return</span> output;
+ }
+</pre>

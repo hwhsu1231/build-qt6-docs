@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- l10n.qdoc -->
+  <meta name="description" content="Localizing Qt and Qt Quick apps into multiple languages.">
+  <title>Localizing Applications | Qt 6.6</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="index.html" translate="no">Qt 6.6</a></li>
+<li><a href="internationalization.html" translate="no">Internationalization with Qt</a></li>
+<li>Localizing Applications</li>
+<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+  <link rel="prev" href="i18n-source-translation.html" />
+  <link rel="next" href="i18n-plural-rules.html" />
+<p class="naviNextPrevious headerNavi">
+<a class="prevPage" href="i18n-source-translation.html">Writing Source Code for Translation</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="i18n-plural-rules.html">Translation Rules for Plural Forms</a>
+</p>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#specify-translation-sources-in-qt-project-files">Specify Translation Sources in Qt Project Files</a></li>
+<li class="level2"><a href="#using-cmake">Using CMake</a></li>
+<li class="level2"><a href="#using-qmake">Using qmake</a></li>
+<li class="level1"><a href="#deploy-translations">Deploy Translations</a></li>
+<li class="level1"><a href="#use-qt-module-translations">Use Qt Module Translations</a></li>
+<li class="level2"><a href="#locating-qt-translations">Locating Qt Translations</a></li>
+<li class="level2"><a href="#available-catalogs">Available Catalogs</a></li>
+<li class="level2"><a href="#example-essential-qt-modules">Example: Essential Qt Modules</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Localizing Applications</h1>
+<!-- $$$localization.html-description -->
+<div class="descr" id="details">
+<p>The steps to localize applications include creating translatable applications, preparing them for translation, translating the strings, and creating runtime translation files for the released application.</p>
+<p>Qt Quick and Qt C++ applications use the same underlying localization system: <code translate="no">lupdate</code>, <code translate="no">lrelease</code>, and the translation source (TS) files and QM files that they generate. You use the same tools for both QML and C++ code, as described in the <a href="../qtlinguist/qtlinguist-index.html" translate="no">Qt Linguist Manual</a>.</p>
+<p>You can even have user interface strings in QML and C++ source files in the same application. The system will create a single combined translation file and the strings are accessible from QML and C++ code.</p>
+<p>To localize internationalized applications:</p>
+<ul>
+<li><a href="localization.html#specify-translation-sources-in-qt-project-files" translate="no">Specify Translation Sources in Qt Project Files</a></li>
+<li><a href="localization.html#deploy-translations" translate="no">Deploy Translations</a></li>
+<li><a href="localization.html#use-qt-module-translations" translate="no">Use Qt Module Translations</a></li>
+</ul>
+<h2 id="specify-translation-sources-in-qt-project-files">Specify Translation Sources in Qt Project Files</h2>
+<p>To enable <code translate="no">lupdate</code> and <code translate="no">lrelease</code> to generate TS and QM files, update the application project file to specify the source files that contain text to be translated.</p>
+<p>Use ISO language and country codes in the TS file name to determine the language to load at runtime. For more information, see <a href="i18n-source-translation.html#enable-translation" translate="no">Enable Translation</a>.</p>
+<p>The <code translate="no">lupdate</code> tool extracts user interface strings from your application. It expects all source code to be encoded in UTF-8 by default. For more information, see <a href="internationalization.html#encoding" translate="no">Encoding</a>.</p>
+<h3 id="using-cmake">Using CMake</h3>
+<p>Add the <a href="../qtlinguist/qtlinguist-cmake-qt-add-translations.html" translate="no">qt_add_translations</a> command to the <code translate="no">CMakeLists.txt</code> file to create targets for updating TS files and transforming them into QM files.</p>
+<h3 id="using-qmake">Using qmake</h3>
+<p>When using qmake, set a conditional statement to hide the QML source from the compiler that you list in the <code translate="no">SOURCES</code> or <code translate="no">HEADERS</code> entry in the .pro file.</p>
+<p>The SOURCES variable is intended for C++ source files. If you list QML or JavaScript source files there, the compiler tries to build them as though they are C++ files. As a workaround, you can use an <code translate="no">lupdate_only{..&#x2e;}</code> conditional statement so the <code translate="no">lupdate</code> tool sees the .qml files but the C++ compiler ignores them.</p>
+<p>For example, the following .pro file snippet specifies two .qml files in the application.</p>
+<pre class="cpp" translate="no">
+ lupdate_only{
+ SOURCES <span class="operator">=</span> main<span class="operator">.</span>qml \
+           MainPage<span class="operator">.</span>qml
+ }
+</pre>
+<p>You can also specify the .qml source files with a wildcard match. The search is not recursive, so you need to specify each directory that contains source files that contain UI strings:</p>
+<pre class="cpp" translate="no">
+ lupdate_only{
+ SOURCES <span class="operator">=</span> <span class="operator">*</span><span class="operator">.</span>qml \
+           <span class="operator">*</span><span class="operator">.</span>js \
+           content<span class="comment">/*.qml \
+           content/*.js
+ }
+ </span>
+</pre>
+<h2 id="deploy-translations">Deploy Translations</h2>
+<p>Place the <code translate="no">.qm</code> files required for the application in a location where the loader code using <a href="../qtcore/qtranslator.html" translate="no">QTranslator</a> can find them. Typically, you specify a path relative to <a href="../qtcore/qcoreapplication.html#applicationDirPath" translate="no">QCoreApplication::applicationDirPath</a>().</p>
+<p>In addition to the application's QM files, you need to deploy the QM files for the Qt modules that you use in the application, unless they are installed on the system.</p>
+<p>The QM files are split up by module and there is a so-called meta catalog file which includes the QM files of all modules. However, you only need to deploy the QM files for the modules that you use in the application.</p>
+<p>You can use the <code translate="no">lconvert</code> tool in the deploy step to concatenate the required QM files into one file that matches the meta catalog file. For example, to create a German translation file for an application that uses the <a href="../qtcore/qtcore-index.html" translate="no">Qt Core</a>, <a href="../qtgui/qtgui-index.html" translate="no">Qt GUI</a>, and <a href="../qtquick/qtquick-index.html" translate="no">Qt Quick</a> modules, run:</p>
+<pre class="cpp" translate="no">
+ lconvert <span class="operator">-</span>o installation_folder<span class="operator">/</span>qt_de<span class="operator">.</span>qm qtbase_de<span class="operator">.</span>qm qtdeclarative_de<span class="operator">.</span>qm
+</pre>
+<h2 id="use-qt-module-translations">Use Qt Module Translations</h2>
+<span id="qt-itself"></span><p>Qt modules contain several thousands of strings that also need to be translated into the languages that you are targeting. You can find a number of TS files in the <a href="https://code.qt.io/cgit/qt/qttranslations.git/" translate="no">qttranslations</a> repository. Before you start translating Qt, read the wiki page <a href="http://wiki.qt.io/Qt_Localization" translate="no">Translating Qt Into Other Languages</a>.</p>
+<h3 id="locating-qt-translations">Locating Qt Translations</h3>
+<p>You can use <a href="../qtcore/qlibraryinfo.html#path" translate="no">QLibraryInfo::path</a>() to locate the translations for the Qt modules that your application uses. You can request the path to the translations at run-time by passing <a href="../qtcore/qlibraryinfo.html#LibraryPath-enum" translate="no">QLibraryInfo::TranslationsPath</a> to this function.</p>
+<h3 id="available-catalogs">Available Catalogs</h3>
+<p>The Qt translation catalogs are located in the <code translate="no">qttranslations</code> repository.</p>
+<div class="admonition warning">
+<p><b>Warning: </b>Qt translations are contributed by the Qt community, and provided without any guarantees. Translations might be missing, outdated, or entirely incorrect, up to the point of being malicious. It is recommended that you audit any translations you ship.</p>
+</div>
+<p>In Qt 4, there is one big, monolithic <code translate="no">.qm</code> file per locale. For example, the file <code translate="no">qt_de.qm</code> contains the German translation of all libraries.</p>
+<p>The <code translate="no">qt_</code> meta catalog contains the still-existing Qt translations that were included in the <code translate="no">qt_</code> catalog in Qt 4. It was created to make porting applications from Qt 4 to Qt 5 easier. The meta catalog depends on translations that might be absent, because they belong to unnecessary or deprecated modules, which might cause the loading of the translations to fail. If you use modules that are new in Qt 5 or later in your application, you must specify the names of the catalogs for those modules even if you use the meta catalog.</p>
+<p>The following table lists the translation catalogs available for the Qt modules and tools in Qt.</p>
+<div class="table"><table class="generic">
+ <thead><tr class="qt-style"><th >Qt Module or Tool</th><th >Catalog</th></tr></thead>
+<tr valign="top" class="odd"><td ><a href="../qtbluetooth/qtbluetooth-index.html" translate="no">Qt Bluetooth</a></td><td ><code translate="no">qtconnectivity</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtconcurrent/qtconcurrent-index.html" translate="no">Qt Concurrent</a></td><td ><code translate="no">qtbase</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtcore/qtcore-index.html" translate="no">Qt Core</a></td><td ><code translate="no">qtbase</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtdbus/qtdbus-index.html" translate="no">Qt D-Bus</a></td><td ><code translate="no">qtbase</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtdesigner/qtdesigner-manual.html" translate="no">Qt Designer</a></td><td ><code translate="no">designer</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtgui/qtgui-index.html" translate="no">Qt GUI</a></td><td ><code translate="no">qtbase</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qthelp/qthelp-index.html" translate="no">Qt Help</a></td><td ><code translate="no">qt_help</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtlinguist/qtlinguist-index.html" translate="no">Qt Linguist</a></td><td ><code translate="no">linguist</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtlocation/qtlocation-index.html" translate="no">Qt Location</a></td><td ><code translate="no">qtlocation</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtmultimedia/qtmultimedia-index.html" translate="no">Qt Multimedia</a></td><td ><code translate="no">qtmultimedia</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtnetwork/qtnetwork-index.html" translate="no">Qt Network</a></td><td ><code translate="no">qtbase</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtnfc/qtnfc-index.html" translate="no">Qt NFC</a></td><td ><code translate="no">qtconnectivity</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtprintsupport/qtprintsupport-index.html" translate="no">Qt Print Support</a></td><td ><code translate="no">qtbase</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtqml/qtqml-index.html" translate="no">Qt QML</a></td><td ><code translate="no">qtdeclarative</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtquick/qtquick-index.html" translate="no">Qt Quick</a></td><td ><code translate="no">qtdeclarative</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtquickcontrols/qtquickcontrols-index.html" translate="no">Qt Quick Controls</a></td><td ><code translate="no">qtdeclarative</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtquick/qtquickwidgets-index.html" translate="no">Qt Quick Widgets</a></td><td ><code translate="no">qtdeclarative</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtserialport/qtserialport-index.html" translate="no">Qt Serial Port</a></td><td ><code translate="no">qtserialport</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtsql/qtsql-index.html" translate="no">Qt SQL</a></td><td ><code translate="no">qtbase</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtwidgets/qtwidgets-index.html" translate="no">Qt Widgets</a></td><td ><code translate="no">qtbase</code></td></tr>
+<tr valign="top" class="odd"><td ><a href="../qtwebsockets/qtwebsockets-index.html" translate="no">Qt WebSockets</a></td><td ><code translate="no">qtsockets</code></td></tr>
+<tr valign="top" class="even"><td ><a href="../qtwebengine/qtwebengine-index.html" translate="no">Qt WebEngine</a></td><td ><code translate="no">qtwebengine</code></td></tr>
+</table></div>
+<h3 id="example-essential-qt-modules">Example: Essential Qt Modules</h3>
+<p>For example, to locate translations for essential Qt modules, such as Qt Core, Qt GUI, Qt Network, and Qt Widgets, add the following code to the <code translate="no">main()</code> function:</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtcore/qtranslator.html" translate="no">QTranslator</a></span> qtTranslator;
+     <span class="keyword">if</span> (qtTranslator<span class="operator">.</span>load(<span class="type"><a href="../qtcore/qlocale.html" translate="no">QLocale</a></span><span class="operator">::</span>system()<span class="operator">,</span> u<span class="string">&quot;qtbase&quot;</span>_s<span class="operator">,</span> u<span class="string">&quot;_&quot;</span>_s<span class="operator">,</span>
+                           <span class="type"><a href="../qtcore/qlibraryinfo.html" translate="no">QLibraryInfo</a></span><span class="operator">::</span>path(<span class="type"><a href="../qtcore/qlibraryinfo.html" translate="no">QLibraryInfo</a></span><span class="operator">::</span>TranslationsPath))) {
+         app<span class="operator">.</span>installTranslator(<span class="operator">&amp;</span>qtTranslator);
+     }
+</pre>
+</div>
+<!-- @@@localization.html -->
+<p class="naviNextPrevious footerNavi">
+<a class="prevPage" href="i18n-source-translation.html">Writing Source Code for Translation</a>
+<span class="naviSeparator">  &#9702;  </span>
+<a class="nextPage" href="i18n-plural-rules.html">Translation Rules for Plural Forms</a>
+</p>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

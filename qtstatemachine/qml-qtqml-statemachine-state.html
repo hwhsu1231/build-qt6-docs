@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- state.cpp -->
+  <meta name="description" content="Provides a general-purpose state for StateMachine.">
+  <title>State QML Type | Qt State Machine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtstatemachine-index.html" translate="no">Qt State Machine</a></li>
+<li><a href="qtqml-statemachine-qmlmodule.html" translate="no">QML Types</a></li>
+<li>State</li>
+<li id="buildversion"><a href="qtstatemachine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#signals">Signals</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+<li class="level2"><a href="#states-with-child-states">States with Child States</a></li>
+<li class="level2"><a href="#example-usage">Example Usage</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">State QML Type</h1>
+<!-- $$$State-brief -->
+<p>Provides a general-purpose state for <a href="qml-qtqml-statemachine-statemachine.html" translate="no">StateMachine</a>. <a href="#details">More...</a></p>
+<!-- @@@State -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtQml.StateMachine 6.6</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Inherits:</td><td class="memItemRight bottomAlign"> <p><a href="qml-qtqml-statemachine-qabstractstate.html" translate="no">QAbstractState</a></p>
+</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Inherited By:</td><td class="memItemRight bottomAlign"> <p><a href="qml-qtqml-statemachine-statemachine.html" translate="no">StateMachine</a></p>
+</td></tr></table></div><ul>
+<li><a href="qml-qtqml-statemachine-state-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtqml-statemachine-state.html#childMode-prop" translate="no">childMode</a></b> : enumeration</li>
+<li class="fn" translate="no"><b><a href="qml-qtqml-statemachine-state.html#errorState-prop" translate="no">errorState</a></b> : QAbstractState</li>
+<li class="fn" translate="no"><b><a href="qml-qtqml-statemachine-state.html#initialState-prop" translate="no">initialState</a></b> : QAbstractState</li>
+</ul>
+<h2 id="signals">Signals</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtqml-statemachine-state.html#finished-signal" translate="no">finished</a></b>()</li>
+</ul>
+<!-- $$$State-description -->
+<h2 id="details">Detailed Description</h2>
+<p>State objects can have child states as well as transitions to other states. State is part of <a href="qmlstatemachine-qml-guide.html" translate="no">Qt State Machine QML API</a></p>
+<h2 id="states-with-child-states">States with Child States</h2>
+<p>The <a href="qml-qtqml-statemachine-state.html#childMode-prop" translate="no">childMode</a> property determines how child states are treated. For non-parallel state groups, the <a href="qml-qtqml-statemachine-state.html#initialState-prop" translate="no">initialState</a> property must be used to set the initial state. The child states are mutually exclusive states, and the state machine needs to know which child state to enter when the parent state is the target of a transition.</p>
+<p>The state emits the <a href="qml-qtqml-statemachine-state.html#finished-signal" translate="no">State::finished</a>() signal when a final child state (<a href="qml-qtqml-statemachine-finalstate.html" translate="no">FinalState</a>) is entered.</p>
+<p>The <a href="qml-qtqml-statemachine-state.html#errorState-prop" translate="no">errorState</a> sets the state's error state. The error state is the state that the state machine will transition to if an error is detected when attempting to enter the state (e.g&#x2e; because no initial state has been set).</p>
+<h2 id="example-usage">Example Usage</h2>
+<pre class="qml" translate="no">
+ import QtQuick
+ import QtQml.StateMachine as DSM
+
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     <span class="type">DSM</span>.StateMachine {
+         <span class="name">id</span>: <span class="name">stateMachine</span>
+         <span class="name">initialState</span>: <span class="name">state</span>
+         <span class="name">running</span>: <span class="number">true</span>
+         <span class="type">DSM</span>.State {
+             <span class="name">id</span>: <span class="name">state</span>
+         }
+     }
+ }
+</pre>
+<br style="clear: both" /><p><b>See also </b><a href="qml-qtqml-statemachine-statemachine.html" translate="no">StateMachine</a> and <a href="qml-qtqml-statemachine-finalstate.html" translate="no">FinalState</a>.</p>
+<!-- @@@State -->
+<h2>Property Documentation</h2>
+<!-- $$$childMode -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="childMode-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">childMode</span> : <span class="type"><a href="../qtqml/qml-enumeration.html" translate="no">enumeration</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>The child mode of this state</p>
+<p>The default value of this property is <a href="qstate.html" translate="no">QState</a>.ExclusiveStates.</p>
+<p>This enum specifies how a state's child states are treated:</p>
+<ul>
+<li><a href="qstate.html" translate="no">QState</a>.ExclusiveStates The child states are mutually exclusive and an initial state must be set by setting <a href="qml-qtqml-statemachine-state.html#initialState-prop" translate="no">initialState</a> property.</li>
+<li><a href="qstate.html" translate="no">QState</a>.ParallelStates The child states are parallel. When the parent state is entered, all its child states are entered in parallel.</li>
+</ul>
+</div></div><!-- @@@childMode -->
+<br/>
+<!-- $$$errorState -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="errorState-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">errorState</span> : <span class="type"><a href="qml-qtqml-statemachine-qabstractstate.html" translate="no">QAbstractState</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>The error state of this state.</p>
+</div></div><!-- @@@errorState -->
+<br/>
+<!-- $$$initialState -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="initialState-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">initialState</span> : <span class="type"><a href="qml-qtqml-statemachine-qabstractstate.html" translate="no">QAbstractState</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>The initial state of this state (one of its child states).</p>
+</div></div><!-- @@@initialState -->
+<br/>
+<h2>Signal Documentation</h2>
+<!-- $$$finished[overload1]$$$finished -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="finished-signal">
+<td class="tblQmlFuncNode"><p>
+<span class="name">finished</span>()</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This signal is emitted when a final child state of this state is entered.</p>
+<div class="admonition note"><p><b>Note: </b>The corresponding handler is <code translate="no">onFinished</code>.</p>
+</div><p><b>See also </b><a href="qml-qtqml-statemachine-qabstractstate.html#active-prop" translate="no">QAbstractState::active</a>, <a href="qml-qtqml-statemachine-qabstractstate.html#entered-signal" translate="no">QAbstractState::entered</a>, and <a href="qml-qtqml-statemachine-qabstractstate.html#exited-signal" translate="no">QAbstractState::exited</a>.</p>
+</div></div><!-- @@@finished -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

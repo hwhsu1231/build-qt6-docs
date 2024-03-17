@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- widgetgraphgallery.qdoc -->
+  <meta name="description" content="Gallery of Bar, Scatter, and Surface graphs.">
+  <title>Graph Gallery | Qt Graphs 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtgraphs-index.html" translate="no">Qt Graphs</a></li>
+<li>Graph Gallery</li>
+<li id="buildversion"><a href="qtgraphs-index.html" translate="no">Qt Graphs | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Graph Gallery</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;bargraph.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;QtWidgets/qboxlayout.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qpushbutton.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qcheckbox.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qslider.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qfontcombobox.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qlabel.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qradiobutton.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtWidgets/qbuttongroup.h&gt;</span>
+ <span class="preprocessor">#include &lt;QtGui/qfontdatabase.h&gt;</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
+
+ BarGraph<span class="operator">::</span>BarGraph()
+ {
+     m_barsGraph <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="q3dbars.html" translate="no">Q3DBars</a></span>();
+     initialize();
+ }
+
+ <span class="type">void</span> BarGraph<span class="operator">::</span>initialize()
+ {
+     m_barsWidget <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>;
+     <span class="keyword">auto</span> <span class="operator">*</span>hLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qhboxlayout.html" translate="no">QHBoxLayout</a></span>(m_barsWidget);
+     <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> screenSize <span class="operator">=</span> m_barsGraph<span class="operator">-</span><span class="operator">&gt;</span>screen()<span class="operator">-</span><span class="operator">&gt;</span>size();
+     m_barsGraph<span class="operator">-</span><span class="operator">&gt;</span>setMinimumSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(screenSize<span class="operator">.</span>width() <span class="operator">/</span> <span class="number">2</span><span class="operator">,</span> screenSize<span class="operator">.</span>height() <span class="operator">/</span> <span class="number">1.75</span>));
+     m_barsGraph<span class="operator">-</span><span class="operator">&gt;</span>setMaximumSize(screenSize);
+     m_barsGraph<span class="operator">-</span><span class="operator">&gt;</span>setSizePolicy(<span class="type"><a href="../qtwidgets/qsizepolicy.html" translate="no">QSizePolicy</a></span><span class="operator">::</span>Expanding<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qsizepolicy.html" translate="no">QSizePolicy</a></span><span class="operator">::</span>Expanding);
+     m_barsGraph<span class="operator">-</span><span class="operator">&gt;</span>setFocusPolicy(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StrongFocus);
+     m_barsGraph<span class="operator">-</span><span class="operator">&gt;</span>setResizeMode(<span class="type"><a href="../qtquick/qquickwidget.html" translate="no">QQuickWidget</a></span><span class="operator">::</span>SizeRootObjectToView);
+     hLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(m_barsGraph<span class="operator">,</span> <span class="number">1</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>vLayout <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qvboxlayout.html" translate="no">QVBoxLayout</a></span>();
+     hLayout<span class="operator">-</span><span class="operator">&gt;</span>addLayout(vLayout);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>themeList <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(m_barsWidget);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Qt&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Primary Colors&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Digia&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Stone Moss&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Army Blue&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Retro&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Ebony&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Isabelle&quot;</span>_s);
+     themeList<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(<span class="number">0</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>labelButton <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span>(m_barsWidget);
+     labelButton<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Change label style&quot;</span>_s);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>smoothCheckBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_barsWidget);
+     smoothCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Smooth bars&quot;</span>_s);
+     smoothCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>barStyleList <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(m_barsWidget);
+     barStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Bar&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshBar);
+     barStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Pyramid&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshPyramid);
+     barStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Cone&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshCone);
+     barStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Cylinder&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshCylinder);
+     barStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Bevel bar&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshBevelBar);
+     barStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Sphere&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshSphere);
+     barStyleList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;UserDefined&quot;</span>_s<span class="operator">,</span> QAbstract3DSeries<span class="operator">::</span>MeshUserDefined);
+     barStyleList<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(<span class="number">4</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>cameraButton <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span>(m_barsWidget);
+     cameraButton<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Change camera preset&quot;</span>_s);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>zoomToSelectedButton <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span>(m_barsWidget);
+     zoomToSelectedButton<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Zoom to selected bar&quot;</span>_s);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>selectionModeList <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(m_barsWidget);
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;None&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionNone));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Bar&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionItem));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Row&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionRow));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Bar and Row&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionItemAndRow));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Column&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionColumn));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Bar and Column&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionItemAndColumn));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Row and Column&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionRowAndColumn));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Bar, Row and Column&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionItemRowAndColumn));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Slice into Row&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionSlice <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionRow));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Slice into Row and Item&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionSlice <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionItemAndRow));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Slice into Column&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionSlice <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionColumn));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Slice into Column and Item&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionSlice <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionItemAndColumn));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Multi: Bar, Row, Col&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionItemRowAndColumn
+                                    <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionMultiSeries));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Multi, Slice: Row, Item&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionSlice <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionItemAndRow
+                                    <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionMultiSeries));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Multi, Slice: Col, Item&quot;</span>_s<span class="operator">,</span>
+                                <span class="type">int</span>(QAbstract3DGraph<span class="operator">::</span>SelectionSlice <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionItemAndColumn
+                                    <span class="operator">|</span> QAbstract3DGraph<span class="operator">::</span>SelectionMultiSeries));
+     selectionModeList<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(<span class="number">1</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>backgroundCheckBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_barsWidget);
+     backgroundCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Show background&quot;</span>_s);
+     backgroundCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>gridCheckBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_barsWidget);
+     gridCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Show grid&quot;</span>_s);
+     gridCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>seriesCheckBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_barsWidget);
+     seriesCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Show second series&quot;</span>_s);
+     seriesCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>reverseValueAxisCheckBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_barsWidget);
+     reverseValueAxisCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Reverse value axis&quot;</span>_s);
+     reverseValueAxisCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>reflectionCheckBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_barsWidget);
+     reflectionCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Show reflections&quot;</span>_s);
+     reflectionCheckBox<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">false</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>rotationSliderX <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal<span class="operator">,</span> m_barsWidget);
+     rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setTickInterval(<span class="number">30</span>);
+     rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setTickPosition(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>TicksBelow);
+     rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="operator">-</span><span class="number">180</span>);
+     rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+     rotationSliderX<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(<span class="number">180</span>);
+     <span class="keyword">auto</span> <span class="operator">*</span>rotationSliderY <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal<span class="operator">,</span> m_barsWidget);
+     rotationSliderY<span class="operator">-</span><span class="operator">&gt;</span>setTickInterval(<span class="number">15</span>);
+     rotationSliderY<span class="operator">-</span><span class="operator">&gt;</span>setTickPosition(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>TicksAbove);
+     rotationSliderY<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="operator">-</span><span class="number">90</span>);
+     rotationSliderY<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">0</span>);
+     rotationSliderY<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(<span class="number">90</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>fontSizeSlider <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal<span class="operator">,</span> m_barsWidget);
+     fontSizeSlider<span class="operator">-</span><span class="operator">&gt;</span>setTickInterval(<span class="number">10</span>);
+     fontSizeSlider<span class="operator">-</span><span class="operator">&gt;</span>setTickPosition(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>TicksBelow);
+     fontSizeSlider<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">1</span>);
+     fontSizeSlider<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">30</span>);
+     fontSizeSlider<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(<span class="number">100</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>fontList <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qfontcombobox.html" translate="no">QFontComboBox</a></span>(m_barsWidget);
+     fontList<span class="operator">-</span><span class="operator">&gt;</span>setCurrentFont(<span class="type"><a href="../qtgui/qfont.html" translate="no">QFont</a></span>(<span class="string">&quot;Times New Roman&quot;</span>));
+
+     <span class="keyword">auto</span> <span class="operator">*</span>shadowQuality <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(m_barsWidget);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;None&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Low&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Medium&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;High&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Low Soft&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;Medium Soft&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;High Soft&quot;</span>_s);
+     shadowQuality<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(<span class="number">5</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>rangeList <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span>(m_barsWidget);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;2015&quot;</span>_s);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;2016&quot;</span>_s);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;2017&quot;</span>_s);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;2018&quot;</span>_s);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;2019&quot;</span>_s);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;2020&quot;</span>_s);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;2021&quot;</span>_s);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;2022&quot;</span>_s);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>addItem(u<span class="string">&quot;All&quot;</span>_s);
+     rangeList<span class="operator">-</span><span class="operator">&gt;</span>setCurrentIndex(<span class="number">8</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>axisTitlesVisibleCB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_barsWidget);
+     axisTitlesVisibleCB<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Axis titles visible&quot;</span>_s);
+     axisTitlesVisibleCB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>axisTitlesFixedCB <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span>(m_barsWidget);
+     axisTitlesFixedCB<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Axis titles fixed&quot;</span>_s);
+     axisTitlesFixedCB<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>axisLabelRotationSlider <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span>(<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Horizontal<span class="operator">,</span> m_barsWidget);
+     axisLabelRotationSlider<span class="operator">-</span><span class="operator">&gt;</span>setTickInterval(<span class="number">10</span>);
+     axisLabelRotationSlider<span class="operator">-</span><span class="operator">&gt;</span>setTickPosition(<span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>TicksBelow);
+     axisLabelRotationSlider<span class="operator">-</span><span class="operator">&gt;</span>setMinimum(<span class="number">0</span>);
+     axisLabelRotationSlider<span class="operator">-</span><span class="operator">&gt;</span>setValue(<span class="number">30</span>);
+     axisLabelRotationSlider<span class="operator">-</span><span class="operator">&gt;</span>setMaximum(<span class="number">90</span>);
+
+     <span class="keyword">auto</span> <span class="operator">*</span>modeGroup <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qbuttongroup.html" translate="no">QButtonGroup</a></span>(m_barsWidget);
+     <span class="keyword">auto</span> <span class="operator">*</span>modeWeather <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span>(u<span class="string">&quot;Temperature Data&quot;</span>_s<span class="operator">,</span> m_barsWidget);
+     modeWeather<span class="operator">-</span><span class="operator">&gt;</span>setChecked(<span class="keyword">true</span>);
+     <span class="keyword">auto</span> <span class="operator">*</span>modeCustomProxy <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span>(u<span class="string">&quot;Custom Proxy Data&quot;</span>_s<span class="operator">,</span> m_barsWidget);
+     modeGroup<span class="operator">-</span><span class="operator">&gt;</span>addButton(modeWeather);
+     modeGroup<span class="operator">-</span><span class="operator">&gt;</span>addButton(modeCustomProxy);
+
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Rotate horizontally&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(rotationSliderX<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Rotate vertically&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(rotationSliderY<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(labelButton<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(cameraButton<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(zoomToSelectedButton<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(backgroundCheckBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(gridCheckBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(smoothCheckBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(reflectionCheckBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(seriesCheckBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(reverseValueAxisCheckBox);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(axisTitlesVisibleCB);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(axisTitlesFixedCB);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Show year&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(rangeList);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Change bar style&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(barStyleList);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Change selection mode&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(selectionModeList);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Change theme&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(themeList);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Adjust shadow quality&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(shadowQuality);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Change font&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(fontList);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Adjust font size&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(fontSizeSlider);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(<span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span>(u<span class="string">&quot;Axis label rotation&quot;</span>_s));
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(axisLabelRotationSlider<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(modeWeather<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+     vLayout<span class="operator">-</span><span class="operator">&gt;</span>addWidget(modeCustomProxy<span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>AlignTop);
+
+     <span class="comment">// Raise the graph to the top of the widget stack, to hide UI if resized smaller</span>
+     m_barsGraph<span class="operator">-</span><span class="operator">&gt;</span>raise();
+
+     m_modifier <span class="operator">=</span> <span class="keyword">new</span> GraphModifier(m_barsGraph<span class="operator">,</span> <span class="keyword">this</span>);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(rotationSliderX<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span> m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>rotateX);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(rotationSliderY<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span> m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>rotateY);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(labelButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changeLabelBackground);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(cameraButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changePresetCamera);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(zoomToSelectedButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>zoomToSelectedBar);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(backgroundCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setBackgroundEnabled);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(gridCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setGridEnabled);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(smoothCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setSmoothBars);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(seriesCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setSeriesVisibility);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(reverseValueAxisCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setReverseValueAxis);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(reflectionCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setReflection);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>backgroundEnabledChanged<span class="operator">,</span>
+                      backgroundCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>setChecked);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>gridEnabledChanged<span class="operator">,</span>
+                      gridCheckBox<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>setChecked);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(rangeList<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changeRange);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(barStyleList<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changeStyle);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(selectionModeList<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changeSelectionMode);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(themeList<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changeTheme);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(shadowQuality<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>currentIndexChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changeShadowQuality);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>shadowQualityChanged<span class="operator">,</span> shadowQuality<span class="operator">,</span>
+                      <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>setCurrentIndex);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_barsGraph<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="q3dbars.html" translate="no">Q3DBars</a></span><span class="operator">::</span>shadowQualityChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>shadowQualityUpdatedByVisual);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(fontSizeSlider<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changeFontSize);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(fontList<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qfontcombobox.html" translate="no">QFontComboBox</a></span><span class="operator">::</span>currentFontChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changeFont);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>fontSizeChanged<span class="operator">,</span> fontSizeSlider<span class="operator">,</span>
+                      <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>setValue);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(m_modifier<span class="operator">,</span> <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>fontChanged<span class="operator">,</span> fontList<span class="operator">,</span>
+                      <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qfontcombobox.html" translate="no">QFontComboBox</a></span><span class="operator">::</span>setCurrentFont);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(axisTitlesVisibleCB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setAxisTitleVisibility);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(axisTitlesFixedCB<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>stateChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setAxisTitleFixed);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(axisLabelRotationSlider<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>valueChanged<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>changeLabelRotation);
+
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeWeather<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setDataModeToWeather);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeCustomProxy<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span> m_modifier<span class="operator">,</span>
+                      <span class="operator">&amp;</span>GraphModifier<span class="operator">::</span>setDataModeToCustom);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeWeather<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span> seriesCheckBox<span class="operator">,</span>
+                      <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>setEnabled);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeWeather<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span> rangeList<span class="operator">,</span>
+                      <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcombobox.html" translate="no">QComboBox</a></span><span class="operator">::</span>setEnabled);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeWeather<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span> axisTitlesVisibleCB<span class="operator">,</span>
+                      <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>setEnabled);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeWeather<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span> axisTitlesFixedCB<span class="operator">,</span>
+                      <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qcheckbox.html" translate="no">QCheckBox</a></span><span class="operator">::</span>setEnabled);
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>connect(modeWeather<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qradiobutton.html" translate="no">QRadioButton</a></span><span class="operator">::</span>toggled<span class="operator">,</span> axisLabelRotationSlider<span class="operator">,</span>
+                      <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qslider.html" translate="no">QSlider</a></span><span class="operator">::</span>setEnabled);
+ }
+</pre>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-lights.qdoc -->
+  <meta name="description" content="Demonstrates the use of different light types.">
+  <title>Qt Quick 3D - Lights Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Lights Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Lights Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Layouts
+ import QtQuick.Controls
+
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-page.html" translate="no">Page</a></span> {
+     <span class="name">id</span>: <span class="name">settingsDrawer</span>
+     default property <span class="type">alias</span> <span class="name">content</span>: <span class="name">contentLayout</span>.<span class="name">children</span>
+     required property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">isLandscape</span>
+     readonly property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">isMobile</span>: <span class="name">Qt</span>.<span class="name">platform</span>.<span class="name">os</span> <span class="operator">===</span> <span class="string">&quot;android&quot;</span> <span class="operator">||</span> <span class="name">Qt</span>.<span class="name">platform</span>.<span class="name">os</span> <span class="operator">===</span> <span class="string">&quot;ios&quot;</span>
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">isOpen</span>: <span class="name">isMobile</span> ? <span class="number">false</span> : <span class="number">true</span>
+
+     <span class="name">title</span>: <span class="string">&quot;Settings&quot;</span>
+
+     <span class="name">onIsLandscapeChanged</span>: <span class="name">updateState</span>();
+     <span class="name">Component</span>.onCompleted: <span class="name">updateState</span>();
+     <span class="name">onIsOpenChanged</span>: <span class="name">updateState</span>();
+     <span class="name">x</span>: <span class="number">0</span>
+     <span class="name">y</span>: <span class="number">0</span>
+
+     <span class="keyword">function </span><span class="name">updateState</span>() {
+         <span class="keyword">if</span> (<span class="name">isOpen</span>)
+             <span class="keyword">if</span> (<span class="name">isLandscape</span>)
+                 <span class="name">settingsDrawer</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;Landscape_Visible&quot;</span>
+             <span class="keyword">else</span>
+                 <span class="name">settingsDrawer</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;Portrait_Visible&quot;</span>
+         <span class="keyword">else</span>
+             <span class="keyword">if</span> (<span class="name">isLandscape</span>)
+                 <span class="name">settingsDrawer</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;Landscape_Hidden&quot;</span>
+             <span class="keyword">else</span>
+                 <span class="name">settingsDrawer</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;Portrait_Hidden&quot;</span>
+     }
+
+     <span class="name">states</span>: [
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Landscape_Visible&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">settingsDrawer</span>.x: <span class="number">0</span>
+             }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Landscape_Hidden&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">settingsDrawer</span>.x: -<span class="name">settingsDrawer</span>.<span class="name">width</span>
+             }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Portrait_Visible&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">settingsDrawer</span>.y: <span class="number">0</span>
+             }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;Portrait_Hidden&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">settingsDrawer</span>.y: -<span class="name">settingsDrawer</span>.<span class="name">height</span>
+             }
+         }
+     ]
+
+     <span class="name">transitions</span>: [
+         <span class="type"><a href="../qtquick/qml-qtquick-transition.html" translate="no">Transition</a></span> {
+             <span class="name">from</span>: <span class="string">&quot;Landscape_Visible&quot;</span>
+             <span class="name">to</span>: <span class="string">&quot;Landscape_Hidden&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">duration</span>: <span class="number">400</span>
+                 <span class="name">property</span>: <span class="string">&quot;x&quot;</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-transition.html" translate="no">Transition</a></span> {
+             <span class="name">from</span>: <span class="string">&quot;Landscape_Hidden&quot;</span>
+             <span class="name">to</span>: <span class="string">&quot;Landscape_Visible&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">duration</span>: <span class="number">400</span>
+                 <span class="name">property</span>: <span class="string">&quot;x&quot;</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-transition.html" translate="no">Transition</a></span> {
+             <span class="name">from</span>: <span class="string">&quot;Portrait_Visible&quot;</span>
+             <span class="name">to</span>: <span class="string">&quot;Portrait_Hidden&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">duration</span>: <span class="number">400</span>
+                 <span class="name">property</span>: <span class="string">&quot;y&quot;</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-transition.html" translate="no">Transition</a></span> {
+             <span class="name">from</span>: <span class="string">&quot;Portrait_Hidden&quot;</span>
+             <span class="name">to</span>: <span class="string">&quot;Portrait_Visible&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">duration</span>: <span class="number">400</span>
+                 <span class="name">property</span>: <span class="string">&quot;y&quot;</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+         }
+     ]
+
+     <span class="name">header</span>: <span class="name">Label</span> {
+         <span class="name">text</span>: <span class="name">settingsDrawer</span>.<span class="name">title</span>
+         <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignHCenter</span>
+         <span class="name">verticalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignVCenter</span>
+         <span class="name">font</span>.pointSize: <span class="number">20</span>
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-scrollview.html" translate="no">ScrollView</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">padding</span>: <span class="number">10</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+             <span class="name">id</span>: <span class="name">contentLayout</span>
+         }
+     }
+ }
+</pre>

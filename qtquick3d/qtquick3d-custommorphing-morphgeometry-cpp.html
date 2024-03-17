@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- custommorphing.qdoc -->
+  <meta name="description" content="Demonstrates writing C++ custom geometry with a morph target.">
+  <title>Qt Quick 3D - Custom Morphing Animation | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Custom Morphing Animation</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Custom Morphing Animation</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2021 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;morphgeometry.h&quot;</span>
+
+ <span class="preprocessor">#include &lt;qmath.h&gt;</span>
+ <span class="keyword">struct</span> Vertex {
+     QVector3D position;
+     QVector3D normal;
+     QVector4D color;
+ };
+
+ MorphGeometry<span class="operator">::</span>MorphGeometry(QQuick3DObject <span class="operator">*</span>parent)
+     : QQuick3DGeometry(parent)
+ {
+     updateData();
+ }
+
+ <span class="type">void</span> MorphGeometry<span class="operator">::</span>setGridSize(<span class="type">int</span> gridSize)
+ {
+     <span class="keyword">if</span> (m_gridSize <span class="operator">=</span><span class="operator">=</span> gridSize)
+         <span class="keyword">return</span>;
+
+     m_gridSize <span class="operator">=</span> gridSize;
+     <span class="keyword">emit</span> gridSizeChanged();
+     updateData();
+     update();
+ }
+
+ <span class="type">void</span> MorphGeometry<span class="operator">::</span>updateData()
+ {
+     clear();
+     calculateGeometry();
+
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>PositionSemantic<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ComponentType<span class="operator">::</span>F32Type);
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>NormalSemantic<span class="operator">,</span> <span class="number">3</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>)<span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ComponentType<span class="operator">::</span>F32Type);
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ColorSemantic<span class="operator">,</span> <span class="number">6</span> <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>)<span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ComponentType<span class="operator">::</span>F32Type);
+
+     addTargetAttribute(<span class="number">0</span><span class="operator">,</span> QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>PositionSemantic<span class="operator">,</span> <span class="number">0</span>);
+     addTargetAttribute(<span class="number">0</span><span class="operator">,</span> QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>NormalSemantic<span class="operator">,</span> m_targetPositions<span class="operator">.</span>size() <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>) <span class="operator">*</span> <span class="number">3</span>);
+     addTargetAttribute(<span class="number">0</span><span class="operator">,</span> QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ColorSemantic<span class="operator">,</span>
+                        m_targetPositions<span class="operator">.</span>size() <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>) <span class="operator">*</span> <span class="number">3</span> <span class="operator">+</span> m_targetNormals<span class="operator">.</span>size() <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type">float</span>) <span class="operator">*</span> <span class="number">3</span>);
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>IndexSemantic<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span>
+                  QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>ComponentType<span class="operator">::</span>U32Type);
+
+     <span class="keyword">const</span> <span class="type">int</span> numVertexes <span class="operator">=</span> m_positions<span class="operator">.</span>size();
+     m_vertexBuffer<span class="operator">.</span>resize(numVertexes <span class="operator">*</span> <span class="keyword">sizeof</span>(Vertex));
+     Vertex <span class="operator">*</span>vert <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span>Vertex <span class="operator">*</span><span class="operator">&gt;</span>(m_vertexBuffer<span class="operator">.</span>data());
+
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> numVertexes; <span class="operator">+</span><span class="operator">+</span>i) {
+         Vertex <span class="operator">&amp;</span>v <span class="operator">=</span> vert<span class="operator">[</span>i<span class="operator">]</span>;
+         v<span class="operator">.</span>position <span class="operator">=</span> m_positions<span class="operator">[</span>i<span class="operator">]</span>;
+         v<span class="operator">.</span>normal <span class="operator">=</span> m_normals<span class="operator">[</span>i<span class="operator">]</span>;
+         v<span class="operator">.</span>color <span class="operator">=</span> m_colors<span class="operator">[</span>i<span class="operator">]</span>;
+     }
+     m_targetBuffer<span class="operator">.</span>append(<span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span>(<span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="type">char</span> <span class="operator">*</span><span class="operator">&gt;</span>(m_targetPositions<span class="operator">.</span>data())<span class="operator">,</span> m_targetPositions<span class="operator">.</span>size() <span class="operator">*</span> <span class="keyword">sizeof</span>(QVector3D)));
+     m_targetBuffer<span class="operator">.</span>append(<span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span>(<span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="type">char</span> <span class="operator">*</span><span class="operator">&gt;</span>(m_targetNormals<span class="operator">.</span>data())<span class="operator">,</span> m_targetNormals<span class="operator">.</span>size() <span class="operator">*</span> <span class="keyword">sizeof</span>(QVector3D)));
+     m_targetBuffer<span class="operator">.</span>append(<span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span>(<span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="type">char</span> <span class="operator">*</span><span class="operator">&gt;</span>(m_targetColors<span class="operator">.</span>data())<span class="operator">,</span> m_targetColors<span class="operator">.</span>size() <span class="operator">*</span> <span class="keyword">sizeof</span>(QVector4D)));
+
+     setStride(<span class="keyword">sizeof</span>(Vertex));
+     setVertexData(m_vertexBuffer);
+     setTargetData(m_targetBuffer);
+     setPrimitiveType(QQuick3DGeometry<span class="operator">::</span>PrimitiveType<span class="operator">::</span>Triangles);
+     setBounds(boundsMin<span class="operator">,</span> boundsMax);
+
+     m_indexBuffer <span class="operator">=</span> <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span>(<span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="type">char</span> <span class="operator">*</span><span class="operator">&gt;</span>(m_indexes<span class="operator">.</span>data())<span class="operator">,</span> m_indexes<span class="operator">.</span>size() <span class="operator">*</span> <span class="keyword">sizeof</span>(<span class="type"><a href="../qtcore/qttypes.html#quint32-typedef" translate="no">quint32</a></span>));
+     setIndexData(m_indexBuffer);
+ }
+
+ <span class="type">void</span> MorphGeometry<span class="operator">::</span>calculateGeometry()
+ {
+     <span class="type">float</span> dw <span class="operator">=</span> <span class="number">10.0</span>; <span class="comment">// width/2</span>
+     <span class="type">float</span> dh <span class="operator">=</span> <span class="number">10.0</span>;
+     <span class="type">int</span> iw <span class="operator">=</span> m_gridSize;
+     <span class="type">int</span> ih <span class="operator">=</span> m_gridSize;
+     <span class="type">float</span> wf <span class="operator">=</span> dw <span class="operator">*</span> <span class="number">2</span> <span class="operator">/</span> iw; <span class="comment">//factor grid coord =&gt; position</span>
+     <span class="type">float</span> hf <span class="operator">=</span> dh <span class="operator">*</span> <span class="number">2</span> <span class="operator">/</span> ih;
+
+     m_positions<span class="operator">.</span>clear();
+     m_indexes<span class="operator">.</span>clear();
+     m_targetPositions<span class="operator">.</span>clear();
+     m_targetNormals<span class="operator">.</span>clear();
+     m_targetColors<span class="operator">.</span>clear();
+
+     constexpr <span class="type">float</span> maxFloat <span class="operator">=</span> std<span class="operator">::</span>numeric_limits<span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span><span class="operator">::</span>max();
+     boundsMin <span class="operator">=</span> QVector3D(maxFloat<span class="operator">,</span> maxFloat<span class="operator">,</span> maxFloat);
+     boundsMax <span class="operator">=</span> QVector3D(<span class="operator">-</span>maxFloat<span class="operator">,</span> <span class="operator">-</span>maxFloat<span class="operator">,</span> <span class="operator">-</span>maxFloat);
+
+     <span class="comment">// We construct a rectangular grid of iw times ih vertices;</span>
+     <span class="comment">// ix and iy are indices into the grid. x, y, and z are the spatial</span>
+     <span class="comment">// coordinates we calculate for each vertex. tx, ty, and tz are the</span>
+     <span class="comment">// coordinates for the morph target.</span>
+
+     <span class="keyword">for</span> (<span class="type">int</span> iy <span class="operator">=</span> <span class="number">0</span>; iy <span class="operator">&lt;</span> ih; <span class="operator">+</span><span class="operator">+</span>iy) {
+         <span class="keyword">for</span> (<span class="type">int</span> ix <span class="operator">=</span> <span class="number">0</span>; ix <span class="operator">&lt;</span> iw; <span class="operator">+</span><span class="operator">+</span>ix) {
+             <span class="type">float</span> x <span class="operator">=</span> ix <span class="operator">*</span> wf <span class="operator">-</span> dw;
+             <span class="type">float</span> z <span class="operator">=</span> iy <span class="operator">*</span> hf <span class="operator">-</span> dh;
+
+             <span class="comment">// The base shape is a cosine wave, and the corresponding normal</span>
+             <span class="comment">// vectors are calculated from the partial derivatives.</span>
+             <span class="type">float</span> y <span class="operator">=</span> <span class="number">2</span> <span class="operator">*</span> <a href="../qtcore/qtmath.html#qCos" translate="no">qCos</a>(x) <span class="operator">+</span> <span class="number">3.0</span>;
+             QVector3D normal{<span class="number">2</span> <span class="operator">*</span> <a href="../qtcore/qtmath.html#qSin" translate="no">qSin</a>(x)<span class="operator">,</span> <span class="number">2</span><span class="operator">,</span> <span class="number">0</span>};
+
+             <span class="type">float</span> tx <span class="operator">=</span> x <span class="operator">*</span> <span class="number">1.2</span>;
+             <span class="type">float</span> tz <span class="operator">=</span> z <span class="operator">*</span> <span class="number">1.2</span>;
+
+             constexpr <span class="type">float</span> R <span class="operator">=</span> <span class="number">16</span>;
+             QVector3D targetPosition;
+             QVector3D targetNormal;
+
+             <span class="comment">// The morph target shape is a hemisphere. Therefore we don't have</span>
+             <span class="comment">// to do complex math to calculate the normal vector, since all vectors</span>
+             <span class="comment">// from the center are normal to the surface of a sphere.</span>
+             <span class="keyword">if</span> (tx<span class="operator">*</span>tx <span class="operator">+</span> tz<span class="operator">*</span>tz <span class="operator">&lt;</span> R<span class="operator">*</span>R) {
+                 <span class="type">float</span> ty <span class="operator">=</span> <span class="number">0.4f</span> <span class="operator">*</span> qSqrt(R<span class="operator">*</span>R <span class="operator">-</span> tx<span class="operator">*</span>tx <span class="operator">-</span> tz<span class="operator">*</span>tz);
+                 targetPosition <span class="operator">=</span> {tx<span class="operator">,</span> ty<span class="operator">,</span> tz};
+                 targetNormal <span class="operator">=</span> targetPosition;
+             } <span class="keyword">else</span> {
+                 targetPosition <span class="operator">=</span> {tx<span class="operator">,</span> <span class="operator">-</span><span class="number">3</span><span class="operator">,</span> tz};
+                 targetNormal <span class="operator">=</span> {<span class="number">0</span><span class="operator">,</span> <span class="number">1</span><span class="operator">,</span> <span class="number">0</span>};
+             }
+
+             <span class="comment">// Finally, we make the outside edges of the shapes vertical, so they look nicer.</span>
+             <span class="keyword">if</span> (ix <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> iy <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> ix <span class="operator">=</span><span class="operator">=</span> iw<span class="operator">-</span><span class="number">1</span> <span class="operator">|</span><span class="operator">|</span> iy <span class="operator">=</span><span class="operator">=</span> ih<span class="operator">-</span><span class="number">1</span>) {
+                 <span class="type">int</span> iix <span class="operator">=</span> qMin(iw<span class="operator">-</span><span class="number">2</span><span class="operator">,</span> qMax(<span class="number">1</span><span class="operator">,</span> ix));
+                 <span class="type">int</span> iiy <span class="operator">=</span> qMin(ih<span class="operator">-</span><span class="number">2</span><span class="operator">,</span> qMax(<span class="number">1</span><span class="operator">,</span> iy));
+                 x <span class="operator">=</span> iix <span class="operator">*</span> wf <span class="operator">-</span> dw;
+                 z <span class="operator">=</span> iiy <span class="operator">*</span> hf <span class="operator">-</span> dh;
+                 y <span class="operator">=</span> <span class="operator">-</span><span class="number">3.0</span>;
+                 targetPosition<span class="operator">.</span>setY(<span class="operator">-</span><span class="number">3</span>);
+             }
+
+             <span class="keyword">if</span> (iy <span class="operator">&gt;</span><span class="operator">=</span> ih<span class="operator">-</span><span class="number">2</span>)
+                 normal <span class="operator">=</span> {<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">1</span>};
+             <span class="keyword">else</span> <span class="keyword">if</span> (iy <span class="operator">&lt;</span><span class="operator">=</span> <span class="number">1</span>)
+                 normal <span class="operator">=</span> {<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="operator">-</span><span class="number">1</span>};
+
+             m_positions<span class="operator">.</span>append({x<span class="operator">,</span> y<span class="operator">,</span> z});
+             m_normals<span class="operator">.</span>append(normal<span class="operator">.</span>normalized());
+
+             m_targetPositions<span class="operator">.</span>append(targetPosition);
+             m_targetNormals<span class="operator">.</span>append(targetNormal<span class="operator">.</span>normalized());
+
+             <span class="comment">// Set custom colors for the vertices:</span>
+             <span class="keyword">const</span> <span class="type">float</span> tmp <span class="operator">=</span> (y <span class="operator">+</span> <span class="number">5.0f</span>) <span class="operator">/</span> <span class="number">10.0f</span>;
+             m_colors<span class="operator">.</span>append({<span class="number">1.0</span><span class="operator">,</span> tmp<span class="operator">,</span> tmp<span class="operator">,</span> <span class="number">1.0f</span>});
+
+             <span class="keyword">const</span> <span class="type">float</span> ttmp <span class="operator">=</span> (ix <span class="operator">%</span> (iw <span class="operator">/</span> <span class="number">8</span>)) <span class="operator">&lt;</span> <span class="number">3</span> <span class="operator">?</span> <span class="number">0.5</span> : <span class="number">1.0</span>;
+             m_targetColors<span class="operator">.</span>append({ttmp<span class="operator">,</span> ttmp<span class="operator">,</span> ttmp<span class="operator">,</span> <span class="number">1.0f</span>});
+
+             <span class="comment">// Note: We only use the bounds of the target positions since they are strictly</span>
+             <span class="comment">// bigger than the original</span>
+             boundsMin<span class="operator">.</span>setX(std<span class="operator">::</span>min(boundsMin<span class="operator">.</span>x()<span class="operator">,</span> targetPosition<span class="operator">.</span>x()));
+             boundsMin<span class="operator">.</span>setY(std<span class="operator">::</span>min(boundsMin<span class="operator">.</span>y()<span class="operator">,</span> targetPosition<span class="operator">.</span>y()));
+             boundsMin<span class="operator">.</span>setZ(std<span class="operator">::</span>min(boundsMin<span class="operator">.</span>z()<span class="operator">,</span> targetPosition<span class="operator">.</span>z()));
+
+             boundsMax<span class="operator">.</span>setX(std<span class="operator">::</span>max(boundsMax<span class="operator">.</span>x()<span class="operator">,</span> targetPosition<span class="operator">.</span>x()));
+             boundsMax<span class="operator">.</span>setY(std<span class="operator">::</span>max(boundsMax<span class="operator">.</span>y()<span class="operator">,</span> targetPosition<span class="operator">.</span>y()));
+             boundsMax<span class="operator">.</span>setZ(std<span class="operator">::</span>max(boundsMax<span class="operator">.</span>z()<span class="operator">,</span> targetPosition<span class="operator">.</span>z()));
+         }
+     }
+
+     <span class="keyword">for</span> (<span class="type">int</span> ix <span class="operator">=</span> <span class="number">0</span>; ix <span class="operator">&lt;</span> iw <span class="operator">-</span> <span class="number">1</span>; <span class="operator">+</span><span class="operator">+</span>ix) {
+         <span class="keyword">for</span> (<span class="type">int</span> iy <span class="operator">=</span> <span class="number">0</span>; iy <span class="operator">&lt;</span> ih <span class="operator">-</span> <span class="number">1</span>; <span class="operator">+</span><span class="operator">+</span>iy) {
+             <span class="type">int</span> idx <span class="operator">=</span> ix <span class="operator">+</span> iy <span class="operator">*</span> ih;
+             m_indexes <span class="operator">&lt;</span><span class="operator">&lt;</span> idx <span class="operator">&lt;</span><span class="operator">&lt;</span> idx <span class="operator">+</span> iw <span class="operator">&lt;</span><span class="operator">&lt;</span> idx <span class="operator">+</span> iw <span class="operator">+</span> <span class="number">1</span>
+                       <span class="operator">&lt;</span><span class="operator">&lt;</span> idx <span class="operator">&lt;</span><span class="operator">&lt;</span> idx <span class="operator">+</span> iw <span class="operator">+</span> <span class="number">1</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> idx <span class="operator">+</span> <span class="number">1</span>;
+         }
+     }
+ }
+</pre>

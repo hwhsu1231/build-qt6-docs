@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- uacpp.qdoc -->
+  <meta name="description" content="Instructions how to setup UACPP SDK">
+  <title>Setting up UACPP SDK | Qt OPC UA 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtopcua-index.html" translate="no">Qt OPC UA</a></li>
+<li>Setting up UACPP SDK</li>
+<li id="buildversion"><a href="qtopcua-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#download-and-installation">Download and Installation</a></li>
+<li class="level1"><a href="#requirements">Requirements</a></li>
+<li class="level1"><a href="#building-on-linux-using-gcc">Building on Linux using GCC</a></li>
+<li class="level2"><a href="#preparations">Preparations</a></li>
+<li class="level2"><a href="#building-the-sdk">Building the SDK</a></li>
+<li class="level2"><a href="#building-the-qt-opc-ua-uacpp-plugin">Building the Qt OPC UA UACPP Plugin</a></li>
+<li class="level1"><a href="#building-on-windows-using-msvc">Building on Windows using MSVC</a></li>
+<li class="level2"><a href="#preparations">Preparations</a></li>
+<li class="level2"><a href="#building-the-sdk">Building the SDK</a></li>
+<li class="level2"><a href="#building-the-qt-opc-ua-uacpp-plugin">Building the Qt OPC UA UACPP Plugin</a></li>
+<li class="level1"><a href="#final-notes">Final notes</a></li>
+<li class="level1"><a href="#setting-up-the-key-infrastructure">Setting up the Key Infrastructure</a></li>
+<li class="level1"><a href="#demo-server">Demo Server</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">Setting up UACPP SDK</h1>
+<!-- $$$uacpp-index.html-description -->
+<div class="descr" id="details">
+<h2 id="download-and-installation">Download and Installation</h2>
+<p>The UACPP plugin integrates the professional C++ based OPC UA SDK from Unified Automation GmbH into Qt OPC UA. You can also test this using the evaluation version of the SDK, but in this tutorial we show how to build the C++ SDK (full version) and the Qt OPC UA plugin from source for best flexibility and portability.</p>
+<p>By building the SDK from source, we can choose to build static libraries instead of dynamic libraries, which reduces runtime dependencies and code size. The very same version of the OpenSSL library that was used to build Qt has to be used. Otherwise there will be dynamic linker errors when loading the library.</p>
+<p>Binaries depend on specific versions of OpenSSL and will not run on all Linux distributions.</p>
+<p>When using the evaluation version, you can skip the step for Building the SDK, but you must ensure to use the same compiler, OpenSSL and LibXML2 that were used for building the Eval SDK.</p>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>Qt 5.12 or higher</li>
+<li>Qt OPC UA</li>
+<li>Unified Automation C++ SDK 1.6&#x2e;x or higher.</li>
+<li>C++ Toolchain (GCC on Linux or MSVC on Windows)</li>
+<li>CMake 2.8 or higher</li>
+<li>Ninja (a faster make tool, GNU make would work too)</li>
+</ul>
+<p>When using GNU make instead of Ninja, use &quot;-G 'Unix Makefiles'&quot; instead of &quot;-G Ninja&quot; in the CMake calls.</p>
+<h2 id="building-on-linux-using-gcc">Building on Linux using GCC</h2>
+<h3 id="preparations">Preparations</h3>
+<p>We assume that you have a development machine with a running C++ toolchain and Qt installed. If not, install it now.</p>
+<p>Example for Debian based systems:</p>
+<pre class="cpp" translate="no">
+ sudo apt install build<span class="operator">-</span>essential
+ sudo apt install cmake cmake<span class="operator">-</span>curses<span class="operator">-</span>gui cmake<span class="operator">-</span>qt<span class="operator">-</span>gui
+ sudo apt install ninja
+</pre>
+<p>In this tutorial, we show example install commands using the <code translate="no">apt</code> package management. On other distributions, you can install the same tools, just the exact commands and package names may differ.</p>
+<h3 id="building-the-sdk">Building the SDK</h3>
+<p>On Linux, we want to build using the system provided OpenSSL library. Therefore you need to install OpenSSL development packages. The same applies for LibXML2.</p>
+<pre class="cpp" translate="no">
+ sudo apt install libssl<span class="operator">-</span>dev libxml2<span class="operator">-</span>dev
+</pre>
+<p>At the time of writing, the pre-built Qt library was still built against OpenSSL1.0. Debian Stretch and newer default to OpenSSL1.1. So we need to install the older OpenSSL1.0 devel package to make the SDK and Qt use the same library version. OpenSSL1.0 and OpenSSL1.1 are not binary compatible.</p>
+<pre class="cpp" translate="no">
+ sudo apt install libssl1<span class="operator">.</span><span class="number">0</span><span class="operator">-</span>dev libxml2<span class="operator">-</span>dev
+</pre>
+<p>Building the C++ OPC UA SDK:</p>
+<pre class="cpp" translate="no">
+ cd <span class="operator">/</span>path<span class="operator">/</span>to<span class="operator">/</span>sdk
+ <span class="keyword">export</span> SDKDIR<span class="operator">=</span>$PWD
+ <span class="preprocessor"># force position independent code even for static libraries (to make it working in a Qt plugin)</span>
+ <span class="keyword">export</span> CFLAGS<span class="operator">=</span><span class="operator">-</span>fPIC
+ <span class="keyword">export</span> CXXFLAGS<span class="operator">=</span><span class="operator">-</span>fPIC
+ <span class="preprocessor"># create out-of-source build directory</span>
+ mkdir build
+ cd build
+ <span class="preprocessor"># Create Ninja build file (like a Makefile)</span>
+ cmake <span class="operator">-</span>GNinja <span class="operator">-</span>DCMAKE_INSTALL_PREFIX<span class="operator">=</span>$SDKDIR <span class="operator">-</span>DCMAKE_BUILD_TYPE<span class="operator">=</span>Debug <span class="operator">-</span>DBUILD_SHARED_LIBS<span class="operator">=</span>off <span class="operator">-</span>DBUILD_SHARED_STACK<span class="operator">=</span>off <span class="operator">-</span>DBUILD_UAMODELS<span class="operator">=</span>off <span class="operator">-</span>DBUILD_UAMODULE<span class="operator">=</span>off <span class="operator">-</span>DBUILD_COREMODULE<span class="operator">=</span>off <span class="operator">-</span>DBUILD_EXAMPLES<span class="operator">=</span>off <span class="operator">-</span>DBUILD_UASERVERCPP_APP<span class="operator">=</span>off <span class="operator">-</span>DBUILD_TESTING<span class="operator">=</span>off <span class="operator">.</span><span class="operator">.</span>
+ <span class="preprocessor"># build and install the SDK</span>
+ ninja
+ ninja install
+ <span class="preprocessor"># clear compiler flags again to avoid problems with other builds</span>
+ <span class="keyword">export</span> CFLAGS<span class="operator">=</span>
+ <span class="keyword">export</span> CXXFLAGS<span class="operator">=</span>
+</pre>
+<p>Note: You can replace <code translate="no">Debug</code> in <code translate="no">&quot;CMAKE_BUILD_TYPE=Debug&quot;</code> with <code translate="no">Release</code>, <code translate="no">MinSizeRel</code>, or <code translate="no">RelWithDebInfo</code> to build a release version. See <a href="https://cmake.org/cmake/help/v3.8/variable/CMAKE_BUILD_TYPE.html" translate="no">here</a> for more information.</p>
+<h3 id="building-the-qt-opc-ua-uacpp-plugin">Building the Qt OPC UA UACPP Plugin</h3>
+<pre class="cpp" translate="no">
+ cd <span class="operator">/</span>path<span class="operator">/</span>to<span class="operator">/</span>qtopcua
+ cmake <span class="operator">-</span>DCMAKE_BUILD_TYPE<span class="operator">=</span>Debug <span class="operator">-</span>DUACPP_PREFIX<span class="operator">=</span>$SDKDIR
+ make <span class="operator">-</span>j $(nproc)
+ make install
+</pre>
+<p>The output of the <code translate="no">cmake</code> configuration step indicates whether the detection was successful:</p>
+<pre class="cpp" translate="no">
+ Unified Automation C<span class="operator">+</span><span class="operator">+</span> SDK <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span> yes
+</pre>
+<p>If not, you can inspect the config.log to find the reason for the problem.</p>
+<h2 id="building-on-windows-using-msvc">Building on Windows using MSVC</h2>
+<h3 id="preparations">Preparations</h3>
+<p>You need to install Visual Studio, Qt, CMake, and Ninja. Please ensure the CMake and Ninja executables are in PATH, so that the tools work on the console.</p>
+<p>Downloads:</p>
+<ul>
+<li>https://cmake.org</li>
+<li>https://ninja-build.org/</li>
+</ul>
+<h3 id="building-the-sdk">Building the SDK</h3>
+<p>We assume that you have installed Visual Studio. To get a working toolchain, you need to open the Visual Studio Command Prompt. It is important to run CMake also from this console, no matter if it's the <code translate="no">cmake</code> command or the CMake GUI. Otherwise compiler detection may fail.</p>
+<p>Important: All components need to be built with the same Visual Studio version.</p>
+<p>Building the C++ OPC UA SDK:</p>
+<pre class="cpp" translate="no">
+ cd \path\to\sdk
+ set SDKDIR<span class="operator">=</span><span class="operator">%</span>CD<span class="operator">%</span>
+ <span class="preprocessor"># create out-of-source build directory</span>
+ mkdir build
+ cd build
+ <span class="preprocessor"># Create Ninja build file (like a Makefile)</span>
+ cmake <span class="operator">-</span>GNinja <span class="operator">-</span>DCMAKE_INSTALL_PREFIX<span class="operator">=</span><span class="operator">%</span>SDKDIR<span class="operator">%</span> <span class="operator">-</span>DCMAKE_BUILD_TYPE<span class="operator">=</span>Debug <span class="operator">-</span>DBUILD_SHARED_LIBS<span class="operator">=</span>off <span class="operator">-</span>DBUILD_SHARED_STACK<span class="operator">=</span>off <span class="operator">-</span>DBUILD_UAMODELS<span class="operator">=</span>off <span class="operator">-</span>DBUILD_UAMODULE<span class="operator">=</span>off <span class="operator">-</span>DBUILD_COREMODULE<span class="operator">=</span>off <span class="operator">-</span>DBUILD_EXAMPLES<span class="operator">=</span>off <span class="operator">-</span>DBUILD_TESTING<span class="operator">=</span>off <span class="operator">.</span><span class="operator">.</span>
+ <span class="preprocessor"># build and install the SDK</span>
+ ninja
+ ninja install
+</pre>
+<p>Note: You can replace <code translate="no">Debug</code> in <code translate="no">&quot;CMAKE_BUILD_TYPE=Debug&quot;</code> with <code translate="no">Release</code>, <code translate="no">MinSizeRel</code>, or <code translate="no">RelWithDebInfo</code> to build a release version. See <a href="https://cmake.org/cmake/help/v3.8/variable/CMAKE_BUILD_TYPE.html" translate="no">here</a> for more information.</p>
+<p>Instead of building on console, you can also generate a Visual Studio solution by replacing <code translate="no">-GNinja</code> with <code translate="no">-G 'Visual Studio 15 2017'</code>. See <code translate="no">cmake --help</code> to get a list of available generators.</p>
+<h3 id="building-the-qt-opc-ua-uacpp-plugin">Building the Qt OPC UA UACPP Plugin</h3>
+<p>For building the Qt plugin, you need to open the Qt Command prompt for the same Visual Studio version as you used for building the SDK.</p>
+<pre class="cpp" translate="no">
+ cd \path\to\qtopcua
+ cmake <span class="operator">-</span>DCMAKE_BUILD_TYPE<span class="operator">=</span>Debug <span class="operator">-</span>DUACPP_PREFIX<span class="operator">=</span><span class="operator">%</span>SDKDIR<span class="operator">%</span>
+ nmake
+ nmake install
+</pre>
+<p>The output of the <code translate="no">cmake</code> configuration step indicates whether the detection was successful:</p>
+<pre class="cpp" translate="no">
+ Unified Automation C<span class="operator">+</span><span class="operator">+</span> SDK <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span> yes
+</pre>
+<p>If not, you can inspect the config.log to find the reason for the problem.</p>
+<h2 id="final-notes">Final notes</h2>
+<p>The SDK and Qt OPC UA can also be compiled with other compilers like MinGW-w64 for Windows, Clang or can be cross-compiled using various cross-compilers, but this is out of scope of this document.</p>
+<p>Please consult the documentation <a href="http://documentation.unified-automation.com/uasdkcpp/1.6.3/html/CrossCompiling.html" translate="no">here</a> for cross-compiling the SDK or contact the support if you have any questions.</p>
+<h2 id="setting-up-the-key-infrastructure">Setting up the Key Infrastructure</h2>
+<p>With the UACPP Plugin, you can create secure connections with Qt OPC UA. To make this work, each application instances (installation of a program), needs to have its own <code translate="no">Application Instance Certificate</code> and the according private key.</p>
+<p>Follow the common instructions on <a href="qtopcua-security.html" translate="no">Creating OPC UA Clients with security support</a> to setup the keys.</p>
+<h2 id="demo-server">Demo Server</h2>
+<p>For testing the client with security, you can download one of Demo Servers from Unified Automation for free (Windows only).</p>
+<p>https://www.unified-automation.com/downloads/opc-ua-servers.html</p>
+<p>In addition, you can download evaluation versions of various OPC UA Server SDKs which also contain demo servers (Windows and Linux).</p>
+<p>https://www.unified-automation.com/downloads/opc-ua-development.html</p>
+</div>
+<!-- @@@uacpp-index.html -->
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

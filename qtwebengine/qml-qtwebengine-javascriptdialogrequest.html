@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qquickwebenginedialogrequests.cpp -->
+  <meta name="description" content="A request for showing an alert, a confirmation, or a prompt dialog from within JavaScript to the user.">
+  <title>JavaScriptDialogRequest QML Type | Qt WebEngine 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtwebengine-index.html" translate="no">Qt WebEngine</a></li>
+<li><a href="qtwebengine-qmlmodule.html" translate="no">QML Types</a></li>
+<li>JavaScriptDialogRequest</li>
+<li id="buildversion"><a href="qtwebengine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#methods">Methods</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">JavaScriptDialogRequest QML Type</h1>
+<!-- $$$JavaScriptDialogRequest-brief -->
+<p>A request for showing an alert, a confirmation, or a prompt dialog from within JavaScript to the user. <a href="#details">More...</a></p>
+<!-- @@@JavaScriptDialogRequest -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtWebEngine</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> QtWebEngine 1.4</td></tr></table></div><ul>
+<li><a href="qml-qtwebengine-javascriptdialogrequest-members.html">List of all members, including inherited members</a></li>
+</ul>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-javascriptdialogrequest.html#accepted-prop" translate="no">accepted</a></b> : bool</li>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-javascriptdialogrequest.html#defaultText-prop" translate="no">defaultText</a></b> : string</li>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-javascriptdialogrequest.html#message-prop" translate="no">message</a></b> : string</li>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-javascriptdialogrequest.html#securityOrigin-prop" translate="no">securityOrigin</a></b> : url</li>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-javascriptdialogrequest.html#title-prop" translate="no">title</a></b> : string</li>
+<li class="fn" translate="no"><b><a href="qml-qtwebengine-javascriptdialogrequest.html#type-prop" translate="no">type</a></b> : enumeration</li>
+</ul>
+<h2 id="methods">Methods</h2>
+<ul>
+<li class="fn" translate="no">void <b><a href="qml-qtwebengine-javascriptdialogrequest.html#dialogAccept-method" translate="no">dialogAccept</a></b>()</li>
+<li class="fn" translate="no">void <b><a href="qml-qtwebengine-javascriptdialogrequest.html#dialogAccept-method-1" translate="no">dialogAccept</a></b>(string <i>text</i>)</li>
+<li class="fn" translate="no">void <b><a href="qml-qtwebengine-javascriptdialogrequest.html#dialogReject-method" translate="no">dialogReject</a></b>()</li>
+</ul>
+<!-- $$$JavaScriptDialogRequest-description -->
+<h2 id="details">Detailed Description</h2>
+<p>A JavaScriptDialogRequest is passed as an argument of the <a href="qml-qtwebengine-webengineview.html#javaScriptDialogRequested-signal" translate="no">WebEngineView::javaScriptDialogRequested</a> signal. The request is emitted if JavaScript on the page calls HTML5's <a href="https://www.w3.org/TR/html5/webappapis.html#simple-dialogs" translate="no">Simple Dialogs</a> API, or in response to HTML5's <a href="https://www.w3.org/TR/html5/browsers.html#beforeunloadevent" translate="no">BeforeUnloadEvent</a>. The type of a particular dialog can be checked with the <a href="qml-qtwebengine-javascriptdialogrequest.html#type-prop" translate="no">type</a> property.</p>
+<p>The <a href="qml-qtwebengine-javascriptdialogrequest.html#accepted-prop" translate="no">accepted</a> property of the request indicates whether the request is handled by the user code or the default dialog should be displayed. If you set the <a href="qml-qtwebengine-javascriptdialogrequest.html#accepted-prop" translate="no">accepted</a> property to <code translate="no">true</code>, make sure to call either <a href="qml-qtwebengine-javascriptdialogrequest.html#dialogAccept-method" translate="no">dialogAccept</a>() or <a href="qml-qtwebengine-javascriptdialogrequest.html#dialogReject-method" translate="no">dialogReject</a>() afterwards. The JavaScript call causing the request will be blocked until then.</p>
+<p>The following code uses a custom dialog to handle the request:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qml-qtwebengine-webengineview.html" translate="no">WebEngineView</a></span> {
+     <span class="comment">// ...</span>
+     <span class="name">onJavaScriptDialogRequested</span>: <span class="keyword">function</span>(request) {
+         <span class="name">request</span>.<span class="name">accepted</span> <span class="operator">=</span> <span class="number">true</span>;
+         <span class="name">myDialog</span>.<span class="name">request</span> <span class="operator">=</span> <span class="name">request</span> <span class="comment">// keep the reference to the request</span>
+         <span class="name">myDialog</span>.<span class="name">accept</span>.<span class="name">connect</span>(<span class="name">request</span>.<span class="name">dialogAccept</span>);
+         <span class="name">myDialog</span>.<span class="name">reject</span>.<span class="name">connect</span>(<span class="name">request</span>.<span class="name">dialogReject</span>);
+         <span class="name">myDialog</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>;
+     }
+     <span class="comment">// ...</span>
+ }
+</pre>
+<!-- @@@JavaScriptDialogRequest -->
+<h2>Property Documentation</h2>
+<!-- $$$accepted -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="accepted-prop">
+<td class="tblQmlPropNode"><p>
+<span class="name">accepted</span> : <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Indicates whether the JavaScript dialog request has been accepted by the signal handler.</p>
+<p>If the property is <code translate="no">false</code> after any signal handlers for <a href="qml-qtwebengine-webengineview.html#javaScriptDialogRequested-signal" translate="no">WebEngineView::javaScriptDialogRequested</a> have been executed, a default dialog will be shown. To prevent this, set <code translate="no">request.accepted</code> to <code translate="no">true</code>.</p>
+<p>The default is <code translate="no">false</code>.</p>
+</div></div><!-- @@@accepted -->
+<br/>
+<!-- $$$defaultText -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="defaultText-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">defaultText</span> : <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>The default prompt text, if the requested dialog is a prompt.</p>
+</div></div><!-- @@@defaultText -->
+<br/>
+<!-- $$$message -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="message-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">message</span> : <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>The message to be shown to the user.</p>
+</div></div><!-- @@@message -->
+<br/>
+<!-- $$$securityOrigin -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="securityOrigin-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">securityOrigin</span> : <span class="type"><a href="../qtqml/qml-url.html" translate="no">url</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>The URL of the security origin.</p>
+</div></div><!-- @@@securityOrigin -->
+<br/>
+<!-- $$$title -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="title-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">title</span> : <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>A default title for the dialog.</p>
+</div></div><!-- @@@title -->
+<br/>
+<!-- $$$type -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="type-prop">
+<td class="tblQmlPropNode"><p>
+<span class="qmlextra">[read-only] </span><span class="name">type</span> : <span class="type"><a href="../qtqml/qml-enumeration.html" translate="no">enumeration</a></span></p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>Returns the type of the requested dialog box. For more information, see HTML5's <a href="https://www.w3.org/TR/html5/webappapis.html#simple-dialogs" translate="no">Simple Dialogs</a>.</p>
+<div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tbldscr">Description</th></tr>
+<tr><td class="topAlign"><code translate="no">JavaScriptDialogRequest.DialogTypeAlert</code></td><td class="topAlign">A JavaScript alert dialog.</td></tr>
+<tr><td class="topAlign"><code translate="no">JavaScriptDialogRequest.DialogTypeConfirm</code></td><td class="topAlign">A JavaScript confirmation dialog.</td></tr>
+<tr><td class="topAlign"><code translate="no">JavaScriptDialogRequest.DialogTypePrompt</code></td><td class="topAlign">A JavaScript prompt dialog.</td></tr>
+<tr><td class="topAlign"><code translate="no">JavaScriptDialogRequest.DialogTypeBeforeUnload</code></td><td class="topAlign">The users should be asked if they want to leave the page.</td></tr>
+</table></div>
+</div></div><!-- @@@type -->
+<br/>
+<h2>Method Documentation</h2>
+<!-- $$$dialogAccept[overload1]$$$dialogAccept -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="dialogAccept-method">
+<td class="tblQmlFuncNode"><p>
+<span class="type">void</span> <span class="name">dialogAccept</span>()</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This function notifies the engine that the user accepted the dialog.</p>
+</div></div><!-- @@@dialogAccept -->
+<br/>
+<!-- $$$dialogAccept$$$dialogAcceptstring -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="dialogAccept-method-1">
+<td class="tblQmlFuncNode"><p>
+<span class="type">void</span> <span class="name">dialogAccept</span>(<span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span> <i>text</i>)</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This function notifies the engine that the user accepted the dialog, providing the <i translate="no">text</i> in case of a prompt message box.</p>
+</div></div><!-- @@@dialogAccept -->
+<br/>
+<!-- $$$dialogReject[overload1]$$$dialogReject -->
+<div class="qmlitem"><div class="qmlproto" translate="no">
+<div class="table"><table class="qmlname">
+<tr valign="top" class="odd" id="dialogReject-method">
+<td class="tblQmlFuncNode"><p>
+<span class="type">void</span> <span class="name">dialogReject</span>()</p></td></tr>
+</table></div></div>
+<div class="qmldoc"><p>This function notifies the engine that the user rejected the dialog.</p>
+</div></div><!-- @@@dialogReject -->
+<br/>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

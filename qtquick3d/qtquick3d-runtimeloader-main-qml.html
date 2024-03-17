@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qtquick3d-examples-runtimeloader.qdoc -->
+  <meta name="description" content="Demonstrates how assets can be loaded at runtime.">
+  <title>Qt Quick 3D - RuntimeLoader Example | Qt Quick 3D 6.6.0</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - RuntimeLoader Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - RuntimeLoader Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2021 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Window
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ import Qt.labs.platform
+ import QtCore
+
+ import QtQuick3D
+ import QtQuick3D.Helpers
+ import QtQuick3D.AssetUtils
+
+ <span class="type"><a href="../qtquick/qml-qtquick-window.html" translate="no">Window</a></span> {
+     <span class="name">id</span>: <span class="name">windowRoot</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+     <span class="name">width</span>: <span class="number">1280</span>
+     <span class="name">height</span>: <span class="number">720</span>
+
+     property <span class="type"><a href="../qtqml/qml-url.html" translate="no">url</a></span> <span class="name">importUrl</span>;
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">view3D</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">environment</span>: <span class="name">SceneEnvironment</span> {
+             <span class="name">id</span>: <span class="name">env</span>
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">SkyBox</span>
+             <span class="name">lightProbe</span>: <span class="name">Texture</span> {
+                 <span class="name">textureData</span>: <span class="name">ProceduralSkyTextureData</span>{}
+             }
+             <span class="type"><a href="qml-qtquick3d-helpers-infinitegrid.html" translate="no">InfiniteGrid</a></span> {
+                 <span class="name">visible</span>: <span class="name">helper</span>.<span class="name">gridEnabled</span>
+                 <span class="name">gridInterval</span>: <span class="name">helper</span>.<span class="name">gridInterval</span>
+             }
+         }
+
+         <span class="name">camera</span>: <span class="name">helper</span>.<span class="name">orbitControllerEnabled</span> ? <span class="name">orbitCamera</span> : <span class="name">wasdCamera</span>
+
+         <span class="type"><a href="qml-qtquick3d-directionallight.html" translate="no">DirectionalLight</a></span> {
+             <span class="name">eulerRotation</span>.x: -<span class="number">35</span>
+             <span class="name">eulerRotation</span>.y: -<span class="number">90</span>
+
+             <span class="name">castsShadow</span>: <span class="number">true</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">orbitCameraNode</span>
+             <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+                 <span class="name">id</span>: <span class="name">orbitCamera</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">id</span>: <span class="name">wasdCamera</span>
+             <span class="name">onPositionChanged</span>: {
+                 <span class="comment">// Near/far logic copied from OrbitController</span>
+                 let distance = <span class="name">position</span>.<span class="name">length</span>()
+                 <span class="keyword">if</span> (<span class="name">distance</span> <span class="operator">&lt;</span> <span class="number">1</span>) {
+                     <span class="name">clipNear</span> <span class="operator">=</span> <span class="number">0.01</span>
+                     <span class="name">clipFar</span> <span class="operator">=</span> <span class="number">100</span>
+                 } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">distance</span> <span class="operator">&lt;</span> <span class="number">100</span>) {
+                     <span class="name">clipNear</span> <span class="operator">=</span> <span class="number">0.1</span>
+                     <span class="name">clipFar</span> <span class="operator">=</span> <span class="number">1000</span>
+                 } <span class="keyword">else</span> {
+                     <span class="name">clipNear</span> <span class="operator">=</span> <span class="number">1</span>
+                     <span class="name">clipFar</span> <span class="operator">=</span> <span class="number">10000</span>
+                 }
+             }
+         }
+
+         <span class="keyword">function </span><span class="name">resetView</span>() {
+             <span class="keyword">if</span> (<span class="name">importNode</span>.<span class="name">status</span> <span class="operator">===</span> <span class="name">RuntimeLoader</span>.<span class="name">Success</span>) {
+                 <span class="name">helper</span>.<span class="name">resetController</span>()
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-helpers-randominstancing.html" translate="no">RandomInstancing</a></span> {
+             <span class="name">id</span>: <span class="name">instancing</span>
+             <span class="name">instanceCount</span>: <span class="number">30</span>
+             <span class="name">position</span>: <span class="name">InstanceRange</span> {
+                 property <span class="type">alias</span> <span class="name">boundsDiameter</span>: <span class="name">helper</span>.<span class="name">boundsDiameter</span>
+                 <span class="name">from</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">3</span><span class="operator">*</span><span class="name">boundsDiameter</span>, -<span class="number">3</span><span class="operator">*</span><span class="name">boundsDiameter</span>, -<span class="number">3</span><span class="operator">*</span><span class="name">boundsDiameter</span>);
+                 <span class="name">to</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">3</span><span class="operator">*</span><span class="name">boundsDiameter</span>, <span class="number">3</span><span class="operator">*</span><span class="name">boundsDiameter</span>, <span class="number">3</span><span class="operator">*</span><span class="name">boundsDiameter</span>)
+             }
+             <span class="name">color</span>: <span class="name">InstanceRange</span> { <span class="name">from</span>: <span class="string">&quot;black&quot;</span>; <span class="name">to</span>: <span class="string">&quot;white&quot;</span> }
+         }
+
+         <span class="type"><a href="../qtqml/qml-qtqml-qtobject.html" translate="no">QtObject</a></span> {
+             <span class="name">id</span>: <span class="name">helper</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">boundsDiameter</span>: <span class="number">0</span>
+             property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">boundsCenter</span>
+             property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">boundsSize</span>
+             property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">orbitControllerEnabled</span>: <span class="number">true</span>
+             property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">gridEnabled</span>: <span class="name">gridButton</span>.<span class="name">checked</span>
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">cameraDistance</span>: <span class="name">orbitControllerEnabled</span> ? <span class="name">orbitCamera</span>.<span class="name">z</span> : <span class="name">wasdCamera</span>.<span class="name">position</span>.<span class="name">length</span>()
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">gridInterval</span>: <span class="name">Math</span>.<span class="name">pow</span>(<span class="number">10</span>, <span class="name">Math</span>.<span class="name">round</span>(<span class="name">Math</span>.<span class="name">log10</span>(<span class="name">cameraDistance</span>)) <span class="operator">-</span> <span class="number">1</span>)
+
+             <span class="keyword">function </span><span class="name">updateBounds</span>(bounds) {
+                 <span class="name">boundsSize</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">bounds</span>.<span class="name">maximum</span>.<span class="name">x</span> <span class="operator">-</span> <span class="name">bounds</span>.<span class="name">minimum</span>.<span class="name">x</span>,
+                                          <span class="name">bounds</span>.<span class="name">maximum</span>.<span class="name">y</span> <span class="operator">-</span> <span class="name">bounds</span>.<span class="name">minimum</span>.<span class="name">y</span>,
+                                          <span class="name">bounds</span>.<span class="name">maximum</span>.<span class="name">z</span> <span class="operator">-</span> <span class="name">bounds</span>.<span class="name">minimum</span>.<span class="name">z</span>)
+                 <span class="name">boundsDiameter</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">max</span>(<span class="name">boundsSize</span>.<span class="name">x</span>, <span class="name">boundsSize</span>.<span class="name">y</span>, <span class="name">boundsSize</span>.<span class="name">z</span>)
+                 <span class="name">boundsCenter</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>((<span class="name">bounds</span>.<span class="name">maximum</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">bounds</span>.<span class="name">minimum</span>.<span class="name">x</span>) <span class="operator">/</span> <span class="number">2</span>,
+                                            (<span class="name">bounds</span>.<span class="name">maximum</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">bounds</span>.<span class="name">minimum</span>.<span class="name">y</span>) <span class="operator">/</span> <span class="number">2</span>,
+                                            (<span class="name">bounds</span>.<span class="name">maximum</span>.<span class="name">z</span> <span class="operator">+</span> <span class="name">bounds</span>.<span class="name">minimum</span>.<span class="name">z</span>) <span class="operator">/</span> <span class="number">2</span> )
+
+                 <span class="name">wasdController</span>.<span class="name">speed</span> <span class="operator">=</span> <span class="name">boundsDiameter</span> <span class="operator">/</span> <span class="number">1000.0</span>
+                 <span class="name">wasdController</span>.<span class="name">shiftSpeed</span> <span class="operator">=</span> <span class="number">3</span> <span class="operator">*</span> <span class="name">wasdController</span>.<span class="name">speed</span>
+                 <span class="name">wasdCamera</span>.<span class="name">clipNear</span> <span class="operator">=</span> <span class="name">boundsDiameter</span> <span class="operator">/</span> <span class="number">100</span>
+                 <span class="name">wasdCamera</span>.<span class="name">clipFar</span> <span class="operator">=</span> <span class="name">boundsDiameter</span> <span class="operator">*</span> <span class="number">10</span>
+                 <span class="name">view3D</span>.<span class="name">resetView</span>()
+             }
+
+             <span class="keyword">function </span><span class="name">resetController</span>() {
+                 <span class="name">orbitCameraNode</span>.<span class="name">eulerRotation</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">orbitCameraNode</span>.<span class="name">position</span> <span class="operator">=</span> <span class="name">boundsCenter</span>
+                 <span class="name">orbitCamera</span>.<span class="name">position</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">2</span> <span class="operator">*</span> <span class="name">helper</span>.<span class="name">boundsDiameter</span>)
+                 <span class="name">orbitCamera</span>.<span class="name">eulerRotation</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">orbitControllerEnabled</span> <span class="operator">=</span> <span class="number">true</span>
+             }
+
+             <span class="keyword">function </span><span class="name">switchController</span>(useOrbitController) {
+                 <span class="keyword">if</span> (<span class="name">useOrbitController</span>) {
+                     let wasdOffset = <span class="name">wasdCamera</span>.<span class="name">position</span>.<span class="name">minus</span>(<span class="name">boundsCenter</span>)
+                     let wasdDistance = <span class="name">wasdOffset</span>.<span class="name">length</span>()
+                     let wasdDistanceInPlane = <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">wasdOffset</span>.<span class="name">x</span>, <span class="number">0</span>, <span class="name">wasdOffset</span>.<span class="name">z</span>).<span class="name">length</span>()
+                     let yAngle = <span class="name">Math</span>.<span class="name">atan2</span>(<span class="name">wasdOffset</span>.<span class="name">x</span>, <span class="name">wasdOffset</span>.<span class="name">z</span>) <span class="operator">*</span> <span class="number">180</span> <span class="operator">/</span> <span class="name">Math</span>.<span class="name">PI</span>
+                     let xAngle = -<span class="name">Math</span>.<span class="name">atan2</span>(<span class="name">wasdOffset</span>.<span class="name">y</span>, <span class="name">wasdDistanceInPlane</span>) <span class="operator">*</span> <span class="number">180</span> <span class="operator">/</span> <span class="name">Math</span>.<span class="name">PI</span>
+
+                     <span class="name">orbitCameraNode</span>.<span class="name">position</span> <span class="operator">=</span> <span class="name">boundsCenter</span>
+                     <span class="name">orbitCameraNode</span>.<span class="name">eulerRotation</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">xAngle</span>, <span class="name">yAngle</span>, <span class="number">0</span>)
+                     <span class="name">orbitCamera</span>.<span class="name">position</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="name">wasdDistance</span>)
+
+                     <span class="name">orbitCamera</span>.<span class="name">eulerRotation</span> <span class="operator">=</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 } <span class="keyword">else</span> {
+                     <span class="name">wasdCamera</span>.<span class="name">position</span> <span class="operator">=</span> <span class="name">orbitCamera</span>.<span class="name">scenePosition</span>
+                     <span class="name">wasdCamera</span>.<span class="name">rotation</span> <span class="operator">=</span> <span class="name">orbitCamera</span>.<span class="name">sceneRotation</span>
+                     <span class="name">wasdController</span>.<span class="name">focus</span> <span class="operator">=</span> <span class="number">true</span>
+                 }
+                 <span class="name">orbitControllerEnabled</span> <span class="operator">=</span> <span class="name">useOrbitController</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-assetutils-runtimeloader.html" translate="no">RuntimeLoader</a></span> {
+             <span class="name">id</span>: <span class="name">importNode</span>
+             <span class="name">source</span>: <span class="name">windowRoot</span>.<span class="name">importUrl</span>
+             <span class="name">instancing</span>: <span class="name">instancingButton</span>.<span class="name">checked</span> ? <span class="name">instancing</span> : <span class="number">null</span>
+             <span class="name">onBoundsChanged</span>: <span class="name">helper</span>.<span class="name">updateBounds</span>(<span class="name">bounds</span>)
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">parent</span>: <span class="name">importNode</span>
+             <span class="name">source</span>: <span class="string">&quot;#Cube&quot;</span>
+             <span class="name">materials</span>: <span class="name">PrincipledMaterial</span> {
+                 <span class="name">baseColor</span>: <span class="string">&quot;red&quot;</span>
+             }
+             <span class="name">opacity</span>: <span class="number">0.2</span>
+             <span class="name">visible</span>: <span class="name">visualizeButton</span>.<span class="name">checked</span> <span class="operator">&amp;&amp;</span> <span class="name">importNode</span>.<span class="name">status</span> <span class="operator">===</span> <span class="name">RuntimeLoader</span>.<span class="name">Success</span>
+             <span class="name">position</span>: <span class="name">helper</span>.<span class="name">boundsCenter</span>
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">helper</span>.<span class="name">boundsSize</span>.<span class="name">x</span> <span class="operator">/</span> <span class="number">100</span>,
+                                <span class="name">helper</span>.<span class="name">boundsSize</span>.<span class="name">y</span> <span class="operator">/</span> <span class="number">100</span>,
+                                <span class="name">helper</span>.<span class="name">boundsSize</span>.<span class="name">z</span> <span class="operator">/</span> <span class="number">100</span>)
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+             <span class="name">id</span>: <span class="name">messageBox</span>
+             <span class="name">visible</span>: <span class="name">importNode</span>.<span class="name">status</span> <span class="operator">!==</span> <span class="name">RuntimeLoader</span>.<span class="name">Success</span>
+             <span class="name">color</span>: <span class="string">&quot;red&quot;</span>
+             <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">*</span> <span class="number">0.8</span>
+             <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span> <span class="operator">*</span> <span class="number">0.8</span>
+             <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+             <span class="name">radius</span>: <span class="name">Math</span>.<span class="name">min</span>(<span class="name">width</span>, <span class="name">height</span>) <span class="operator">/</span> <span class="number">10</span>
+             <span class="name">opacity</span>: <span class="number">0.6</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                 <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                 <span class="name">font</span>.pixelSize: <span class="number">36</span>
+                 <span class="name">text</span>: <span class="string">&quot;Status: &quot;</span> <span class="operator">+</span> <span class="name">importNode</span>.<span class="name">errorString</span> <span class="operator">+</span> <span class="string">&quot;\nPress \&quot;Import...\&quot; to import a model&quot;</span>
+                 <span class="name">color</span>: <span class="string">&quot;white&quot;</span>
+                 <span class="name">wrapMode</span>: <span class="name">Text</span>.<span class="name">Wrap</span>
+                 <span class="name">horizontalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">verticalAlignment</span>: <span class="name">Text</span>.<span class="name">AlignVCenter</span>
+             }
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick3d-helpers-orbitcameracontroller.html" translate="no">OrbitCameraController</a></span> {
+         <span class="name">id</span>: <span class="name">orbitController</span>
+         <span class="name">origin</span>: <span class="name">orbitCameraNode</span>
+         <span class="name">camera</span>: <span class="name">orbitCamera</span>
+         <span class="name">enabled</span>: <span class="name">helper</span>.<span class="name">orbitControllerEnabled</span>
+     }
+     <span class="type"><a href="qml-qtquick3d-helpers-wasdcontroller.html" translate="no">WasdController</a></span> {
+         <span class="name">id</span>: <span class="name">wasdController</span>
+         <span class="name">controlledObject</span>: <span class="name">wasdCamera</span>
+         <span class="name">enabled</span>: !<span class="name">helper</span>.<span class="name">orbitControllerEnabled</span>
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-pane.html" translate="no">Pane</a></span> {
+         <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span>
+         <span class="name">contentHeight</span>: <span class="name">controlsLayout</span>.<span class="name">implicitHeight</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+             <span class="name">id</span>: <span class="name">controlsLayout</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">id</span>: <span class="name">importButton</span>
+                 <span class="name">text</span>: <span class="string">&quot;Import...&quot;</span>
+                 <span class="name">onClicked</span>: <span class="name">fileDialog</span>.<span class="name">open</span>()
+                 <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">id</span>: <span class="name">resetButton</span>
+                 <span class="name">text</span>: <span class="string">&quot;Reset view&quot;</span>
+                 <span class="name">onClicked</span>: <span class="name">view3D</span>.<span class="name">resetView</span>()
+                 <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">id</span>: <span class="name">visualizeButton</span>
+                 <span class="name">checkable</span>: <span class="number">true</span>
+                 <span class="name">text</span>: <span class="string">&quot;Visualize bounds&quot;</span>
+                 <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">id</span>: <span class="name">instancingButton</span>
+                 <span class="name">checkable</span>: <span class="number">true</span>
+                 <span class="name">text</span>: <span class="string">&quot;Instancing&quot;</span>
+                 <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">id</span>: <span class="name">gridButton</span>
+                 <span class="name">text</span>: <span class="string">&quot;Show grid&quot;</span>
+                 <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+                 <span class="name">checkable</span>: <span class="number">true</span>
+                 <span class="name">checked</span>: <span class="number">false</span>
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">id</span>: <span class="name">controllerButton</span>
+                 <span class="name">text</span>: <span class="name">helper</span>.<span class="name">orbitControllerEnabled</span> ? <span class="string">&quot;Orbit&quot;</span> : <span class="string">&quot;WASD&quot;</span>
+                 <span class="name">onClicked</span>: <span class="name">helper</span>.<span class="name">switchController</span>(!<span class="name">helper</span>.<span class="name">orbitControllerEnabled</span>)
+                 <span class="name">focusPolicy</span>: <span class="name">Qt</span>.<span class="name">NoFocus</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-layouts-rowlayout.html" translate="no">RowLayout</a></span> {
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                     <span class="name">text</span>: <span class="string">&quot;Material Override&quot;</span>
+                 }
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                     <span class="name">id</span>: <span class="name">materialOverrideComboBox</span>
+                     <span class="name">textRole</span>: <span class="string">&quot;text&quot;</span>
+                     <span class="name">valueRole</span>: <span class="string">&quot;value&quot;</span>
+                     <span class="name">implicitContentWidthPolicy</span>: <span class="name">ComboBox</span>.<span class="name">WidestText</span>
+                     <span class="name">onActivated</span>: <span class="name">env</span>.<span class="name">debugSettings</span>.<span class="name">materialOverride</span> <span class="operator">=</span> <span class="name">currentValue</span>
+
+                     <span class="name">Component</span>.onCompleted: <span class="name">materialOverrideComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="name">materialOverrideComboBox</span>.<span class="name">indexOfValue</span>(<span class="name">env</span>.<span class="name">debugSettings</span>.<span class="name">materialOverride</span>)
+
+                     <span class="name">model</span>: [
+                         { value: <span class="name">DebugSettings</span>.<span class="name">None</span>, text: <span class="string">&quot;None&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">BaseColor</span>, text: <span class="string">&quot;Base Color&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">Roughness</span>, text: <span class="string">&quot;Roughness&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">Metalness</span>, text: <span class="string">&quot;Metalness&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">Diffuse</span>, text: <span class="string">&quot;Diffuse&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">Specular</span>, text: <span class="string">&quot;Specular&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">ShadowOcclusion</span>, text: <span class="string">&quot;Shadow Occlusion&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">Emission</span>, text: <span class="string">&quot;Emission&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">AmbientOcclusion</span>, text: <span class="string">&quot;Ambient Occlusion&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">Normals</span>, text: <span class="string">&quot;Normals&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">Tangents</span>, text: <span class="string">&quot;Tangents&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">Binormals</span>, text: <span class="string">&quot;Binormals&quot;</span>},
+                         { value: <span class="name">DebugSettings</span>.<span class="name">F0</span>, text: <span class="string">&quot;F0&quot;</span>}
+                     ]
+                 }
+             }
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                 <span class="name">text</span>: <span class="string">&quot;Wireframe&quot;</span>
+                 <span class="name">checked</span>: <span class="name">env</span>.<span class="name">debugSettings</span>.<span class="name">wireframeEnabled</span>
+                 <span class="name">onCheckedChanged</span>: {
+                     <span class="name">env</span>.<span class="name">debugSettings</span>.<span class="name">wireframeEnabled</span> <span class="operator">=</span> <span class="name">checked</span>
+                 }
+             }
+         }
+     }
+     <span class="type">FileDialog</span> {
+         <span class="name">id</span>: <span class="name">fileDialog</span>
+         <span class="name">nameFilters</span>: [<span class="string">&quot;glTF files (*.gltf *.glb)&quot;</span>, <span class="string">&quot;All files (*)&quot;</span>]
+         <span class="name">onAccepted</span>: <span class="name">importUrl</span> <span class="operator">=</span> <span class="name">file</span>
+         <span class="type"><a href="../qtquick/qml-qt-labs-settings-settings.html" translate="no">Settings</a></span> {
+             <span class="name">id</span>: <span class="name">fileDialogSettings</span>
+             <span class="name">category</span>: <span class="string">&quot;QtQuick3D.Examples.RuntimeLoader&quot;</span>
+             property <span class="type">alias</span> <span class="name">folder</span>: <span class="name">fileDialog</span>.<span class="name">folder</span>
+         }
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+         <span class="name">width</span>: <span class="name">debugViewToggleText</span>.<span class="name">implicitWidth</span>
+         <span class="name">height</span>: <span class="name">debugViewToggleText</span>.<span class="name">implicitHeight</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+             <span class="name">id</span>: <span class="name">debugViewToggleText</span>
+             <span class="name">text</span>: <span class="string">&quot;Click here &quot;</span> <span class="operator">+</span> (<span class="name">dbg</span>.<span class="name">visible</span> ? <span class="string">&quot;to hide DebugView&quot;</span> : <span class="string">&quot;for DebugView&quot;</span>)
+             <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+             <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">onClicked</span>: <span class="name">dbg</span>.<span class="name">visible</span> <span class="operator">=</span> !<span class="name">dbg</span>.<span class="name">visible</span>
+             <span class="type"><a href="qml-qtquick3d-helpers-debugview.html" translate="no">DebugView</a></span> {
+                 <span class="name">y</span>: <span class="name">debugViewToggleText</span>.<span class="name">height</span> <span class="operator">*</span> <span class="number">2</span>
+                 <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+                 <span class="name">source</span>: <span class="name">view3D</span>
+                 <span class="name">id</span>: <span class="name">dbg</span>
+                 <span class="name">visible</span>: <span class="number">false</span>
+             }
+         }
+     }
+ }
+</pre>
