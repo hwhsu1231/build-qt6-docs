@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- rhiwindow.qdoc -->
   <meta name="description" content="This example shows how to create a minimal QWindow-based application using QRhi.">
-  <title>RHI Window Example | Qt GUI 6.6.0</title>
+  <title>RHI Window Example | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li>RHI Window Example</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -85,7 +85,7 @@
 <li>A resizable <a href="qwindow.html" translate="no">QWindow</a>,</li>
 <li>a swapchain and depth-stencil buffer that properly follows the size of the window,</li>
 <li>logic to initialize, render, and tear down at the appropriate time based on events such as <a href="qexposeevent.html" translate="no">QExposeEvent</a> and <a href="qplatformsurfaceevent.html" translate="no">QPlatformSurfaceEvent</a>,</li>
-<li>rendering a fullscreen textured quad, using a texture the contents of which is generated in a <a href="qimage.html" translate="no">QImage</a> via <a href="qpainter.html" translate="no">QPainter</a> (using the raster paint engine, i.e&#x2e; the generating of the image's pixel data is all CPU-based, that data is then uploaded into a GPU texture),</li>
+<li>rendering a fullscreen textured quad, using a texture the contents of which is generated in a <a href="qimage.html" translate="no">QImage</a> via <a href="qpainter.html" translate="no">QPainter</a> (using the raster paint engine, i.e. the generating of the image's pixel data is all CPU-based, that data is then uploaded into a GPU texture),</li>
 <li>rendering a triangle with blending and depth testing enabled, using a perspective projection, while applying a model transform that changes on every frame,</li>
 <li>an efficient, cross-platform render loop using <a href="qwindow.html#requestUpdate" translate="no">requestUpdate</a>().</li>
 </ul>
@@ -99,7 +99,7 @@
 <p>Due to being a Qt GUI module example, this example cannot have a dependency on the <a href="../qtshadertools/qtshadertools-index.html" translate="no">Qt Shader Tools</a> module. This means that CMake helper functions such as <code translate="no">qt_add_shaders</code> are not available for use. Therefore, the example has the pre-processed <code translate="no">.qsb</code> files included in the <code translate="no">shaders/prebuilt</code> folder, and they are simply included within the executable via <code translate="no">qt_add_resources</code>. This approach is not generally recommended for applications, consider rather using <a href="../qtshadertools/qtshadertools-build.html" translate="no">qt_add_shaders</a>, which avoids the need to manually generate and manage the <code translate="no">.qsb</code> files.</p>
 <p>To generate the <code translate="no">.qsb</code> files for this example, the command <code translate="no">qsb --qt6 color.vert -o prebuilt/color.vert.qsb</code> etc. was used. This leads to compiling to <a href="https://www.khronos.org/spir/" translate="no">SPIR-V</a> and than transpiling into GLSL (<code translate="no">100 es</code> and <code translate="no">120</code>), HLSL (5.0), and MSL (1.2). All the shader versions are then packed together into a <a href="qshader.html" translate="no">QShader</a> and serialized to disk.</p>
 <h4 id="api-specific-initialization">API-specific Initialization</h4>
-<p>For some of the 3D APIs the main() function has to perform the appropriate API-specific initialiation, e.g&#x2e; to create a <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a> when using Vulkan. For OpenGL we have to ensure a depth buffer is available, this is done via <a href="qsurfaceformat.html" translate="no">QSurfaceFormat</a>. These steps are not in the scope of <a href="qrhi.html" translate="no">QRhi</a> since <a href="qrhi.html" translate="no">QRhi</a> backends for OpenGL or Vulkan build on the existing Qt facilities such as <a href="qopenglcontext.html" translate="no">QOpenGLContext</a> or <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a>.</p>
+<p>For some of the 3D APIs the main() function has to perform the appropriate API-specific initialiation, e.g. to create a <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a> when using Vulkan. For OpenGL we have to ensure a depth buffer is available, this is done via <a href="qsurfaceformat.html" translate="no">QSurfaceFormat</a>. These steps are not in the scope of <a href="qrhi.html" translate="no">QRhi</a> since <a href="qrhi.html" translate="no">QRhi</a> backends for OpenGL or Vulkan build on the existing Qt facilities such as <a href="qopenglcontext.html" translate="no">QOpenGLContext</a> or <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a>.</p>
 <pre class="cpp" translate="no">
     <span class="comment">// For OpenGL, to ensure there is a depth/stencil buffer for the window.</span>
     <span class="comment">// With other APIs this is under the application's control (QRhiRenderBuffer etc.)</span>
@@ -218,7 +218,7 @@
 </pre>
 <p>Apart from this, everything else, all the rendering code, is fully cross-platform and has no branching or conditions specific to any of the 3D API.</p>
 <h4 id="expose-events">Expose Events</h4>
-<p>What <code translate="no">renderable</code> exactly means is platform-specific. For example, on macOS a window that is fully obscured (fully behind some other window) is not renderable, whereas on Windows obscuring has no significance. Fortunately, the application needs no special knowledge about this: Qt's platform plugins abstract the differences behind the expose event. However, the <a href="qwindow.html#exposeEvent" translate="no">exposeEvent</a>() reimplementation also needs to be aware that an empty output size (e.g&#x2e; width and height of 0) is also something that should be treated as a non-renderable situation. On Windows for example, this is what is going to happen when minimizing the window. Hence the check based on <a href="qrhiswapchain.html#surfacePixelSize" translate="no">QRhiSwapChain::surfacePixelSize</a>().</p>
+<p>What <code translate="no">renderable</code> exactly means is platform-specific. For example, on macOS a window that is fully obscured (fully behind some other window) is not renderable, whereas on Windows obscuring has no significance. Fortunately, the application needs no special knowledge about this: Qt's platform plugins abstract the differences behind the expose event. However, the <a href="qwindow.html#exposeEvent" translate="no">exposeEvent</a>() reimplementation also needs to be aware that an empty output size (e.g. width and height of 0) is also something that should be treated as a non-renderable situation. On Windows for example, this is what is going to happen when minimizing the window. Hence the check based on <a href="qrhiswapchain.html#surfacePixelSize" translate="no">QRhiSwapChain::surfacePixelSize</a>().</p>
 <p>This implementation of expose event handling attempts to be robust, safe, and portable. Qt Quick itself also implements a very similar logic in its render loops.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> RhiWindow<span class="operator">::</span>exposeEvent(<span class="type"><a href="qexposeevent.html" translate="no">QExposeEvent</a></span> <span class="operator">*</span>)
@@ -361,7 +361,7 @@
      m_ubuf<span class="operator">.</span>reset(m_rhi<span class="operator">-</span><span class="operator">&gt;</span>newBuffer(<span class="type"><a href="qrhibuffer.html" translate="no">QRhiBuffer</a></span><span class="operator">::</span>Dynamic<span class="operator">,</span> <span class="type"><a href="qrhibuffer.html" translate="no">QRhiBuffer</a></span><span class="operator">::</span>UniformBuffer<span class="operator">,</span> UBUF_SIZE));
      m_ubuf<span class="operator">-</span><span class="operator">&gt;</span>create();
 </pre>
-<p>The vertex and fragment shaders both need a uniform buffer at binding point 0. This is ensured by the <a href="qrhishaderresourcebindings.html" translate="no">QRhiShaderResourceBindings</a> object. The graphics pipeline is then setup with the shaders and a number of additional information. The example also relies on a number of convenient defaults, e.g&#x2e; the primitive topology is <a href="qrhigraphicspipeline.html#Topology-enum" translate="no">Triangles</a>, but that is the default, and therefore it is not explicitly set. See <a href="qrhigraphicspipeline.html" translate="no">QRhiGraphicsPipeline</a> for further details.</p>
+<p>The vertex and fragment shaders both need a uniform buffer at binding point 0. This is ensured by the <a href="qrhishaderresourcebindings.html" translate="no">QRhiShaderResourceBindings</a> object. The graphics pipeline is then setup with the shaders and a number of additional information. The example also relies on a number of convenient defaults, e.g. the primitive topology is <a href="qrhigraphicspipeline.html#Topology-enum" translate="no">Triangles</a>, but that is the default, and therefore it is not explicitly set. See <a href="qrhigraphicspipeline.html" translate="no">QRhiGraphicsPipeline</a> for further details.</p>
 <p>In addition to specifying the topology and various state, the pipeline must also be associated with:</p>
 <ul>
 <li>The vertex input layout in form of a <a href="qrhivertexinputlayout.html" translate="no">QRhiVertexInputLayout</a>. This specifies the type and component count for each vertex input location, the total stride in bytes per vertex, and other related data. <a href="qrhivertexinputlayout.html" translate="no">QRhiVertexInputLayout</a> only holds data, not actual native resources, and is copiable.</li>
@@ -483,7 +483,7 @@
      cb<span class="operator">-</span><span class="operator">&gt;</span>endPass();
 </pre>
 <p>The <a href="qrhicommandbuffer.html#setShaderResources" translate="no">setShaderResources</a>() call has no arguments given, which implies using <code translate="no">m_colorTriSrb</code> since that was associated with the active <a href="qrhigraphicspipeline.html" translate="no">QRhiGraphicsPipeline</a> (<code translate="no">m_colorPipeline</code>).</p>
-<p>We will not dive into the details of the rendering of the fullscreen background image. See the example source code for that. It is however worth noting a common pattern for &quot;resizing&quot; a texture or buffer resource. There is no such thing as changing the size of an existing native resource, so changing a texture or buffer size must be followed by a call to create(), to release and recreate the underlying native resources. To ensure that the <a href="qrhitexture.html" translate="no">QRhiTexture</a> always has the required size, the application implements the following logic. Note that <code translate="no">m_texture</code> stays valid for the entire lifetime of the window, which means object references to it, e.g&#x2e; in a <a href="qrhishaderresourcebindings.html" translate="no">QRhiShaderResourceBindings</a>, continue to be valid all the time. It is only the underlying native resources that come and go over time.</p>
+<p>We will not dive into the details of the rendering of the fullscreen background image. See the example source code for that. It is however worth noting a common pattern for &quot;resizing&quot; a texture or buffer resource. There is no such thing as changing the size of an existing native resource, so changing a texture or buffer size must be followed by a call to create(), to release and recreate the underlying native resources. To ensure that the <a href="qrhitexture.html" translate="no">QRhiTexture</a> always has the required size, the application implements the following logic. Note that <code translate="no">m_texture</code> stays valid for the entire lifetime of the window, which means object references to it, e.g. in a <a href="qrhishaderresourcebindings.html" translate="no">QRhiShaderResourceBindings</a>, continue to be valid all the time. It is only the underlying native resources that come and go over time.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> HelloWindow<span class="operator">::</span>ensureFullscreenTexture(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> <span class="operator">&amp;</span>pixelSize<span class="operator">,</span> <span class="type"><a href="qrhiresourceupdatebatch.html" translate="no">QRhiResourceUpdateBatch</a></span> <span class="operator">*</span>u)
  {
@@ -514,9 +514,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

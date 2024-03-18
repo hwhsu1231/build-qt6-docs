@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- modelview.qdoc -->
   <meta name="description" content="An introduction to ModelView programming">
-  <title>Model/View Tutorial | Qt Widgets 6.6.0</title>
+  <title>Model/View Tutorial | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li>Model/View Tutorial</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -112,7 +112,7 @@
 </table></div>
 <h3 id="1-4-using-adapters-between-forms-and-models">1.4 Using Adapters between Forms and Models</h3>
 <p>Having adapters between forms and models can come in handy.</p>
-<p>We can edit data stored in tables directly from within the table itself, but it's much more comfortable to edit data in text fields. There is no direct model/view counterpart that separates data and views for widgets that operate on one value (<a href="qlineedit.html" translate="no">QLineEdit</a>, <a href="qcheckbox.html" translate="no">QCheckBox</a> ..&#x2e;) instead of a dataset, so we need an adapter in order to connect the form to the source of data.</p>
+<p>We can edit data stored in tables directly from within the table itself, but it's much more comfortable to edit data in text fields. There is no direct model/view counterpart that separates data and views for widgets that operate on one value (<a href="qlineedit.html" translate="no">QLineEdit</a>, <a href="qcheckbox.html" translate="no">QCheckBox</a> ...) instead of a dataset, so we need an adapter in order to connect the form to the source of data.</p>
 <p><a href="qdatawidgetmapper.html" translate="no">QDataWidgetMapper</a> is a great solution because it maps form widgets to a table row and makes it very easy to build forms for database tables.</p>
 <p class="centerAlign"><img src="images/widgetmapper.png" alt="" /></p><p>Another example of an adapter is <a href="qcompleter.html" translate="no">QCompleter</a>. Qt has <a href="qcompleter.html" translate="no">QCompleter</a> for providing auto-completions in Qt widgets such as <a href="qcombobox.html" translate="no">QComboBox</a> and, as shown below, <a href="qlineedit.html" translate="no">QLineEdit</a>. <a href="qcompleter.html" translate="no">QCompleter</a> uses a model as its data source.</p>
 <p class="centerAlign"><img src="images/qcompleter.png" alt="" /></p><h2 id="2-a-simple-model-view-application">2. A Simple Model/View Application</h2>
@@ -194,7 +194,7 @@
 </pre>
 <p>The number of rows and columns is provided by <a href="../qtcore/qabstractitemmodel.html#rowCount" translate="no">MyModel::rowCount</a>() and <a href="../qtcore/qabstractitemmodel.html#columnCount" translate="no">MyModel::columnCount</a>(). When the view has to know what the cell's text is, it calls the method <a href="../qtcore/qabstractitemmodel.html#data" translate="no">MyModel::data</a>(). Row and column information is specified with parameter <code translate="no">index</code> and the role is set to <a href="../qtcore/qt.html#ItemDataRole-enum" translate="no">Qt::DisplayRole</a>. Other roles are covered in the next section. In our example, the data that should be displayed is generated. In a real application, <code translate="no">MyModel</code> would have a member called <code translate="no">MyData</code>, which serves as the target for all reading and writing operations.</p>
 <p>This small example demonstrates the passive nature of a model. The model does not know when it will be used or which data is needed. It simply provides data each time the view requests it.</p>
-<p>What happens when the model's data needs to be changed? How does the view realize that data has changed and needs to be read again? The model has to emit a signal that indicates what range of cells has changed. This will be demonstrated in section 2.3&#x2e;</p>
+<p>What happens when the model's data needs to be changed? How does the view realize that data has changed and needs to be read again? The model has to emit a signal that indicates what range of cells has changed. This will be demonstrated in section 2.3.</p>
 <h3 id="2-2-extending-the-read-only-example-with-roles">2.2 Extending the Read Only Example with Roles</h3>
 <p>In addition to controlling what text the view displays, the model also controls the text's appearance. When we slightly change the model, we get the following result:</p>
 <p class="centerAlign"><img src="images/readonlytable_role.png" alt="" /></p><p>In fact, nothing except for the <a href="../qtcore/qabstractitemmodel.html#data" translate="no">data</a>() method needs to be changed to set fonts, background colour, alignment and a checkbox. Below is the <a href="../qtcore/qabstractitemmodel.html#data" translate="no">data</a>() method that produces the result shown above. The difference is that this time we use parameter int role to return different pieces of information depending on its value.</p>
@@ -502,7 +502,7 @@
 <tr valign="top" class="odd"><td ><a href="../qtcore/qsortfilterproxymodel.html" translate="no">QSortFilterProxyModel</a></td><td >Sorts and/or filters another model</td></tr>
 </table></div>
 <h3 id="3-4-delegates">3.4 Delegates</h3>
-<p>In all examples so far, data is presented as text or a checkbox in a cell and is edited as text or a checkbox. The component that provides these presentation and editing services is called a <i>delegate</i>. We are only just beginning to work with the delegate because the view uses a default delegate. But imagine that we want to have a different editor (e.g&#x2e;, a slider or a drop down list) Or imagine that we want to present data as graphics. Let's take a look at an example called <a href="qtwidgets-itemviews-stardelegate-example.html" translate="no">Star Delegate</a>, in which stars are used to show a rating:</p>
+<p>In all examples so far, data is presented as text or a checkbox in a cell and is edited as text or a checkbox. The component that provides these presentation and editing services is called a <i>delegate</i>. We are only just beginning to work with the delegate because the view uses a default delegate. But imagine that we want to have a different editor (e.g., a slider or a drop down list) Or imagine that we want to present data as graphics. Let's take a look at an example called <a href="qtwidgets-itemviews-stardelegate-example.html" translate="no">Star Delegate</a>, in which stars are used to show a rating:</p>
 <p class="centerAlign"><img src="images/stardelegate.png" alt="" /></p><p>The view has a <a href="qabstractitemview.html#setItemDelegate" translate="no">setItemDelegate</a>() method that replaces the default delegate and installs a custom delegate. A new delegate can be written by creating a class that inherits from <a href="qstyleditemdelegate.html" translate="no">QStyledItemDelegate</a>. In order to write a delegate that displays stars and has no input capabilities, we only need to override 2 methods.</p>
 <pre class="cpp" translate="no">
  <span class="keyword">class</span> StarDelegate : <span class="keyword">public</span> <span class="type"><a href="qstyleditemdelegate.html" translate="no">QStyledItemDelegate</a></span>
@@ -598,9 +598,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

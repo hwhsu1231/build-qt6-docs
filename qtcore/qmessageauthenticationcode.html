@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qcryptographichash.cpp -->
   <meta name="description" content="The QMessageAuthenticationCode class provides a way to generate hash-based message authentication codes.">
-  <title>QMessageAuthenticationCode Class | Qt Core 6.6.0</title>
+  <title>QMessageAuthenticationCode Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QMessageAuthenticationCode</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -83,8 +83,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$QMessageAuthenticationCode-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p>QMessageAuthenticationCode supports all cryptographic hashes which are supported by <a href="qcryptographichash.html" translate="no">QCryptographicHash</a>.</p>
-<p>To generate message authentication code, pass hash algorithm <a href="qcryptographichash.html#Algorithm-enum" translate="no">QCryptographicHash::Algorithm</a> to constructor, then set key and message by <a href="qmessageauthenticationcode.html#setKey" translate="no">setKey</a>() and <a href="qmessageauthenticationcode.html#addData" translate="no">addData</a>() functions. Result can be acquired by <a href="qmessageauthenticationcode.html#result" translate="no">result</a>() function.</p>
+<p>Use the QMessageAuthenticationCode class to generate hash-based message authentication codes (HMACs). The class supports all cryptographic hash algorithms from <a href="qcryptographichash.html" translate="no">QCryptographicHash</a> (see also <a href="qcryptographichash.html#Algorithm-enum" translate="no">QCryptographicHash::Algorithm</a>).</p>
+<p>To generate a message authentication code, pass a suitable hash algorithm and secret key to the constructor. Then process the message data by calling <a href="qmessageauthenticationcode.html#addData" translate="no">addData</a>() one or more times. After the full message has been processed, get the final authentication code via the <a href="qmessageauthenticationcode.html#result" translate="no">result</a>() function:</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="qbytearray.html" translate="no">QByteArray</a></span> key <span class="operator">=</span> <span class="string">&quot;key&quot;</span>;
      <span class="type"><a href="qbytearray.html" translate="no">QByteArray</a></span> message <span class="operator">=</span> <span class="string">&quot;The quick brown fox jumps over the lazy dog&quot;</span>;
@@ -93,12 +93,15 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
      code<span class="operator">.</span>addData(message);
      code<span class="operator">.</span>result()<span class="operator">.</span>toHex(); <span class="comment">// returns &quot;f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8&quot;</span>
 </pre>
-<p>Alternatively, this effect can be achieved by providing message, key and method to <a href="qmessageauthenticationcode.html#hash" translate="no">hash</a>() method.</p>
+<p>For simple cases like above, you can also use the static <a href="qmessageauthenticationcode.html#hash" translate="no">hash</a>() function:</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="qmessageauthenticationcode.html#QMessageAuthenticationCode" translate="no">QMessageAuthenticationCode</a></span><span class="operator">::</span>hash(message<span class="operator">,</span> key<span class="operator">,</span> <span class="type"><a href="qcryptographichash.html" translate="no">QCryptographicHash</a></span><span class="operator">::</span>Sha256)<span class="operator">.</span>toHex();
 </pre>
+<div class="admonition note">
+<p><b>Note: </b>The cryptographic strength of the HMAC depends upon the size of the secret key, and the security of the underlying hash function.</p>
 </div>
-<p><b>See also </b><a href="qcryptographichash.html" translate="no">QCryptographicHash</a>.</p>
+</div>
+<p><b>See also </b><a href="qcryptographichash.html" translate="no">QCryptographicHash</a> and <a href="qcryptographichash.html#Algorithm-enum" translate="no">QCryptographicHash::Algorithm</a>.</p>
 <!-- @@@QMessageAuthenticationCode -->
 <div class="func">
 <h2>Member Function Documentation</h2>
@@ -150,7 +153,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@hash -->
 <!-- $$$reset[overload1]$$$reset -->
 <h3 class="fn" translate="no" id="reset"><code translate="no">[noexcept] </code><span class="type">void</span> QMessageAuthenticationCode::<span class="name">reset</span>()</h3>
-<p>Resets message data. Calling this method doesn't affect the key.</p>
+<p>Resets message data. Calling this function doesn't affect the key.</p>
 <!-- @@@reset -->
 <!-- $$$result[overload1]$$$result -->
 <h3 class="fn" translate="no" id="result"><span class="type"><a href="qbytearray.html" translate="no">QByteArray</a></span> QMessageAuthenticationCode::<span class="name">result</span>() const</h3>
@@ -166,8 +169,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@resultView -->
 <!-- $$$setKey[overload1]$$$setKeyQByteArrayView -->
 <h3 class="fn" translate="no" id="setKey"><code translate="no">[noexcept] </code><span class="type">void</span> QMessageAuthenticationCode::<span class="name">setKey</span>(<span class="type"><a href="qbytearrayview.html" translate="no">QByteArrayView</a></span> <i>key</i>)</h3>
-<p>Sets secret <i translate="no">key</i>. Calling this method automatically resets the object state.</p>
-<p>For optimal performance, call this method only to <i>change</i> the active key, not to set an <i>initial</i> key, as in</p>
+<p>Sets secret <i translate="no">key</i>. Calling this function automatically resets the object state.</p>
+<p>For optimal performance, call this function only to <i>change</i> the active key, not to set an <i>initial</i> key, as in</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qmessageauthenticationcode.html#QMessageAuthenticationCode" translate="no">QMessageAuthenticationCode</a></span> mac(method);
  mac<span class="operator">.</span>setKey(key); <span class="comment">// does extra work</span>
@@ -211,9 +214,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qstatemachine.cpp -->
   <meta name="description" content="The QStateMachine class provides a hierarchical finite state machine.">
-  <title>QStateMachine Class | Qt State Machine 6.6.0</title>
+  <title>QStateMachine Class | Qt State Machine 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtstatemachine-index.html" translate="no">Qt State Machine</a></li>
 <li><a href="qtstatemachine-module.html" translate="no">C++ Classes</a></li>
 <li>QStateMachine</li>
-<li id="buildversion"><a href="qtstatemachine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtstatemachine-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -144,7 +144,7 @@ target_link_libraries(mytarget PRIVATE Qt6::StateMachine)</td></tr>
 <p>A state machine manages a set of states (classes that inherit from <a href="qml-qtqml-statemachine-qabstractstate.html" translate="no">QAbstractState</a>) and transitions (descendants of <a href="qml-qtqml-statemachine-qabstracttransition.html" translate="no">QAbstractTransition</a>) between those states; these states and transitions define a state graph. Once a state graph has been built, the state machine can execute it. QStateMachine's execution algorithm is based on the <a href="http://www.w3.org/TR/scxml/" translate="no">State Chart XML (SCXML)</a> algorithm. The framework's <a href="qtstatemachine-overview.html" translate="no">overview</a> gives several state graphs and the code to build them.</p>
 <p>Use the <a href="qstatemachine.html#addState" translate="no">addState</a>() function to add a top-level state to the state machine. States are removed with the <a href="qstatemachine.html#removeState" translate="no">removeState</a>() function. Removing states while the machine is running is discouraged.</p>
 <p>Before the machine can be started, the <a href="qstate.html#initialState" translate="no">initial state</a> must be set. The initial state is the state that the machine enters when started. You can then <a href="qstatemachine.html#start" translate="no">start</a>() the state machine. The <a href="qstatemachine.html#started" translate="no">started</a>() signal is emitted when the initial state is entered.</p>
-<p>The machine is event driven and keeps its own event loop. Events are posted to the machine through <a href="qstatemachine.html#postEvent" translate="no">postEvent</a>(). Note that this means that it executes asynchronously, and that it will not progress without a running event loop. You will normally not have to post events to the machine directly as Qt's transitions, e.g&#x2e;, <a href="qeventtransition.html" translate="no">QEventTransition</a> and its subclasses, handle this. But for custom transitions triggered by events, <a href="qstatemachine.html#postEvent" translate="no">postEvent</a>() is useful.</p>
+<p>The machine is event driven and keeps its own event loop. Events are posted to the machine through <a href="qstatemachine.html#postEvent" translate="no">postEvent</a>(). Note that this means that it executes asynchronously, and that it will not progress without a running event loop. You will normally not have to post events to the machine directly as Qt's transitions, e.g., <a href="qeventtransition.html" translate="no">QEventTransition</a> and its subclasses, handle this. But for custom transitions triggered by events, <a href="qstatemachine.html#postEvent" translate="no">postEvent</a>() is useful.</p>
 <p>The state machine processes events and takes transitions until a top-level final state is entered; the state machine then emits the <a href="qstate.html#finished" translate="no">finished</a>() signal. You can also <a href="qstatemachine.html#stop" translate="no">stop</a>() the state machine explicitly. The <a href="qstatemachine.html#stopped" translate="no">stopped</a>() signal is emitted in this case.</p>
 <p>The following snippet shows a state machine that will finish when a button is clicked:</p>
 <pre class="cpp" translate="no">
@@ -162,7 +162,7 @@ target_link_libraries(mytarget PRIVATE Qt6::StateMachine)</td></tr>
  machine<span class="operator">.</span>setInitialState(s1);
  machine<span class="operator">.</span>start();
 </pre>
-<p>This code example uses <a href="qstate.html" translate="no">QState</a>, which inherits <a href="qml-qtqml-statemachine-qabstractstate.html" translate="no">QAbstractState</a>. The <a href="qstate.html" translate="no">QState</a> class provides a state that you can use to set properties and invoke methods on <a href="../qtcore/qobject.html" translate="no">QObject</a>s when the state is entered or exited. It also contains convenience functions for adding transitions, e.g&#x2e;, <a href="qml-qtqml-statemachine-qsignaltransition.html" translate="no">QSignalTransition</a>s as in this example. See the <a href="qstate.html" translate="no">QState</a> class description for further details.</p>
+<p>This code example uses <a href="qstate.html" translate="no">QState</a>, which inherits <a href="qml-qtqml-statemachine-qabstractstate.html" translate="no">QAbstractState</a>. The <a href="qstate.html" translate="no">QState</a> class provides a state that you can use to set properties and invoke methods on <a href="../qtcore/qobject.html" translate="no">QObject</a>s when the state is entered or exited. It also contains convenience functions for adding transitions, e.g., <a href="qml-qtqml-statemachine-qsignaltransition.html" translate="no">QSignalTransition</a>s as in this example. See the <a href="qstate.html" translate="no">QState</a> class description for further details.</p>
 <p>If an error is encountered, the machine will look for an <a href="qstate.html#errorState" translate="no">error state</a>, and if one is available, it will enter this state. The types of errors possible are described by the <a href="qstatemachine.html#Error-enum" translate="no">Error</a> enum. After the error state is entered, the type of the error can be retrieved with <a href="qstatemachine.html#error" translate="no">error</a>(). The execution of the state graph will not stop when the error state is entered. If no error state applies to the erroneous state, the machine will stop executing and an error message will be printed to the console.</p>
 <div class="admonition note">
 <p><b>Note: </b>Important: setting the <a href="qstate.html#ChildMode-enum" translate="no">ChildMode</a> of a state machine to parallel (<a href="qstate.html#ChildMode-enum" translate="no">ParallelStates</a>) results in an invalid state machine. It can only be set to (or kept as) <a href="qstate.html#ChildMode-enum" translate="no">ExclusiveStates</a>.</p>
@@ -390,9 +390,9 @@ target_link_libraries(mytarget PRIVATE Qt6::StateMachine)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

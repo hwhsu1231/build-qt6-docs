@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- http.qdoc -->
   <meta name="description" content="Demonstrates a simple HTTP client.">
-  <title>HTTP Client | Qt Network 6.6.0</title>
+  <title>HTTP Client | Qt Network 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtnetwork-index.html" translate="no">Qt Network</a></li>
 <li><a href="examples-network.html" translate="no">Network Examples</a></li>
 <li>HTTP Client</li>
-<li id="buildversion"><a href="qtnetwork-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtnetwork-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -77,7 +77,7 @@
 <pre class="cpp" translate="no">
  connect(reply<span class="operator">.</span>get()<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qnetworkreply.html" translate="no">QNetworkReply</a></span><span class="operator">::</span>sslErrors<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>HttpWindow<span class="operator">::</span>sslErrors);
 </pre>
-<p>With the <a href="qnetworkreply.html#sslErrors" translate="no">QNetworkReply::sslErrors</a>() signal we can also handle errors that may occur during the TLS handshake when connecting to secure websites (i.e&#x2e; HTTPS).</p>
+<p>With the <a href="qnetworkreply.html#sslErrors" translate="no">QNetworkReply::sslErrors</a>() signal we can also handle errors that may occur during the TLS handshake when connecting to secure websites (i.e. HTTPS).</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> HttpWindow<span class="operator">::</span>sslErrors(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qsslerror.html" translate="no">QSslError</a></span><span class="operator">&gt;</span> <span class="operator">&amp;</span>errors)
  {
@@ -88,10 +88,10 @@
          errorString <span class="operator">+</span><span class="operator">=</span> error<span class="operator">.</span>errorString();
      }
 
-     <span class="keyword">if</span> (<span class="type">QMessageBox</span><span class="operator">::</span>warning(<span class="keyword">this</span><span class="operator">,</span> tr(<span class="string">&quot;TLS Errors&quot;</span>)<span class="operator">,</span>
+     <span class="keyword">if</span> (<span class="type"><a href="../qtwidgets/qmessagebox.html" translate="no">QMessageBox</a></span><span class="operator">::</span>warning(<span class="keyword">this</span><span class="operator">,</span> tr(<span class="string">&quot;TLS Errors&quot;</span>)<span class="operator">,</span>
                               tr(<span class="string">&quot;One or more TLS errors has occurred:\n%1&quot;</span>)<span class="operator">.</span>arg(errorString)<span class="operator">,</span>
-                              <span class="type">QMessageBox</span><span class="operator">::</span>Ignore <span class="operator">|</span> <span class="type">QMessageBox</span><span class="operator">::</span>Abort)
-         <span class="operator">=</span><span class="operator">=</span> <span class="type">QMessageBox</span><span class="operator">::</span>Ignore) {
+                              <span class="type"><a href="../qtwidgets/qmessagebox.html" translate="no">QMessageBox</a></span><span class="operator">::</span>Ignore <span class="operator">|</span> <span class="type"><a href="../qtwidgets/qmessagebox.html" translate="no">QMessageBox</a></span><span class="operator">::</span>Abort)
+         <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtwidgets/qmessagebox.html" translate="no">QMessageBox</a></span><span class="operator">::</span>Ignore) {
          reply<span class="operator">-</span><span class="operator">&gt;</span>ignoreSslErrors();
      }
  }
@@ -119,7 +119,7 @@
 <pre class="cpp" translate="no">
  <span class="type">void</span> HttpWindow<span class="operator">::</span>slotAuthenticationRequired(<span class="type"><a href="qnetworkreply.html" translate="no">QNetworkReply</a></span> <span class="operator">*</span><span class="operator">,</span> <span class="type"><a href="qauthenticator.html" translate="no">QAuthenticator</a></span> <span class="operator">*</span>authenticator)
  {
-     <span class="type">QDialog</span> authenticationDialog;
+     <span class="type"><a href="../qtwidgets/qdialog.html" translate="no">QDialog</a></span> authenticationDialog;
      Ui<span class="operator">::</span>Dialog ui;
      ui<span class="operator">.</span>setupUi(<span class="operator">&amp;</span>authenticationDialog);
      authenticationDialog<span class="operator">.</span>adjustSize();
@@ -130,7 +130,7 @@
      ui<span class="operator">.</span>userEdit<span class="operator">-</span><span class="operator">&gt;</span>setText(url<span class="operator">.</span>userName());
      ui<span class="operator">.</span>passwordEdit<span class="operator">-</span><span class="operator">&gt;</span>setText(url<span class="operator">.</span>password());
 
-     <span class="keyword">if</span> (authenticationDialog<span class="operator">.</span>exec() <span class="operator">=</span><span class="operator">=</span> <span class="type">QDialog</span><span class="operator">::</span>Accepted) {
+     <span class="keyword">if</span> (authenticationDialog<span class="operator">.</span>exec() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtwidgets/qdialog.html" translate="no">QDialog</a></span><span class="operator">::</span>Accepted) {
          authenticator<span class="operator">-</span><span class="operator">&gt;</span>setUser(ui<span class="operator">.</span>userEdit<span class="operator">-</span><span class="operator">&gt;</span>text());
          authenticator<span class="operator">-</span><span class="operator">&gt;</span>setPassword(ui<span class="operator">.</span>passwordEdit<span class="operator">-</span><span class="operator">&gt;</span>text());
      }
@@ -147,9 +147,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

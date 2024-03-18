@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qstring.cpp -->
   <meta name="description" content="The QString class provides a Unicode character string.">
-  <title>QString Class | Qt Core 6.6.0</title>
+  <title>QString Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QString</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -435,7 +435,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$QString-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p>QString stores a string of 16-bit <a href="qchar.html" translate="no">QChar</a>s, where each <a href="qchar.html" translate="no">QChar</a> corresponds to one UTF-16 code unit. (Unicode characters with code values above 65535 are stored using surrogate pairs, i.e&#x2e;, two consecutive <a href="qchar.html" translate="no">QChar</a>s.)</p>
+<p>QString stores a string of 16-bit <a href="qchar.html" translate="no">QChar</a>s, where each <a href="qchar.html" translate="no">QChar</a> corresponds to one UTF-16 code unit. (Unicode characters with code values above 65535 are stored using surrogate pairs, i.e., two consecutive <a href="qchar.html" translate="no">QChar</a>s.)</p>
 <p><a href="../qtdoc/unicode.html" translate="no">Unicode</a> is an international standard that supports most of the writing systems in use today. It is a superset of US-ASCII (ANSI X3.4-1986) and Latin-1 (ISO 8859-1), and all the US-ASCII/Latin-1 characters are available at the same code positions.</p>
 <p>Behind the scenes, QString uses <a href="implicit-sharing.html" translate="no">implicit sharing</a> (copy-on-write) to reduce memory usage and to avoid the needless copying of data. This also helps reduce the inherent overhead of storing 16-bit characters instead of 8-bit characters.</p>
 <p>In addition to QString, Qt also provides the <a href="qbytearray.html" translate="no">QByteArray</a> class to store raw bytes and traditional 8-bit '\0'-terminated strings. For most purposes, QString is the class you want to use. It is used throughout the Qt API, and the Unicode support ensures that your applications will be easy to translate if you want to expand your application's market at some point. The two main cases where <a href="qbytearray.html" translate="no">QByteArray</a> is appropriate are when you need to store raw binary data, and when memory conservation is critical (like in embedded systems).</p>
@@ -503,7 +503,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <div class="admonition note">
 <p><b>Note: </b>Due to <a href="implicit-sharing.html" translate="no">implicit sharing</a>, the first non-<code translate="no">const</code> operator or function used on a given QString may cause it to, internally, perform a deep copy of its data. This invalidates all iterators over the string and references to individual characters within it. After the first non-<code translate="no">const</code> operator, operations that modify QString may completely (in case of reallocation) or partially invalidate iterators and references, but other methods (such as <a href="qstring.html#begin" translate="no">begin</a>() or <a href="qstring.html#end" translate="no">end</a>()) will not. Accessing an iterator or reference after it has been invalidated leads to undefined behavior.</p>
 </div>
-<p>A frequent requirement is to remove whitespace characters from a string ('\n', '\t', ' ', etc.)&#x2e; If you want to remove whitespace from both ends of a QString, use the <a href="qstring.html#trimmed" translate="no">trimmed</a>() function. If you want to remove whitespace from both ends and replace multiple consecutive whitespaces with a single space character within the string, use <a href="qstring.html#simplified" translate="no">simplified</a>().</p>
+<p>A frequent requirement is to remove whitespace characters from a string ('\n', '\t', ' ', etc.). If you want to remove whitespace from both ends of a QString, use the <a href="qstring.html#trimmed" translate="no">trimmed</a>() function. If you want to remove whitespace from both ends and replace multiple consecutive whitespaces with a single space character within the string, use <a href="qstring.html#simplified" translate="no">simplified</a>().</p>
 <p>If you want to find all occurrences of a particular character or substring in a QString, use the <a href="qstring.html#indexOf" translate="no">indexOf</a>() or <a href="qstring.html#lastIndexOf" translate="no">lastIndexOf</a>() functions. The former searches forward starting from a given index position, the latter searches backward. Both return the index position of the character or substring if they find it; otherwise, they return -1. For example, here is a typical loop that finds all occurrences of a particular substring:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> str <span class="operator">=</span> <span class="string">&quot;We must be &lt;b&gt;bold&lt;/b&gt;, very &lt;b&gt;bold&lt;/b&gt;&quot;</span>;
@@ -575,7 +575,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>When a <a href="qstring.html#arg" translate="no">QString::arg</a>() <code translate="no">'%'</code> format specifier includes the <code translate="no">'L'</code> locale qualifier, and the base is ten (its default), the default locale is used. This can be set using <a href="qlocale.html#setDefault" translate="no">QLocale::setDefault</a>(). For more refined control of localized string representations of numbers, see <a href="qlocale.html#toString" translate="no">QLocale::toString</a>(). All other number formatting done by QString follows the C locale's representation of numbers.</p>
 <p>When <a href="qstring.html#arg" translate="no">QString::arg</a>() applies left-padding to numbers, the fill character <code translate="no">'0'</code> is treated specially. If the number is negative, its minus sign will appear before the zero-padding. If the field is localized, the locale-appropriate zero character is used in place of <code translate="no">'0'</code>. For floating-point numbers, this special treatment only applies if the number is finite.</p>
 <h4 id="floating-point-formats">Floating-point Formats</h4>
-<p>In member functions (e.g&#x2e;, <a href="qstring.html#arg" translate="no">arg</a>(), <a href="qstring.html#number" translate="no">number</a>()) that represent floating-point numbers (<code translate="no">float</code> or <code translate="no">double</code>) as strings, the form of display can be controlled by a choice of <i>format</i> and <i>precision</i>, whose meanings are as for <a href="qlocale.html#toString-8" translate="no">QLocale::toString</a>(double, char, int).</p>
+<p>In member functions (e.g., <a href="qstring.html#arg" translate="no">arg</a>(), <a href="qstring.html#number" translate="no">number</a>()) that represent floating-point numbers (<code translate="no">float</code> or <code translate="no">double</code>) as strings, the form of display can be controlled by a choice of <i>format</i> and <i>precision</i>, whose meanings are as for <a href="qlocale.html#toString-8" translate="no">QLocale::toString</a>(double, char, int).</p>
 <p>If the selected <i>format</i> includes an exponent, localized forms follow the locale's convention on digits in the exponent. For non-localized formatting, the exponent shows its sign and includes at least two digits, left-padding with zero if needed.</p>
 <h3 id="more-efficient-string-construction">More Efficient String Construction</h3>
 <p>Many strings are known at compile time. But the trivial constructor QString(&quot;Hello&quot;), will copy the contents of the string, treating the contents as Latin-1. To avoid this, one can use the <a href="qstring.html#QStringLiteral" translate="no">QStringLiteral</a> macro to directly create the required data at compile time. Constructing a QString out of the literal does then not cause any overhead at runtime.</p>
@@ -590,9 +590,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
      <span class="keyword">if</span> (foo<span class="operator">.</span>startsWith(<span class="string">&quot;(&quot;</span> <span class="operator">+</span> type <span class="operator">+</span> <span class="string">&quot;) 0x&quot;</span>))
          <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
 </pre>
-<p>There is nothing wrong with either of these string constructions, but there are a few hidden inefficiencies. Beginning with Qt 4.6, you can eliminate them.</p>
+<p>There is nothing wrong with either of these string constructions, but there are a few hidden inefficiencies:</p>
 <p>First, multiple uses of the <code translate="no">'+'</code> operator usually means multiple memory allocations. When concatenating <i>n</i> substrings, where <i>n &gt; 2</i>, there can be as many as <i>n - 1</i> calls to the memory allocator.</p>
-<p>In 4.6, an internal template class <code translate="no">QStringBuilder</code> has been added along with a few helper functions. This class is marked internal and does not appear in the documentation, because you aren't meant to instantiate it in your code. Its use will be automatic, as described below. The class is found in <code translate="no">src/corelib/tools/qstringbuilder.cpp</code> if you want to have a look at it.</p>
+<p>These allocations can be optimized by an internal class <code translate="no">QStringBuilder</code>. This class is marked internal and does not appear in the documentation, because you aren't meant to instantiate it in your code. Its use will be automatic, as described below. The class is found in <code translate="no">src/corelib/tools/qstringbuilder.cpp</code> if you want to have a look at it.</p>
 <p><code translate="no">QStringBuilder</code> uses expression templates and reimplements the <code translate="no">'%'</code> operator so that when you use <code translate="no">'%'</code> for string concatenation instead of <code translate="no">'+'</code>, multiple substring concatenations will be postponed until the final result is about to be assigned to a QString. At this point, the amount of memory required for the final result is known. The memory allocator is then called <i>once</i> to get the required space, and the substrings are copied into it one by one.</p>
 <p>Additional efficiency is gained by inlining and reduced reference counting (the QString created from a <code translate="no">QStringBuilder</code> typically has a ref count of 1, whereas <a href="qstring.html#append" translate="no">QString::append</a>() needs an extra test).</p>
 <p>There are two ways you can access this improved method of string construction. The straightforward way is to include <code translate="no">QStringBuilder</code> wherever you want to use it, and use the <code translate="no">'%'</code> operator instead of <code translate="no">'+'</code> when concatenating strings:</p>
@@ -664,7 +664,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>This enum specifies flags that can be used to affect various aspects of the <a href="qstring.html#section" translate="no">section</a>() function's behavior with respect to separators and empty fields.</p>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
 <tr><td class="topAlign"><code translate="no">QString::SectionDefault</code></td><td class="topAlign tblval"><code translate="no">0x00</code></td><td class="topAlign">Empty fields are counted, leading and trailing separators are not included, and the separator is compared case sensitively.</td></tr>
-<tr><td class="topAlign"><code translate="no">QString::SectionSkipEmpty</code></td><td class="topAlign tblval"><code translate="no">0x01</code></td><td class="topAlign">Treat empty fields as if they don't exist, i.e&#x2e; they are not considered as far as <i>start</i> and <i>end</i> are concerned.</td></tr>
+<tr><td class="topAlign"><code translate="no">QString::SectionSkipEmpty</code></td><td class="topAlign tblval"><code translate="no">0x01</code></td><td class="topAlign">Treat empty fields as if they don't exist, i.e. they are not considered as far as <i>start</i> and <i>end</i> are concerned.</td></tr>
 <tr><td class="topAlign"><code translate="no">QString::SectionIncludeLeadingSep</code></td><td class="topAlign tblval"><code translate="no">0x02</code></td><td class="topAlign">Include the leading separator (if any) in the result string.</td></tr>
 <tr><td class="topAlign"><code translate="no">QString::SectionIncludeTrailingSep</code></td><td class="topAlign tblval"><code translate="no">0x04</code></td><td class="topAlign">Include the trailing separator (if any) in the result string.</td></tr>
 <tr><td class="topAlign"><code translate="no">QString::SectionCaseInsensitiveSeps</code></td><td class="topAlign tblval"><code translate="no">0x08</code></td><td class="topAlign">Compare the separator case-insensitively.</td></tr>
@@ -744,13 +744,13 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>This is because the template arguments of <a href="qstringtokenizer.html" translate="no">QStringTokenizer</a> have a very subtle dependency on the specific <a href="qstring.html#tokenize" translate="no">tokenize</a>() overload from which they are returned, and they don't usually correspond to the type used for the separator.</p>
 <p>This function was introduced in Qt 6.0.</p>
 <div class="admonition note">
-<p><b>Note: </b> (1) does not throw any exception when &quot;noexcept(qTokenize(std::declval&lt;QString&gt;(), std::forward&lt;Needle&gt;(needle), flags..&#x2e;))&quot; is true.</p>
+<p><b>Note: </b> (1) does not throw any exception when &quot;noexcept(qTokenize(std::declval&lt;QString&gt;(), std::forward&lt;Needle&gt;(needle), flags...))&quot; is true.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b> (2) does not throw any exception when &quot;noexcept(qTokenize(std::declval&lt;const QString &amp;&gt;(), std::forward&lt;Needle&gt;(needle), flags..&#x2e;))&quot; is true.</p>
+<p><b>Note: </b> (2) does not throw any exception when &quot;noexcept(qTokenize(std::declval&lt;const QString &amp;&gt;(), std::forward&lt;Needle&gt;(needle), flags...))&quot; is true.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b> (3) does not throw any exception when &quot;noexcept(qTokenize(std::declval&lt;const QString&gt;(), std::forward&lt;Needle&gt;(needle), flags..&#x2e;))&quot; is true.</p>
+<p><b>Note: </b> (3) does not throw any exception when &quot;noexcept(qTokenize(std::declval&lt;const QString&gt;(), std::forward&lt;Needle&gt;(needle), flags...))&quot; is true.</p>
 </div>
 <p><b>See also </b><a href="qstringtokenizer.html" translate="no">QStringTokenizer</a> and <a href="qstringtokenizer.html#qTokenize" translate="no">qTokenize</a>().</p>
 <!-- @@@ -->
@@ -801,7 +801,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Constructs a string initialized with the byte array <i translate="no">ba</i>. The given byte array is converted to Unicode using <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>().</p>
 <p>You can disable this constructor by defining <a href="qstring.html#QT_NO_CAST_FROM_ASCII" translate="no">QT_NO_CAST_FROM_ASCII</a> when you compile your applications. This can be useful if you want to ensure that all user-visible strings go through <a href="qobject.html#tr" translate="no">QObject::tr</a>(), for example.</p>
 <div class="admonition note">
-<p><b>Note: </b>: any null ('\0') bytes in the byte array will be included in this string, converted to Unicode null characters (U+0000). This behavior is different from Qt 5.x&#x2e;</p>
+<p><b>Note: </b>: any null ('\0') bytes in the byte array will be included in this string, converted to Unicode null characters (U+0000). This behavior is different from Qt 5.x.</p>
 </div>
 <p><b>See also </b><a href="qstring.html#fromLatin1" translate="no">fromLatin1</a>(), <a href="qstring.html#fromLocal8Bit" translate="no">fromLocal8Bit</a>(), and <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>().</p>
 <!-- @@@QString -->
@@ -878,7 +878,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@append -->
 <!-- $$$arg[overload1]$$$argconstQString&intQChar -->
 <h3 class="fn" translate="no" id="arg"><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> QString::<span class="name">arg</span>(const <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> &amp;<i>a</i>, <span class="type">int</span> <i>fieldWidth</i> = 0, <span class="type"><a href="qchar.html" translate="no">QChar</a></span> <i>fillChar</i> = u' ') const</h3>
-<p>Returns a copy of this string with the lowest numbered place marker replaced by string <i translate="no">a</i>, i.e&#x2e;, <code translate="no">%1</code>, <code translate="no">%2</code>, ..&#x2e;, <code translate="no">%99</code>.</p>
+<p>Returns a copy of this string with the lowest numbered place marker replaced by string <i translate="no">a</i>, i.e., <code translate="no">%1</code>, <code translate="no">%2</code>, ..., <code translate="no">%99</code>.</p>
 <p><i translate="no">fieldWidth</i> specifies the minimum amount of space that argument <i translate="no">a</i> shall occupy. If <i translate="no">a</i> requires less space than <i translate="no">fieldWidth</i>, it is padded to <i translate="no">fieldWidth</i> with character <i translate="no">fillChar</i>. A positive <i translate="no">fieldWidth</i> produces right-aligned text. A negative <i translate="no">fieldWidth</i> produces left-aligned text.</p>
 <p>This example shows how we might create a <code translate="no">status</code> string for reporting progress while processing a list of files:</p>
 <pre class="cpp" translate="no">
@@ -1000,7 +1000,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$arg$$$argQStringViewintQChar -->
 <h3 class="fn" translate="no" id="arg-12"><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> QString::<span class="name">arg</span>(<span class="type"><a href="qstringview.html" translate="no">QStringView</a></span> <i>a</i>, <span class="type">int</span> <i>fieldWidth</i> = 0, <span class="type"><a href="qchar.html" translate="no">QChar</a></span> <i>fillChar</i> = u' ') const</h3>
 <p>This is an overloaded function.</p>
-<p>Returns a copy of this string with the lowest-numbered place-marker replaced by string <i translate="no">a</i>, i.e&#x2e;, <code translate="no">%1</code>, <code translate="no">%2</code>, ..&#x2e;, <code translate="no">%99</code>.</p>
+<p>Returns a copy of this string with the lowest-numbered place-marker replaced by string <i translate="no">a</i>, i.e., <code translate="no">%1</code>, <code translate="no">%2</code>, ..., <code translate="no">%99</code>.</p>
 <p><i translate="no">fieldWidth</i> specifies the minimum amount of space that <i translate="no">a</i> shall occupy. If <i translate="no">a</i> requires less space than <i translate="no">fieldWidth</i>, it is padded to <i translate="no">fieldWidth</i> with character <i translate="no">fillChar</i>. A positive <i translate="no">fieldWidth</i> produces right-aligned text. A negative <i translate="no">fieldWidth</i> produces left-aligned text.</p>
 <p>This example shows how we might create a <code translate="no">status</code> string for reporting progress while processing a list of files:</p>
 <pre class="cpp" translate="no">
@@ -1018,7 +1018,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$arg$$$argQLatin1StringViewintQChar -->
 <h3 class="fn" translate="no" id="arg-13"><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> QString::<span class="name">arg</span>(<span class="type"><a href="qlatin1stringview.html" translate="no">QLatin1StringView</a></span> <i>a</i>, <span class="type">int</span> <i>fieldWidth</i> = 0, <span class="type"><a href="qchar.html" translate="no">QChar</a></span> <i>fillChar</i> = u' ') const</h3>
 <p>This is an overloaded function.</p>
-<p>Returns a copy of this string with the lowest-numbered place-marker replaced by the Latin-1 string viewed by <i translate="no">a</i>, i.e&#x2e;, <code translate="no">%1</code>, <code translate="no">%2</code>, ..&#x2e;, <code translate="no">%99</code>.</p>
+<p>Returns a copy of this string with the lowest-numbered place-marker replaced by the Latin-1 string viewed by <i translate="no">a</i>, i.e., <code translate="no">%1</code>, <code translate="no">%2</code>, ..., <code translate="no">%99</code>.</p>
 <p><i translate="no">fieldWidth</i> specifies the minimum amount of space that <i translate="no">a</i> shall occupy. If <i translate="no">a</i> requires less space than <i translate="no">fieldWidth</i>, it is padded to <i translate="no">fieldWidth</i> with character <i translate="no">fillChar</i>. A positive <i translate="no">fieldWidth</i> produces right-aligned text. A negative <i translate="no">fieldWidth</i> produces left-aligned text.</p>
 <p>One advantage of using arg() over <a href="qstring.html#asprintf" translate="no">asprintf</a>() is that the order of the numbered place markers can change, if the application's strings are translated into other languages, but each arg() will still replace the lowest-numbered unreplaced place-marker, no matter where it appears. Also, if place-marker <code translate="no">%i</code> appears more than once in the string, arg() replaces all of them.</p>
 <p>If there is no unreplaced place-marker remaining, a warning message is printed and the result is undefined. Place-marker numbers must be in the range 1 to 99.</p>
@@ -1079,7 +1079,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$at[overload1]$$$atqsizetype -->
 <h3 class="fn" translate="no" id="at">const <span class="type"><a href="qchar.html" translate="no">QChar</a></span> QString::<span class="name">at</span>(<span class="type">qsizetype</span> <i>position</i>) const</h3>
 <p>Returns the character at the given index <i translate="no">position</i> in the string.</p>
-<p>The <i translate="no">position</i> must be a valid index position in the string (i.e&#x2e;, 0 &lt;= <i translate="no">position</i> &lt; <a href="qstring.html#size" translate="no">size</a>()).</p>
+<p>The <i translate="no">position</i> must be a valid index position in the string (i.e., 0 &lt;= <i translate="no">position</i> &lt; <a href="qstring.html#size" translate="no">size</a>()).</p>
 <p><b>See also </b><a href="qstring.html#operator-5b-5d" translate="no">operator[]</a>().</p>
 <!-- @@@at -->
 <!-- $$$back[overload1]$$$back -->
@@ -1168,7 +1168,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@clear -->
 <!-- $$$compare[overload1]$$$compareconstQString&constQString&Qt::CaseSensitivity -->
 <h3 class="fn" translate="no" id="compare"><code translate="no">[static noexcept] </code><span class="type">int</span> QString::<span class="name">compare</span>(const <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> &amp;<i>s1</i>, const <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> &amp;<i>s2</i>, <span class="type"><a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitivity</a></span> <i>cs</i> = Qt::CaseSensitive)</h3>
-<p>Compares <i translate="no">s1</i> with <i translate="no">s2</i> and returns an integer less than, equal to, or greater than zero if <i translate="no">s1</i> is less than, equal to, or greater than <i translate="no">s2</i>.</p>
+<p>Compares the string <i translate="no">s1</i> with the string <i translate="no">s2</i> and returns a negative integer if <i translate="no">s1</i> is less than <i translate="no">s2</i>, a positive integer if it is greater than <i translate="no">s2</i>, and zero if they are equal.</p>
 <p>If <i translate="no">cs</i> is <a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitive</a> (the default), the comparison is case-sensitive; otherwise the comparison is case-insensitive.</p>
 <p>Case sensitive comparison is based exclusively on the numeric Unicode values of the characters and is very fast, but is not what a human would expect. Consider sorting user-visible strings with <a href="qstring.html#localeAwareCompare" translate="no">localeAwareCompare</a>().</p>
 <pre class="cpp" translate="no">
@@ -1184,7 +1184,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$compare$$$compareconstQString&Qt::CaseSensitivity -->
 <h3 class="fn" translate="no" id="compare-1"><code translate="no">[noexcept] </code><span class="type">int</span> QString::<span class="name">compare</span>(const <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> &amp;<i>other</i>, <span class="type"><a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitivity</a></span> <i>cs</i> = Qt::CaseSensitive) const</h3>
 <p>This function overloads compare().</p>
-<p>Lexically compares this string with the <i translate="no">other</i> string and returns an integer less than, equal to, or greater than zero if this string is less than, equal to, or greater than the other string.</p>
+<p>Lexically compares this string with the string <i translate="no">other</i> and returns a negative integer if this string is less than <i translate="no">other</i>, a positive integer if it is greater than <i translate="no">other</i>, and zero if they are equal.</p>
 <p>Same as compare(*this, <i translate="no">other</i>, <i translate="no">cs</i>).</p>
 <!-- @@@compare -->
 <!-- $$$compare$$$compareQLatin1StringViewQt::CaseSensitivity -->
@@ -1393,7 +1393,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@endsWith -->
 <!-- $$$erase[overload1]$$$eraseconst_iteratorconst_iterator -->
 <h3 class="fn" translate="no" id="erase"><code translate="no">[since 6.1] </code><span class="type"><a href="qstring.html#iterator-typedefx" translate="no">iterator</a></span> QString::<span class="name">erase</span>(<span class="type"><a href="qstring.html#const_iterator-typedef" translate="no">const_iterator</a></span> <i>first</i>, <span class="type"><a href="qstring.html#const_iterator-typedef" translate="no">const_iterator</a></span> <i>last</i>)</h3>
-<p>Removes from the string the characters in the half-open range [ <i translate="no">first</i> , <i translate="no">last</i> ). Returns an iterator to the character immediately after the last erased character (i.e&#x2e; the character referred to by <i translate="no">last</i> before the erase).</p>
+<p>Removes from the string the characters in the half-open range [ <i translate="no">first</i> , <i translate="no">last</i> ). Returns an iterator to the character immediately after the last erased character (i.e. the character referred to by <i translate="no">last</i> before the erase).</p>
 <p>This function was introduced in Qt 6.1.</p>
 <!-- @@@erase -->
 <!-- $$$erase$$$eraseconst_iterator -->
@@ -1465,21 +1465,21 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>This is an overloaded function.</p>
 <p>Returns a <a href="qstring.html" translate="no">QString</a> initialized with the Latin-1 string <i translate="no">str</i>.</p>
 <div class="admonition note">
-<p><b>Note: </b>: any null ('\0') bytes in the byte array will be included in this string, converted to Unicode null characters (U+0000). This behavior is different from Qt 5.x&#x2e;</p>
+<p><b>Note: </b>: any null ('\0') bytes in the byte array will be included in this string, converted to Unicode null characters (U+0000). This behavior is different from Qt 5.x.</p>
 </div>
 <!-- @@@fromLatin1 -->
 <!-- $$$fromLocal8Bit[overload1]$$$fromLocal8Bitconstchar*qsizetype -->
 <h3 class="fn" translate="no" id="fromLocal8Bit"><code translate="no">[static] </code><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> QString::<span class="name">fromLocal8Bit</span>(const <span class="type">char</span> *<i>str</i>, <span class="type">qsizetype</span> <i>size</i>)</h3>
 <p>Returns a <a href="qstring.html" translate="no">QString</a> initialized with the first <i translate="no">size</i> characters of the 8-bit string <i translate="no">str</i>.</p>
 <p>If <i translate="no">size</i> is <code translate="no">-1</code>, <code translate="no">strlen(str)</code> is used instead.</p>
-<p>On Unix systems this is equivalent to <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>(). Note that on Apple systems this function does not take <code translate="no">\l{https://developer.apple.com/documentation/foundation/nsstring/1410091-defaultcstringencoding?language=objc}</code> {NSString.defaultCStringEncoding} or <code translate="no">\l{https://developer.apple.com/documentation/corefoundation/1541720-cfstringgetsystemencoding?language=objc}</code> {CFStringGetSystemEncoding()} into account, as these functions typically return the legacy &quot;Western (Mac OS Roman)&quot; encoding, which should not be used on modern Apple operating systems. On Windows the system's current code page is used.</p>
+<p>On Unix systems this is equivalent to <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>(). Note that on Apple systems this function does not take <a href="https://developer.apple.com/documentation/foundation/nsstring/1410091-defaultcstringencoding?language=objc" translate="no">NSString.defaultCStringEncoding</a> or <a href="https://developer.apple.com/documentation/corefoundation/1541720-cfstringgetsystemencoding?language=objc" translate="no">CFStringGetSystemEncoding()</a> into account, as these functions typically return the legacy &quot;Western (Mac OS Roman)&quot; encoding, which should not be used on modern Apple operating systems. On Windows the system's current code page is used.</p>
 <p><b>See also </b><a href="qstring.html#toLocal8Bit" translate="no">toLocal8Bit</a>(), <a href="qstring.html#fromLatin1" translate="no">fromLatin1</a>(), and <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>().</p>
 <!-- @@@fromLocal8Bit -->
 <!-- $$$fromLocal8Bit$$$fromLocal8BitQByteArrayView -->
 <h3 class="fn" translate="no" id="fromLocal8Bit-1"><code translate="no">[static, since 6.0] </code><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> QString::<span class="name">fromLocal8Bit</span>(<span class="type"><a href="qbytearrayview.html" translate="no">QByteArrayView</a></span> <i>str</i>)</h3>
 <p>This is an overloaded function.</p>
 <p>Returns a <a href="qstring.html" translate="no">QString</a> initialized with the 8-bit string <i translate="no">str</i>.</p>
-<p>On Unix systems this is equivalent to <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>(). Note that on Apple systems this function does not take <code translate="no">\l{https://developer.apple.com/documentation/foundation/nsstring/1410091-defaultcstringencoding?language=objc}</code> {NSString.defaultCStringEncoding} or <code translate="no">\l{https://developer.apple.com/documentation/corefoundation/1541720-cfstringgetsystemencoding?language=objc}</code> {CFStringGetSystemEncoding()} into account, as these functions typically return the legacy &quot;Western (Mac OS Roman)&quot; encoding, which should not be used on modern Apple operating systems. On Windows the system's current code page is used.</p>
+<p>On Unix systems this is equivalent to <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>(). Note that on Apple systems this function does not take <a href="https://developer.apple.com/documentation/foundation/nsstring/1410091-defaultcstringencoding?language=objc" translate="no">NSString.defaultCStringEncoding</a> or <a href="https://developer.apple.com/documentation/corefoundation/1541720-cfstringgetsystemencoding?language=objc" translate="no">CFStringGetSystemEncoding()</a> into account, as these functions typically return the legacy &quot;Western (Mac OS Roman)&quot; encoding, which should not be used on modern Apple operating systems. On Windows the system's current code page is used.</p>
 <div class="admonition note">
 <p><b>Note: </b>: any null ('\0') bytes in the byte array will be included in this string, converted to Unicode null characters (U+0000).</p>
 </div>
@@ -1489,9 +1489,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="fromLocal8Bit-2"><code translate="no">[static] </code><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> QString::<span class="name">fromLocal8Bit</span>(const <span class="type"><a href="qbytearray.html" translate="no">QByteArray</a></span> &amp;<i>str</i>)</h3>
 <p>This is an overloaded function.</p>
 <p>Returns a <a href="qstring.html" translate="no">QString</a> initialized with the 8-bit string <i translate="no">str</i>.</p>
-<p>On Unix systems this is equivalent to <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>(). Note that on Apple systems this function does not take <code translate="no">\l{https://developer.apple.com/documentation/foundation/nsstring/1410091-defaultcstringencoding?language=objc}</code> {NSString.defaultCStringEncoding} or <code translate="no">\l{https://developer.apple.com/documentation/corefoundation/1541720-cfstringgetsystemencoding?language=objc}</code> {CFStringGetSystemEncoding()} into account, as these functions typically return the legacy &quot;Western (Mac OS Roman)&quot; encoding, which should not be used on modern Apple operating systems. On Windows the system's current code page is used.</p>
+<p>On Unix systems this is equivalent to <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>(). Note that on Apple systems this function does not take <a href="https://developer.apple.com/documentation/foundation/nsstring/1410091-defaultcstringencoding?language=objc" translate="no">NSString.defaultCStringEncoding</a> or <a href="https://developer.apple.com/documentation/corefoundation/1541720-cfstringgetsystemencoding?language=objc" translate="no">CFStringGetSystemEncoding()</a> into account, as these functions typically return the legacy &quot;Western (Mac OS Roman)&quot; encoding, which should not be used on modern Apple operating systems. On Windows the system's current code page is used.</p>
 <div class="admonition note">
-<p><b>Note: </b>: any null ('\0') bytes in the byte array will be included in this string, converted to Unicode null characters (U+0000). This behavior is different from Qt 5.x&#x2e;</p>
+<p><b>Note: </b>: any null ('\0') bytes in the byte array will be included in this string, converted to Unicode null characters (U+0000). This behavior is different from Qt 5.x.</p>
 </div>
 <!-- @@@fromLocal8Bit -->
 <!-- $$$fromNSString[overload1]$$$fromNSStringconstNSString* -->
@@ -1540,7 +1540,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@fromStdU32String -->
 <!-- $$$fromStdWString[overload1]$$$fromStdWStringconststd::wstring& -->
 <h3 class="fn" translate="no" id="fromStdWString"><code translate="no">[static] </code><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> QString::<span class="name">fromStdWString</span>(const <span class="type">std::wstring</span> &amp;<i>str</i>)</h3>
-<p>Returns a copy of the <i translate="no">str</i> string. The given string is assumed to be encoded in utf16 if the size of wchar_t is 2 bytes (e.g&#x2e; on windows) and ucs4 if the size of wchar_t is 4 bytes (most Unix systems).</p>
+<p>Returns a copy of the <i translate="no">str</i> string. The given string is assumed to be encoded in utf16 if the size of wchar_t is 2 bytes (e.g. on windows) and ucs4 if the size of wchar_t is 4 bytes (most Unix systems).</p>
 <p><b>See also </b><a href="qstring.html#fromUtf16" translate="no">fromUtf16</a>(), <a href="qstring.html#fromLatin1" translate="no">fromLatin1</a>(), <a href="qstring.html#fromLocal8Bit" translate="no">fromLocal8Bit</a>(), <a href="qstring.html#fromUtf8" translate="no">fromUtf8</a>(), <a href="qstring.html#fromUcs4" translate="no">fromUcs4</a>(), <a href="qstring.html#fromStdU16String" translate="no">fromStdU16String</a>(), and <a href="qstring.html#fromStdU32String" translate="no">fromStdU32String</a>().</p>
 <!-- @@@fromStdWString -->
 <!-- $$$fromUcs4[overload1]$$$fromUcs4constchar32_t*qsizetype -->
@@ -1571,7 +1571,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>This is an overloaded function.</p>
 <p>Returns a <a href="qstring.html" translate="no">QString</a> initialized with the UTF-8 string <i translate="no">str</i>.</p>
 <div class="admonition note">
-<p><b>Note: </b>: any null ('\0') bytes in the byte array will be included in this string, converted to Unicode null characters (U+0000). This behavior is different from Qt 5.x&#x2e;</p>
+<p><b>Note: </b>: any null ('\0') bytes in the byte array will be included in this string, converted to Unicode null characters (U+0000). This behavior is different from Qt 5.x.</p>
 </div>
 <!-- @@@fromUtf8 -->
 <!-- $$$fromUtf8$$$fromUtf8constchar8_t* -->
@@ -2021,7 +2021,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="number"><code translate="no">[static] </code><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> QString::<span class="name">number</span>(<span class="type">long</span> <i>n</i>, <span class="type">int</span> <i>base</i> = 10)</h3>
 <p>Returns a string equivalent of the number <i translate="no">n</i> according to the specified <i translate="no">base</i>.</p>
 <p>The base is 10 by default and must be between 2 and 36. For bases other than 10, <i translate="no">n</i> is treated as an unsigned integer.</p>
-<p>The formatting always uses <a href="qlocale.html#Language-enum" translate="no">QLocale::C</a>, i.e&#x2e;, English/UnitedStates. To get a localized string representation of a number, use <a href="qlocale.html#toString" translate="no">QLocale::toString</a>() with the appropriate locale.</p>
+<p>The formatting always uses <a href="qlocale.html#Language-enum" translate="no">QLocale::C</a>, i.e., English/UnitedStates. To get a localized string representation of a number, use <a href="qlocale.html#toString" translate="no">QLocale::toString</a>() with the appropriate locale.</p>
 <pre class="cpp" translate="no">
  <span class="type">long</span> a <span class="operator">=</span> <span class="number">63</span>;
  <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> s <span class="operator">=</span> <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span><span class="operator">::</span>number(a<span class="operator">,</span> <span class="number">16</span>);             <span class="comment">// s == &quot;3f&quot;</span>
@@ -2197,7 +2197,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@remove -->
 <!-- $$$removeAt[overload1]$$$removeAtqsizetype -->
 <h3 class="fn" translate="no" id="removeAt"><code translate="no">[since 6.5] </code><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> &amp;QString::<span class="name">removeAt</span>(<span class="type">qsizetype</span> <i>pos</i>)</h3>
-<p>Removes the character at index <i translate="no">pos</i>. If <i translate="no">pos</i> is out of bounds (i.e&#x2e; <i translate="no">pos</i> &gt;= <a href="qstring.html#size" translate="no">size</a>()), this function does nothing.</p>
+<p>Removes the character at index <i translate="no">pos</i>. If <i translate="no">pos</i> is out of bounds (i.e. <i translate="no">pos</i> &gt;= <a href="qstring.html#size" translate="no">size</a>()), this function does nothing.</p>
 <p>This function was introduced in Qt 6.5.</p>
 <p><b>See also </b><a href="qstring.html#remove" translate="no">remove</a>().</p>
 <!-- @@@removeAt -->
@@ -2350,7 +2350,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  s<span class="operator">.</span>replace(<span class="type"><a href="qregularexpression.html" translate="no">QRegularExpression</a></span>(<span class="string">&quot;a[mn]&quot;</span>)<span class="operator">,</span> <span class="string">&quot;ox&quot;</span>);
  <span class="comment">// s == &quot;Boxoxa&quot;</span>
 </pre>
-<p>For regular expressions containing capturing groups, occurrences of <b>\1</b>, <b>\2</b>, ..&#x2e;, in <i translate="no">after</i> are replaced with the string captured by the corresponding capturing group.</p>
+<p>For regular expressions containing capturing groups, occurrences of <b>\1</b>, <b>\2</b>, ..., in <i translate="no">after</i> are replaced with the string captured by the corresponding capturing group.</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> t <span class="operator">=</span> <span class="string">&quot;A &lt;i&gt;bon mot&lt;/i&gt;.&quot;</span>;
  t<span class="operator">.</span>replace(<span class="type"><a href="qregularexpression.html" translate="no">QRegularExpression</a></span>(<span class="string">&quot;&lt;i&gt;([^&lt;]*)&lt;/i&gt;&quot;</span>)<span class="operator">,</span> <span class="string">&quot;\\emph{\\1}&quot;</span>);
@@ -2445,7 +2445,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="section"><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> QString::<span class="name">section</span>(<span class="type"><a href="qchar.html" translate="no">QChar</a></span> <i>sep</i>, <span class="type">qsizetype</span> <i>start</i>, <span class="type">qsizetype</span> <i>end</i> = -1, <span class="type"><a href="qstring.html#SectionFlag-enum" translate="no">SectionFlags</a></span> <i>flags</i> = SectionDefault) const</h3>
 <p>This function returns a section of the string.</p>
 <p>This string is treated as a sequence of fields separated by the character, <i translate="no">sep</i>. The returned string consists of the fields from position <i translate="no">start</i> to position <i translate="no">end</i> inclusive. If <i translate="no">end</i> is not specified, all fields from position <i translate="no">start</i> to the end of the string are included. Fields are numbered 0, 1, 2, etc., counting from the left, and -1, -2, etc., counting from right to left.</p>
-<p>The <i translate="no">flags</i> argument can be used to affect some aspects of the function's behavior, e.g&#x2e; whether to be case sensitive, whether to skip empty fields and how to deal with leading and trailing separators; see <a href="qstring.html#SectionFlag-enum" translate="no">SectionFlags</a>.</p>
+<p>The <i translate="no">flags</i> argument can be used to affect some aspects of the function's behavior, e.g. whether to be case sensitive, whether to skip empty fields and how to deal with leading and trailing separators; see <a href="qstring.html#SectionFlag-enum" translate="no">SectionFlags</a>.</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> str;
  <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> csv <span class="operator">=</span> <span class="string">&quot;forename,middlename,surname,phone&quot;</span>;
@@ -2498,7 +2498,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> str;
  str<span class="operator">.</span>setNum(<span class="number">1234</span>);       <span class="comment">// str == &quot;1234&quot;</span>
 </pre>
-<p>The formatting always uses <a href="qlocale.html#Language-enum" translate="no">QLocale::C</a>, i.e&#x2e;, English/UnitedStates. To get a localized string representation of a number, use <a href="qlocale.html#toString" translate="no">QLocale::toString</a>() with the appropriate locale.</p>
+<p>The formatting always uses <a href="qlocale.html#Language-enum" translate="no">QLocale::C</a>, i.e., English/UnitedStates. To get a localized string representation of a number, use <a href="qlocale.html#toString" translate="no">QLocale::toString</a>() with the appropriate locale.</p>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>().</p>
 <!-- @@@setNum -->
 <!-- $$$setNum$$$setNumshortint -->
@@ -2533,7 +2533,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="setNum-8"><span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> &amp;QString::<span class="name">setNum</span>(<span class="type">float</span> <i>n</i>, <span class="type">char</span> <i>format</i> = 'g', <span class="type">int</span> <i>precision</i> = 6)</h3>
 <p>This is an overloaded function.</p>
 <p>Sets the string to the printed value of <i translate="no">n</i>, formatted according to the given <i translate="no">format</i> and <i translate="no">precision</i>, and returns a reference to the string.</p>
-<p>The formatting always uses <a href="qlocale.html#Language-enum" translate="no">QLocale::C</a>, i.e&#x2e;, English/UnitedStates. To get a localized string representation of a number, use <a href="qlocale.html#toString" translate="no">QLocale::toString</a>() with the appropriate locale.</p>
+<p>The formatting always uses <a href="qlocale.html#Language-enum" translate="no">QLocale::C</a>, i.e., English/UnitedStates. To get a localized string representation of a number, use <a href="qlocale.html#toString" translate="no">QLocale::toString</a>() with the appropriate locale.</p>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>().</p>
 <!-- @@@setNum -->
 <!-- $$$setNum$$$setNumdoublecharint -->
@@ -2727,7 +2727,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$toDouble[overload1]$$$toDoublebool* -->
 <h3 class="fn" translate="no" id="toDouble"><span class="type">double</span> QString::<span class="name">toDouble</span>(<span class="type">bool</span> *<i>ok</i> = nullptr) const</h3>
 <p>Returns the string converted to a <code translate="no">double</code> value.</p>
-<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g&#x2e; underflow).</p>
+<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g. underflow).</p>
 <p>If <i translate="no">ok</i> is not <code translate="no">nullptr</code>, failure is reported by setting *<i translate="no">ok</i> to <code translate="no">false</code>, and success by setting *<i translate="no">ok</i> to <code translate="no">true</code>.</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qstring.html#QString" translate="no">QString</a></span> str <span class="operator">=</span> <span class="string">&quot;1234.56&quot;</span>;
@@ -2766,7 +2766,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$toFloat[overload1]$$$toFloatbool* -->
 <h3 class="fn" translate="no" id="toFloat"><span class="type">float</span> QString::<span class="name">toFloat</span>(<span class="type">bool</span> *<i>ok</i> = nullptr) const</h3>
 <p>Returns the string converted to a <code translate="no">float</code> value.</p>
-<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g&#x2e; underflow).</p>
+<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g. underflow).</p>
 <p>If <i translate="no">ok</i> is not <code translate="no">nullptr</code>, failure is reported by setting *<i translate="no">ok</i> to <code translate="no">false</code>, and success by setting *<i translate="no">ok</i> to <code translate="no">true</code>.</p>
 <div class="admonition warning">
 <p><b>Warning: </b>The <a href="qstring.html" translate="no">QString</a> content may only contain valid numerical characters which includes the plus/minus sign, the character e used in scientific notation, and the decimal point. Including the unit or additional characters leads to a conversion error.</p>
@@ -2813,7 +2813,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>This function ignores leading and trailing whitespace.</p>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>(), <a href="qstring.html#toUInt" translate="no">toUInt</a>(), <a href="qstring.html#toDouble" translate="no">toDouble</a>(), and <a href="qlocale.html#toInt" translate="no">QLocale::toInt</a>().</p>
 <!-- @@@toInt -->
@@ -2826,7 +2826,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$toLocal8Bit[overload1]$$$toLocal8Bit -->
 <h3 class="fn" translate="no" id="toLocal8Bit"><span class="type"><a href="qbytearray.html" translate="no">QByteArray</a></span> QString::<span class="name">toLocal8Bit</span>() const</h3>
 <p>Returns the local 8-bit representation of the string as a <a href="qbytearray.html" translate="no">QByteArray</a>.</p>
-<p>On Unix systems this is equivalent to <a href="qstring.html#toUtf8" translate="no">toUtf8</a>(). Note that on Apple systems this function does not take <code translate="no">\l{https://developer.apple.com/documentation/foundation/nsstring/1410091-defaultcstringencoding?language=objc}</code> {NSString.defaultCStringEncoding} or <code translate="no">\l{https://developer.apple.com/documentation/corefoundation/1541720-cfstringgetsystemencoding?language=objc}</code> {CFStringGetSystemEncoding()} into account, as these functions typically return the legacy &quot;Western (Mac OS Roman)&quot; encoding, which should not be used on modern Apple operating systems. On Windows the system's current code page is used.</p>
+<p>On Unix systems this is equivalent to <a href="qstring.html#toUtf8" translate="no">toUtf8</a>(). Note that on Apple systems this function does not take <a href="https://developer.apple.com/documentation/foundation/nsstring/1410091-defaultcstringencoding?language=objc" translate="no">NSString.defaultCStringEncoding</a> or <a href="https://developer.apple.com/documentation/corefoundation/1541720-cfstringgetsystemencoding?language=objc" translate="no">CFStringGetSystemEncoding()</a> into account, as these functions typically return the legacy &quot;Western (Mac OS Roman)&quot; encoding, which should not be used on modern Apple operating systems. On Windows the system's current code page is used.</p>
 <p>If this string contains any characters that cannot be encoded in the local 8-bit encoding, the returned byte array is undefined. Those characters may be suppressed or replaced by another.</p>
 <p><b>See also </b><a href="qstring.html#fromLocal8Bit" translate="no">fromLocal8Bit</a>(), <a href="qstring.html#toLatin1" translate="no">toLatin1</a>(), <a href="qstring.html#toUtf8" translate="no">toUtf8</a>(), and <a href="qstringencoder.html" translate="no">QStringEncoder</a>.</p>
 <!-- @@@toLocal8Bit -->
@@ -2846,7 +2846,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>This function ignores leading and trailing whitespace.</p>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>(), <a href="qstring.html#toULong" translate="no">toULong</a>(), <a href="qstring.html#toInt" translate="no">toInt</a>(), and <a href="qlocale.html#toInt" translate="no">QLocale::toInt</a>().</p>
 <!-- @@@toLong -->
@@ -2866,7 +2866,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>This function ignores leading and trailing whitespace.</p>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>(), <a href="qstring.html#toULongLong" translate="no">toULongLong</a>(), <a href="qstring.html#toInt" translate="no">toInt</a>(), and <a href="qlocale.html#toLongLong" translate="no">QLocale::toLongLong</a>().</p>
 <!-- @@@toLongLong -->
@@ -2904,7 +2904,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>This function ignores leading and trailing whitespace.</p>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>(), <a href="qstring.html#toUShort" translate="no">toUShort</a>(), <a href="qstring.html#toInt" translate="no">toInt</a>(), and <a href="qlocale.html#toShort" translate="no">QLocale::toShort</a>().</p>
 <!-- @@@toShort -->
@@ -2926,7 +2926,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@toStdU32String -->
 <!-- $$$toStdWString[overload1]$$$toStdWString -->
 <h3 class="fn" translate="no" id="toStdWString"><span class="type">std::wstring</span> QString::<span class="name">toStdWString</span>() const</h3>
-<p>Returns a std::wstring object with the data contained in this <a href="qstring.html" translate="no">QString</a>. The std::wstring is encoded in utf16 on platforms where wchar_t is 2 bytes wide (e.g&#x2e; windows) and in ucs4 on platforms where wchar_t is 4 bytes wide (most Unix systems).</p>
+<p>Returns a std::wstring object with the data contained in this <a href="qstring.html" translate="no">QString</a>. The std::wstring is encoded in utf16 on platforms where wchar_t is 2 bytes wide (e.g. windows) and in ucs4 on platforms where wchar_t is 4 bytes wide (most Unix systems).</p>
 <p>This method is mostly useful to pass a <a href="qstring.html" translate="no">QString</a> to a function that accepts a std::wstring object.</p>
 <p><b>See also </b><a href="qstring.html#utf16" translate="no">utf16</a>(), <a href="qstring.html#toLatin1" translate="no">toLatin1</a>(), <a href="qstring.html#toUtf8" translate="no">toUtf8</a>(), <a href="qstring.html#toLocal8Bit" translate="no">toLocal8Bit</a>(), <a href="qstring.html#toStdU16String" translate="no">toStdU16String</a>(), and <a href="qstring.html#toStdU32String" translate="no">toStdU32String</a>().</p>
 <!-- @@@toStdWString -->
@@ -2946,7 +2946,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>This function ignores leading and trailing whitespace.</p>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>(), <a href="qstring.html#toInt" translate="no">toInt</a>(), and <a href="qlocale.html#toUInt" translate="no">QLocale::toUInt</a>().</p>
 <!-- @@@toUInt -->
@@ -2966,7 +2966,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>This function ignores leading and trailing whitespace.</p>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>() and <a href="qlocale.html#toUInt" translate="no">QLocale::toUInt</a>().</p>
 <!-- @@@toULong -->
@@ -2986,7 +2986,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>This function ignores leading and trailing whitespace.</p>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>(), <a href="qstring.html#toLongLong" translate="no">toLongLong</a>(), and <a href="qlocale.html#toULongLong" translate="no">QLocale::toULongLong</a>().</p>
 <!-- @@@toULongLong -->
@@ -3006,7 +3006,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>This function ignores leading and trailing whitespace.</p>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qstring.html#number" translate="no">number</a>(), <a href="qstring.html#toShort" translate="no">toShort</a>(), and <a href="qlocale.html#toUShort" translate="no">QLocale::toUShort</a>().</p>
 <!-- @@@toUShort -->
@@ -3035,7 +3035,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@toUtf8 -->
 <!-- $$$toWCharArray[overload1]$$$toWCharArraywchar_t* -->
 <h3 class="fn" translate="no" id="toWCharArray"><span class="type">qsizetype</span> QString::<span class="name">toWCharArray</span>(<span class="type">wchar_t</span> *<i>array</i>) const</h3>
-<p>Fills the <i translate="no">array</i> with the data contained in this <a href="qstring.html" translate="no">QString</a> object. The array is encoded in UTF-16 on platforms where wchar_t is 2 bytes wide (e.g&#x2e; windows) and in UCS-4 on platforms where wchar_t is 4 bytes wide (most Unix systems).</p>
+<p>Fills the <i translate="no">array</i> with the data contained in this <a href="qstring.html" translate="no">QString</a> object. The array is encoded in UTF-16 on platforms where wchar_t is 2 bytes wide (e.g. windows) and in UCS-4 on platforms where wchar_t is 4 bytes wide (most Unix systems).</p>
 <p><i translate="no">array</i> has to be allocated by the caller and contain enough space to hold the complete string (allocating the array with the same length as the string is always sufficient).</p>
 <p>This function returns the actual length of the string in <i translate="no">array</i>.</p>
 <div class="admonition note">
@@ -3513,9 +3513,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

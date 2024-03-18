@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qt_wrap_cpp.qdoc -->
   <meta name="description" content="Creates .moc files from sources.">
-  <title>qt_wrap_cpp | Qt Core 6.6.0</title>
+  <title>qt_wrap_cpp | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="cmake-commands-qtcore.html" translate="no">CMake Commands in Qt6 Core</a></li>
 <li>qt_wrap_cpp</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -56,13 +56,13 @@
 <pre class="cpp plain" translate="no">
  find_package(Qt6 REQUIRED COMPONENTS Core)
 </pre>
-<p>This command was introduced in Qt 5.0&#x2e;</p>
+<p>This command was introduced in Qt 5.0.</p>
 <h2 id="synopsis">Synopsis</h2>
 <pre class="cpp plain" translate="no">
- qt_wrap_cpp(&lt;VAR&gt; src_file1 [src_file2 ..&#x2e;]
+ qt_wrap_cpp(&lt;VAR&gt; src_file1 [src_file2 ...]
              [TARGET target]
-             [OPTIONS ..&#x2e;]
-             [DEPENDS ..&#x2e;])
+             [OPTIONS ...]
+             [DEPENDS ...])
 </pre>
 <p>If <a href="../qtcmake/cmake-qt5-and-qt6-compatibility.html#versionless-commands" translate="no">versionless commands</a> are disabled, use <code translate="no">qt6_wrap_cpp()</code> instead. It supports the same set of arguments as this command.</p>
 <h2 id="description">Description</h2>
@@ -73,12 +73,37 @@
 <h2 id="arguments">Arguments</h2>
 <p>You can set an explicit <code translate="no">TARGET</code>. This will make sure that the target properties <code translate="no">INCLUDE_DIRECTORIES</code> and <code translate="no">COMPILE_DEFINITIONS</code> are also used when scanning the source files with <code translate="no">moc</code>.</p>
 <p>You can set additional <code translate="no">OPTIONS</code> that should be added to the <code translate="no">moc</code> calls. You can find possible options in the <a href="../qtdoc/moc.html" translate="no">moc documentation</a>.</p>
+<p>The <code translate="no">OPTIONS</code> can evaluate generator expressions when <code translate="no">TARGET</code> is set.</p>
+<div class="admonition note">
+<p><b>Note: </b>If the <code translate="no">OPTIONS</code> include both generator expressions and special characters, use variables to implement them. For example, use <code translate="no">$&lt;ANGLE-R&gt;</code>, <code translate="no">$&lt;COMMA&gt;</code> and <code translate="no">$&lt;SEMICOLON&gt;</code> instead of <code translate="no">&gt;</code>, <code translate="no">,</code> and <code translate="no">:</code>. Otherwise, the generator expression will not be evaluated correctly. <code translate="no">OPTIONS</code> are wrapped in generator expressions, so you must escape special characters in them.</p>
+</div>
 <p><code translate="no">DEPENDS</code> allows you to add additional dependencies for recreation of the generated files. This is useful when the sources have implicit dependencies, like code for a Qt plugin that includes a <code translate="no">.json</code> file using the <a href="qtplugin.html#Q_PLUGIN_METADATA" translate="no">Q_PLUGIN_METADATA</a>() macro.</p>
 <h2 id="examples">Examples</h2>
 <pre class="cpp" translate="no">
  set(SOURCES myapp.cpp main.cpp)
  qt_wrap_cpp(SOURCES myapp.h)
  qt_add_executable(myapp ${SOURCES})
+</pre>
+<p>In the following example, the generator expressions passed to <code translate="no">OPTIONS</code> will be evaluated since <code translate="no">TARGET</code> is set. The argument is specified this way to avoid syntax errors in the generator expressions.</p>
+<pre class="cpp" translate="no">
+ set(SOURCES myapp.cpp main.cpp)
+ qt_wrap_cpp(SOURCES myapp.h
+             TARGET myapp
+             OPTIONS
+             &quot;$&lt;$&lt;CONFIG:Debug&gt;:-DMY_OPTION_FOR_DEBUG&gt;&quot;
+             &quot;-DDEFINE_CMDLINE_SIGNAL=void cmdlineSignal(const QMap&lt;int, int&gt; &amp;i)&quot;
+             &quot;$&lt;$&lt;CONFIG:Debug&gt;:-DDEFINE_CMDLINE_SIGNAL_IN_GENEX=void cmdlineSignal(const QMap&lt;int$&lt;COMMA&gt; int$&lt;ANGLE-R&gt; &amp;i)&gt;&quot;)
+ qt_add_executable(myapp ${SOURCES})
+</pre>
+<p>The following example uses <a href="https://cmake.org/cmake/help/latest/command/target_compile_definitions.html" translate="no">target_compile_definitions</a> to set <a href="https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_DEFINITIONS.html" translate="no">COMPILE_DEFINITIONS</a> which will be added to <code translate="no">OPTIONS</code>.</p>
+<pre class="cpp" translate="no">
+ set(SOURCES myapp.cpp main.cpp)
+ qt_wrap_cpp(SOURCES myapp.h
+             TARGET myapp)
+ qt_add_executable(myapp ${SOURCES})
+ target_compile_definitions(myapp PRIVATE &quot;$&lt;$&lt;CONFIG:Debug&gt;:MY_OPTION_FOR_DEBUG&gt;&quot;
+                                          &quot;DEFINE_CMDLINE_SIGNAL=void cmdlineSignal(const QMap&lt;int, int&gt; &amp;i)&quot;
+                                          &quot;$&lt;$&lt;BOOL:TRUE&gt;:DEFINE_CMDLINE_SIGNAL_IN_GENEX=void cmdlineSignal(const QMap&lt;int$&lt;COMMA&gt; int$&lt;ANGLE-R&gt; &amp;i)&gt;&quot;)
 </pre>
 </div>
 <!-- @@@qt-wrap-cpp.html -->
@@ -89,9 +114,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

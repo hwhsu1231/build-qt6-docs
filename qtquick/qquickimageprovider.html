@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qquickimageprovider.cpp -->
   <meta name="description" content="The QQuickImageProvider class provides an interface for supporting pixmaps and threaded image requests in QML.">
-  <title>QQuickImageProvider Class | Qt Quick 6.6.0</title>
+  <title>QQuickImageProvider Class | Qt Quick 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtquick-index.html" translate="no">Qt Quick</a></li>
 <li><a href="qtquick-module.html" translate="no">C++ Classes</a></li>
 <li>QQuickImageProvider</li>
-<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -148,7 +148,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Quick)</td></tr>
 <h4 id="asynchronous-image-loading">Asynchronous Image Loading</h4>
 <p>Image providers that support <a href="../qtgui/qimage.html" translate="no">QImage</a> or Texture loading automatically include support for asychronous loading of images. To enable asynchronous loading for an image source, set the <code translate="no">asynchronous</code> property to <code translate="no">true</code> for the relevant <a href="../qtqml/qqmlimageproviderbase.html#ImageType-enum" translate="no">Image</a> or <a href="qml-qtquick-borderimage.html" translate="no">BorderImage</a> object. When this is enabled, the image request to the provider is run in a low priority thread, allowing image loading to be executed in the background, and reducing the performance impact on the user interface.</p>
 <p>To force asynchronous image loading, even for image sources that do not have the <code translate="no">asynchronous</code> property set to <code translate="no">true</code>, you may pass the <code translate="no">QQmlImageProviderBase::ForceAsynchronousImageLoading</code> flag to the image provider constructor. This ensures that all image requests for the provider are handled in a separate thread.</p>
-<p>Asynchronous loading for image providers that provide <a href="../qtgui/qpixmap.html" translate="no">QPixmap</a> is only supported in platforms that have the ThreadedPixmaps feature, in platforms where pixmaps can only be created in the main thread (i.e&#x2e; ThreadedPixmaps is not supported) if <a href="qml-qtquick-image.html#asynchronous-prop" translate="no">asynchronous</a> is set to <code translate="no">true</code>, the value is ignored and the image is loaded synchronously.</p>
+<p>Asynchronous loading for image providers that provide <a href="../qtgui/qpixmap.html" translate="no">QPixmap</a> is only supported in platforms that have the ThreadedPixmaps feature, in platforms where pixmaps can only be created in the main thread (i.e. ThreadedPixmaps is not supported) if <a href="qml-qtquick-image.html#asynchronous-prop" translate="no">asynchronous</a> is set to <code translate="no">true</code>, the value is ignored and the image is loaded synchronously.</p>
 <p>Asynchronous image loading for providers of type other than ImageResponse are executed on a single thread per engine basis. That means that a slow image provider will block the loading of any other request. To avoid that we suggest using <a href="qquickasyncimageprovider.html" translate="no">QQuickAsyncImageProvider</a> and implement threading on the provider side via a <code translate="no">QThreadPool</code> or similar. See the <a href="qtquick-imageresponseprovider-example.html" translate="no">Image Response Provider Example</a> for a complete implementation.</p>
 <h4 id="image-caching">Image Caching</h4>
 <p>Images returned by a QQuickImageProvider are automatically cached, similar to any image loaded by the QML engine. When an image with a &quot;image://&quot; prefix is loaded from cache, <a href="qquickimageprovider.html#requestImage" translate="no">requestImage</a>() and <a href="qquickimageprovider.html#requestPixmap" translate="no">requestPixmap</a>() will not be called for the relevant image provider. If an image should always be fetched from the image provider, and should not be cached at all, set the <code translate="no">cache</code> property to <code translate="no">false</code> for the relevant <a href="../qtqml/qqmlimageproviderbase.html#ImageType-enum" translate="no">Image</a> or <a href="qml-qtquick-borderimage.html" translate="no">BorderImage</a> object.</p>
@@ -216,9 +216,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Quick)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

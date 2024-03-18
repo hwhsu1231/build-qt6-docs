@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- simpleclient.qdoc -->
   <meta name="description" content="Creating a minimalistic telemetry application.">
-  <title>Simple MQTT Client | Qt MQTT 6.6.0</title>
+  <title>Simple MQTT Client | Qt MQTT 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtmqtt-index.html" translate="no">Qt MQTT</a></li>
 <li><a href="qtmqtt-examples.html" translate="no">Qt MQTT Examples</a></li>
 <li>Simple MQTT Client</li>
-<li id="buildversion"><a href="qtmqtt-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtmqtt-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -49,6 +49,8 @@
  <span class="preprocessor">#include &lt;QtMqtt/QMqttClient&gt;</span>
  <span class="preprocessor">#include &lt;QtWidgets/QMessageBox&gt;</span>
 
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
+
  MainWindow<span class="operator">::</span>MainWindow(<span class="type">QWidget</span> <span class="operator">*</span>parent) :
      <span class="type">QMainWindow</span>(parent)<span class="operator">,</span>
      ui(<span class="keyword">new</span> Ui<span class="operator">::</span>MainWindow)
@@ -64,18 +66,17 @@
 
      connect(m_client<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qmqttclient.html" translate="no">QMqttClient</a></span><span class="operator">::</span>messageReceived<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> <span class="operator">&amp;</span>message<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="qmqtttopicname.html" translate="no">QMqttTopicName</a></span> <span class="operator">&amp;</span>topic) {
          <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> content <span class="operator">=</span> <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span><span class="operator">::</span>currentDateTime()<span class="operator">.</span>toString()
-                     <span class="operator">+</span> QLatin1String(<span class="string">&quot; Received Topic: &quot;</span>)
+                     <span class="operator">+</span> <span class="string">&quot; Received Topic: &quot;</span>_L1
                      <span class="operator">+</span> topic<span class="operator">.</span>name()
-                     <span class="operator">+</span> QLatin1String(<span class="string">&quot; Message: &quot;</span>)
+                     <span class="operator">+</span> <span class="string">&quot; Message: &quot;</span>_L1
                      <span class="operator">+</span> message
-                     <span class="operator">+</span> QLatin1Char(<span class="char">'\n'</span>);
+                     <span class="operator">+</span> u<span class="char">'\n'</span>;
          ui<span class="operator">-</span><span class="operator">&gt;</span>editLog<span class="operator">-</span><span class="operator">&gt;</span>insertPlainText(content);
      });
 
      connect(m_client<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qmqttclient.html" translate="no">QMqttClient</a></span><span class="operator">::</span>pingResponseReceived<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>() {
          <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> content <span class="operator">=</span> <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span><span class="operator">::</span>currentDateTime()<span class="operator">.</span>toString()
-                     <span class="operator">+</span> QLatin1String(<span class="string">&quot; PingResponse&quot;</span>)
-                     <span class="operator">+</span> QLatin1Char(<span class="char">'\n'</span>);
+                     <span class="operator">+</span> <span class="string">&quot;PingResponse\n&quot;</span>_L1;
          ui<span class="operator">-</span><span class="operator">&gt;</span>editLog<span class="operator">-</span><span class="operator">&gt;</span>insertPlainText(content);
      });
 
@@ -112,9 +113,9 @@
  <span class="type">void</span> MainWindow<span class="operator">::</span>updateLogStateChange()
  {
      <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> content <span class="operator">=</span> <span class="type"><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></span><span class="operator">::</span>currentDateTime()<span class="operator">.</span>toString()
-                     <span class="operator">+</span> QLatin1String(<span class="string">&quot;: State Change&quot;</span>)
+                     <span class="operator">+</span> <span class="string">&quot;: State Change&quot;</span>_L1
                      <span class="operator">+</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span><span class="operator">::</span>number(m_client<span class="operator">-</span><span class="operator">&gt;</span>state())
-                     <span class="operator">+</span> QLatin1Char(<span class="char">'\n'</span>);
+                     <span class="operator">+</span> u<span class="char">'\n'</span>;
      ui<span class="operator">-</span><span class="operator">&gt;</span>editLog<span class="operator">-</span><span class="operator">&gt;</span>insertPlainText(content);
  }
 
@@ -133,14 +134,15 @@
  <span class="type">void</span> MainWindow<span class="operator">::</span>on_buttonPublish_clicked()
  {
      <span class="keyword">if</span> (m_client<span class="operator">-</span><span class="operator">&gt;</span>publish(ui<span class="operator">-</span><span class="operator">&gt;</span>lineEditTopic<span class="operator">-</span><span class="operator">&gt;</span>text()<span class="operator">,</span> ui<span class="operator">-</span><span class="operator">&gt;</span>lineEditMessage<span class="operator">-</span><span class="operator">&gt;</span>text()<span class="operator">.</span>toUtf8()) <span class="operator">=</span><span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>)
-         <span class="type">QMessageBox</span><span class="operator">::</span>critical(<span class="keyword">this</span><span class="operator">,</span> QLatin1String(<span class="string">&quot;Error&quot;</span>)<span class="operator">,</span> QLatin1String(<span class="string">&quot;Could not publish message&quot;</span>));
+         <span class="type">QMessageBox</span><span class="operator">::</span>critical(<span class="keyword">this</span><span class="operator">,</span> u<span class="string">&quot;Error&quot;</span>_s<span class="operator">,</span> u<span class="string">&quot;Could not publish message&quot;</span>_s);
  }
 
  <span class="type">void</span> MainWindow<span class="operator">::</span>on_buttonSubscribe_clicked()
  {
      <span class="keyword">auto</span> subscription <span class="operator">=</span> m_client<span class="operator">-</span><span class="operator">&gt;</span>subscribe(ui<span class="operator">-</span><span class="operator">&gt;</span>lineEditTopic<span class="operator">-</span><span class="operator">&gt;</span>text());
      <span class="keyword">if</span> (<span class="operator">!</span>subscription) {
-         <span class="type">QMessageBox</span><span class="operator">::</span>critical(<span class="keyword">this</span><span class="operator">,</span> QLatin1String(<span class="string">&quot;Error&quot;</span>)<span class="operator">,</span> QLatin1String(<span class="string">&quot;Could not subscribe. Is there a valid connection?&quot;</span>));
+         <span class="type">QMessageBox</span><span class="operator">::</span>critical(<span class="keyword">this</span><span class="operator">,</span> u<span class="string">&quot;Error&quot;</span>_s<span class="operator">,</span>
+                               u<span class="string">&quot;Could not subscribe. Is there a valid connection?&quot;</span>_s);
          <span class="keyword">return</span>;
      }
  }

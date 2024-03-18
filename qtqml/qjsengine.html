@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qjsengine.cpp -->
   <meta name="description" content="The QJSEngine class provides an environment for evaluating JavaScript code.">
-  <title>QJSEngine Class | Qt QML 6.6.0</title>
+  <title>QJSEngine Class | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li><a href="qtqml-module.html" translate="no">C++ Classes</a></li>
 <li>QJSEngine</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -142,7 +142,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
  <span class="type"><a href="qjsengine.html#QJSEngine" translate="no">QJSEngine</a></span> myEngine;
  <span class="type"><a href="qjsvalue.html" translate="no">QJSValue</a></span> three <span class="operator">=</span> myEngine<span class="operator">.</span>evaluate(<span class="string">&quot;1 + 2&quot;</span>);
 </pre>
-<p><a href="qjsengine.html#evaluate" translate="no">evaluate</a>() returns a <a href="qjsvalue.html" translate="no">QJSValue</a> that holds the result of the evaluation. The <a href="qjsvalue.html" translate="no">QJSValue</a> class provides functions for converting the result to various C++ types (e.g&#x2e; <a href="qjsvalue.html#toString" translate="no">QJSValue::toString</a>() and <a href="qjsvalue.html#toNumber" translate="no">QJSValue::toNumber</a>()).</p>
+<p><a href="qjsengine.html#evaluate" translate="no">evaluate</a>() returns a <a href="qjsvalue.html" translate="no">QJSValue</a> that holds the result of the evaluation. The <a href="qjsvalue.html" translate="no">QJSValue</a> class provides functions for converting the result to various C++ types (e.g. <a href="qjsvalue.html#toString" translate="no">QJSValue::toString</a>() and <a href="qjsvalue.html#toNumber" translate="no">QJSValue::toNumber</a>()).</p>
 <p>The following code snippet shows how a script function can be defined and then invoked from C++ using <a href="qjsvalue.html#call" translate="no">QJSValue::call</a>():</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qjsvalue.html" translate="no">QJSValue</a></span> fun <span class="operator">=</span> myEngine<span class="operator">.</span>evaluate(<span class="string">&quot;(function(a, b) { return a + b; })&quot;</span>);
@@ -216,7 +216,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
  }
 </pre>
 <h3 id="engine-configuration">Engine Configuration</h3>
-<p>The <a href="qjsengine.html#globalObject" translate="no">globalObject</a>() function returns the <b>Global Object</b> associated with the script engine. Properties of the Global Object are accessible from any script code (i.e&#x2e; they are global variables). Typically, before evaluating &quot;user&quot; scripts, you will want to configure a script engine by adding one or more properties to the Global Object:</p>
+<p>The <a href="qjsengine.html#globalObject" translate="no">globalObject</a>() function returns the <b>Global Object</b> associated with the script engine. Properties of the Global Object are accessible from any script code (i.e. they are global variables). Typically, before evaluating &quot;user&quot; scripts, you will want to configure a script engine by adding one or more properties to the Global Object:</p>
 <pre class="cpp" translate="no">
  myEngine<span class="operator">.</span>globalObject()<span class="operator">.</span>setProperty(<span class="string">&quot;myNumber&quot;</span><span class="operator">,</span> <span class="number">123</span>);
  <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
@@ -224,7 +224,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 </pre>
 <p>Adding custom properties to the scripting environment is one of the standard means of providing a scripting API that is specific to your application. Usually these custom properties are objects created by the <a href="qjsengine.html#newQObject" translate="no">newQObject</a>() or <a href="qjsengine.html#newObject" translate="no">newObject</a>() functions.</p>
 <h3 id="script-exceptions">Script Exceptions</h3>
-<p><a href="qjsengine.html#evaluate" translate="no">evaluate</a>() can throw a script exception (e.g&#x2e; due to a syntax error). If it does, then <a href="qjsengine.html#evaluate" translate="no">evaluate</a>() returns the value that was thrown (typically an <code translate="no">Error</code> object). Use <a href="qjsvalue.html#isError" translate="no">QJSValue::isError</a>() to check for exceptions.</p>
+<p><a href="qjsengine.html#evaluate" translate="no">evaluate</a>() can throw a script exception (e.g. due to a syntax error). If it does, then <a href="qjsengine.html#evaluate" translate="no">evaluate</a>() returns the value that was thrown (typically an <code translate="no">Error</code> object). Use <a href="qjsvalue.html#isError" translate="no">QJSValue::isError</a>() to check for exceptions.</p>
 <p>For detailed information about the error, use <a href="qjsvalue.html#toString" translate="no">QJSValue::toString</a>() to obtain an error message, and use <a href="qjsvalue.html#property" translate="no">QJSValue::property</a>() to query the properties of the <code translate="no">Error</code> object. The following properties are available:</p>
 <ul>
 <li><code translate="no">name</code></li>
@@ -242,7 +242,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
              <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> result<span class="operator">.</span>toString();
 </pre>
 <h3 id="script-object-creation">Script Object Creation</h3>
-<p>Use <a href="qjsengine.html#newObject" translate="no">newObject</a>() to create a JavaScript object; this is the C++ equivalent of the script statement <code translate="no">new Object()</code>. You can use the object-specific functionality in <a href="qjsvalue.html" translate="no">QJSValue</a> to manipulate the script object (e.g&#x2e; <a href="qjsvalue.html#setProperty" translate="no">QJSValue::setProperty</a>()). Similarly, use <a href="qjsengine.html#newArray" translate="no">newArray</a>() to create a JavaScript array object.</p>
+<p>Use <a href="qjsengine.html#newObject" translate="no">newObject</a>() to create a JavaScript object; this is the C++ equivalent of the script statement <code translate="no">new Object()</code>. You can use the object-specific functionality in <a href="qjsvalue.html" translate="no">QJSValue</a> to manipulate the script object (e.g. <a href="qjsvalue.html#setProperty" translate="no">QJSValue::setProperty</a>()). Similarly, use <a href="qjsengine.html#newArray" translate="no">newArray</a>() to create a JavaScript array object.</p>
 <h3 id="qobject-integration">QObject Integration</h3>
 <p>Use <a href="qjsengine.html#newQObject" translate="no">newQObject</a>() to wrap a <a href="../qtcore/qobject.html" translate="no">QObject</a> (or subclass) pointer. <a href="qjsengine.html#newQObject" translate="no">newQObject</a>() returns a proxy script object; properties, children, and signals and slots of the <a href="../qtcore/qobject.html" translate="no">QObject</a> are available as properties of the proxy object. No binding code is needed because it is done dynamically using the Qt meta object system.</p>
 <pre class="cpp" translate="no">
@@ -312,11 +312,11 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <div class="table"><table class="generic">
  <thead><tr class="qt-style"><th >Script Function</th><th >Corresponding C++ Function</th></tr></thead>
 <tr valign="top" class="odd"><td >qsTr()</td><td ><a href="../qtcore/qobject.html#tr" translate="no">QObject::tr</a>()</td></tr>
-<tr valign="top" class="even"><td ><a href="../qtcore/qttranslation-proxy.html#QT_TR_NOOP" translate="no">QT_TR_NOOP</a>()</td><td ><a href="../qtcore/qttranslation-proxy.html#QT_TR_NOOP" translate="no">QT_TR_NOOP</a>()</td></tr>
+<tr valign="top" class="even"><td ><a href="../qtcore/qttranslation-qtcore-proxy.html#QT_TR_NOOP" translate="no">QT_TR_NOOP</a>()</td><td ><a href="../qtcore/qttranslation-qtcore-proxy.html#QT_TR_NOOP" translate="no">QT_TR_NOOP</a>()</td></tr>
 <tr valign="top" class="odd"><td >qsTranslate()</td><td ><a href="../qtcore/qcoreapplication.html#translate" translate="no">QCoreApplication::translate</a>()</td></tr>
-<tr valign="top" class="even"><td ><a href="../qtcore/qttranslation-proxy.html#QT_TRANSLATE_NOOP" translate="no">QT_TRANSLATE_NOOP</a>()</td><td ><a href="../qtcore/qttranslation-proxy.html#QT_TRANSLATE_NOOP" translate="no">QT_TRANSLATE_NOOP</a>()</td></tr>
-<tr valign="top" class="odd"><td >qsTrId()</td><td ><a href="../qtcore/qttranslation-proxy.html#qtTrId" translate="no">qtTrId</a>()</td></tr>
-<tr valign="top" class="even"><td ><a href="../qtcore/qttranslation-proxy.html#QT_TRID_NOOP" translate="no">QT_TRID_NOOP</a>()</td><td ><a href="../qtcore/qttranslation-proxy.html#QT_TRID_NOOP" translate="no">QT_TRID_NOOP</a>()</td></tr>
+<tr valign="top" class="even"><td ><a href="../qtcore/qttranslation-qtcore-proxy.html#QT_TRANSLATE_NOOP" translate="no">QT_TRANSLATE_NOOP</a>()</td><td ><a href="../qtcore/qttranslation-qtcore-proxy.html#QT_TRANSLATE_NOOP" translate="no">QT_TRANSLATE_NOOP</a>()</td></tr>
+<tr valign="top" class="odd"><td >qsTrId()</td><td ><a href="../qtcore/qttranslation-qtcore-proxy.html#qtTrId" translate="no">qtTrId</a>()</td></tr>
+<tr valign="top" class="even"><td ><a href="../qtcore/qttranslation-qtcore-proxy.html#QT_TRID_NOOP" translate="no">QT_TRID_NOOP</a>()</td><td ><a href="../qtcore/qttranslation-qtcore-proxy.html#QT_TRID_NOOP" translate="no">QT_TRID_NOOP</a>()</td></tr>
 </table></div>
 <p>This flag also adds an <code translate="no">arg()</code> function to the string prototype.</p>
 <p>For more information, see the <a href="../qtdoc/internationalization.html" translate="no">Internationalization with Qt</a> documentation.</p>
@@ -378,12 +378,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- $$$QJSEngine[overload1]$$$QJSEngine -->
 <h3 class="fn" translate="no" id="QJSEngine">QJSEngine::<span class="name">QJSEngine</span>()</h3>
 <p>Constructs a QJSEngine object.</p>
-<p>The <a href="qjsengine.html#globalObject" translate="no">globalObject</a>() is initialized to have properties as described in <a href="https://www.ecma-international.org/publications-and-standards/standards/ecma-262/" translate="no">ECMA-262</a>, Section 15.1&#x2e;</p>
+<p>The <a href="qjsengine.html#globalObject" translate="no">globalObject</a>() is initialized to have properties as described in <a href="https://www.ecma-international.org/publications-and-standards/standards/ecma-262/" translate="no">ECMA-262</a>, Section 15.1.</p>
 <!-- @@@QJSEngine -->
 <!-- $$$QJSEngine$$$QJSEngineQObject* -->
 <h3 class="fn" translate="no" id="QJSEngine-1"><code translate="no">[explicit] </code>QJSEngine::<span class="name">QJSEngine</span>(<span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span> *<i>parent</i>)</h3>
 <p>Constructs a QJSEngine object with the given <i translate="no">parent</i>.</p>
-<p>The <a href="qjsengine.html#globalObject" translate="no">globalObject</a>() is initialized to have properties as described in <a href="https://www.ecma-international.org/publications-and-standards/standards/ecma-262/" translate="no">ECMA-262</a>, Section 15.1&#x2e;</p>
+<p>The <a href="qjsengine.html#globalObject" translate="no">globalObject</a>() is initialized to have properties as described in <a href="https://www.ecma-international.org/publications-and-standards/standards/ecma-262/" translate="no">ECMA-262</a>, Section 15.1.</p>
 <!-- @@@QJSEngine -->
 <!-- $$$~QJSEngine[overload1]$$$~QJSEngine -->
 <h3 class="fn" translate="no" id="dtor.QJSEngine"><code translate="no">[override virtual noexcept] </code>QJSEngine::<span class="name">~QJSEngine</span>()</h3>
@@ -404,7 +404,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <h3 class="fn" translate="no" id="collectGarbage"><span class="type">void</span> QJSEngine::<span class="name">collectGarbage</span>()</h3>
 <p>Runs the garbage collector.</p>
 <p>The garbage collector will attempt to reclaim memory by locating and disposing of objects that are no longer reachable in the script environment.</p>
-<p>Normally you don't need to call this function; the garbage collector will automatically be invoked when the <a href="qjsengine.html" translate="no">QJSEngine</a> decides that it's wise to do so (i.e&#x2e; when a certain number of new objects have been created). However, you can call this function to explicitly request that garbage collection should be performed as soon as possible.</p>
+<p>Normally you don't need to call this function; the garbage collector will automatically be invoked when the <a href="qjsengine.html" translate="no">QJSEngine</a> decides that it's wise to do so (i.e. when a certain number of new objects have been created). However, you can call this function to explicitly request that garbage collection should be performed as soon as possible.</p>
 <!-- @@@collectGarbage -->
 <!-- $$$evaluate[overload1]$$$evaluateconstQString&constQString&intQStringList* -->
 <h3 class="fn" translate="no" id="evaluate"><span class="type"><a href="qjsvalue.html" translate="no">QJSValue</a></span> QJSEngine::<span class="name">evaluate</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>program</i>, const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i> = QString(), <span class="type">int</span> <i>lineNumber</i> = 1, <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> *<i>exceptionStackTrace</i> = nullptr)</h3>
@@ -418,10 +418,10 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <p><i translate="no">fileName</i> is used for error reporting. For example, in error objects the file name is accessible through the &quot;fileName&quot; property if it is provided with this function.</p>
 <p><i translate="no">exceptionStackTrace</i> is used to report whether an uncaught exception was thrown. If you pass a non-null pointer to a <a href="../qtcore/qstringlist.html" translate="no">QStringList</a> to it, it will set it to list of &quot;stackframe messages&quot; if the script threw an unhandled exception, or an empty list otherwise. A stackframe message has the format function name:line number:column:file name</p>
 <div class="admonition note">
-<p><b>Note: </b>In some cases, e.g&#x2e; for native functions, function name and file name can be empty and line number and column can be -1.</p>
+<p><b>Note: </b>In some cases, e.g. for native functions, function name and file name can be empty and line number and column can be -1.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>If an exception was thrown and the exception value is not an Error instance (i.e&#x2e;, <a href="qjsvalue.html#isError" translate="no">QJSValue::isError</a>() returns <code translate="no">false</code>), the exception value will still be returned. Use <code translate="no">exceptionStackTrace-&gt;isEmpty()</code> to distinguish whether the value was a normal or an exceptional return value.</p>
+<p><b>Note: </b>If an exception was thrown and the exception value is not an Error instance (i.e., <a href="qjsvalue.html#isError" translate="no">QJSValue::isError</a>() returns <code translate="no">false</code>), the exception value will still be returned. Use <code translate="no">exceptionStackTrace-&gt;isEmpty()</code> to distinguish whether the value was a normal or an exceptional return value.</p>
 </div>
 <p><b>See also </b><a href="qqmlexpression.html#evaluate" translate="no">QQmlExpression::evaluate</a>.</p>
 <!-- @@@evaluate -->
@@ -534,7 +534,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- $$$registerModule[overload1]$$$registerModuleconstQString&constQJSValue& -->
 <h3 class="fn" translate="no" id="registerModule"><span class="type">bool</span> QJSEngine::<span class="name">registerModule</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>moduleName</i>, const <span class="type"><a href="qjsvalue.html" translate="no">QJSValue</a></span> &amp;<i>value</i>)</h3>
 <p>Registers a <a href="qjsvalue.html" translate="no">QJSValue</a> to serve as a module. After this function is called, all modules that import <i translate="no">moduleName</i> will import the value of <i translate="no">value</i> instead of loading <i translate="no">moduleName</i> from the filesystem.</p>
-<p>Any valid <a href="qjsvalue.html" translate="no">QJSValue</a> can be registered, but named exports (i.e&#x2e; <code translate="no">import { name } from &quot;info&quot;</code> are treated as members of an object, so the default export must be created with one of the newXYZ methods of <a href="qjsengine.html" translate="no">QJSEngine</a>.</p>
+<p>Any valid <a href="qjsvalue.html" translate="no">QJSValue</a> can be registered, but named exports (i.e. <code translate="no">import { name } from &quot;info&quot;</code> are treated as members of an object, so the default export must be created with one of the newXYZ methods of <a href="qjsengine.html" translate="no">QJSEngine</a>.</p>
 <p>Because this allows modules that do not exist on the filesystem to be imported, scripting applications can use this to provide built-in modules, similar to Node.js.</p>
 <p>Returns <code translate="no">true</code> on success, <code translate="no">false</code> otherwise.</p>
 <div class="admonition note">
@@ -666,9 +666,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

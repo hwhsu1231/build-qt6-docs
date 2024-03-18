@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- mandelbrot.qdoc -->
   <meta name="description" content="The Mandelbrot example demonstrates multi-thread programming using Qt. It shows how to use a worker thread to perform heavy computations without blocking the main thread's event loop.">
-  <title>Mandelbrot | Qt Core 6.6.0</title>
+  <title>Mandelbrot | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li>Mandelbrot</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -178,7 +178,7 @@
          mutex<span class="operator">.</span>unlock();
 </pre>
 <p><code translate="no">run()</code> is quite a big function, so we'll break it down into parts.</p>
-<p>The function body is an infinite loop which starts by storing the rendering parameters in local variables. As usual, we protect accesses to the member variables using the class's mutex. Storing the member variables in local variables allows us to minimize the amount of code that needs to be protected by a mutex. This ensures that the main thread will never have to block for too long when it needs to access <code translate="no">RenderThread</code>'s member variables (e.g&#x2e;, in <code translate="no">render()</code>).</p>
+<p>The function body is an infinite loop which starts by storing the rendering parameters in local variables. As usual, we protect accesses to the member variables using the class's mutex. Storing the member variables in local variables allows us to minimize the amount of code that needs to be protected by a mutex. This ensures that the main thread will never have to block for too long when it needs to access <code translate="no">RenderThread</code>'s member variables (e.g., in <code translate="no">render()</code>).</p>
 <p>The <code translate="no">forever</code> keyword is a Qt pseudo-keyword.</p>
 <pre class="cpp" translate="no">
          <span class="keyword">const</span> <span class="type">int</span> halfWidth <span class="operator">=</span> resultSize<span class="operator">.</span>width() <span class="operator">/</span> <span class="number">2</span>;
@@ -312,7 +312,7 @@
 <pre class="cpp" translate="no">
  <span class="keyword">class</span> MandelbrotWidget : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>
  {
-     Q_OBJECT
+     Q_DECLARE_TR_FUNCTIONS(MandelbrotWidget)
 
  <span class="keyword">public</span>:
      MandelbrotWidget(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
@@ -332,11 +332,9 @@
      <span class="type">bool</span> event(<span class="type"><a href="qevent.html" translate="no">QEvent</a></span> <span class="operator">*</span>event) override;
  <span class="preprocessor">#endif</span>
 
- <span class="keyword">private</span> <span class="keyword">slots</span>:
+ <span class="keyword">private</span>:
      <span class="type">void</span> updatePixmap(<span class="keyword">const</span> <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> <span class="operator">&amp;</span>image<span class="operator">,</span> <span class="type">double</span> scaleFactor);
      <span class="type">void</span> zoom(<span class="type">double</span> zoomFactor);
-
- <span class="keyword">private</span>:
      <span class="type">void</span> scroll(<span class="type">int</span> deltaX<span class="operator">,</span> <span class="type">int</span> deltaY);
  <span class="preprocessor">#ifndef QT_NO_GESTURES</span>
      <span class="type">bool</span> gestureEvent(<span class="type"><a href="../qtwidgets/qgestureevent.html" translate="no">QGestureEvent</a></span> <span class="operator">*</span>event);
@@ -386,7 +384,7 @@
  }
 </pre>
 <p>The interesting part of the constructor is the <a href="qobject.html#connect" translate="no">QObject::connect</a>() call.</p>
-<p>Although it looks like a standard signal-slot connection between two <a href="qobject.html" translate="no">QObject</a>s, because the signal is emitted in a different thread than the receiver lives in, the connection is effectively a <a href="qt.html#ConnectionType-enum" translate="no">queued connection</a>. These connections are asynchronous (i.e&#x2e;, non-blocking), meaning that the slot will be called at some point after the <code translate="no">emit</code> statement. What's more, the slot will be invoked in the thread in which the receiver lives. Here, the signal is emitted in the worker thread, and the slot is executed in the GUI thread when control returns to the event loop.</p>
+<p>Although it looks like a standard signal-slot connection between two <a href="qobject.html" translate="no">QObject</a>s, because the signal is emitted in a different thread than the receiver lives in, the connection is effectively a <a href="qt.html#ConnectionType-enum" translate="no">queued connection</a>. These connections are asynchronous (i.e., non-blocking), meaning that the slot will be called at some point after the <code translate="no">emit</code> statement. What's more, the slot will be invoked in the thread in which the receiver lives. Here, the signal is emitted in the worker thread, and the slot is executed in the GUI thread when control returns to the event loop.</p>
 <p>With queued connections, Qt must store a copy of the arguments that were passed to the signal so that it can pass them to the slot later on. Qt knows how to take of copy of many C++ and Qt types, so, no further action is needed for <a href="../qtgui/qimage.html" translate="no">QImage</a>. If a custom type was used, a call to the template function <a href="qmetatype.html#qRegisterMetaType-3" translate="no">qRegisterMetaType</a>() would be required before the type could be used as a parameter in queued connections.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> MandelbrotWidget<span class="operator">::</span>paintEvent(<span class="type"><a href="../qtgui/qpaintevent.html" translate="no">QPaintEvent</a></span> <span class="operator">*</span> <span class="comment">/* event */</span>)
@@ -505,7 +503,7 @@
      zoom(pow(ZoomInFactor<span class="operator">,</span> numSteps));
  }
 </pre>
-<p>The wheel event handler is reimplemented to make the mouse wheel control the zoom level. <a href="../qtgui/qwheelevent.html#angleDelta" translate="no">QWheelEvent::angleDelta</a>() returns the angle of the wheel mouse movement, in eighths of a degree. For most mice, one wheel step corresponds to 15 degrees. We find out how many mouse steps we have and determine the resulting zoom factor. For example, if we have two wheel steps in the positive direction (i.e&#x2e;, +30 degrees), the zoom factor becomes <code translate="no">ZoomInFactor</code> to the second power, i.e&#x2e; 0.8 * 0.8 = 0.64.</p>
+<p>The wheel event handler is reimplemented to make the mouse wheel control the zoom level. <a href="../qtgui/qwheelevent.html#angleDelta" translate="no">QWheelEvent::angleDelta</a>() returns the angle of the wheel mouse movement, in eighths of a degree. For most mice, one wheel step corresponds to 15 degrees. We find out how many mouse steps we have and determine the resulting zoom factor. For example, if we have two wheel steps in the positive direction (i.e., +30 degrees), the zoom factor becomes <code translate="no">ZoomInFactor</code> to the second power, i.e. 0.8 * 0.8 = 0.64.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> MandelbrotWidget<span class="operator">::</span>mousePressEvent(<span class="type"><a href="../qtgui/qmouseevent.html" translate="no">QMouseEvent</a></span> <span class="operator">*</span>event)
  {
@@ -639,9 +637,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

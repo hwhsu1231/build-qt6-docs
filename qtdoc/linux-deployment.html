@@ -27,7 +27,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Qt for Linux/X11 - Deployment</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -59,14 +59,12 @@
 <h2 id="static-linking">Static Linking</h2>
 <p>Static linking is often the safest and easiest way to distribute an application on Unix since it relieves you from the task of distributing the Qt libraries and ensuring that they are located in the default search path for libraries on the target system.</p>
 <h3 id="building-qt-statically">Building Qt Statically</h3>
-<p>To use this approach, you must start by installing a static version of the Qt library:</p>
-<pre class="cpp" translate="no">
- cd <span class="operator">/</span>path<span class="operator">/</span>to<span class="operator">/</span><span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span>
- <span class="operator">.</span><span class="operator">/</span>configure <span class="operator">-</span><span class="keyword">static</span> <span class="operator">-</span>prefix <span class="operator">/</span>path<span class="operator">/</span>to<span class="operator">/</span><span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span> <span class="operator">&lt;</span>other parameters<span class="operator">&gt;</span>
- make
+<p>To use this approach, you must start by building a _static_ version of the Qt libraries. Follow the steps in <a href="linux-building.html" translate="no">Qt for Linux/X11 - Building from Source</a>, but remember to add a <code translate="no">-static</code> argument to configure:</p>
+<pre class="cpp plain" translate="no">
+ mkdir -p ~/dev/qt-build
+ cd ~/dev/qt-build
+ /tmp/qt-everywhere-src-6.6.2/configure -static
 </pre>
-<p>We specify the prefix so that we do not overwrite the existing Qt installation. The example above only builds the Qt libraries, i.e&#x2e; the examples and Qt Designer will not be built. When <code translate="no">make</code> is done, you will find the Qt libraries in the <code translate="no">/path/to/Qt/lib</code> directory.</p>
-<p>When linking your application against static Qt libraries, note that you might need to add more libraries to the <code translate="no">LIBS</code> line in your project file. For more information, see the <a href="windows-deployment.html#application-dependencies" translate="no">Application Dependencies</a> section.</p>
 <h3 id="linking-the-application-to-the-static-version-of-qt">Linking the Application to the Static Version of Qt</h3>
 <p>Once Qt is built statically, the next step is to regenerate the makefile and rebuild the application. First, we must go into the directory that contains the application:</p>
 <pre class="cpp" translate="no">
@@ -117,9 +115,9 @@
 <p>To deploy the application, we must make sure that we copy the relevant Qt libraries (corresponding to the Qt modules used in the application), the <a href="windows-deployment.html#qt-plugins" translate="no">platform plugin</a>, and the executable to the same directory tree. Remember that if your application depends on compiler specific libraries, these must also be redistributed along with your application. For more information, see the <a href="windows-deployment.html#application-dependencies" translate="no">Application Dependencies</a> section.</p>
 <p>We'll cover the plugins shortly, but the main issue with shared libraries is that you must ensure that the dynamic linker will find the Qt libraries. Unless told otherwise, the dynamic linker doesn't search the directory where your application resides. There are many ways to solve this:</p>
 <ul>
-<li>You can install the Qt libraries in one of the system library paths (e.g&#x2e; <code translate="no">/usr/lib</code> on most systems).</li>
+<li>You can install the Qt libraries in one of the system library paths (e.g. <code translate="no">/usr/lib</code> on most systems).</li>
 <li>You can pass a predetermined path to the <code translate="no">-rpath</code> command-line option when linking the application. This will tell the dynamic linker to look in this directory when starting your application.</li>
-<li>You can write a startup script for your application, where you modify the dynamic linker configuration (e.g&#x2e;, adding your application's directory to the <code translate="no">LD_LIBRARY_PATH</code> environment variable.<div class="admonition note">
+<li>You can write a startup script for your application, where you modify the dynamic linker configuration (e.g., adding your application's directory to the <code translate="no">LD_LIBRARY_PATH</code> environment variable.<div class="admonition note">
 <p><b>Note: </b>If your application will be running with &quot;Set user ID on execution,&quot; and if it will be owned by root, then LD_LIBRARY_PATH will be ignored on some platforms. In this case, use of the LD_LIBRARY_PATH approach is not an option).</p>
 </div>
 </li>
@@ -158,7 +156,7 @@
 </table></div>
 <p>On most systems, the extension for shared libraries is <code translate="no">.so</code>. A notable exception is HP-UX, which uses <code translate="no">.sl</code>.</p>
 <p>Remember that if your application depends on compiler specific libraries, these must still be redistributed along with your application. For more information, see the <a href="windows-deployment.html#application-dependencies" translate="no">Application Dependencies</a> section.</p>
-<p>To verify that the application now can be successfully deployed, you can extract this archive on a machine without Qt and without any compiler installed, and try to run it, i.e&#x2e; run the <code translate="no">plugandpaint.sh</code> script.</p>
+<p>To verify that the application now can be successfully deployed, you can extract this archive on a machine without Qt and without any compiler installed, and try to run it, i.e. run the <code translate="no">plugandpaint.sh</code> script.</p>
 <p>An alternative to putting the plugins in the <code translate="no">plugins</code> subdirectory is to add a custom search path when you start your application using <a href="../qtcore/qcoreapplication.html#addLibraryPath" translate="no">QApplication::addLibraryPath</a>() or <a href="../qtcore/qcoreapplication.html#setLibraryPaths" translate="no">QApplication::setLibraryPaths</a>().</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>addLibraryPath(<span class="string">&quot;/some/other/path&quot;</span>);
@@ -171,7 +169,7 @@
 </pre>
 <p>This will list all the shared library dependencies for your application. Depending on configuration, these libraries must be redistributed along with your application. In particular, the standard C++ library must be redistributed if you're compiling your application with a compiler that is binary incompatible with the system compiler. When possible, the safest solution is to link against these libraries statically.</p>
 <p>You will probably want to link dynamically with the regular X11 libraries, since some implementations will try to open other shared libraries with <code translate="no">dlopen()</code>, and if this fails, the X11 library might cause your application to crash.</p>
-<p>It's also worth mentioning that Qt will look for certain X11 extensions, such as Xinerama and Xrandr, and possibly pull them in, including all the libraries that they link against. If you can't guarantee the presence of a certain extension, the safest approach is to disable it when configuring Qt (e.g&#x2e; <code translate="no">./configure -no-xrandr</code>).</p>
+<p>It's also worth mentioning that Qt will look for certain X11 extensions, such as Xinerama and Xrandr, and possibly pull them in, including all the libraries that they link against. If you can't guarantee the presence of a certain extension, the safest approach is to disable it when configuring Qt (e.g. <code translate="no">./configure -no-xrandr</code>).</p>
 <p>FontConfig and FreeType are other examples of libraries that aren't always available or that aren't always binary compatible. As strange as it may sound, some software vendors have had success by compiling their software on very old machines and have been very careful not to upgrade any of the software running on them.</p>
 <p>When linking your application against the static Qt libraries, you must explicitly link with the dependent libraries mentioned above. Do this by adding them to the <code translate="no">LIBS</code> variable in your project file.</p>
 <h3 id="qt-plugins">Qt Plugins</h3>
@@ -193,9 +191,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

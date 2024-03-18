@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qclipboard.cpp -->
   <meta name="description" content="The QClipboard class provides access to the window system clipboard.">
-  <title>QClipboard Class | Qt GUI 6.6.0</title>
+  <title>QClipboard Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QClipboard</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -108,7 +108,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
  <span class="comment">// etc.</span>
  clipboard<span class="operator">-</span><span class="operator">&gt;</span>setText(newText);
 </pre>
-<p>QClipboard features some convenience functions to access common data types: <a href="qclipboard.html#setText" translate="no">setText</a>() allows the exchange of Unicode text and <a href="qclipboard.html#setPixmap" translate="no">setPixmap</a>() and <a href="qclipboard.html#setImage" translate="no">setImage</a>() allows the exchange of QPixmaps and QImages between applications. The <a href="qclipboard.html#setMimeData" translate="no">setMimeData</a>() function is the ultimate in flexibility: it allows you to add any <a href="../qtcore/qmimedata.html" translate="no">QMimeData</a> into the clipboard. There are corresponding getters for each of these, e.g&#x2e; <a href="qclipboard.html#text" translate="no">text</a>(), <a href="qclipboard.html#image" translate="no">image</a>() and <a href="qclipboard.html#pixmap" translate="no">pixmap</a>(). You can clear the clipboard by calling <a href="qclipboard.html#clear" translate="no">clear</a>().</p>
+<p>QClipboard features some convenience functions to access common data types: <a href="qclipboard.html#setText" translate="no">setText</a>() allows the exchange of Unicode text and <a href="qclipboard.html#setPixmap" translate="no">setPixmap</a>() and <a href="qclipboard.html#setImage" translate="no">setImage</a>() allows the exchange of QPixmaps and QImages between applications. The <a href="qclipboard.html#setMimeData" translate="no">setMimeData</a>() function is the ultimate in flexibility: it allows you to add any <a href="../qtcore/qmimedata.html" translate="no">QMimeData</a> into the clipboard. There are corresponding getters for each of these, e.g. <a href="qclipboard.html#text" translate="no">text</a>(), <a href="qclipboard.html#image" translate="no">image</a>() and <a href="qclipboard.html#pixmap" translate="no">pixmap</a>(). You can clear the clipboard by calling <a href="qclipboard.html#clear" translate="no">clear</a>().</p>
 <p>A typical example of the use of these functions follows:</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> DropArea<span class="operator">::</span>paste()
@@ -132,15 +132,15 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 id="notes-for-x11-users">Notes for X11 Users</h3>
 <ul>
 <li>The X11 Window System has the concept of a separate selection and clipboard. When text is selected, it is immediately available as the global mouse selection. The global mouse selection may later be copied to the clipboard. By convention, the middle mouse button is used to paste the global mouse selection.</li>
-<li>X11 also has the concept of ownership; if you change the selection within a window, X11 will only notify the owner and the previous owner of the change, i.e&#x2e; it will not notify all applications that the selection or clipboard data changed.</li>
-<li>Lastly, the X11 clipboard is event driven, i.e&#x2e; the clipboard will not function properly if the event loop is not running. Similarly, it is recommended that the contents of the clipboard are stored or retrieved in direct response to user-input events, e.g&#x2e; mouse button or key presses and releases. You should not store or retrieve the clipboard contents in response to timer or non-user-input events.</li>
+<li>X11 also has the concept of ownership; if you change the selection within a window, X11 will only notify the owner and the previous owner of the change, i.e. it will not notify all applications that the selection or clipboard data changed.</li>
+<li>Lastly, the X11 clipboard is event driven, i.e. the clipboard will not function properly if the event loop is not running. Similarly, it is recommended that the contents of the clipboard are stored or retrieved in direct response to user-input events, e.g. mouse button or key presses and releases. You should not store or retrieve the clipboard contents in response to timer or non-user-input events.</li>
 <li>Since there is no standard way to copy and paste files between applications on X11, various MIME types and conventions are currently in use. For instance, Nautilus expects files to be supplied with a <code translate="no">x-special/gnome-copied-files</code> MIME type with data beginning with the cut/copy action, a newline character, and the URL of the file.</li>
 </ul>
 <h3 id="notes-for-macos-users">Notes for macOS Users</h3>
 <p>macOS supports a separate find buffer that holds the current search string in Find operations. This find clipboard can be accessed by specifying the <a href="qclipboard.html#Mode-enum" translate="no">FindBuffer</a> mode.</p>
 <h3 id="notes-for-windows-and-macos-users">Notes for Windows and macOS Users</h3>
 <ul>
-<li>Windows and macOS do not support the global mouse selection; they only supports the global clipboard, i.e&#x2e; they only add text to the clipboard when an explicit copy or cut is made.</li>
+<li>Windows and macOS do not support the global mouse selection; they only supports the global clipboard, i.e. they only add text to the clipboard when an explicit copy or cut is made.</li>
 <li>Windows and macOS does not have the concept of ownership; the clipboard is a fully global resource so all applications are notified of changes.</li>
 </ul>
 <h3 id="notes-for-android-users">Notes for Android Users</h3>
@@ -155,7 +155,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p>This enum type is used to control which part of the system clipboard is used by <a href="qclipboard.html#mimeData" translate="no">QClipboard::mimeData</a>(), <a href="qclipboard.html#setMimeData" translate="no">QClipboard::setMimeData</a>() and related functions.</p>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
 <tr><td class="topAlign"><code translate="no">QClipboard::Clipboard</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">indicates that data should be stored and retrieved from the global clipboard.</td></tr>
-<tr><td class="topAlign"><code translate="no">QClipboard::Selection</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">indicates that data should be stored and retrieved from the global mouse selection. Support for <code translate="no">Selection</code> is provided only on systems with a global mouse selection (e.g&#x2e; X11).</td></tr>
+<tr><td class="topAlign"><code translate="no">QClipboard::Selection</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">indicates that data should be stored and retrieved from the global mouse selection. Support for <code translate="no">Selection</code> is provided only on systems with a global mouse selection (e.g. X11).</td></tr>
 <tr><td class="topAlign"><code translate="no">QClipboard::FindBuffer</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign">indicates that data should be stored and retrieved from the Find buffer. This mode is used for holding search strings on macOS.</td></tr>
 </table></div>
 <p><b>See also </b><a href="qclipboard.html#supportsSelection" translate="no">QClipboard::supportsSelection</a>().</p>
@@ -222,7 +222,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@pixmap -->
 <!-- $$$selectionChanged[overload1]$$$selectionChanged -->
 <h3 class="fn" translate="no" id="selectionChanged"><code translate="no">[signal] </code><span class="type">void</span> QClipboard::<span class="name">selectionChanged</span>()</h3>
-<p>This signal is emitted when the selection is changed. This only applies to windowing systems that support selections, e.g&#x2e; X11. Windows and macOS don't support selections.</p>
+<p>This signal is emitted when the selection is changed. This only applies to windowing systems that support selections, e.g. X11. Windows and macOS don't support selections.</p>
 <p><b>See also </b><a href="qclipboard.html#dataChanged" translate="no">dataChanged</a>(), <a href="qclipboard.html#findBufferChanged" translate="no">findBufferChanged</a>(), and <a href="qclipboard.html#changed" translate="no">changed</a>().</p>
 <!-- @@@selectionChanged -->
 <!-- $$$setImage[overload1]$$$setImageconstQImage&Mode -->
@@ -287,9 +287,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

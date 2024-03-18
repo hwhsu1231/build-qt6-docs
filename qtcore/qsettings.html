@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qsettings.cpp -->
   <meta name="description" content="The QSettings class provides persistent platform-independent application settings.">
-  <title>QSettings Class | Qt Core 6.6.0</title>
+  <title>QSettings Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QSettings</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -146,7 +146,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <pre class="cpp" translate="no">
      <span class="type"><a href="qsettings.html#QSettings" translate="no">QSettings</a></span> settings(<span class="string">&quot;MySoft&quot;</span><span class="operator">,</span> <span class="string">&quot;Star Runner&quot;</span>);
 </pre>
-<p>QSettings objects can be created either on the stack or on the heap (i.e&#x2e; using <code translate="no">new</code>). Constructing and destroying a QSettings object is very fast.</p>
+<p>QSettings objects can be created either on the stack or on the heap (i.e. using <code translate="no">new</code>). Constructing and destroying a QSettings object is very fast.</p>
 <p>If you use QSettings from many places in your application, you might want to specify the organization name and the application name using <a href="qcoreapplication.html#organizationName-prop" translate="no">QCoreApplication::setOrganizationName</a>() and <a href="qcoreapplication.html#applicationName-prop" translate="no">QCoreApplication::setApplicationName</a>(), and then use the default QSettings constructor:</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>setOrganizationName(<span class="string">&quot;MySoft&quot;</span>);
@@ -177,7 +177,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  <span class="type"><a href="qsettings.html#QSettings" translate="no">QSettings</a></span> settings(<span class="string">&quot;MySoft&quot;</span><span class="operator">,</span> <span class="string">&quot;Star Runner&quot;</span>);
  <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> color <span class="operator">=</span> settings<span class="operator">.</span>value(<span class="string">&quot;DataPump/bgcolor&quot;</span>)<span class="operator">.</span>value<span class="operator">&lt;</span><span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span><span class="operator">&gt;</span>();
 </pre>
-<p>The inverse conversion (e.g&#x2e;, from <a href="../qtgui/qcolor.html" translate="no">QColor</a> to <a href="qvariant.html" translate="no">QVariant</a>) is automatic for all data types supported by <a href="qvariant.html" translate="no">QVariant</a>, including GUI-related types:</p>
+<p>The inverse conversion (e.g., from <a href="../qtgui/qcolor.html" translate="no">QColor</a> to <a href="qvariant.html" translate="no">QVariant</a>) is automatic for all data types supported by <a href="qvariant.html" translate="no">QVariant</a>, including GUI-related types:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qsettings.html#QSettings" translate="no">QSettings</a></span> settings(<span class="string">&quot;MySoft&quot;</span><span class="operator">,</span> <span class="string">&quot;Star Runner&quot;</span>);
  <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span> color <span class="operator">=</span> palette()<span class="operator">.</span>background()<span class="operator">.</span>color();
@@ -286,7 +286,6 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
      }
  }
 </pre>
-<p>See the Application example for a self-contained example that uses QSettings.</p>
 <h3 id="accessing-settings-from-multiple-threads-or-processes-simultaneously">Accessing Settings from Multiple Threads or Processes Simultaneously</h3>
 <p>QSettings is <a href="../qtdoc/threads-reentrancy.html" translate="no">reentrant</a>. This means that you can use distinct QSettings object in different threads simultaneously. This guarantee stands even when the QSettings objects refer to the same files on disk (or to the same entries in the system registry). If a setting is modified through one QSettings object, the change will immediately be visible in any other QSettings objects that operate on the same location and that live in the same process.</p>
 <p>QSettings can safely be used from different processes (which can be different instances of your application running at the same time or different applications altogether) to read and write to the same system locations, provided certain conditions are met. For <a href="qsettings.html#Format-enum" translate="no">QSettings::IniFormat</a>, it uses advisory file locking and a smart merging algorithm to ensure data integrity. The condition for that to work is that the writeable configuration file must be a regular file and must reside in a directory that the current user can create new, temporary files in. If that is not the case, then one must use <a href="qsettings.html#setAtomicSyncRequired" translate="no">setAtomicSyncRequired</a>() to turn the safety off.</p>
@@ -352,7 +351,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
                     <span class="type"><a href="qsettings.html#QSettings" translate="no">QSettings</a></span><span class="operator">::</span>NativeFormat);
 </pre>
 <h4 id="accessing-the-windows-registry-directly">Accessing the Windows Registry Directly</h4>
-<p>On Windows, QSettings lets you access settings that have been written with QSettings (or settings in a supported format, e.g&#x2e;, string data) in the system registry. This is done by constructing a QSettings object with a path in the registry and <a href="qsettings.html#Format-enum" translate="no">QSettings::NativeFormat</a>.</p>
+<p>On Windows, QSettings lets you access settings that have been written with QSettings (or settings in a supported format, e.g., string data) in the system registry. This is done by constructing a QSettings object with a path in the registry and <a href="qsettings.html#Format-enum" translate="no">QSettings::NativeFormat</a>.</p>
 <p>For example:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qsettings.html#QSettings" translate="no">QSettings</a></span> settings(<span class="string">&quot;HKEY_CURRENT_USER\\Software\\Microsoft\\Office&quot;</span><span class="operator">,</span>
@@ -377,7 +376,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <li>The Windows system registry has the following limitations: A subkey may not exceed 255 characters, an entry's value may not exceed 16,383 characters, and all the values of a key may not exceed 65,535 characters. One way to work around these limitations is to store the settings using the <a href="qsettings.html#Format-enum" translate="no">IniFormat</a> instead of the <a href="qsettings.html#Format-enum" translate="no">NativeFormat</a>.</li>
 <li>On Windows, when the Windows system registry is used, QSettings does not preserve the original type of the value. Therefore, the type of the value might change when a new value is set. For example, a value with type <code translate="no">REG_EXPAND_SZ</code> will change to <code translate="no">REG_SZ</code>.</li>
 <li>On macOS and iOS, <a href="qsettings.html#allKeys" translate="no">allKeys</a>() will return some extra keys for global settings that apply to all applications. These keys can be read using <a href="qsettings.html#value" translate="no">value</a>() but cannot be changed, only shadowed. Calling <a href="qsettings.html#setFallbacksEnabled" translate="no">setFallbacksEnabled</a>(false) will hide these global settings.</li>
-<li>On macOS and iOS, the CFPreferences API used by QSettings expects Internet domain names rather than organization names. To provide a uniform API, QSettings derives a fake domain name from the organization name (unless the organization name already is a domain name, e.g&#x2e; OpenOffice.org). The algorithm appends &quot;.com&quot; to the company name and replaces spaces and other illegal characters with hyphens. If you want to specify a different domain name, call <a href="qcoreapplication.html#organizationDomain-prop" translate="no">QCoreApplication::setOrganizationDomain</a>(), <a href="qcoreapplication.html#organizationName-prop" translate="no">QCoreApplication::setOrganizationName</a>(), and <a href="qcoreapplication.html#applicationName-prop" translate="no">QCoreApplication::setApplicationName</a>() in your <code translate="no">main()</code> function and then use the default QSettings constructor. Another solution is to use preprocessor directives, for example:<pre class="cpp" translate="no">
+<li>On macOS and iOS, the CFPreferences API used by QSettings expects Internet domain names rather than organization names. To provide a uniform API, QSettings derives a fake domain name from the organization name (unless the organization name already is a domain name, e.g. OpenOffice.org). The algorithm appends &quot;.com&quot; to the company name and replaces spaces and other illegal characters with hyphens. If you want to specify a different domain name, call <a href="qcoreapplication.html#organizationDomain-prop" translate="no">QCoreApplication::setOrganizationDomain</a>(), <a href="qcoreapplication.html#organizationName-prop" translate="no">QCoreApplication::setOrganizationName</a>(), and <a href="qcoreapplication.html#applicationName-prop" translate="no">QCoreApplication::setApplicationName</a>() in your <code translate="no">main()</code> function and then use the default QSettings constructor. Another solution is to use preprocessor directives, for example:<pre class="cpp" translate="no">
  <span class="preprocessor">#ifdef Q_OS_DARWIN</span>
      <span class="type"><a href="qsettings.html#QSettings" translate="no">QSettings</a></span> settings(<span class="string">&quot;grenoullelogique.fr&quot;</span><span class="operator">,</span> <span class="string">&quot;Squash&quot;</span>);
  <span class="preprocessor">#else</span>
@@ -385,7 +384,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  <span class="preprocessor">#endif</span>
 </pre>
 </li>
-<li>On macOS, permissions to access settings not belonging to the current user (i.e&#x2e; <a href="qsettings.html#Scope-enum" translate="no">SystemScope</a>) have changed with 10.7 (Lion). Prior to that version, users having admin rights could access these. For 10.7 and 10.8 (Mountain Lion), only root can. However, 10.9 (Mavericks) changes that rule again but only for the native format (plist files).</li>
+<li>On macOS, permissions to access settings not belonging to the current user (i.e. <a href="qsettings.html#Scope-enum" translate="no">SystemScope</a>) have changed with 10.7 (Lion). Prior to that version, users having admin rights could access these. For 10.7 and 10.8 (Mountain Lion), only root can. However, 10.9 (Mavericks) changes that rule again but only for the native format (plist files).</li>
 </ul>
 </div>
 <p><b>See also </b><a href="qvariant.html" translate="no">QVariant</a>, <a href="../qtgui/qsessionmanager.html" translate="no">QSessionManager</a>, and <a href="../qtwidgets/qtwidgets-tools-settingseditor-example.html" translate="no">Settings Editor Example</a>.</p>
@@ -397,15 +396,15 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>This enum type specifies the storage format used by <a href="qsettings.html" translate="no">QSettings</a>.</p>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
 <tr><td class="topAlign"><code translate="no">QSettings::NativeFormat</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">Store the settings using the most appropriate storage format for the platform. On Windows, this means the system registry; on macOS and iOS, this means the CFPreferences API; on Unix, this means textual configuration files in INI format.</td></tr>
-<tr><td class="topAlign"><code translate="no">QSettings::Registry32Format</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign">Windows only: Explicitly access the 32-bit system registry from a 64-bit application running on 64-bit Windows. On 32-bit Windows or from a 32-bit application on 64-bit Windows, this works the same as specifying NativeFormat. This enum value was added in Qt 5.7&#x2e;</td></tr>
-<tr><td class="topAlign"><code translate="no">QSettings::Registry64Format</code></td><td class="topAlign tblval"><code translate="no">3</code></td><td class="topAlign">Windows only: Explicitly access the 64-bit system registry from a 32-bit application running on 64-bit Windows. On 32-bit Windows or from a 64-bit application on 64-bit Windows, this works the same as specifying NativeFormat. This enum value was added in Qt 5.7&#x2e;</td></tr>
+<tr><td class="topAlign"><code translate="no">QSettings::Registry32Format</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign">Windows only: Explicitly access the 32-bit system registry from a 64-bit application running on 64-bit Windows. On 32-bit Windows or from a 32-bit application on 64-bit Windows, this works the same as specifying NativeFormat. This enum value was added in Qt 5.7.</td></tr>
+<tr><td class="topAlign"><code translate="no">QSettings::Registry64Format</code></td><td class="topAlign tblval"><code translate="no">3</code></td><td class="topAlign">Windows only: Explicitly access the 64-bit system registry from a 32-bit application running on 64-bit Windows. On 32-bit Windows or from a 64-bit application on 64-bit Windows, this works the same as specifying NativeFormat. This enum value was added in Qt 5.7.</td></tr>
 <tr><td class="topAlign"><code translate="no">QSettings::IniFormat</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">Store the settings in INI files. Note that INI files lose the distinction between numeric data and the strings used to encode them, so values written as numbers shall be read back as <a href="qstring.html" translate="no">QString</a>.</td></tr>
 <tr><td class="topAlign"><code translate="no">QSettings::InvalidFormat</code></td><td class="topAlign tblval"><code translate="no">16</code></td><td class="topAlign">Special value returned by <a href="qsettings.html#registerFormat" translate="no">registerFormat</a>().</td></tr>
 </table></div>
 <p>On Unix, NativeFormat and IniFormat mean the same thing, except that the file extension is different (<code translate="no">.conf</code> for NativeFormat, <code translate="no">.ini</code> for IniFormat).</p>
 <p>The INI file format is a Windows file format that Qt supports on all platforms. In the absence of an INI standard, we try to follow what Microsoft does, with the following exceptions:</p>
 <ul>
-<li>If you store types that <a href="qvariant.html" translate="no">QVariant</a> can't convert to <a href="qstring.html" translate="no">QString</a> (e.g&#x2e;, <a href="qpoint.html" translate="no">QPoint</a>, <a href="qrect.html" translate="no">QRect</a>, and <a href="qsize.html" translate="no">QSize</a>), Qt uses an <code translate="no">@</code>-based syntax to encode the type. For example:<pre class="cpp" translate="no">
+<li>If you store types that <a href="qvariant.html" translate="no">QVariant</a> can't convert to <a href="qstring.html" translate="no">QString</a> (e.g., <a href="qpoint.html" translate="no">QPoint</a>, <a href="qrect.html" translate="no">QRect</a>, and <a href="qsize.html" translate="no">QSize</a>), Qt uses an <code translate="no">@</code>-based syntax to encode the type. For example:<pre class="cpp" translate="no">
  pos <span class="operator">=</span> @Point(<span class="number">100</span> <span class="number">100</span>)
 </pre>
 <p>To minimize compatibility issues, any <code translate="no">@</code> that doesn't appear at the first position in the value or that isn't followed by a Qt type (<code translate="no">Point</code>, <code translate="no">Rect</code>, <code translate="no">Size</code>, etc.) is treated as a normal character.</p>
@@ -415,7 +414,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p><a href="qsettings.html" translate="no">QSettings</a> always treats backslash as a special character and provides no API for reading or writing such entries.</p>
 </li>
-<li>The INI file format has severe restrictions on the syntax of a key. Qt works around this by using <code translate="no">%</code> as an escape character in keys. In addition, if you save a top-level setting (a key with no slashes in it, e.g&#x2e;, &quot;someKey&quot;), it will appear in the INI file's &quot;General&quot; section. To avoid overwriting other keys, if you save something using a key such as &quot;General/someKey&quot;, the key will be located in the &quot;%General&quot; section, <i>not</i> in the &quot;General&quot; section.</li>
+<li>The INI file format has severe restrictions on the syntax of a key. Qt works around this by using <code translate="no">%</code> as an escape character in keys. In addition, if you save a top-level setting (a key with no slashes in it, e.g., &quot;someKey&quot;), it will appear in the INI file's &quot;General&quot; section. To avoid overwriting other keys, if you save something using a key such as &quot;General/someKey&quot;, the key will be located in the &quot;%General&quot; section, <i>not</i> in the &quot;General&quot; section.</li>
 <li>In line with most implementations today, <a href="qsettings.html" translate="no">QSettings</a> will assume that <i>values</i> in the INI file are utf-8 encoded. This means that <i>values</i> will be decoded as utf-8 encoded entries and written back as utf-8. To retain backward compatibility with older Qt versions, <i>keys</i> in the INI file are written in %-encoded format, but can be read in both %-encoded and utf-8 formats.</li>
 </ul>
 <h5 id="compatibility-with-older-qt-versions">Compatibility with older Qt versions</h5>
@@ -435,7 +434,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="Scope-enum">enum QSettings::<span class="name">Scope</span></h3>
 <p>This enum specifies whether settings are user-specific or shared by all users of the same system.</p>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
-<tr><td class="topAlign"><code translate="no">QSettings::UserScope</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">Store settings in a location specific to the current user (e.g&#x2e;, in the user's home directory).</td></tr>
+<tr><td class="topAlign"><code translate="no">QSettings::UserScope</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">Store settings in a location specific to the current user (e.g., in the user's home directory).</td></tr>
 <tr><td class="topAlign"><code translate="no">QSettings::SystemScope</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">Store settings in a global location, so that all users on the same machine access the same set of settings.</td></tr>
 </table></div>
 <p><b>See also </b><a href="qsettings.html#setPath" translate="no">setPath</a>().</p>
@@ -450,8 +449,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>The following status values are possible:</p>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
 <tr><td class="topAlign"><code translate="no">QSettings::NoError</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">No error occurred.</td></tr>
-<tr><td class="topAlign"><code translate="no">QSettings::AccessError</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">An access error occurred (e.g&#x2e; trying to write to a read-only file).</td></tr>
-<tr><td class="topAlign"><code translate="no">QSettings::FormatError</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign">A format error occurred (e.g&#x2e; loading a malformed INI file).</td></tr>
+<tr><td class="topAlign"><code translate="no">QSettings::AccessError</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">An access error occurred (e.g. trying to write to a read-only file).</td></tr>
+<tr><td class="topAlign"><code translate="no">QSettings::FormatError</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign">A format error occurred (e.g. loading a malformed INI file).</td></tr>
 </table></div>
 <p><b>See also </b><a href="qsettings.html#status" translate="no">status</a>().</p>
 <!-- @@@Status -->
@@ -493,14 +492,14 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <pre class="cpp" translate="no">
  <span class="type">QSettings</span> settings(<span class="string">&quot;Moose Tech&quot;</span><span class="operator">,</span> <span class="string">&quot;Facturo-Pro&quot;</span>);
 </pre>
-<p>The scope is set to <a href="qsettings.html#Scope-enum" translate="no">QSettings::UserScope</a>, and the format is set to <a href="qsettings.html#Format-enum" translate="no">QSettings::NativeFormat</a> (i.e&#x2e; calling <a href="qsettings.html#setDefaultFormat" translate="no">setDefaultFormat</a>() before calling this constructor has no effect).</p>
+<p>The scope is set to <a href="qsettings.html#Scope-enum" translate="no">QSettings::UserScope</a>, and the format is set to <a href="qsettings.html#Format-enum" translate="no">QSettings::NativeFormat</a> (i.e. calling <a href="qsettings.html#setDefaultFormat" translate="no">setDefaultFormat</a>() before calling this constructor has no effect).</p>
 <p><b>See also </b><a href="qsettings.html#setDefaultFormat" translate="no">setDefaultFormat</a>() and <a href="qsettings.html#fallback-mechanism" translate="no">Fallback Mechanism</a>.</p>
 <!-- @@@QSettings -->
 <!-- $$$QSettings$$$QSettingsScopeconstQString&constQString&QObject* -->
 <h3 class="fn" translate="no" id="QSettings-1">QSettings::<span class="name">QSettings</span>(<span class="type"><a href="qsettings.html#Scope-enum" translate="no">Scope</a></span> <i>scope</i>, const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>organization</i>, const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>application</i> = QString(), <span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span> *<i>parent</i> = nullptr)</h3>
 <p>Constructs a QSettings object for accessing settings of the application called <i translate="no">application</i> from the organization called <i translate="no">organization</i>, and with parent <i translate="no">parent</i>.</p>
 <p>If <i translate="no">scope</i> is <a href="qsettings.html#Scope-enum" translate="no">QSettings::UserScope</a>, the QSettings object searches user-specific settings first, before it searches system-wide settings as a fallback. If <i translate="no">scope</i> is <a href="qsettings.html#Scope-enum" translate="no">QSettings::SystemScope</a>, the QSettings object ignores user-specific settings and provides access to system-wide settings.</p>
-<p>The storage format is set to <a href="qsettings.html#Format-enum" translate="no">QSettings::NativeFormat</a> (i.e&#x2e; calling <a href="qsettings.html#setDefaultFormat" translate="no">setDefaultFormat</a>() before calling this constructor has no effect).</p>
+<p>The storage format is set to <a href="qsettings.html#Format-enum" translate="no">QSettings::NativeFormat</a> (i.e. calling <a href="qsettings.html#setDefaultFormat" translate="no">setDefaultFormat</a>() before calling this constructor has no effect).</p>
 <p>If no application name is given, the QSettings object will only access the organization-wide <a href="qsettings.html#fallback-mechanism" translate="no">locations</a>.</p>
 <p><b>See also </b><a href="qsettings.html#setDefaultFormat" translate="no">setDefaultFormat</a>().</p>
 <!-- @@@QSettings -->
@@ -520,8 +519,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Warning: </b>This function is provided for convenience. It works well for accessing INI or <code translate="no">.plist</code> files generated by Qt, but might fail on some syntaxes found in such files originated by other programs. In particular, be aware of the following limitations:</p>
 </div>
 <ul>
-<li>QSettings provides no way of reading INI &quot;path&quot; entries, i.e&#x2e;, entries with unescaped slash characters. (This is because these entries are ambiguous and cannot be resolved automatically.)</li>
-<li>In INI files, QSettings uses the <code translate="no">@</code> character as a metacharacter in some contexts, to encode Qt-specific data types (e.g&#x2e;, <code translate="no">@Rect</code>), and might therefore misinterpret it when it occurs in pure INI files.</li>
+<li>QSettings provides no way of reading INI &quot;path&quot; entries, i.e., entries with unescaped slash characters. (This is because these entries are ambiguous and cannot be resolved automatically.)</li>
+<li>In INI files, QSettings uses the <code translate="no">@</code> character as a metacharacter in some contexts, to encode Qt-specific data types (e.g., <code translate="no">@Rect</code>), and might therefore misinterpret it when it occurs in pure INI files.</li>
 </ul>
 <p><b>See also </b><a href="qsettings.html#fileName" translate="no">fileName</a>().</p>
 <!-- @@@QSettings -->
@@ -817,7 +816,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="registerFormat"><code translate="no">[static] </code><span class="type"><a href="qsettings.html#Format-enum" translate="no">Format</a></span> QSettings::<span class="name">registerFormat</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>extension</i>, <span class="type"><a href="qsettings.html#ReadFunc-typedef" translate="no">ReadFunc</a></span> <i>readFunc</i>, <span class="type"><a href="qsettings.html#WriteFunc-typedef" translate="no">WriteFunc</a></span> <i>writeFunc</i>, <span class="type"><a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitivity</a></span> <i>caseSensitivity</i> = Qt::CaseSensitive)</h3>
 <p>Registers a custom storage format. On success, returns a special Format value that can then be passed to the <a href="qsettings.html" translate="no">QSettings</a> constructor. On failure, returns <a href="qsettings.html#Format-enum" translate="no">InvalidFormat</a>.</p>
 <p>The <i translate="no">extension</i> is the file extension associated to the format (without the '.').</p>
-<p>The <i translate="no">readFunc</i> and <i translate="no">writeFunc</i> parameters are pointers to functions that read and write a set of key/value pairs. The <a href="qiodevice.html" translate="no">QIODevice</a> parameter to the read and write functions is always opened in binary mode (i.e&#x2e;, without the QIODevice::Text flag).</p>
+<p>The <i translate="no">readFunc</i> and <i translate="no">writeFunc</i> parameters are pointers to functions that read and write a set of key/value pairs. The <a href="qiodevice.html" translate="no">QIODevice</a> parameter to the read and write functions is always opened in binary mode (i.e., without the QIODevice::Text flag).</p>
 <p>The <i translate="no">caseSensitivity</i> parameter specifies whether keys are case sensitive or not. This makes a difference when looking up values using <a href="qsettings.html" translate="no">QSettings</a>. The default is case sensitive.</p>
 <p>By default, if you use one of the constructors that work in terms of an organization name and an application name, the file system locations used are the same as for <a href="qsettings.html#Format-enum" translate="no">IniFormat</a>. Use <a href="qsettings.html#setPath" translate="no">setPath</a>() to specify other locations.</p>
 <p>Example:</p>
@@ -963,9 +962,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

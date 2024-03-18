@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qsystemsemaphore.cpp -->
   <meta name="description" content="The QSystemSemaphore class provides a general counting system semaphore.">
-  <title>QSystemSemaphore Class | Qt Core 6.6.0</title>
+  <title>QSystemSemaphore Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QSystemSemaphore</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -59,7 +59,6 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </table></div>
 <ul>
 <li><a href="qsystemsemaphore-members.html">List of all members, including inherited members</a></li>
-<li><a href="qsystemsemaphore-obsolete.html">Deprecated members</a></li>
 </ul>
 <h2 id="public-types">Public Types</h2>
 <div class="table"><table class="alignedsummary" translate="no">
@@ -69,12 +68,15 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h2 id="public-functions">Public Functions</h2>
 <div class="table"><table class="alignedsummary" translate="no">
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#QSystemSemaphore" translate="no">QSystemSemaphore</a></b>(const QNativeIpcKey &amp;<i>key</i>, int <i>initialValue</i> = 0, AccessMode <i>mode</i> = Open)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#QSystemSemaphore-1" translate="no">QSystemSemaphore</a></b>(const QString &amp;<i>key</i>, int <i>initialValue</i> = 0, AccessMode <i>mode</i> = Open)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#dtor.QSystemSemaphore" translate="no">~QSystemSemaphore</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#acquire" translate="no">acquire</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> SystemSemaphoreError </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#error" translate="no">error</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#errorString" translate="no">errorString</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#key" translate="no">key</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QNativeIpcKey </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#nativeIpcKey" translate="no">nativeIpcKey</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#release" translate="no">release</a></b>(int <i>n</i> = 1)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#setKey" translate="no">setKey</a></b>(const QString &amp;<i>key</i>, int <i>initialValue</i> = 0, AccessMode <i>mode</i> = Open)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qsystemsemaphore.html#setNativeKey" translate="no">setNativeKey</a></b>(const QNativeIpcKey &amp;<i>key</i>, int <i>initialValue</i> = 0, AccessMode <i>mode</i> = Open)</td></tr>
 </table></div>
 <!-- $$$QSystemSemaphore-description -->
@@ -104,7 +106,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h2>Member Type Documentation</h2>
 <!-- $$$AccessMode$$$Open$$$Create -->
 <h3 class="fn" translate="no" id="AccessMode-enum">enum QSystemSemaphore::<span class="name">AccessMode</span></h3>
-<p>This enum is used by the constructor and setKey(). Its purpose is to enable handling the problem in Unix implementations of semaphores that survive a crash. In Unix, when a semaphore survives a crash, we need a way to force it to reset its resource count, when the system reuses the semaphore. In Windows, where semaphores can't survive a crash, this enum has no effect.</p>
+<p>This enum is used by the constructor and <a href="qsystemsemaphore.html#setKey" translate="no">setKey</a>(). Its purpose is to enable handling the problem in Unix implementations of semaphores that survive a crash. In Unix, when a semaphore survives a crash, we need a way to force it to reset its resource count, when the system reuses the semaphore. In Windows, where semaphores can't survive a crash, this enum has no effect.</p>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
 <tr><td class="topAlign"><code translate="no">QSystemSemaphore::Open</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">If the semaphore already exists, its initial resource count is not reset. If the semaphore does not already exist, it is created and its initial resource count set.</td></tr>
 <tr><td class="topAlign"><code translate="no">QSystemSemaphore::Create</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign"><a href="qsystemsemaphore.html" translate="no">QSystemSemaphore</a> takes ownership of the semaphore and sets its resource count to the requested value, regardless of whether the semaphore already exists by having survived a crash. This value should be passed to the constructor, when the first semaphore for a particular key is constructed and you know that if the semaphore already exists it could only be because of a crash. In Windows, where a semaphore can't survive a crash, Create and Open have the same behavior.</td></tr>
@@ -128,11 +130,15 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$QSystemSemaphore[overload1]$$$QSystemSemaphoreconstQNativeIpcKey&intAccessMode -->
 <h3 class="fn" translate="no" id="QSystemSemaphore">QSystemSemaphore::<span class="name">QSystemSemaphore</span>(const <span class="type"><a href="qnativeipckey.html" translate="no">QNativeIpcKey</a></span> &amp;<i>key</i>, <span class="type">int</span> <i>initialValue</i> = 0, <span class="type"><a href="qsystemsemaphore.html#AccessMode-enum" translate="no">AccessMode</a></span> <i>mode</i> = Open)</h3>
 <p>Requests a system semaphore for the specified <i translate="no">key</i>. The parameters <i translate="no">initialValue</i> and <i translate="no">mode</i> are used according to the following rules, which are system dependent.</p>
-<p>In Unix, if the <i translate="no">mode</i> is <a href="qsystemsemaphore.html#AccessMode-enum" translate="no">Open</a> and the system already has a semaphore identified by <i translate="no">key</i>, that semaphore is used, and the semaphore's resource count is not changed, i.e&#x2e;, <i translate="no">initialValue</i> is ignored. But if the system does not already have a semaphore identified by <i translate="no">key</i>, it creates a new semaphore for that key and sets its resource count to <i translate="no">initialValue</i>.</p>
+<p>In Unix, if the <i translate="no">mode</i> is <a href="qsystemsemaphore.html#AccessMode-enum" translate="no">Open</a> and the system already has a semaphore identified by <i translate="no">key</i>, that semaphore is used, and the semaphore's resource count is not changed, i.e., <i translate="no">initialValue</i> is ignored. But if the system does not already have a semaphore identified by <i translate="no">key</i>, it creates a new semaphore for that key and sets its resource count to <i translate="no">initialValue</i>.</p>
 <p>In Unix, if the <i translate="no">mode</i> is <a href="qsystemsemaphore.html#AccessMode-enum" translate="no">Create</a> and the system already has a semaphore identified by <i translate="no">key</i>, that semaphore is used, and its resource count is set to <i translate="no">initialValue</i>. If the system does not already have a semaphore identified by <i translate="no">key</i>, it creates a new semaphore for that key and sets its resource count to <i translate="no">initialValue</i>.</p>
 <p>In Windows, <i translate="no">mode</i> is ignored, and the system always tries to create a semaphore for the specified <i translate="no">key</i>. If the system does not already have a semaphore identified as <i translate="no">key</i>, it creates the semaphore and sets its resource count to <i translate="no">initialValue</i>. But if the system already has a semaphore identified as <i translate="no">key</i> it uses that semaphore and ignores <i translate="no">initialValue</i>.</p>
 <p>The <a href="qsystemsemaphore.html#AccessMode-enum" translate="no">mode</a> parameter is only used in Unix systems to handle the case where a semaphore survives a process crash. In that case, the next process to allocate a semaphore with the same <i translate="no">key</i> will get the semaphore that survived the crash, and unless <i translate="no">mode</i> is <a href="qsystemsemaphore.html#AccessMode-enum" translate="no">Create</a>, the resource count will not be reset to <i translate="no">initialValue</i> but will retain the initial value it had been given by the crashed process.</p>
-<p><b>See also </b><a href="qsystemsemaphore.html#acquire" translate="no">acquire</a>() and <a href="qsystemsemaphore-obsolete.html#key" translate="no">key</a>().</p>
+<p><b>See also </b><a href="qsystemsemaphore.html#acquire" translate="no">acquire</a>() and <a href="qsystemsemaphore.html#key" translate="no">key</a>().</p>
+<!-- @@@QSystemSemaphore -->
+<!-- $$$QSystemSemaphore$$$QSystemSemaphoreconstQString&intAccessMode -->
+<h3 class="fn" translate="no" id="QSystemSemaphore-1">QSystemSemaphore::<span class="name">QSystemSemaphore</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>key</i>, <span class="type">int</span> <i>initialValue</i> = 0, <span class="type"><a href="qsystemsemaphore.html#AccessMode-enum" translate="no">AccessMode</a></span> <i>mode</i> = Open)</h3>
+<p>Requests a system semaphore identified by the legacy key <i translate="no">key</i>.</p>
 <!-- @@@QSystemSemaphore -->
 <!-- $$$~QSystemSemaphore[overload1]$$$~QSystemSemaphore -->
 <h3 class="fn" translate="no" id="dtor.QSystemSemaphore"><code translate="no">[noexcept] </code>QSystemSemaphore::<span class="name">~QSystemSemaphore</span>()</h3>
@@ -155,6 +161,11 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Returns a text description of the last error that occurred. If <a href="qsystemsemaphore.html#error" translate="no">error</a>() returns an <a href="qsystemsemaphore.html#SystemSemaphoreError-enum" translate="no">error value</a>, call this function to get a text string that describes the error.</p>
 <p><b>See also </b><a href="qsystemsemaphore.html#error" translate="no">error</a>().</p>
 <!-- @@@errorString -->
+<!-- $$$key[overload1]$$$key -->
+<h3 class="fn" translate="no" id="key"><span class="type"><a href="qstring.html" translate="no">QString</a></span> QSystemSemaphore::<span class="name">key</span>() const</h3>
+<p>Returns the legacy key assigned to this system semaphore. The key is the name by which the semaphore can be accessed from other processes.</p>
+<p><b>See also </b><a href="qsystemsemaphore.html#setKey" translate="no">setKey</a>().</p>
+<!-- @@@key -->
 <!-- $$$nativeIpcKey[overload1]$$$nativeIpcKey -->
 <h3 class="fn" translate="no" id="nativeIpcKey"><span class="type"><a href="qnativeipckey.html" translate="no">QNativeIpcKey</a></span> QSystemSemaphore::<span class="name">nativeIpcKey</span>() const</h3>
 <p>Returns the key assigned to this system semaphore. The key is the name by which the semaphore can be accessed from other processes.</p>
@@ -178,6 +189,11 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Ten new resources are now guarded by the semaphore, in addition to the five that already existed. You would not normally use this function to create more resources.</p>
 <p><b>See also </b><a href="qsystemsemaphore.html#acquire" translate="no">acquire</a>().</p>
 <!-- @@@release -->
+<!-- $$$setKey[overload1]$$$setKeyconstQString&intAccessMode -->
+<h3 class="fn" translate="no" id="setKey"><span class="type">void</span> QSystemSemaphore::<span class="name">setKey</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>key</i>, <span class="type">int</span> <i>initialValue</i> = 0, <span class="type"><a href="qsystemsemaphore.html#AccessMode-enum" translate="no">AccessMode</a></span> <i>mode</i> = Open)</h3>
+<p>This function works the same as the constructor. It reconstructs this <a href="qsystemsemaphore.html" translate="no">QSystemSemaphore</a> object. If the new <i translate="no">key</i> is different from the old key, calling this function is like calling the destructor of the semaphore with the old key, then calling the constructor to create a new semaphore with the new <i translate="no">key</i>. The <i translate="no">initialValue</i> and <i translate="no">mode</i> parameters are as defined for the constructor.</p>
+<p><b>See also </b><a href="qsystemsemaphore.html#QSystemSemaphore" translate="no">QSystemSemaphore</a>() and <a href="qsystemsemaphore.html#key" translate="no">key</a>().</p>
+<!-- @@@setKey -->
 <!-- $$$setNativeKey[overload1]$$$setNativeKeyconstQNativeIpcKey&intAccessMode -->
 <h3 class="fn" translate="no" id="setNativeKey"><span class="type">void</span> QSystemSemaphore::<span class="name">setNativeKey</span>(const <span class="type"><a href="qnativeipckey.html" translate="no">QNativeIpcKey</a></span> &amp;<i>key</i>, <span class="type">int</span> <i>initialValue</i> = 0, <span class="type"><a href="qsystemsemaphore.html#AccessMode-enum" translate="no">AccessMode</a></span> <i>mode</i> = Open)</h3>
 <p>This function works the same as the constructor. It reconstructs this <a href="qsystemsemaphore.html" translate="no">QSystemSemaphore</a> object. If the new <i translate="no">key</i> is different from the old key, calling this function is like calling the destructor of the semaphore with the old key, then calling the constructor to create a new semaphore with the new <i translate="no">key</i>. The <i translate="no">initialValue</i> and <i translate="no">mode</i> parameters are as defined for the constructor.</p>
@@ -192,9 +208,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

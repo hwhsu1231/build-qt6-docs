@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- volumeraycaster.qdoc -->
+  <meta name="description" content="Demonstrates how to do volumetric rendering in Qt Quick 3D.">
+  <title>Qt Quick 3D - Volumetric Rendering Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Volumetric Rendering Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Volumetric Rendering Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+ import QtQuick
+ import QtQuick3D
+ import QtQuick3D.Helpers
+ import QtQuick.Controls
+ import QtQuick.Dialogs
+ import Qt.labs.folderlistmodel
+ import QtQuick.Controls.Universal
+
+ import VolumetricExample
+ import &quot;SpacingMap.mjs&quot; as SpacingMap
+
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a></span> {
+     <span class="name">id</span>: <span class="name">window</span>
+     <span class="name">width</span>: <span class="number">1200</span>
+     <span class="name">height</span>: <span class="number">1080</span>
+     <span class="name">visible</span>: <span class="number">true</span>
+
+     <span class="name">Universal</span>.theme: <span class="name">Universal</span>.<span class="name">Dark</span>
+
+     <span class="type">FileDialog</span> {
+         <span class="name">id</span>: <span class="name">fileDialog</span>
+         <span class="name">onAccepted</span>: {
+             <span class="name">loadFile</span>(<span class="name">selectedFile</span>)
+         }
+     }
+
+     <span class="keyword">function </span><span class="name">clamp</span>(number, min, max) {
+         <span class="keyword">return</span> <span class="name">Math</span>.<span class="name">max</span>(<span class="name">min</span>, <span class="name">Math</span>.<span class="name">min</span>(<span class="name">number</span>, <span class="name">max</span>))
+     }
+
+     <span class="keyword">function </span><span class="name">loadFile</span>(selectedFile) {
+         var width = <span class="name">parseInt</span>(<span class="name">dataWidth</span>.<span class="name">text</span>)
+         var height = <span class="name">parseInt</span>(<span class="name">dataHeight</span>.<span class="name">text</span>)
+         var depth = <span class="name">parseInt</span>(<span class="name">dataDepth</span>.<span class="name">text</span>)
+         var dataSize = <span class="name">dataTypeComboBox</span>.<span class="name">currentText</span>
+
+         <span class="comment">// Parses file names of the form:</span>
+         <span class="comment">// boston_teapot_256x256x178_uint8.raw</span>
+         const re = new <span class="name">RegExp</span>(<span class="string">&quot;.?([0-9]+)x([0-9]+)x([0-9]+)_([a-zA-Z0-9]+)\.raw&quot;</span>)
+         let matches = <span class="name">re</span>.<span class="name">exec</span>(<span class="name">String</span>(<span class="name">selectedFile</span>))
+         <span class="keyword">if</span> (<span class="name">matches</span>.<span class="name">length</span> <span class="operator">===</span> <span class="number">5</span>) {
+             <span class="name">width</span> <span class="operator">=</span> <span class="name">parseInt</span>(<span class="name">matches</span>[<span class="number">1</span>])
+             <span class="name">height</span> <span class="operator">=</span> <span class="name">parseInt</span>(<span class="name">matches</span>[<span class="number">2</span>])
+             <span class="name">depth</span> <span class="operator">=</span> <span class="name">parseInt</span>(<span class="name">matches</span>[<span class="number">3</span>])
+             <span class="name">dataSize</span> <span class="operator">=</span> <span class="name">matches</span>[<span class="number">4</span>]
+         }
+
+         let dimensions = <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">width</span>, <span class="name">height</span>, <span class="name">depth</span>).<span class="name">normalized</span>()
+         var spacing = <span class="name">SpacingMap</span>.<span class="name">get</span>(<span class="name">String</span>(<span class="name">selectedFile</span>)).<span class="name">times</span>(<span class="name">dimensions</span>)
+         let maxSide = <span class="name">Math</span>.<span class="name">max</span>(<span class="name">Math</span>.<span class="name">max</span>(<span class="name">spacing</span>.<span class="name">x</span>, <span class="name">spacing</span>.<span class="name">y</span>), <span class="name">spacing</span>.<span class="name">z</span>)
+         <span class="name">spacing</span> <span class="operator">=</span> <span class="name">spacing</span>.<span class="name">times</span>(<span class="number">1</span> <span class="operator">/</span> <span class="name">maxSide</span>)
+
+         <span class="name">volumeTextureData</span>.<span class="name">loadAsync</span>(<span class="name">selectedFile</span>, <span class="name">width</span>, <span class="name">height</span>,
+                                     <span class="name">depth</span>, <span class="name">dataSize</span>)
+         <span class="name">spinner</span>.<span class="name">running</span> <span class="operator">=</span> <span class="number">true</span>
+     }
+
+     <span class="keyword">function </span><span class="name">getColormapSource</span>(currentIndex) {
+         <span class="keyword">switch</span> (<span class="name">currentIndex</span>) {
+         <span class="keyword">case</span> <span class="number">0</span>:
+             <span class="keyword">return</span> <span class="string">&quot;images/colormap-coolwarm.png&quot;</span>
+         <span class="keyword">case</span> <span class="number">1</span>:
+             <span class="keyword">return</span> <span class="string">&quot;images/colormap-plasma.png&quot;</span>
+         <span class="keyword">case</span> <span class="number">2</span>:
+             <span class="keyword">return</span> <span class="string">&quot;images/colormap-viridis.png&quot;</span>
+         <span class="keyword">case</span> <span class="number">3</span>:
+             <span class="keyword">return</span> <span class="string">&quot;images/colormap-rainbow.png&quot;</span>
+         <span class="keyword">case</span> <span class="number">4</span>:
+             <span class="keyword">return</span> <span class="string">&quot;images/colormap-gnuplot.png&quot;</span>
+         <span class="keyword">default</span>:
+             <span class="keyword">break</span>
+         }
+         <span class="keyword">return</span> <span class="string">&quot;&quot;</span>
+     }
+
+     <span class="comment">// position and width are normalized [0..1]</span>
+     <span class="keyword">function </span><span class="name">sliceSliderMin</span>(posX, widthX, posY, widthY, posZ, widthZ) {
+         let x = <span class="name">clamp</span>(<span class="name">posX</span> <span class="operator">-</span> <span class="number">0.5</span> <span class="operator">*</span> <span class="name">widthX</span>, <span class="number">0</span>, <span class="number">1</span> <span class="operator">-</span> <span class="name">widthX</span>)
+         let y = <span class="name">clamp</span>(<span class="name">posY</span> <span class="operator">-</span> <span class="number">0.5</span> <span class="operator">*</span> <span class="name">widthY</span>, <span class="number">0</span>, <span class="number">1</span> <span class="operator">-</span> <span class="name">widthY</span>)
+         let z = <span class="name">clamp</span>(<span class="name">posZ</span> <span class="operator">-</span> <span class="number">0.5</span> <span class="operator">*</span> <span class="name">widthZ</span>, <span class="number">0</span>, <span class="number">1</span> <span class="operator">-</span> <span class="name">widthZ</span>)
+         <span class="keyword">return</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">x</span>, <span class="name">y</span>, <span class="name">z</span>)
+     }
+
+     <span class="comment">// position and width are normalized [0..1]</span>
+     <span class="keyword">function </span><span class="name">sliceSliderMax</span>(posX, widthX, posY, widthY, posZ, widthZ) {
+         let x = <span class="name">clamp</span>(<span class="name">posX</span> <span class="operator">+</span> <span class="number">0.5</span> <span class="operator">*</span> <span class="name">widthX</span>, <span class="name">widthX</span>, <span class="number">1</span>)
+         let y = <span class="name">clamp</span>(<span class="name">posY</span> <span class="operator">+</span> <span class="number">0.5</span> <span class="operator">*</span> <span class="name">widthY</span>, <span class="name">widthY</span>, <span class="number">1</span>)
+         let z = <span class="name">clamp</span>(<span class="name">posZ</span> <span class="operator">+</span> <span class="number">0.5</span> <span class="operator">*</span> <span class="name">widthZ</span>, <span class="name">widthZ</span>, <span class="number">1</span>)
+         <span class="keyword">return</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">x</span>, <span class="name">y</span>, <span class="name">z</span>)
+     }
+
+     <span class="keyword">function </span><span class="name">sliceBoxPosition</span>(x, y, z, xWidth, yWidth, zWidth) {
+         let min = <span class="name">sliceSliderMin</span>(<span class="name">x</span>, <span class="name">xWidth</span>, <span class="name">y</span>, <span class="name">yWidth</span>, <span class="name">z</span>, <span class="name">zWidth</span>)
+         let max = <span class="name">sliceSliderMax</span>(<span class="name">x</span>, <span class="name">xWidth</span>, <span class="name">y</span>, <span class="name">yWidth</span>, <span class="name">z</span>, <span class="name">zWidth</span>)
+         let xMid = (<span class="name">min</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">max</span>.<span class="name">x</span>) <span class="operator">*</span> <span class="number">0.5</span> <span class="operator">-</span> <span class="number">0.5</span>
+         let yMid = (<span class="name">min</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">max</span>.<span class="name">y</span>) <span class="operator">*</span> <span class="number">0.5</span> <span class="operator">-</span> <span class="number">0.5</span>
+         let zMid = (<span class="name">min</span>.<span class="name">z</span> <span class="operator">+</span> <span class="name">max</span>.<span class="name">z</span>) <span class="operator">*</span> <span class="number">0.5</span> <span class="operator">-</span> <span class="number">0.5</span>
+         <span class="keyword">return</span> <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">xMid</span>, <span class="name">yMid</span>, <span class="name">zMid</span>).<span class="name">times</span>(<span class="number">100</span>)
+     }
+
+     <span class="type"><a href="../qtqml/qml-qtqml-connections.html" translate="no">Connections</a></span> {
+         <span class="name">target</span>: <span class="name">volumeTextureData</span>
+         <span class="keyword">function </span><span class="name">onLoadSucceeded</span>(source, width, height, depth, dataType) {
+             var spacing = <span class="name">SpacingMap</span>.<span class="name">get</span>(<span class="name">String</span>(<span class="name">source</span>)).<span class="name">times</span>(
+                         <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">width</span>, <span class="name">height</span>, <span class="name">depth</span>).<span class="name">normalized</span>())
+             let maxSide = <span class="name">Math</span>.<span class="name">max</span>(<span class="name">Math</span>.<span class="name">max</span>(<span class="name">spacing</span>.<span class="name">x</span>, <span class="name">spacing</span>.<span class="name">y</span>), <span class="name">spacing</span>.<span class="name">z</span>)
+             <span class="name">spacing</span> <span class="operator">=</span> <span class="name">spacing</span>.<span class="name">times</span>(<span class="number">1</span> <span class="operator">/</span> <span class="name">maxSide</span>)
+
+             <span class="keyword">switch</span> (<span class="name">dataType</span>) {
+             <span class="keyword">case</span> <span class="string">'uint8'</span>:
+                 <span class="name">dataTypeComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="number">0</span>
+                 <span class="keyword">break</span>
+             <span class="keyword">case</span> <span class="string">'uint16'</span>:
+                 <span class="name">dataTypeComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="number">1</span>
+                 <span class="keyword">break</span>
+             <span class="keyword">case</span> <span class="string">'int16'</span>:
+                 <span class="name">dataTypeComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="number">2</span>
+                 <span class="keyword">break</span>
+             <span class="keyword">case</span> <span class="string">'float32'</span>:
+                 <span class="name">dataTypeComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="number">3</span>
+                 <span class="keyword">break</span>
+             <span class="keyword">case</span> <span class="string">'float64'</span>:
+                 <span class="name">dataTypeComboBox</span>.<span class="name">currentIndex</span> <span class="operator">=</span> <span class="number">4</span>
+                 <span class="keyword">break</span>
+             }
+
+             <span class="name">dataWidth</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">width</span>
+             <span class="name">dataHeight</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">height</span>
+             <span class="name">dataDepth</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">depth</span>
+             <span class="name">scaleWidth</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">parseFloat</span>(<span class="name">spacing</span>.<span class="name">x</span>.<span class="name">toFixed</span>(<span class="number">4</span>))
+             <span class="name">scaleHeight</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">parseFloat</span>(<span class="name">spacing</span>.<span class="name">y</span>.<span class="name">toFixed</span>(<span class="number">4</span>))
+             <span class="name">scaleDepth</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">parseFloat</span>(<span class="name">spacing</span>.<span class="name">z</span>.<span class="name">toFixed</span>(<span class="number">4</span>))
+             <span class="name">stepLengthText</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">parseFloat</span>((<span class="number">1</span> <span class="operator">/</span> <span class="name">cubeModel</span>.<span class="name">maxSide</span>).<span class="name">toFixed</span>(<span class="number">6</span>))
+             <span class="name">volumeTextureData</span>.<span class="name">source</span> <span class="operator">=</span> <span class="name">source</span>
+             <span class="name">spinner</span>.<span class="name">running</span> <span class="operator">=</span> <span class="number">false</span>
+         }
+         <span class="keyword">function </span><span class="name">onLoadFailed</span>(source, width, height, depth, dataType) {
+             <span class="name">spinner</span>.<span class="name">running</span> <span class="operator">=</span> <span class="number">false</span>
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">view</span>
+
+         <span class="name">x</span>: <span class="name">settingsPane</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">settingsPane</span>.<span class="name">width</span>
+         <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">x</span>
+         <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span>
+
+         <span class="name">camera</span>: <span class="name">cameraNode</span>
+
+         <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+             <span class="name">id</span>: <span class="name">cameraNode</span>
+             <span class="name">z</span>: <span class="number">300</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">id</span>: <span class="name">cubeModel</span>
+             <span class="name">source</span>: <span class="string">&quot;#Cube&quot;</span>
+             <span class="name">visible</span>: <span class="number">true</span>
+             <span class="name">materials</span>: <span class="name">CustomMaterial</span> {
+                 <span class="name">shadingMode</span>: <span class="name">CustomMaterial</span>.<span class="name">Unshaded</span>
+                 <span class="name">vertexShader</span>: <span class="string">&quot;alpha_blending.vert&quot;</span>
+                 <span class="name">fragmentShader</span>: <span class="string">&quot;alpha_blending.frag&quot;</span>
+
+                 property <span class="type"><a href="qml-qtquick3d-textureinput.html" translate="no">TextureInput</a></span> <span class="name">volume</span>: <span class="name">TextureInput</span> {
+                     <span class="name">texture</span>: <span class="name">Texture</span> {
+                         <span class="name">textureData</span>: <span class="name">VolumeTextureData</span> {
+                             <span class="name">id</span>: <span class="name">volumeTextureData</span>
+                             <span class="name">source</span>: <span class="string">&quot;file:///default_colormap&quot;</span>
+                             <span class="name">dataType</span>: <span class="name">dataTypeComboBox</span>.<span class="name">currentText</span> ? <span class="name">dataTypeComboBox</span>.<span class="name">currentText</span> : <span class="string">&quot;uint8&quot;</span>
+                             <span class="name">width</span>: <span class="name">parseInt</span>(<span class="name">dataWidth</span>.<span class="name">text</span>)
+                             <span class="name">height</span>: <span class="name">parseInt</span>(<span class="name">dataHeight</span>.<span class="name">text</span>)
+                             <span class="name">depth</span>: <span class="name">parseInt</span>(<span class="name">dataDepth</span>.<span class="name">text</span>)
+                         }
+                         <span class="name">minFilter</span>: <span class="name">Texture</span>.<span class="name">Nearest</span>
+                         <span class="name">mipFilter</span>: <span class="name">Texture</span>.<span class="name">None</span>
+                         <span class="name">magFilter</span>: <span class="name">Texture</span>.<span class="name">Nearest</span>
+                         <span class="name">tilingModeHorizontal</span>: <span class="name">Texture</span>.<span class="name">ClampToEdge</span>
+                         <span class="name">tilingModeVertical</span>: <span class="name">Texture</span>.<span class="name">ClampToEdge</span>
+                         <span class="comment">//tilingModeDepth: Texture.ClampToEdge // Qt 6.7</span>
+                     }
+                 }
+
+                 property <span class="type"><a href="qml-qtquick3d-textureinput.html" translate="no">TextureInput</a></span> <span class="name">colormap</span>: <span class="name">TextureInput</span> {
+                     <span class="name">enabled</span>: <span class="number">true</span>
+                     <span class="name">texture</span>: <span class="name">Texture</span> {
+                         <span class="name">id</span>: <span class="name">colormapTexture</span>
+                         <span class="name">tilingModeHorizontal</span>: <span class="name">Texture</span>.<span class="name">ClampToEdge</span>
+                         <span class="name">source</span>: <span class="name">getColormapSource</span>(<span class="name">colormapCombo</span>.<span class="name">currentIndex</span>)
+                     }
+                 }
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">stepLength</span>: <span class="name">Math</span>.<span class="name">max</span>(<span class="number">0.0001</span>, <span class="name">parseFloat</span>(
+                                                        <span class="name">stepLengthText</span>.<span class="name">text</span>,
+                                                        <span class="number">1</span> <span class="operator">/</span> <span class="name">cubeModel</span>.<span class="name">maxSide</span>))
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">minSide</span>: <span class="number">1</span> <span class="operator">/</span> <span class="name">cubeModel</span>.<span class="name">minSide</span>
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">stepAlpha</span>: <span class="name">stepAlphaSlider</span>.<span class="name">value</span>
+                 property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">multipliedAlpha</span>: <span class="name">multipliedAlphaBox</span>.<span class="name">checked</span>
+
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">tMin</span>: <span class="name">tSlider</span>.<span class="name">first</span>.<span class="name">value</span>
+                 property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">tMax</span>: <span class="name">tSlider</span>.<span class="name">second</span>.<span class="name">value</span>
+                 property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">sliceMin</span>: <span class="name">sliceSliderMin</span>(
+                                                 <span class="name">xSliceSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">xSliceWidthSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">ySliceSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">ySliceWidthSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">zSliceSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">zSliceWidthSlider</span>.<span class="name">value</span>)
+                 property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">sliceMax</span>: <span class="name">sliceSliderMax</span>(
+                                                 <span class="name">xSliceSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">xSliceWidthSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">ySliceSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">ySliceWidthSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">zSliceSlider</span>.<span class="name">value</span>,
+                                                 <span class="name">zSliceWidthSlider</span>.<span class="name">value</span>)
+
+                 <span class="name">sourceBlend</span>: <span class="name">CustomMaterial</span>.<span class="name">SrcAlpha</span>
+                 <span class="name">destinationBlend</span>: <span class="name">CustomMaterial</span>.<span class="name">OneMinusSrcAlpha</span>
+             }
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">maxSide</span>: <span class="name">Math</span>.<span class="name">max</span>(<span class="name">parseInt</span>(<span class="name">dataWidth</span>.<span class="name">text</span>),
+                                             <span class="name">parseInt</span>(<span class="name">dataHeight</span>.<span class="name">text</span>),
+                                             <span class="name">parseInt</span>(<span class="name">dataDepth</span>.<span class="name">text</span>))
+             property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">minSide</span>: <span class="name">Math</span>.<span class="name">min</span>(<span class="name">parseInt</span>(<span class="name">dataWidth</span>.<span class="name">text</span>),
+                                             <span class="name">parseInt</span>(<span class="name">dataHeight</span>.<span class="name">text</span>),
+                                             <span class="name">parseInt</span>(<span class="name">dataDepth</span>.<span class="name">text</span>))
+             <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">parseFloat</span>(<span class="name">scaleWidth</span>.<span class="name">text</span>),
+                                <span class="name">parseFloat</span>(<span class="name">scaleHeight</span>.<span class="name">text</span>),
+                                <span class="name">parseFloat</span>(<span class="name">scaleDepth</span>.<span class="name">text</span>))
+
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">visible</span>: <span class="name">drawBoundingBox</span>.<span class="name">checked</span>
+                 <span class="name">geometry</span>: <span class="name">LineBoxGeometry</span> {}
+                 <span class="name">materials</span>: <span class="name">DefaultMaterial</span> {
+                     <span class="name">diffuseColor</span>: <span class="string">&quot;#323232&quot;</span>
+                     <span class="name">lighting</span>: <span class="name">DefaultMaterial</span>.<span class="name">NoLighting</span>
+                 }
+                 <span class="name">receivesShadows</span>: <span class="number">false</span>
+                 <span class="name">castsShadows</span>: <span class="number">false</span>
+             }
+
+             <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+                 <span class="name">visible</span>: <span class="name">drawBoundingBox</span>.<span class="name">checked</span>
+                 <span class="name">geometry</span>: <span class="name">LineBoxGeometry</span> {}
+                 <span class="name">materials</span>: <span class="name">DefaultMaterial</span> {
+                     <span class="name">diffuseColor</span>: <span class="string">&quot;#323232&quot;</span>
+                     <span class="name">lighting</span>: <span class="name">DefaultMaterial</span>.<span class="name">NoLighting</span>
+                 }
+                 <span class="name">receivesShadows</span>: <span class="number">false</span>
+                 <span class="name">castsShadows</span>: <span class="number">false</span>
+                 <span class="name">position</span>: <span class="name">sliceBoxPosition</span>(<span class="name">xSliceSlider</span>.<span class="name">value</span>,
+                                            <span class="name">ySliceSlider</span>.<span class="name">value</span>,
+                                            <span class="name">zSliceSlider</span>.<span class="name">value</span>,
+                                            <span class="name">xSliceWidthSlider</span>.<span class="name">value</span>,
+                                            <span class="name">ySliceWidthSlider</span>.<span class="name">value</span>,
+                                            <span class="name">zSliceWidthSlider</span>.<span class="name">value</span>)
+                 <span class="name">scale</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">xSliceWidthSlider</span>.<span class="name">value</span>,
+                                    <span class="name">ySliceWidthSlider</span>.<span class="name">value</span>,
+                                    <span class="name">zSliceWidthSlider</span>.<span class="name">value</span>)
+             }
+         }
+
+         <span class="type">ArcballController</span> {
+             <span class="name">id</span>: <span class="name">arcballController</span>
+             <span class="name">controlledObject</span>: <span class="name">cubeModel</span>
+
+             <span class="keyword">function </span><span class="name">jumpToAxis</span>(axis) {
+                 <span class="name">cameraRotation</span>.<span class="name">from</span> <span class="operator">=</span> <span class="name">arcballController</span>.<span class="name">controlledObject</span>.<span class="name">rotation</span>
+                 <span class="name">cameraRotation</span>.<span class="name">to</span> <span class="operator">=</span> <span class="name">originGizmo</span>.<span class="name">quaternionForAxis</span>(
+                             <span class="name">axis</span>, <span class="name">arcballController</span>.<span class="name">controlledObject</span>.<span class="name">rotation</span>)
+                 <span class="name">cameraRotation</span>.<span class="name">duration</span> <span class="operator">=</span> <span class="number">200</span>
+                 <span class="name">cameraRotation</span>.<span class="name">start</span>()
+             }
+
+             <span class="keyword">function </span><span class="name">jumpToRotation</span>(qRotation) {
+                 <span class="name">cameraRotation</span>.<span class="name">from</span> <span class="operator">=</span> <span class="name">arcballController</span>.<span class="name">controlledObject</span>.<span class="name">rotation</span>
+                 <span class="name">cameraRotation</span>.<span class="name">to</span> <span class="operator">=</span> <span class="name">qRotation</span>
+                 <span class="name">cameraRotation</span>.<span class="name">duration</span> <span class="operator">=</span> <span class="number">100</span>
+                 <span class="name">cameraRotation</span>.<span class="name">start</span>()
+             }
+
+             <span class="type"><a href="qml-qtquick3d-quaternionanimation.html" translate="no">QuaternionAnimation</a></span> {
+                 <span class="name">id</span>: <span class="name">cameraRotation</span>
+                 <span class="name">target</span>: <span class="name">arcballController</span>.<span class="name">controlledObject</span>
+                 <span class="name">property</span>: <span class="string">&quot;rotation&quot;</span>
+                 <span class="name">type</span>: <span class="name">QuaternionAnimation</span>.<span class="name">Slerp</span>
+                 <span class="name">running</span>: <span class="number">false</span>
+                 <span class="name">loops</span>: <span class="number">1</span>
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-draghandler.html" translate="no">DragHandler</a></span> {
+             <span class="name">id</span>: <span class="name">dragHandler</span>
+             <span class="name">target</span>: <span class="number">null</span>
+             <span class="name">acceptedModifiers</span>: <span class="name">Qt</span>.<span class="name">NoModifier</span>
+             <span class="name">onCentroidChanged</span>: {
+                 <span class="name">arcballController</span>.<span class="name">mouseMoved</span>(<span class="name">toNDC</span>(<span class="name">centroid</span>.<span class="name">position</span>.<span class="name">x</span>,
+                                                    <span class="name">centroid</span>.<span class="name">position</span>.<span class="name">y</span>))
+             }
+
+             <span class="name">onActiveChanged</span>: {
+                 <span class="keyword">if</span> (<span class="name">active</span>) {
+                     <span class="name">view</span>.<span class="name">forceActiveFocus</span>()
+                     <span class="name">arcballController</span>.<span class="name">mousePressed</span>(<span class="name">toNDC</span>(<span class="name">centroid</span>.<span class="name">position</span>.<span class="name">x</span>,
+                                                          <span class="name">centroid</span>.<span class="name">position</span>.<span class="name">y</span>))
+                 } <span class="keyword">else</span>
+                     <span class="name">arcballController</span>.<span class="name">mouseReleased</span>(<span class="name">toNDC</span>(<span class="name">centroid</span>.<span class="name">position</span>.<span class="name">x</span>,
+                                                           <span class="name">centroid</span>.<span class="name">position</span>.<span class="name">y</span>))
+             }
+
+             <span class="keyword">function </span><span class="name">toNDC</span>(x, y) {
+                 <span class="keyword">return</span> <span class="name">Qt</span>.<span class="name">vector2d</span>((<span class="number">2.0</span> <span class="operator">*</span> <span class="name">x</span> <span class="operator">/</span> <span class="name">width</span>) <span class="operator">-</span> <span class="number">1.0</span>,
+                                    <span class="number">1.0</span> <span class="operator">-</span> (<span class="number">2.0</span> <span class="operator">*</span> <span class="name">y</span> <span class="operator">/</span> <span class="name">height</span>))
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-wheelhandler.html" translate="no">WheelHandler</a></span> {
+             <span class="name">id</span>: <span class="name">wheelHandler</span>
+             <span class="name">orientation</span>: <span class="name">Qt</span>.<span class="name">Vertical</span>
+             <span class="name">target</span>: <span class="number">null</span>
+             <span class="name">acceptedDevices</span>: <span class="name">PointerDevice</span>.<span class="name">Mouse</span> <span class="operator">|</span> <span class="name">PointerDevice</span>.<span class="name">TouchPad</span>
+             <span class="name">onWheel</span>: <span class="keyword"></span>event =&gt; {
+                          let delta = -<span class="name">event</span>.<span class="name">angleDelta</span>.<span class="name">y</span> <span class="operator">*</span> <span class="number">0.01</span>
+                          <span class="name">cameraNode</span>.<span class="name">z</span> <span class="operator">+=</span> <span class="name">cameraNode</span>.<span class="name">z</span> <span class="operator">*</span> <span class="number">0.1</span> <span class="operator">*</span> <span class="name">delta</span>
+                      }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-frameanimation.html" translate="no">FrameAnimation</a></span> {
+             <span class="name">running</span>: <span class="name">autoRotateCheckbox</span>.<span class="name">checked</span>
+             <span class="name">onTriggered</span>: {
+                 <span class="name">arcballController</span>.<span class="name">mousePressed</span>(<span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="number">0</span>, <span class="number">0</span>))
+                 <span class="name">arcballController</span>.<span class="name">mouseMoved</span>(<span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="number">0.01</span>, <span class="number">0</span>))
+                 <span class="name">arcballController</span>.<span class="name">mouseReleased</span>(<span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="number">0.01</span>, <span class="number">0</span>))
+             }
+         }
+
+         <span class="name">Keys</span>.onPressed: <span class="keyword"></span>event =&gt; {
+                             <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">key</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">Key_Space</span>) {
+                                 let rotation = <span class="name">originGizmo</span>.<span class="name">quaternionAlign</span>(
+                                     <span class="name">arcballController</span>.<span class="name">controlledObject</span>.<span class="name">rotation</span>)
+                                 <span class="name">arcballController</span>.<span class="name">jumpToRotation</span>(<span class="name">rotation</span>)
+                             } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">key</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">Key_S</span>) {
+                                 <span class="name">settingsPane</span>.<span class="name">toggleHide</span>()
+                             } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">key</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">Key_Left</span>
+                                        <span class="operator">||</span> <span class="name">event</span>.<span class="name">key</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">Key_A</span>) {
+                                 let rotation = <span class="name">originGizmo</span>.<span class="name">quaternionRotateLeft</span>(
+                                     <span class="name">arcballController</span>.<span class="name">controlledObject</span>.<span class="name">rotation</span>)
+                                 <span class="name">arcballController</span>.<span class="name">jumpToRotation</span>(<span class="name">rotation</span>)
+                             } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">event</span>.<span class="name">key</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">Key_Right</span>
+                                        <span class="operator">||</span> <span class="name">event</span>.<span class="name">key</span> <span class="operator">===</span> <span class="name">Qt</span>.<span class="name">Key_D</span>) {
+                                 let rotation = <span class="name">originGizmo</span>.<span class="name">quaternionRotateRight</span>(
+                                     <span class="name">arcballController</span>.<span class="name">controlledObject</span>.<span class="name">rotation</span>)
+                                 <span class="name">arcballController</span>.<span class="name">jumpToRotation</span>(<span class="name">rotation</span>)
+                             }
+                         }
+     }
+
+     <span class="type">OriginGizmo</span> {
+         <span class="name">id</span>: <span class="name">originGizmo</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.margins: <span class="number">10</span>
+         <span class="name">width</span>: <span class="number">120</span>
+         <span class="name">height</span>: <span class="number">120</span>
+         <span class="name">targetNode</span>: <span class="name">cubeModel</span>
+
+         <span class="name">onAxisClicked</span>: <span class="keyword"></span>axis =&gt; {
+                            <span class="name">arcballController</span>.<span class="name">jumpToAxis</span>(<span class="name">axis</span>)
+                        }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-roundbutton.html" translate="no">RoundButton</a></span> {
+         <span class="name">id</span>: <span class="name">iconOpen</span>
+         <span class="name">text</span>: <span class="string">&quot;\u2630&quot;</span> <span class="comment">// Unicode Character 'TRIGRAM FOR HEAVEN', no qsTr()</span>
+         <span class="name">x</span>: <span class="name">settingsPane</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">settingsPane</span>.<span class="name">width</span> <span class="operator">+</span> <span class="number">10</span>
+         <span class="name">y</span>: <span class="number">10</span>
+         <span class="name">onClicked</span>: <span class="name">settingsPane</span>.<span class="name">toggleHide</span>()
+     }
+
+     <span class="type">Spinner</span> {
+         <span class="name">id</span>: <span class="name">spinner</span>
+         <span class="name">running</span>: <span class="number">false</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.margins: <span class="number">10</span>
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-scrollview.html" translate="no">ScrollView</a></span> {
+         <span class="name">id</span>: <span class="name">settingsPane</span>
+         <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span>
+         property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">hidden</span>: <span class="number">false</span>
+
+         <span class="keyword">function </span><span class="name">toggleHide</span>() {
+             <span class="keyword">if</span> (<span class="name">settingsPane</span>.<span class="name">hidden</span>) {
+                 <span class="name">settingsPaneAnimation</span>.<span class="name">from</span> <span class="operator">=</span> <span class="name">settingsPane</span>.<span class="name">x</span>
+                 <span class="name">settingsPaneAnimation</span>.<span class="name">to</span> <span class="operator">=</span> <span class="number">0</span>
+             } <span class="keyword">else</span> {
+                 <span class="name">settingsPaneAnimation</span>.<span class="name">from</span> <span class="operator">=</span> <span class="name">settingsPane</span>.<span class="name">x</span>
+                 <span class="name">settingsPaneAnimation</span>.<span class="name">to</span> <span class="operator">=</span> -<span class="name">settingsPane</span>.<span class="name">width</span>
+             }
+             <span class="name">settingsPane</span>.<span class="name">hidden</span> <span class="operator">=</span> !<span class="name">settingsPane</span>.<span class="name">hidden</span>
+             <span class="name">settingsPaneAnimation</span>.<span class="name">running</span> <span class="operator">=</span> <span class="number">true</span>
+         }
+
+         NumberAnimation on <span class="name">x</span> {
+             <span class="name">id</span>: <span class="name">settingsPaneAnimation</span>
+             <span class="name">running</span>: <span class="number">false</span>
+             <span class="name">from</span>: <span class="name">width</span>
+             <span class="name">to</span>: <span class="name">width</span>
+             <span class="name">duration</span>: <span class="number">100</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-column.html" translate="no">Column</a></span> {
+             <span class="name">topPadding</span>: <span class="number">10</span>
+             <span class="name">bottomPadding</span>: <span class="number">10</span>
+             <span class="name">leftPadding</span>: <span class="number">20</span>
+             <span class="name">rightPadding</span>: <span class="number">20</span>
+
+             <span class="name">spacing</span>: <span class="number">10</span>
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Visible value-range:&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-rangeslider.html" translate="no">RangeSlider</a></span> {
+                 <span class="name">id</span>: <span class="name">tSlider</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">first</span>.value: <span class="number">0</span>
+                 <span class="name">second</span>.value: <span class="number">1</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-image.html" translate="no">Image</a></span> {
+                 <span class="name">width</span>: <span class="name">tSlider</span>.<span class="name">width</span>
+                 <span class="name">height</span>: <span class="number">20</span>
+                 <span class="name">source</span>: <span class="name">getColormapSource</span>(<span class="name">colormapCombo</span>.<span class="name">currentIndex</span>)
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Colormap:&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                 <span class="name">id</span>: <span class="name">colormapCombo</span>
+                 <span class="name">model</span>: [<span class="name">qsTr</span>(<span class="string">&quot;Cool Warm&quot;</span>), <span class="name">qsTr</span>(<span class="string">&quot;Plasma&quot;</span>), <span class="name">qsTr</span>(<span class="string">&quot;Viridis&quot;</span>), <span class="name">qsTr</span>(<span class="string">&quot;Rainbow&quot;</span>), <span class="name">qsTr</span>(<span class="string">&quot;Gnuplot&quot;</span>)]
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Step alpha:&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">stepAlphaSlider</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">value</span>: <span class="number">0.2</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-grid.html" translate="no">Grid</a></span> {
+                 <span class="name">horizontalItemAlignment</span>: <span class="name">Grid</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">verticalItemAlignment</span>: <span class="name">Grid</span>.<span class="name">AlignVCenter</span>
+                 <span class="name">spacing</span>: <span class="number">5</span>
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                     <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Step length:&quot;</span>)
+                 }
+
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                     <span class="name">id</span>: <span class="name">stepLengthText</span>
+                     <span class="name">text</span>: <span class="string">&quot;0.00391&quot;</span> <span class="comment">// ~1/256</span>
+                     <span class="name">width</span>: <span class="number">100</span>
+                 }
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                 <span class="name">id</span>: <span class="name">multipliedAlphaBox</span>
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Multiplied alpha&quot;</span>)
+                 <span class="name">checked</span>: <span class="number">true</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                 <span class="name">id</span>: <span class="name">drawBoundingBox</span>
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Draw Bounding Box&quot;</span>)
+                 <span class="name">checked</span>: <span class="number">true</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+                 <span class="name">id</span>: <span class="name">autoRotateCheckbox</span>
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Auto-rotate model&quot;</span>)
+                 <span class="name">checked</span>: <span class="number">false</span>
+             }
+
+             <span class="comment">// X plane</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;X plane slice (position, width):&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">xSliceSlider</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="number">0.5</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">xSliceWidthSlider</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">value</span>: <span class="number">1</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+             }
+
+             <span class="comment">// Y plane</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Y plane slice (position, width):&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">ySliceSlider</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="number">0.5</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">ySliceWidthSlider</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">value</span>: <span class="number">1</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+             }
+
+             <span class="comment">// Z plane</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Z plane slice (position, width):&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">zSliceSlider</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+                 <span class="name">value</span>: <span class="number">0.5</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">zSliceWidthSlider</span>
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">value</span>: <span class="number">1</span>
+                 <span class="name">to</span>: <span class="number">1</span>
+             }
+
+             <span class="comment">// Dimensions</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Dimensions (width, height, depth):&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+                 <span class="name">spacing</span>: <span class="number">5</span>
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                     <span class="name">id</span>: <span class="name">dataWidth</span>
+                     <span class="name">text</span>: <span class="string">&quot;256&quot;</span>
+                     <span class="name">validator</span>: <span class="name">IntValidator</span> {
+                         <span class="name">bottom</span>: <span class="number">1</span>
+                         <span class="name">top</span>: <span class="number">2048</span>
+                     }
+                 }
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                     <span class="name">id</span>: <span class="name">dataHeight</span>
+                     <span class="name">text</span>: <span class="string">&quot;256&quot;</span>
+                     <span class="name">validator</span>: <span class="name">IntValidator</span> {
+                         <span class="name">bottom</span>: <span class="number">1</span>
+                         <span class="name">top</span>: <span class="number">2048</span>
+                     }
+                 }
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                     <span class="name">id</span>: <span class="name">dataDepth</span>
+                     <span class="name">text</span>: <span class="string">&quot;256&quot;</span>
+                     <span class="name">validator</span>: <span class="name">IntValidator</span> {
+                         <span class="name">bottom</span>: <span class="number">1</span>
+                         <span class="name">top</span>: <span class="number">2048</span>
+                     }
+                 }
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Scale (x, y, z):&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+                 <span class="name">spacing</span>: <span class="number">5</span>
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                     <span class="name">id</span>: <span class="name">scaleWidth</span>
+                     <span class="name">text</span>: <span class="string">&quot;1&quot;</span>
+                     <span class="name">validator</span>: <span class="name">DoubleValidator</span> {
+                         <span class="name">bottom</span>: <span class="number">0.001</span>
+                         <span class="name">top</span>: <span class="number">1000</span>
+                         <span class="name">decimals</span>: <span class="number">4</span>
+                     }
+                 }
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                     <span class="name">id</span>: <span class="name">scaleHeight</span>
+                     <span class="name">text</span>: <span class="string">&quot;1&quot;</span>
+                     <span class="name">validator</span>: <span class="name">DoubleValidator</span> {
+                         <span class="name">bottom</span>: <span class="number">0.001</span>
+                         <span class="name">top</span>: <span class="number">1000</span>
+                         <span class="name">decimals</span>: <span class="number">4</span>
+                     }
+                 }
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a></span> {
+                     <span class="name">id</span>: <span class="name">scaleDepth</span>
+                     <span class="name">text</span>: <span class="string">&quot;1&quot;</span>
+                     <span class="name">validator</span>: <span class="name">DoubleValidator</span> {
+                         <span class="name">bottom</span>: <span class="number">0.001</span>
+                         <span class="name">top</span>: <span class="number">1000</span>
+                         <span class="name">decimals</span>: <span class="number">4</span>
+                     }
+                 }
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Data type:&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-combobox.html" translate="no">ComboBox</a></span> {
+                 <span class="name">id</span>: <span class="name">dataTypeComboBox</span>
+                 <span class="name">model</span>: [<span class="string">&quot;uint8&quot;</span>, <span class="string">&quot;uint16&quot;</span>, <span class="string">&quot;int16&quot;</span>, <span class="string">&quot;float32&quot;</span>, <span class="string">&quot;float64&quot;</span>]
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Load Built-in Volume:&quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+                 <span class="name">spacing</span>: <span class="number">5</span>
+
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                     <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Helix&quot;</span>)
+                     <span class="name">onClicked</span>: {
+                         <span class="name">volumeTextureData</span>.<span class="name">loadAsync</span>(<span class="string">&quot;file:///default_helix&quot;</span>,
+                                                     <span class="number">256</span>, <span class="number">256</span>, <span class="number">256</span>, <span class="string">&quot;uint8&quot;</span>)
+                         <span class="name">spinner</span>.<span class="name">running</span> <span class="operator">=</span> <span class="number">true</span>
+                     }
+                 }
+
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                     <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Box&quot;</span>)
+                     <span class="name">onClicked</span>: {
+                         <span class="name">volumeTextureData</span>.<span class="name">loadAsync</span>(<span class="string">&quot;file:///default_box&quot;</span>, <span class="number">256</span>,
+                                                     <span class="number">256</span>, <span class="number">256</span>, <span class="string">&quot;uint8&quot;</span>)
+                         <span class="name">spinner</span>.<span class="name">running</span> <span class="operator">=</span> <span class="number">true</span>
+                     }
+                 }
+
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                     <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Colormap&quot;</span>)
+                     <span class="name">onClicked</span>: {
+                         <span class="name">volumeTextureData</span>.<span class="name">loadAsync</span>(<span class="string">&quot;file:///default_colormap&quot;</span>,
+                                                     <span class="number">256</span>, <span class="number">256</span>, <span class="number">256</span>, <span class="string">&quot;uint8&quot;</span>)
+                         <span class="name">spinner</span>.<span class="name">running</span> <span class="operator">=</span> <span class="number">true</span>
+                     }
+                 }
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Load Volume...&quot;</span>)
+                 <span class="name">onClicked</span>: <span class="name">fileDialog</span>.<span class="name">open</span>()
+             }
+         }
+     }
+ }
+</pre>

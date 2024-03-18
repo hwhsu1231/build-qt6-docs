@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qcanbusframe.cpp -->
   <meta name="description" content="QCanBusFrame is a container class representing a single CAN frame.">
-  <title>QCanBusFrame Class | Qt Serial Bus 6.6.0</title>
+  <title>QCanBusFrame Class | Qt Serial Bus 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtserialbus-index.html" translate="no">Qt Serial Bus</a></li>
 <li><a href="qtserialbus-module.html" translate="no">C++ Classes</a></li>
 <li>QCanBusFrame</li>
-<li id="buildversion"><a href="qtserialbus-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtserialbus-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -66,6 +66,7 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> class </td><td class="memItemRight bottomAlign"><b><a href="qcanbusframe-timestamp.html" translate="no">TimeStamp</a></b></td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="qcanbusframe.html#FrameError-enum" translate="no">FrameError</a></b> { NoError, TransmissionTimeoutError, LostArbitrationError, ControllerError, ProtocolViolationError, &hellip;, AnyError }</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> flags </td><td class="memItemRight bottomAlign"><b><a href="qcanbusframe.html#FrameError-enum" translate="no">FrameErrors</a></b></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qcanbusframe.html#FrameId-typedef" translate="no">FrameId</a></b></td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> enum </td><td class="memItemRight bottomAlign"><b><a href="qcanbusframe.html#FrameType-enum" translate="no">FrameType</a></b> { UnknownFrame, DataFrame, ErrorFrame, RemoteRequestFrame, InvalidFrame }</td></tr>
 </table></div>
 <h2 id="public-functions">Public Functions</h2>
@@ -105,7 +106,7 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 <h2 id="details">Detailed Description</h2>
 <p><a href="qcanbusdevice.html" translate="no">QCanBusDevice</a> can use QCanBusFrame for read and write operations. It contains the frame identifier and the data payload. QCanBusFrame contains the timestamp of the moment it was read.</p>
 </div>
-<p><b>See also </b><a href="qcanbusframe-timestamp.html" translate="no">QCanBusFrame::TimeStamp</a>.</p>
+<p><b>See also </b><a href="qcanbusframe.html#FrameId-typedef" translate="no">QCanBusFrame::FrameId</a>, <a href="qcanbusframe-timestamp.html" translate="no">QCanBusFrame::TimeStamp</a>, and <a href="qcanbusframe.html#payload" translate="no">payload</a>().</p>
 <!-- @@@QCanBusFrame -->
 <div class="types">
 <h2>Member Type Documentation</h2>
@@ -127,7 +128,13 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 <tr><td class="topAlign"><code translate="no">QCanBusFrame::AnyError</code></td><td class="topAlign tblval"><code translate="no">0x1FFFFFFFU</code></td><td class="topAlign">Matches every other error type.</td></tr>
 </table></div>
 <p>The FrameErrors type is a typedef for <a href="../qtcore/qflags.html">QFlags</a>&lt;FrameError&gt;. It stores an OR combination of FrameError values.</p>
+<p><b>See also </b><a href="qcanbusframe.html#error" translate="no">error</a>() and <a href="qcanbusframe.html#setError" translate="no">setError</a>().</p>
 <!-- @@@FrameError -->
+<!-- $$$FrameId -->
+<h3 class="fn" translate="no" id="FrameId-typedef"><code translate="no">[alias] </code>QCanBusFrame::<span class="name">FrameId</span></h3>
+<p>A distinct type for a CAN bus frame identifier with either 11 or 29 bit.</p>
+<p><b>See also </b><a href="qcanbusframe.html#frameId" translate="no">frameId</a>() and <a href="qcanbusframe.html#setFrameId" translate="no">setFrameId</a>().</p>
+<!-- @@@FrameId -->
 <!-- $$$FrameType$$$UnknownFrame$$$DataFrame$$$ErrorFrame$$$RemoteRequestFrame$$$InvalidFrame -->
 <h3 class="fn" translate="no" id="FrameType-enum">enum QCanBusFrame::<span class="name">FrameType</span></h3>
 <p>This enum describes the type of the CAN frame.</p>
@@ -138,7 +145,7 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 <tr><td class="topAlign"><code translate="no">QCanBusFrame::RemoteRequestFrame</code></td><td class="topAlign tblval"><code translate="no">0x3</code></td><td class="topAlign">This value represents a remote request.</td></tr>
 <tr><td class="topAlign"><code translate="no">QCanBusFrame::InvalidFrame</code></td><td class="topAlign tblval"><code translate="no">0x4</code></td><td class="topAlign">This value represents an invalid frame. This type is used for error reporting.</td></tr>
 </table></div>
-<p><b>See also </b><a href="qcanbusframe.html#setFrameType" translate="no">setFrameType</a>().</p>
+<p><b>See also </b><a href="qcanbusframe.html#frameType" translate="no">frameType</a>() and <a href="qcanbusframe.html#setFrameType" translate="no">setFrameType</a>().</p>
 <!-- @@@FrameType -->
 </div>
 <div class="func">
@@ -146,26 +153,28 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 <!-- $$$QCanBusFrame[overload1]$$$QCanBusFrameFrameType -->
 <h3 class="fn" translate="no" id="QCanBusFrame"><code translate="no">[explicit noexcept] </code>QCanBusFrame::<span class="name">QCanBusFrame</span>(<span class="type"><a href="qcanbusframe.html#FrameType-enum" translate="no">FrameType</a></span> <i>type</i> = DataFrame)</h3>
 <p>Constructs a CAN frame of the specified <i translate="no">type</i>.</p>
+<p><b>See also </b><a href="qcanbusframe.html#FrameType-enum" translate="no">QCanBusFrame::FrameType</a> and <a href="qcanbusframe.html#setFrameType" translate="no">setFrameType</a>().</p>
 <!-- @@@QCanBusFrame -->
 <!-- $$$QCanBusFrame$$$QCanBusFrameQCanBusFrame::FrameIdconstQByteArray& -->
-<h3 class="fn" translate="no" id="QCanBusFrame-1"><code translate="no">[explicit] </code>QCanBusFrame::<span class="name">QCanBusFrame</span>(<span class="type">QCanBusFrame::FrameId</span> <i>identifier</i>, const <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> &amp;<i>data</i>)</h3>
+<h3 class="fn" translate="no" id="QCanBusFrame-1"><code translate="no">[explicit] </code>QCanBusFrame::<span class="name">QCanBusFrame</span>(<span class="type"><a href="qcanbusframe.html#FrameId-typedef" translate="no">QCanBusFrame::FrameId</a></span> <i>identifier</i>, const <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> &amp;<i>data</i>)</h3>
 <p>Constructs a CAN frame using <i translate="no">identifier</i> as the frame identifier and <i translate="no">data</i> as the payload.</p>
+<p><b>See also </b><a href="qcanbusframe.html#FrameId-typedef" translate="no">QCanBusFrame::FrameId</a>.</p>
 <!-- @@@QCanBusFrame -->
 <!-- $$$error[overload1]$$$error -->
 <h3 class="fn" translate="no" id="error"><code translate="no">[constexpr noexcept] </code><span class="type"><a href="qcanbusframe.html#FrameError-enum" translate="no">FrameErrors</a></span> QCanBusFrame::<span class="name">error</span>() const</h3>
 <p>Returns the error of the current error frame. If the frame is not an <a href="qcanbusframe.html#FrameType-enum" translate="no">ErrorFrame</a>, this function returns <a href="qcanbusframe.html#FrameError-enum" translate="no">NoError</a>.</p>
-<p><b>See also </b><a href="qcanbusframe.html#setError" translate="no">setError</a>().</p>
+<p><b>See also </b><a href="qcanbusframe.html#FrameError-enum" translate="no">QCanBusFrame::FrameError</a> and <a href="qcanbusframe.html#setError" translate="no">setError</a>().</p>
 <!-- @@@error -->
 <!-- $$$frameId[overload1]$$$frameId -->
-<h3 class="fn" translate="no" id="frameId"><code translate="no">[constexpr noexcept] </code><span class="type">QCanBusFrame::FrameId</span> QCanBusFrame::<span class="name">frameId</span>() const</h3>
+<h3 class="fn" translate="no" id="frameId"><code translate="no">[constexpr noexcept] </code><span class="type"><a href="qcanbusframe.html#FrameId-typedef" translate="no">QCanBusFrame::FrameId</a></span> QCanBusFrame::<span class="name">frameId</span>() const</h3>
 <p>Returns the CAN frame identifier. If the CAN frame uses the extended frame format, the identifier has a maximum of 29 bits; otherwise 11 bits.</p>
 <p>If the frame is of <a href="qcanbusframe.html#FrameType-enum" translate="no">ErrorFrame</a> type, this ID is always 0.</p>
-<p><b>See also </b><a href="qcanbusframe.html#setFrameId" translate="no">setFrameId</a>() and <a href="qcanbusframe.html#hasExtendedFrameFormat" translate="no">hasExtendedFrameFormat</a>().</p>
+<p><b>See also </b><a href="qcanbusframe.html#FrameId-typedef" translate="no">QCanBusFrame::FrameId</a>, <a href="qcanbusframe.html#setFrameId" translate="no">setFrameId</a>(), and <a href="qcanbusframe.html#hasExtendedFrameFormat" translate="no">hasExtendedFrameFormat</a>().</p>
 <!-- @@@frameId -->
 <!-- $$$frameType[overload1]$$$frameType -->
 <h3 class="fn" translate="no" id="frameType"><code translate="no">[constexpr noexcept] </code><span class="type"><a href="qcanbusframe.html#FrameType-enum" translate="no">FrameType</a></span> QCanBusFrame::<span class="name">frameType</span>() const</h3>
 <p>Returns the type of the frame.</p>
-<p><b>See also </b><a href="qcanbusframe.html#setFrameType" translate="no">setFrameType</a>().</p>
+<p><b>See also </b><a href="qcanbusframe.html#FrameType-enum" translate="no">QCanBusFrame::FrameType</a> and <a href="qcanbusframe.html#setFrameType" translate="no">setFrameType</a>().</p>
 <!-- @@@frameType -->
 <!-- $$$hasBitrateSwitch[overload1]$$$hasBitrateSwitch -->
 <h3 class="fn" translate="no" id="hasBitrateSwitch"><code translate="no">[constexpr noexcept] </code><span class="type">bool</span> QCanBusFrame::<span class="name">hasBitrateSwitch</span>() const</h3>
@@ -180,7 +189,7 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 <!-- @@@hasErrorStateIndicator -->
 <!-- $$$hasExtendedFrameFormat[overload1]$$$hasExtendedFrameFormat -->
 <h3 class="fn" translate="no" id="hasExtendedFrameFormat"><code translate="no">[constexpr noexcept] </code><span class="type">bool</span> QCanBusFrame::<span class="name">hasExtendedFrameFormat</span>() const</h3>
-<p>Returns <code translate="no">true</code> if the CAN frame uses a 29bit identifier; otherwise <code translate="no">false</code>, implying an 11bit identifier.</p>
+<p>Returns <code translate="no">true</code> if the CAN frame uses a 29 bit identifier; otherwise <code translate="no">false</code>, implying an 11 bit identifier.</p>
 <p><b>See also </b><a href="qcanbusframe.html#setExtendedFrameFormat" translate="no">setExtendedFrameFormat</a>() and <a href="qcanbusframe.html#frameId" translate="no">frameId</a>().</p>
 <!-- @@@hasExtendedFrameFormat -->
 <!-- $$$hasFlexibleDataRateFormat[overload1]$$$hasFlexibleDataRateFormat -->
@@ -190,7 +199,7 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 <!-- @@@hasFlexibleDataRateFormat -->
 <!-- $$$hasLocalEcho[overload1]$$$hasLocalEcho -->
 <h3 class="fn" translate="no" id="hasLocalEcho"><code translate="no">[constexpr noexcept] </code><span class="type">bool</span> QCanBusFrame::<span class="name">hasLocalEcho</span>() const</h3>
-<p>Returns <code translate="no">true</code> if the frame is a local echo frame, i.e&#x2e; a frame that is received as echo when the frame with the same content was successfully sent to the CAN bus. This flag is set for frames sent by the application itself as well as for frames sent by other applications running on the same system.</p>
+<p>Returns <code translate="no">true</code> if the frame is a local echo frame, i.e. a frame that is received as echo when the frame with the same content was successfully sent to the CAN bus. This flag is set for frames sent by the application itself as well as for frames sent by other applications running on the same system.</p>
 <p><a href="qcanbusdevice.html#ConfigurationKey-enum" translate="no">QCanBusDevice::ReceiveOwnKey</a> must be set to true to receive echo frames.</p>
 <p><b>See also </b><a href="qcanbusframe.html#setLocalEcho" translate="no">setLocalEcho</a>(), <a href="qcanbusdevice.html#ConfigurationKey-enum" translate="no">QCanBusDevice::ReceiveOwnKey</a>, and <a href="qcanbusdevice.html#ConfigurationKey-enum" translate="no">QCanBusDevice::LoopbackKey</a>.</p>
 <!-- @@@hasLocalEcho -->
@@ -212,12 +221,12 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 <!-- $$$setError[overload1]$$$setErrorFrameErrors -->
 <h3 class="fn" translate="no" id="setError"><code translate="no">[constexpr] </code><span class="type">void</span> QCanBusFrame::<span class="name">setError</span>(<span class="type"><a href="qcanbusframe.html#FrameError-enum" translate="no">FrameErrors</a></span> <i>error</i>)</h3>
 <p>Sets the frame's <i translate="no">error</i> type. This function does nothing if <a href="qcanbusframe.html#frameType" translate="no">frameType</a>() is not an <a href="qcanbusframe.html#FrameType-enum" translate="no">ErrorFrame</a>.</p>
-<p><b>See also </b><a href="qcanbusframe.html#error" translate="no">error</a>().</p>
+<p><b>See also </b><a href="qcanbusframe.html#FrameError-enum" translate="no">QCanBusFrame::FrameError</a> and <a href="qcanbusframe.html#error" translate="no">error</a>().</p>
 <!-- @@@setError -->
 <!-- $$$setErrorStateIndicator[overload1]$$$setErrorStateIndicatorbool -->
 <h3 class="fn" translate="no" id="setErrorStateIndicator"><code translate="no">[constexpr noexcept] </code><span class="type">void</span> QCanBusFrame::<span class="name">setErrorStateIndicator</span>(<span class="type">bool</span> <i>errorStateIndicator</i>)</h3>
 <p>Set the <i>Flexible Data-Rate</i> flag <i>Error State Indicator</i> flag to <i translate="no">errorStateIndicator</i>.</p>
-<p>When sending CAN FD frames, this flag is automatically set by the CAN FD hardware. <code translate="no">QCanBusFrame::setErrorStateIndicator()</code> should only be used for application testing, e.g&#x2e; on virtual CAN FD busses.</p>
+<p>When sending CAN FD frames, this flag is automatically set by the CAN FD hardware. <code translate="no">QCanBusFrame::setErrorStateIndicator()</code> should only be used for application testing, e.g. on virtual CAN FD busses.</p>
 <p><b>See also </b><a href="qcanbusframe.html#hasErrorStateIndicator" translate="no">hasErrorStateIndicator</a>().</p>
 <!-- @@@setErrorStateIndicator -->
 <!-- $$$setExtendedFrameFormat[overload1]$$$setExtendedFrameFormatbool -->
@@ -231,21 +240,21 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 <p><b>See also </b><a href="qcanbusframe.html#hasFlexibleDataRateFormat" translate="no">hasFlexibleDataRateFormat</a>().</p>
 <!-- @@@setFlexibleDataRateFormat -->
 <!-- $$$setFrameId[overload1]$$$setFrameIdQCanBusFrame::FrameId -->
-<h3 class="fn" translate="no" id="setFrameId"><code translate="no">[constexpr] </code><span class="type">void</span> QCanBusFrame::<span class="name">setFrameId</span>(<span class="type">QCanBusFrame::FrameId</span> <i>newFrameId</i>)</h3>
+<h3 class="fn" translate="no" id="setFrameId"><code translate="no">[constexpr] </code><span class="type">void</span> QCanBusFrame::<span class="name">setFrameId</span>(<span class="type"><a href="qcanbusframe.html#FrameId-typedef" translate="no">QCanBusFrame::FrameId</a></span> <i>newFrameId</i>)</h3>
 <p>Sets the identifier of the CAN frame to <i translate="no">newFrameId</i>.</p>
 <p>The maximum size of a CAN frame identifier is 11 bits, which can be extended up to 29 bits by supporting the <i>CAN extended frame format</i>. The <i>CAN extended frame format</i> setting is automatically set when a <i translate="no">newFrameId</i> with more than 11 bits in size is given.</p>
 <p>When the format is extended and a <i translate="no">newFrameId</i> with up to 11 bits or less is passed, the <i>CAN extended frame format</i> setting is <b>not</b> changed.</p>
-<p><b>See also </b><a href="qcanbusframe.html#frameId" translate="no">frameId</a>() and <a href="qcanbusframe.html#hasExtendedFrameFormat" translate="no">hasExtendedFrameFormat</a>().</p>
+<p><b>See also </b><a href="qcanbusframe.html#FrameId-typedef" translate="no">QCanBusFrame::FrameId</a>, <a href="qcanbusframe.html#frameId" translate="no">frameId</a>(), and <a href="qcanbusframe.html#hasExtendedFrameFormat" translate="no">hasExtendedFrameFormat</a>().</p>
 <!-- @@@setFrameId -->
 <!-- $$$setFrameType[overload1]$$$setFrameTypeFrameType -->
 <h3 class="fn" translate="no" id="setFrameType"><code translate="no">[constexpr noexcept] </code><span class="type">void</span> QCanBusFrame::<span class="name">setFrameType</span>(<span class="type"><a href="qcanbusframe.html#FrameType-enum" translate="no">FrameType</a></span> <i>newType</i>)</h3>
 <p>Sets the type of the frame to <i translate="no">newType</i>.</p>
-<p><b>See also </b><a href="qcanbusframe.html#frameType" translate="no">frameType</a>().</p>
+<p><b>See also </b><a href="qcanbusframe.html#FrameType-enum" translate="no">QCanBusFrame::FrameType</a> and <a href="qcanbusframe.html#frameType" translate="no">frameType</a>().</p>
 <!-- @@@setFrameType -->
 <!-- $$$setLocalEcho[overload1]$$$setLocalEchobool -->
 <h3 class="fn" translate="no" id="setLocalEcho"><code translate="no">[constexpr noexcept] </code><span class="type">void</span> QCanBusFrame::<span class="name">setLocalEcho</span>(<span class="type">bool</span> <i>echo</i>)</h3>
 <p>Set the <i>Local Echo</i> flag to <i translate="no">echo</i>.</p>
-<p>When sending CAN bus frames with <a href="qcanbusdevice.html#ConfigurationKey-enum" translate="no">QCanBusDevice::ReceiveOwnKey</a> enabled, all successfully sent frames are echoed to the receive queue and marked as local echo frames. <code translate="no">QCanBusFrame::setLocalEcho</code> should therefore only be used for application testing, e.g&#x2e; on virtual CAN busses.</p>
+<p>When sending CAN bus frames with <a href="qcanbusdevice.html#ConfigurationKey-enum" translate="no">QCanBusDevice::ReceiveOwnKey</a> enabled, all successfully sent frames are echoed to the receive queue and marked as local echo frames. <code translate="no">QCanBusFrame::setLocalEcho</code> should therefore only be used for application testing, e.g. on virtual CAN busses.</p>
 <p><b>See also </b><a href="qcanbusframe.html#hasLocalEcho" translate="no">hasLocalEcho</a>().</p>
 <!-- @@@setLocalEcho -->
 <!-- $$$setPayload[overload1]$$$setPayloadconstQByteArray& -->
@@ -303,9 +312,9 @@ target_link_libraries(mytarget PRIVATE Qt6::SerialBus)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

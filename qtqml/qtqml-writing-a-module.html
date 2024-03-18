@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qtqml-writing-a-module.qdoc -->
   <meta name="description" content="How to write a custom QML module.">
-  <title>Writing QML Modules | Qt QML 6.6.0</title>
+  <title>Writing QML Modules | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li>Writing QML Modules</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -41,7 +41,12 @@
 <h3 id="toc">Contents</h3>
 <ul>
 <li class="level1"><a href="#multiple-qml-modules-in-one-binary">Multiple QML Modules in One Binary</a></li>
-<li class="level1"><a href="#exporting-multiple-major-versions-from-the-same-module">Exporting Multiple Major Versions from The Same Module</a></li>
+<li class="level1"><a href="#versions">Versions</a></li>
+<li class="level2"><a href="#if-you-add-versions-add-them-everywhere">If you add versions, add them everywhere</a></li>
+<li class="level2"><a href="#versions-are-not-transitive">Versions are not transitive</a></li>
+<li class="level2"><a href="#qualified-access-does-not-honor-versioning">Qualified access does not honor versioning</a></li>
+<li class="level2"><a href="#versions-and-revisions">Versions and revisions</a></li>
+<li class="level2"><a href="#exporting-multiple-major-versions-from-the-same-module">Exporting multiple major versions from the same module</a></li>
 <li class="level1"><a href="#custom-directory-layouts">Custom Directory Layouts</a></li>
 <li class="level1"><a href="#eliminating-run-time-file-system-access">Eliminating Run Time File System Access</a></li>
 <li class="level1"><a href="#integrating-custom-qml-plugins">Integrating custom QML plugins</a></li>
@@ -80,7 +85,7 @@
 <p>To begin, let's assume main.qml contains an instantiation of Extra.qml:</p>
 <pre class="cpp plain" translate="no">
  import ExtraModule
- Extra { ..&#x2e; }
+ Extra { ... }
 </pre>
 <p>The extra module has to be a static library so that you can link it into the main program. Therefore, state as much in ExtraModule/CMakeLists.txt:</p>
 <pre class="cpp" translate="no">
@@ -131,8 +136,120 @@
 <pre class="cpp" translate="no">
  target_link_libraries(main_program PRIVATE extra_moduleplugin)
 </pre>
-<h2 id="exporting-multiple-major-versions-from-the-same-module">Exporting Multiple Major Versions from The Same Module</h2>
-<p><a href="qt-add-qml-module.html" translate="no">qt_add_qml_module</a> by default considers the major version given in its URI argument, even if the individual types declare other versions in their added specific version via <a href="cmake-source-file-property-qt-qml-source-versions.html" translate="no">QT_QML_SOURCE_VERSIONS</a> or <a href="../qtcore/qobject.html#Q_REVISION" translate="no">Q_REVISION</a>. If a module is available under more than one version, you also need to decide what versions the individual QML files are available under. To declare further major versions, you can use the <code translate="no">PAST_MAJOR_VERSIONS</code> option to <code translate="no">qt_add_qml_module</code> as well as the <code translate="no">QT_QML_SOURCE_VERSIONS</code> property on individual QML files.</p>
+<h2 id="versions">Versions</h2>
+<p>QML has a complex system to assign versions to components and modules. In most cases you should ignore all of it by:</p>
+<ol class="1" type="1"><li>Never adding a version to your import statements</li>
+<li>Never specifying any versions in <a href="qt-add-qml-module.html" translate="no">qt_add_qml_module</a></li>
+<li>Never using <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a> or <a href="cmake-source-file-property-qt-qml-source-versions.html" translate="no">QT_QML_SOURCE_VERSIONS</a></li>
+<li>Never using <a href="../qtcore/qobject.html#Q_REVISION" translate="no">Q_REVISION</a> or the <code translate="no">REVISION()</code> attribute in <a href="../qtcore/qobject.html#Q_PROPERTY" translate="no">Q_PROPERTY</a></li>
+<li>Avoiding unqualified access</li>
+<li>Generously using import namespaces</li>
+</ol>
+<p>Versioning is ideally handled outside the language itself. You may, for example, keep separate <a href="qtqml-syntax-imports.html#qml-import-path" translate="no">import paths</a> for different sets of QML modules. Or you may use a versioning mechanism provided by your operating system to install or uninstall packages with QML modules.</p>
+<p>In some cases, Qt's own QML modules may show different behavior, depending on what version is imported. In particular, if a property is added to a QML component, and your code contains unqualified access to another property of the same name, your code will break. In the following example, the code will behave differently depending on the version of Qt, because the QQuickRectangle::topLeftRadius property was added in Qt 6.7:</p>
+<pre class="qml" translate="no">
+ import QtQuick
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="comment">// property you want to use</span>
+     property <span class="type"><a href="qml-real.html" translate="no">real</a></span> <span class="name">topLeftRadius</span>: <span class="number">24</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+
+         <span class="comment">// correct for Qt version &lt; 6.7 but uses Rectangle's topLeftRadius in 6.7</span>
+         <span class="name">objectName</span>: <span class="string">&quot;top left radius:&quot;</span> <span class="operator">+</span> <span class="name">topLeftRadius</span>
+     }
+ }
+</pre>
+<p>The solution here is to avoid the unqualified access. <a href="../qtquick/qtquick-tool-qmllint.html" translate="no">qmllint</a> can be used to find such problems. The following example accesses the property you actually mean in a safe, qualified way:</p>
+<pre class="qml" translate="no">
+ import QtQuick
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+
+     <span class="comment">// property you want to use</span>
+     property <span class="type"><a href="qml-real.html" translate="no">real</a></span> <span class="name">topLeftRadius</span>: <span class="number">24</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+
+         <span class="comment">// never mixes up topLeftRadius with unrelated Rectangle's topLeftRadius</span>
+         <span class="name">objectName</span>: <span class="string">&quot;top left radius:&quot;</span> <span class="operator">+</span> <span class="name">root</span>.<span class="name">topLeftRadius</span>
+     }
+ }
+</pre>
+<p>You can also avoid the incompatibility by importing a specific version of <a href="../qtquick/qtquick-module.html" translate="no">QtQuick</a>:</p>
+<pre class="qml" translate="no">
+ <span class="comment">// make sure Rectangle has no topLeftRadius property</span>
+ import QtQuick 6.6
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     property <span class="type"><a href="qml-real.html" translate="no">real</a></span> <span class="name">topLeftRadius</span>: <span class="number">24</span>
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         <span class="name">objectName</span>: <span class="string">&quot;top left radius:&quot;</span> <span class="operator">+</span> <span class="name">topLeftRadius</span>
+     }
+ }
+</pre>
+<p>Another problem solved by versioning is the fact that QML components imported by different modules may shadow each other. In the following example, if <code translate="no">MyModule</code> were to introduce a component named <code translate="no">Rectangle</code> in a newer version, the <code translate="no">Rectangle</code> created by this document would not be a QQuickRectangle anymore, but rather the new <code translate="no">Rectangle</code> introduced by <code translate="no">MyModule</code>.</p>
+<pre class="qml" translate="no">
+ import QtQuick
+ import MyModule
+
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     <span class="comment">// MyModule's Rectangle, not QtQuick's</span>
+ }
+</pre>
+<p>A good way to avoid the shadowing would be to import <code translate="no">QtQuick</code> and/or <code translate="no">MyModule</code> into type namespaces as follows:</p>
+<pre class="qml" translate="no">
+ import QtQuick as QQ
+ import MyModule as MM
+
+ <span class="type">QQ</span>.Rectangle {
+    <span class="comment">// QtQuick's Rectangle</span>
+ }
+</pre>
+<p>Alternatively, if you import <code translate="no">MyModule</code> with a fixed version, and the new component receives a correct version tag via <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a> or <a href="cmake-source-file-property-qt-qml-source-versions.html" translate="no">QT_QML_SOURCE_VERSIONS</a>, the shadowing is also avoided:</p>
+<pre class="qml" translate="no">
+ import QtQuick 6.6
+
+ <span class="comment">// Types introduced after 1.0 are not available, like Rectangle for example</span>
+ import MyModule 1.0
+
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     <span class="comment">// QtQuick's Rectangle</span>
+ }
+</pre>
+<p>For this to work, you need to use versions in <code translate="no">MyModule</code>. There are a few things to be aware of.</p>
+<h3 id="if-you-add-versions-add-them-everywhere">If you add versions, add them everywhere</h3>
+<p>You need to add a <code translate="no">VERSION</code> attribute to <a href="qt-add-qml-module.html" translate="no">qt_add_qml_module</a>. The version should be the most recent version provided by your module. Older minor versions of the same major version will automatically be registered. For older major versions, see <a href="qtqml-writing-a-module.html#exporting-multiple-major-versions-from-the-same-module" translate="no">below</a>.</p>
+<p>You should add <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a> or <a href="cmake-source-file-property-qt-qml-source-versions.html" translate="no">QT_QML_SOURCE_VERSIONS</a> to every type that was <i>not</i> introduced in version <code translate="no">x.0</code> of your module, where <code translate="no">x</code> is the current major version.</p>
+<p>If you forget to add a version tag, the component will be available in all versions, making the versioning ineffective.</p>
+<p>However, there is no way to add versions to properties, methods, and signals defined in QML. The only way to version QML documents is to add a new document with separate <a href="cmake-source-file-property-qt-qml-source-versions.html" translate="no">QT_QML_SOURCE_VERSIONS</a> for each change.</p>
+<h3 id="versions-are-not-transitive">Versions are not transitive</h3>
+<p>If a component from your module <code translate="no">A</code> imports another module <code translate="no">B</code> and instantiates a type from that module as the root element, then the import version of <code translate="no">B</code> is relevant for the properties available from the resulting component, no matter what version of A is imported by a user.</p>
+<p>Consider a file <code translate="no">TypeFromA.qml</code> with version <code translate="no">2.6</code> in module <code translate="no">A</code>:</p>
+<pre class="qml" translate="no">
+ import B 2.7
+
+ <span class="comment">// Exposes TypeFromB 2.7, no matter what version of A is imported</span>
+ <span class="type">TypeFromB</span> { }
+</pre>
+<p>Now consider a user of <code translate="no">TypeFromA</code>:</p>
+<pre class="qml" translate="no">
+ import A 2.6
+
+ <span class="comment">// This is TypeFromB 2.7.</span>
+ <span class="type">TypeFromA</span> { }
+</pre>
+<p>The user hopes to see version <code translate="no">2.6</code> but actually gets version <code translate="no">2.7</code> of the base class <code translate="no">TypeFromB</code>.</p>
+<p>Therefore, in order to be safe, you not only have to duplicate your QML files and give them new versions when you add properties yourself, but also when you bump versions of modules you import.</p>
+<h3 id="qualified-access-does-not-honor-versioning">Qualified access does not honor versioning</h3>
+<p>Versioning only affects unqualified access to members of a type or the type itself. In the example with <code translate="no">topLeftRadius</code>, if you write <code translate="no">this.topLeftRadius</code>, the property will be resolved if you're using Qt 6.7, even if you <code translate="no">import QtQuick 6.6</code>.</p>
+<h3 id="versions-and-revisions">Versions and revisions</h3>
+<p>With <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a>, and the two-argument variants of <a href="../qtcore/qobject.html#Q_REVISION" translate="no">Q_REVISION</a> and <a href="../qtcore/qobject.html#Q_PROPERTY" translate="no">Q_PROPERTY</a>'s <code translate="no">REVISION()</code>, you can only declare versions that are tightly coupled to the <a href="../qtcore/qmetaobject.html" translate="no">metaobject's</a> revision as exposed in <a href="../qtcore/qmetamethod.html#revision" translate="no">QMetaMethod::revision</a> and <a href="../qtcore/qmetaproperty.html#revision" translate="no">QMetaProperty::revision</a>. This means all the types in your type hierarchy have to follow the same versioning scheme. This includes any types provided by Qt itself that you inherit from.</p>
+<p>With <a href="qqmlengine.html#qmlRegisterType-1" translate="no">qmlRegisterType</a> and related functions you can register any mapping between metaobject revisions and type versions. You then need to use the one-argument forms of <a href="../qtcore/qobject.html#Q_REVISION" translate="no">Q_REVISION</a> and the <code translate="no">REVISION</code> attribute of <a href="../qtcore/qobject.html#Q_PROPERTY" translate="no">Q_PROPERTY</a>. However, this can become rather complex and confusing and is not recommended.</p>
+<h3 id="exporting-multiple-major-versions-from-the-same-module">Exporting multiple major versions from the same module</h3>
+<p><a href="qt-add-qml-module.html" translate="no">qt_add_qml_module</a> by default considers the major version given in its VERSION argument, even if the individual types declare other versions in their added specific version via <a href="cmake-source-file-property-qt-qml-source-versions.html" translate="no">QT_QML_SOURCE_VERSIONS</a> or <a href="../qtcore/qobject.html#Q_REVISION" translate="no">Q_REVISION</a>. If a module is available under more than one version, you also need to decide what versions the individual QML files are available under. To declare further major versions, you can use the <code translate="no">PAST_MAJOR_VERSIONS</code> option to <code translate="no">qt_add_qml_module</code> as well as the <code translate="no">QT_QML_SOURCE_VERSIONS</code> property on individual QML files.</p>
 <pre class="cpp" translate="no">
  set_source_files_properties(Thing.qml
      PROPERTIES
@@ -157,7 +274,7 @@
          everything.cpp everything.h
  )
 </pre>
-<p><code translate="no">MyModule</code> is available in major versions 1, 2, and 3. The maximum version available is 3.2&#x2e; You can import any version 1.x or 2.x with a positive x. For Thing.qml and OtherThing.qml we have added explicit version information. Thing.qml is available from version 1.4, and OtherThing.qml is available from version 2.2&#x2e; You have to specify the later versions, too, in each <code translate="no">set_source_files_properties()</code> because you may remove QML files from a module when bumping the major version. There is no explicit version information for OneMoreThing.qml. This means that OneMoreThing.qml is available in all major versions, from minor version 0.</p>
+<p><code translate="no">MyModule</code> is available in major versions 1, 2, and 3. The maximum version available is 3.2. You can import any version 1.x or 2.x with a positive x. For Thing.qml and OtherThing.qml we have added explicit version information. Thing.qml is available from version 1.4, and OtherThing.qml is available from version 2.2. You have to specify the later versions, too, in each <code translate="no">set_source_files_properties()</code> because you may remove QML files from a module when bumping the major version. There is no explicit version information for OneMoreThing.qml. This means that OneMoreThing.qml is available in all major versions, from minor version 0.</p>
 <p>With this setup, the generated registration code will register the module <code translate="no">versions</code> using <a href="qqmlengine.html#qmlRegisterModule" translate="no">qmlRegisterModule</a>() for each of the major versions. This way, all versions can be imported.</p>
 <h2 id="custom-directory-layouts">Custom Directory Layouts</h2>
 <p>The easiest way to structure QML modules is to keep them in directories named by their URIs. For example, a module My.Extra.Module would live in a directory My/Extra/Module relative to the application that uses it. This way, they can easily be found at run time and by any tools.</p>
@@ -226,7 +343,7 @@
 <pre class="cpp plain" translate="no">
  class MyImageProvider : public QQuickImageProvider
  {
-     [..&#x2e;]
+     [...]
  };
 </pre>
 <p>In plugin.cpp you can then define the <a href="qqmlengineextensionplugin.html" translate="no">QQmlEngineExtensionPlugin</a>:</p>
@@ -257,9 +374,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

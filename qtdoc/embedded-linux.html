@@ -28,7 +28,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Qt for Embedded Linux</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -41,6 +41,7 @@
 <ul>
 <li class="level1"><a href="#platform-plugins-for-embedded-linux-devices">Platform plugins for embedded Linux devices</a></li>
 <li class="level2"><a href="#eglfs">EGLFS</a></li>
+<li class="level2"><a href="#vkkhrdisplay">VkKhrDisplay</a></li>
 <li class="level2"><a href="#linuxfb">LinuxFB</a></li>
 <li class="level1"><a href="#display-output">Display output</a></li>
 <li class="level2"><a href="#eglfs-with-the-eglfs-kms-backend">EGLFS with the eglfs_kms backend</a></li>
@@ -70,7 +71,7 @@
 <!-- $$$embedded-linux.html-description -->
 <div class="descr" id="details">
 <h2 id="platform-plugins-for-embedded-linux-devices">Platform plugins for embedded Linux devices</h2>
-<p>On Embedded Linux systems, there are multiple platform plugins that you can use: EGLFS, LinuxFB, DirectFB, or Wayland. However, the availability of these plugins depend on how Qt is configured.</p>
+<p>On Embedded Linux systems, there are multiple platform plugins that you can use: EGLFS, VkKhrDisplay, LinuxFB, or Wayland. The availability of these plugins depends on how Qt is configured. Of these, Wayland requires the presence of a compositor, and provides a full windowing system supporting multiple windows, similarly to X11 or Windows. The others work without any windowing system, meaning the Qt application is in full control of the rendering and output. They typically support one fullscreen Qt &quot;window&quot; per screen.</p>
 <p>EGLFS is the default plugin on many boards. If it's not suitable, use the <code translate="no">QT_QPA_PLATFORM</code> environment variable to request another plugin. Alternatively, for quick tests, use the <code translate="no">-platform</code> command-line argument with the same syntax.</p>
 <div class="admonition note">
 <p><b>Note: </b>As of Qt 5.0, Qt no longer has its own window system (QWS) implementation. For single-process use cases, the <a href="../qtplatformintegration/qpa.html" translate="no">Qt Platform Abstraction</a> is a superior solution; multi-process use cases are supported through <a href="../qtwaylandcompositor/qtwaylandcompositor-index.html" translate="no">Wayland</a>.</p>
@@ -86,7 +87,7 @@
 <p>In addition to Qt Quick and native OpenGL applications, EGLFS supports software-rendered windows, like <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>, too. For <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>, the widgets' contents are rendered using the CPU into images, which are then uploaded into textures and composited by the plugin.</p>
 <p>EGLFS forces the first top-level window - either a <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> or a <a href="../qtquick/qquickview.html" translate="no">QQuickView</a> - to become fullscreen. This window is also chosen to be the <i>root</i> widget window into which all other top-level widgets are composited. For example, dialogs, popup menus, or combo boxes. This behavior is necessary because with EGLFS there is always exactly one native window and one EGL window surface; these belong to the widget or window that is created first. This approach works well when there is a main window that exists for the application's lifetime and all other widgets are either not top-levels or are created afterward, once the main window is shown.</p>
 <p>There are further restrictions for OpenGL-based windows. EGLFS supports a single fullscreen GL window (as of Qt 5.3), like OpenGL-based <a href="../qtgui/qwindow.html" translate="no">QWindow</a>, a <a href="../qtquick/qquickview.html" translate="no">QQuickView</a>, or a <a href="../qtopengl/qopenglwidget.html" translate="no">QOpenGLWidget</a>. Opening additional OpenGL windows or mixing such windows with <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>-based content isn't supported; Qt terminates the application with an error message.</p>
-<p>Furthermore, APIs designed for desktop platforms or environments with a windowing system, such as <a href="../qtgui/dnd.html#drag-and-drop" translate="no">Drag and Drop</a>, are not supported on EGLFS.</p>
+<p>Furthermore, APIs designed for desktop platforms or environments with a windowing system, such as <a href="../qtgui/dnd.html" translate="no">Drag and Drop</a>, are not supported on EGLFS.</p>
 <h4 id="environment-variables-used-by-eglfs">Environment variables used by EGLFS</h4>
 <p>If necessary, <code translate="no">eglfs</code> can be configured using the following environment variables:</p>
 <div class="table"><table class="generic" width="100%">
@@ -130,20 +131,38 @@
 <p>As an example, when targeting the Raspberry Pi with the Broadcom proprietary graphics drivers, the output should contain something like the following:</p>
 <pre class="cpp plain" translate="no">
  QPA backends:
- EGLFS ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e; yes
+ EGLFS ................................ yes
  EGLFS details:
-   EGLFS i.Mx6 ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e; no
-   EGLFS i.Mx6 Wayland ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e; no
-   EGLFS EGLDevice ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e; no
-   EGLFS GBM ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e; no
-   EGLFS Mali ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e; no
-   EGLFS Raspberry Pi ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e; yes
-   EGL on X11 ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e; no
+   EGLFS i.Mx6 ........................ no
+   EGLFS i.Mx6 Wayland ................ no
+   EGLFS EGLDevice .................... no
+   EGLFS GBM .......................... no
+   EGLFS Mali ......................... no
+   EGLFS Raspberry Pi ................. yes
+   EGL on X11 ......................... no
 </pre>
 <p>If this is not the case, it's not advisable to proceed further with the build since accelerated graphics won't be functional without the Raspberry Pi-specific backend, even if the rest of Qt compiles successfully.</p>
+<h3 id="vkkhrdisplay">VkKhrDisplay</h3>
+<p>While EGLFS only supports OpenGL (ES), VkKhrDisplay is an <b>experimental</b> platform plugin that supports rendering with the <a href="https://www.vulkan.org/" translate="no">Vulkan</a> API. To enumerate displays and set up rendering, it relies on the <a href="https://registry.khronos.org/vulkan/specs/1.3-extensions/man/html/VK_KHR_display.html" translate="no">VK_KHR_display</a> family of extensions. Note that it is not given that a Vulkan implementation within a graphics stack supports this functionality. Currently this platform plugin has been verified and tested with <a href="https://docs.mesa3d.org/drivers/v3d.html" translate="no">Mesa and V3DV</a> running on a Raspberry Pi 4.</p>
+<p>This platform plugin does not support OpenGL or any software rendering. Attempting to show a <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>-based user interface will therefore fail. The only supported <a href="../qtgui/qwindow.html" translate="no">QWindow</a> surface type is <a href="../qtgui/qsurface.html#SurfaceType-enum" translate="no">QSurface::VulkanSurface</a>. For Qt Quick applications this implies that Vulkan-based rendering must be enforced either by setting <code translate="no">QSG_RHI_BACKEND=vulkan</code> in the environment, or by calling QQuickWindow::setGraphicsApi(QSGRendererInterface::Vulkan); early on before creating a <a href="../qtquick/qquickwindow.html" translate="no">QQuickWindow</a> or <a href="../qtquick/qquickview.html" translate="no">QQuickView</a>.</p>
+<p>To use this platform plugin, run the application with <code translate="no">-platform vkkhrdisplay</code> or set <code translate="no">QT_QPA_PLATFORM</code> to <code translate="no">vkkhrdisplay</code>. The plugin is built only when Qt is configured with Vulkan support.</p>
+<p>Advanced EGLFS-style configuration (e.g. the JSON configuration file) or outputting to multiple screens from the same application are not currently implemented. Applications can however choose the screen to use via environment variables.</p>
+<p>To determine the index values, check the logs printed on the debug output by the plugin. Currently these logs are uncategorized (printed via <a href="../qtcore/qtlogging.html#qDebug" translate="no">qDebug</a>) since inspecting them is essential in most cases, in order to ensure the plugin picks the appropriate display and mode.</p>
+<ul>
+<li><code translate="no">QT_VK_DISPLAY_INDEX</code> - When set, the display with the given index is used.</li>
+<li><code translate="no">QT_VK_MODE_INDEX</code> - When set, the mode with the given index is used.</li>
+<li><code translate="no">QT_VK_PHYSICAL_DEVICE_INDEX</code> - When set, the Vulkan physical device with the given index is used. This will not be relevant in most cases on embedded. Note that this variable is also used by the rest of the Qt graphics stack.</li>
+</ul>
+<p>Input (keyboard, mouse, touch) handling is similar to EGLFS, supporting <code translate="no">evdev</code>, <code translate="no">libinput</code>, and <code translate="no">tslib</code>. There is no mouse cursor rendering implemented, however. This is because there is no concept of a hardware cursor in this environment, and rendering a cursor with Vulkan within the platform plugin, similarly to what EGLFS does with OpenGL, is problematic for multiple reasons. Therefore this platform plugin is not well suited for mouse-based input at the moment.</p>
+<p>The related environment variables are:</p>
+<ul>
+<li><code translate="no">QT_QPA_DISABLE_INPUT</code> - Disables keyboard/mouse/touch input.</li>
+<li><code translate="no">QT_QPA_NO_LIBINPUT</code> - Prefers the evdev-based input handlers even when <a href="https://www.freedesktop.org/wiki/Software/libinput/" translate="no">libinput</a> is available.</li>
+<li><code translate="no">QT_QPA_TSLIB</code> - Requests using the legacy <a href="http://www.tslib.org/" translate="no">tslib</a> library.</li>
+</ul>
 <h3 id="linuxfb">LinuxFB</h3>
-<p>This plugin writes directly to the framebuffer via Linux's fbdev subsystem. Only software-rendered content is supported. Note that on some setups the display performance is expected to be limited.</p>
-<p>However, since fbdev is being deprecated in the Linux kernel, the DRM dumb buffer support is also available. To use it, set the <code translate="no">QT_QPA_FB_DRM</code> environment variable to a non-zero value. When set, provided that dumb buffers are supported by your system, legacy framebuffer devices like <code translate="no">/dev/fb0</code> won't be accessed. Instead, the rendering is set up via the DRM APIs, similar to the <code translate="no">eglfs_kms</code> backend in EGLFS. The output is double-buffered and page flipped, providing proper vsync for software-rendered content as well.</p>
+<p>This plugin writes directly to the framebuffer via Linux's fbdev subsystem. Only software-rendered content is supported. Note that on some setups the display performance is expected to be limited. To use Qt Quick applications with this platform plugin, the <code translate="no">software</code> scenegraph backend must be used, either by setting <code translate="no">QT_QUICK_BACKEND=software</code> in the environment, or by calling <a href="../qtquick/qquickwindow.html#setGraphicsApi" translate="no">setGraphicsApi</a>() with <a href="../qtquick/qsgrendererinterface.html#GraphicsApi-enum" translate="no">QSGRendererInterface::Software</a>. <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> applications, or <a href="../qtgui/qwindow.html" translate="no">QWindow</a> with a surface type of <a href="../qtgui/qsurface.html#SurfaceType-enum" translate="no">QSurface::RasterSurface</a>, are supported, but this does not include special widgets such as <a href="../qtopengl/qopenglwidget.html" translate="no">QOpenGLWidget</a>.</p>
+<p>As fbdev is being deprecated in the Linux kernel, DRM dumb buffer support is also available. To use it, set the <code translate="no">QT_QPA_FB_DRM</code> environment variable to a non-zero value. When set, provided that dumb buffers are supported by your system, legacy framebuffer devices like <code translate="no">/dev/fb0</code> won't be accessed. Instead, the rendering is set up via the DRM APIs, similar to the <code translate="no">eglfs_kms</code> backend in EGLFS. The output is double-buffered and page flipped, providing proper vsync for software-rendered content as well.</p>
 <div class="admonition note">
 <p><b>Note: </b>When dumb buffers are in use, none of the options described below are applicable since properties like physical and logical screen sizes are all queried automatically.</p>
 </div>
@@ -225,9 +244,9 @@
 <p>When <code translate="no">virtualIndex</code> is not sufficient, the <code translate="no">virtualPos</code> property can be used to explicitly specify the top-left position of the screen in question. Taking the previous example and assuming a resolution of 1080p for HDMI1, the following code snippet places a second HDMI-based screen below the first one:</p>
 <pre class="cpp plain" translate="no">
  {
-    ..&#x2e;
+    ...
    &quot;outputs&quot;: [
-     ..&#x2e;
+     ...
      {
        &quot;name&quot;: &quot;HDMI2&quot;,
        &quot;virtualPos&quot;: &quot;0, 1080&quot;
@@ -435,9 +454,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

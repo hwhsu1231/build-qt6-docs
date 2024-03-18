@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qt_target_qml_sources.qdoc -->
   <meta name="description" content="Add qml files and resources to an existing QML module target.">
-  <title>qt_target_qml_sources | Qt QML 6.6.0</title>
+  <title>qt_target_qml_sources | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li>qt_target_qml_sources</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -50,13 +50,13 @@
 <h1 class="title">qt_target_qml_sources</h1>
 <!-- $$$qt-target-qml-sources.html-description -->
 <div class="descr" id="details">
-<span id="qt6-target-qml-sources"></span><p>This command was introduced in Qt 6.2&#x2e;</p>
+<span id="qt6-target-qml-sources"></span><p>This command was introduced in Qt 6.2.</p>
 <h2 id="synopsis">Synopsis</h2>
 <pre class="cpp plain" translate="no">
  qt_target_qml_sources(
      target
-     [QML_FILES ..&#x2e;]
-     [RESOURCES ..&#x2e;]
+     [QML_FILES ...]
+     [RESOURCES ...]
      [PREFIX resource_path]
      [OUTPUT_TARGETS out_targets_var]
      [NO_LINT]
@@ -106,7 +106,7 @@
 <p><code translate="no">QT_QML_SKIP_QMLLINT</code> can be set to <code translate="no">TRUE</code> on a source file to prevent it from being included in the <a href="qt-add-qml-module.html#qmllint-auto" translate="no">automatic qmllint processing</a>. By default, all <code translate="no">.qml</code> files will be included in the target's lint run, but this option can be used to exclude specific files.</p>
 <p><code translate="no">QT_QML_SKIP_CACHEGEN</code> does a similar thing, preventing a source file from being compiled to byte code when this property is set to <code translate="no">TRUE</code>. Note that the file will still be added to the <code translate="no">target</code> as a resource in uncompiled form (see <a href="qt-add-qml-module.html#qmlcachegen-auto" translate="no">Caching compiled QML sources</a>).</p>
 <p>Set the <code translate="no">QT_QML_SKIP_QMLDIR_ENTRY</code> source file property to <code translate="no">TRUE</code> to prevent that <code translate="no">.qml</code> file from being added as a type to the QML module's typeinfo file (see <a href="qt-add-qml-module.html#qmldir-autogeneration" translate="no">Auto-generating <code translate="no">qmldir</code> and typeinfo files</a>). This would normally only be used for a file that does not expose a public type, such as a private JS file.</p>
-<p>By default, when <a href="qt-add-qml-module.html#qmldir-autogeneration" translate="no">generating the <code translate="no">qmldir</code> file</a>, a single type entry will be generated for each <code translate="no">.qml</code> file that provides a type. It will be given a version number <code translate="no">X.0</code> where <code translate="no">X</code> is the major version of the QML module. If the QML module has any <code translate="no">PAST_MAJOR_VERSIONS</code> set, the same pattern will be applied to those too, appending <code translate="no">X.0</code> for each past major version <code translate="no">X</code>. For situations where a file needs to provide type entries for a different set of versions instead (e.g&#x2e; it was first added in a minor patch version after the <code translate="no">.0</code> release), specify those versions in the source file's <code translate="no">QT_QML_SOURCE_VERSIONS</code> property. One type entry will be created for each version.</p>
+<p>By default, when <a href="qt-add-qml-module.html#qmldir-autogeneration" translate="no">generating the <code translate="no">qmldir</code> file</a>, a single type entry will be generated for each <code translate="no">.qml</code> file that provides a type. It will be given a version number <code translate="no">X.0</code> where <code translate="no">X</code> is the major version of the QML module. If the QML module has any <code translate="no">PAST_MAJOR_VERSIONS</code> set, the same pattern will be applied to those too, appending <code translate="no">X.0</code> for each past major version <code translate="no">X</code>. For situations where a file needs to provide type entries for a different set of versions instead (e.g. it was first added in a minor patch version after the <code translate="no">.0</code> release), specify those versions in the source file's <code translate="no">QT_QML_SOURCE_VERSIONS</code> property. One type entry will be created for each version.</p>
 <p>If the type that a <code translate="no">.qml</code> file provides is a singleton, set its <code translate="no">QT_QML_SINGLETON_TYPE</code> property to <code translate="no">TRUE</code>. Similarly, the file's <code translate="no">QT_QML_INTERNAL_TYPE</code> source property can be set to <code translate="no">TRUE</code> to indicate that the type it provides is an internal one. The name of the type itself can also be overridden using the <code translate="no">QT_QML_SOURCE_TYPENAME</code> property. All three of these will be reflected in the file's type entries in the <a href="qt-add-qml-module.html#qmldir-autogeneration" translate="no">generated <code translate="no">qmldir</code> file</a>.</p>
 <span id="qt-resource-alias"></span><p>All files listed with <code translate="no">QML_FILES</code> or <code translate="no">RESOURCES</code> will be added to the <code translate="no">target</code>'s resources. Their location in the resources consists of a base point and a relative path. The base point defaults to the concatenation of the QML module's resource prefix and its target path, but these can be overridden with the <a href="qt-target-qml-sources.html#prefix" translate="no">PREFIX</a> argument. The relative path will default to the path of the file relative to the <code translate="no">target</code>'s <code translate="no">SOURCE_DIR</code> target property. This relative path can be overridden by setting the <code translate="no">QT_RESOURCE_ALIAS</code> property on the source file. This is commonly used to collect files from different directories and have them appear in the resources under a common location.</p>
 <span id="qt-target-qml-sources-example"></span><pre class="cpp" translate="no">
@@ -180,9 +180,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

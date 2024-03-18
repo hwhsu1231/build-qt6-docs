@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qquickwindow.cpp -->
   <meta name="description" content="Creates a new top-level window.">
-  <title>Window QML Type | Qt Quick 6.6.0</title>
+  <title>Window QML Type | Qt Quick 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtquick-index.html" translate="no">Qt Quick</a></li>
 <li><a href="qtquick-qmlmodule.html" translate="no">QML Types</a></li>
 <li>Window</li>
-<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -117,7 +117,8 @@
 <!-- $$$Window-description -->
 <h2 id="details">Detailed Description</h2>
 <p>The Window object creates a new top-level window for a Qt Quick scene. It automatically sets up the window for use with <code translate="no">QtQuick</code> graphical types.</p>
-<p>A Window can be declared inside an Item or inside another Window; in that case the inner Window will automatically become &quot;transient for&quot; the outer Window: that is, most platforms will show it centered upon the outer window by default, and there may be other platform-dependent behaviors, depending also on the <a href="qml-qtquick-window.html#flags-prop" translate="no">flags</a>. If the nested window is intended to be a dialog in your application, you should also set <a href="qml-qtquick-window.html#flags-prop" translate="no">flags</a> to Qt.Dialog, because some window managers will not provide the centering behavior without that flag. You can also declare multiple windows inside a top-level <a href="../qtqml/qml-qtqml-qtobject.html" translate="no">QtObject</a>, in which case the windows will have no transient relationship.</p>
+<p>A Window can be declared inside an Item or inside another Window, in which case the inner Window will automatically become &quot;transient for&quot; the outer Window, with the outer Window as its <a href="qml-qtquick-window.html#transientParent-prop" translate="no">transientParent</a>. Most platforms will show the Window centered upon the outer window in this case, and there may be other platform-dependent behaviors, depending also on the <a href="qml-qtquick-window.html#flags-prop" translate="no">flags</a>. If the nested window is intended to be a dialog in your application, you should also set <a href="qml-qtquick-window.html#flags-prop" translate="no">flags</a> to <code translate="no">Qt.Dialog</code>, because some window managers will not provide the centering behavior without that flag.</p>
+<p>You can also declare multiple windows inside a top-level <a href="../qtqml/qml-qtqml-qtobject.html" translate="no">QtObject</a>, in which case the windows will have no transient relationship.</p>
 <p>Alternatively you can set or bind <a href="qml-qtquick-window.html#x-prop" translate="no">x</a> and <a href="qml-qtquick-window.html#y-prop" translate="no">y</a> to position the Window explicitly on the screen.</p>
 <p>When the user attempts to close a window, the <a href="qml-qtquick-window.html#closing-signal" translate="no">closing</a> signal will be emitted. You can force the window to stay open (for example to prompt the user to save changes) by writing an <code translate="no">onClosing</code> handler that sets <code translate="no">close.accepted = false</code> unless it's safe to close the window (for example, because there are no more unsaved changes).</p>
 <pre class="cpp" translate="no">
@@ -152,6 +153,9 @@
 </table></div></div>
 </div><div class="qmldoc"><p>Defines the window's position and size.</p>
 <p>The (x,y) position is relative to the <a href="qml-qtquick-screen.html" translate="no">Screen</a> if there is only one, or to the virtual desktop (arrangement of multiple screens).</p>
+<div class="admonition note">
+<p><b>Note: </b>Not all windowing systems support setting or querying top level window positions. On such a system, programmatically moving windows may not have any effect, and artificial values may be returned for the current positions, such as <code translate="no">QPoint(0, 0)</code>.</p>
+</div>
 <pre class="qml" translate="no">
  <span class="type"><a href="qml-qtquick-window.html" translate="no">Window</a></span> { <span class="name">x</span>: <span class="number">100</span>; <span class="name">y</span>: <span class="number">100</span>; <span class="name">width</span>: <span class="number">100</span>; <span class="name">height</span>: <span class="number">100</span> }
 </pre>
@@ -355,7 +359,7 @@
 <div class="qmldoc"><p>The opacity of the window.</p>
 <p>If the windowing system supports window opacity, this can be used to fade the window in and out, or to make it semitransparent.</p>
 <p>A value of 1.0 or above is treated as fully opaque, whereas a value of 0.0 or below is treated as fully transparent. Values inbetween represent varying levels of translucency between the two extremes.</p>
-<p>The default value is 1.0&#x2e;</p>
+<p>The default value is 1.0.</p>
 </div></div><!-- @@@opacity -->
 <br/>
 <!-- $$$palette -->
@@ -438,8 +442,8 @@
 </table></div></div>
 <div class="qmldoc"><p>The window for which this window is a transient pop-up.</p>
 <p>This is a hint to the window manager that this window is a dialog or pop-up on behalf of the transient parent. It usually means that the transient window will be centered over its transient parent when it is initially shown, that minimizing the parent window will also minimize the transient window, and so on; however results vary somewhat from platform to platform.</p>
-<p>Normally if you declare a Window inside an Item or inside another Window, this relationship is deduced automatically. In that case, if you declare this window's <a href="qml-qtquick-window.html#visible-prop" translate="no">visible</a> property <code translate="no">true</code>, it will not actually be shown until the <code translate="no">transientParent</code> window is shown.</p>
-<p>However if you set this property, then Qt Quick will no longer wait until the <code translate="no">transientParent</code> window is shown before showing this window. If you want to be able to show a transient window independently of the &quot;parent&quot; Item or Window within which it was declared, you can remove that relationship by setting <code translate="no">transientParent</code> to <code translate="no">null</code>:</p>
+<p>Declaring a Window inside an Item or inside another Window will automatically set up a transient parent relationship to the containing Item or Window, unless the transientParent property is explicitly set. This applies when creating Window items via Qt.createComponent or Qt.createQmlObject as well, if an Item or Window is passed as the <code translate="no">parent</code> argument.</p>
+<p>A Window with a transient parent will not be shown until its transient parent is shown, even if the <a href="qml-qtquick-window.html#visible-prop" translate="no">visible</a> property is <code translate="no">true</code>. Setting the transientParent to <code translate="no">null</code> will override this behavior:</p>
 <pre class="qml" translate="no">
  <span class="type"><a href="qml-qtquick-window.html" translate="no">Window</a></span> {
      <span class="comment">// visible is false by default</span>
@@ -501,6 +505,7 @@
 </table></div></div>
 <div class="qmldoc"><p>Whether the window is visible on the screen.</p>
 <p>Setting visible to false is the same as setting <a href="qml-qtquick-window.html#visibility-attached-prop" translate="no">visibility</a> to <a href="../qtgui/qwindow.html#Visibility-enum" translate="no">Hidden</a>.</p>
+<p>The default value is <code translate="no">false</code>, unless overridden by setting <a href="qml-qtquick-window.html#visibility-attached-prop" translate="no">visibility</a>.</p>
 <p><b>See also </b><a href="qml-qtquick-window.html#visibility-attached-prop" translate="no">visibility</a>.</p>
 </div></div><!-- @@@visible -->
 <br/>
@@ -690,7 +695,7 @@
 <td class="tblQmlFuncNode"><p>
 <span class="name">requestActivate</span>()</p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>Requests the window to be activated, i.e&#x2e; receive keyboard focus.</p>
+<div class="qmldoc"><p>Requests the window to be activated, i.e. receive keyboard focus.</p>
 </div></div><!-- @@@requestActivate -->
 <br/>
 <!-- $$$show[overload1]$$$show -->
@@ -745,7 +750,7 @@
 <td class="tblQmlFuncNode"><p>
 <span class="name">showNormal</span>()</p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>Shows the window as normal, i.e&#x2e; neither maximized, minimized, nor fullscreen.</p>
+<div class="qmldoc"><p>Shows the window as normal, i.e. neither maximized, minimized, nor fullscreen.</p>
 <p>Equivalent to setting <a href="qml-qtquick-window.html#visibility-attached-prop" translate="no">visibility</a> to <a href="../qtgui/qwindow.html#Visibility-enum" translate="no">Windowed</a>.</p>
 </div></div><!-- @@@showNormal -->
 <br/>
@@ -756,9 +761,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

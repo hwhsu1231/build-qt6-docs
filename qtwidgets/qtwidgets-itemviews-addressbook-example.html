@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- addressbook.qdoc -->
   <meta name="description" content="The address book example shows how to use proxy models to display different views onto data from a single model.">
-  <title>Address Book | Qt Widgets 6.6.0</title>
+  <title>Address Book | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li><a href="examples-itemviews.html" translate="no">Item Views Examples</a></li>
 <li>Address Book</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -62,7 +62,7 @@
 <!-- @@@itemviews/addressbook -->
 <!-- $$$itemviews/addressbook-description -->
 <div class="descr" id="details">
-<p class="centerAlign"><img src="images/addressbook-example.png" alt="Screenshot of the Address Book example" /></p><p>This example provides an address book that allows contacts to be grouped alphabetically into 9 groups: ABC, DEF, GHI, ..&#x2e; , VW, ..&#x2e;, XYZ. This is achieved by using multiple views on the same model, each of which is filtered using an instance of the <a href="../qtcore/qsortfilterproxymodel.html" translate="no">QSortFilterProxyModel</a> class.</p>
+<p class="centerAlign"><img src="images/addressbook-example.png" alt="Screenshot of the Address Book example" /></p><p>This example provides an address book that allows contacts to be grouped alphabetically into 9 groups: ABC, DEF, GHI, ... , VW, ..., XYZ. This is achieved by using multiple views on the same model, each of which is filtered using an instance of the <a href="../qtcore/qsortfilterproxymodel.html" translate="no">QSortFilterProxyModel</a> class.</p>
 <h4 id="overview">Overview</h4>
 <p>The address book contains 5 classes: <code translate="no">MainWindow</code>, <code translate="no">AddressWidget</code>, <code translate="no">TableModel</code>, <code translate="no">NewAddressTab</code> and <code translate="no">AddDialog</code>. The <code translate="no">MainWindow</code> class uses <code translate="no">AddressWidget</code> as its central widget and provides <b translate="no">File</b> and <b translate="no">Tools</b> menus.</p>
 <p class="centerAlign"><img src="images/addressbook-classes.png" alt="Diagram for Address Book example" /></p><p>The <code translate="no">AddressWidget</code> class is a <a href="qtabwidget.html" translate="no">QTabWidget</a> subclass that is used to manipulate the 10 tabs displayed in the example: the 9 alphabet group tabs and an instance of <code translate="no">NewAddressTab</code>. The <code translate="no">NewAddressTab</code> class is a subclass of <a href="qwidget.html" translate="no">QWidget</a> that is only used whenever the address book is empty, prompting the user to add some contacts. <code translate="no">AddressWidget</code> also interacts with an instance of <code translate="no">TableModel</code> to add, edit and remove entries to the address book.</p>
@@ -346,10 +346,10 @@
      }
  }
 </pre>
-<p>The <a href="../qtcore/qitemselectionmodel.html" translate="no">QItemSelectionModel</a> class provides a <a href="../qtcore/qitemselectionmodel.html#selectionChanged" translate="no">selectionChanged</a> signal that is connected to <code translate="no">AddressWidget</code>'s <code translate="no">selectionChanged()</code> signal. We also connect <a href="qtabwidget.html#currentChanged" translate="no">QTabWidget::currentChanged</a>() signal to the lambda expression which emits <code translate="no">AddressWidget</code>'s <code translate="no">selectionChanged()</code> as well. These connections are necessary to enable the <b translate="no">Edit Entry..&#x2e;</b> and <b translate="no">Remove Entry</b> actions in <code translate="no">MainWindow</code>'s Tools menu. It is further explained in <code translate="no">MainWindow</code>'s implementation.</p>
+<p>The <a href="../qtcore/qitemselectionmodel.html" translate="no">QItemSelectionModel</a> class provides a <a href="../qtcore/qitemselectionmodel.html#selectionChanged" translate="no">selectionChanged</a> signal that is connected to <code translate="no">AddressWidget</code>'s <code translate="no">selectionChanged()</code> signal. We also connect <a href="qtabwidget.html#currentChanged" translate="no">QTabWidget::currentChanged</a>() signal to the lambda expression which emits <code translate="no">AddressWidget</code>'s <code translate="no">selectionChanged()</code> as well. These connections are necessary to enable the <b translate="no">Edit Entry...</b> and <b translate="no">Remove Entry</b> actions in <code translate="no">MainWindow</code>'s Tools menu. It is further explained in <code translate="no">MainWindow</code>'s implementation.</p>
 <p>Each table view in the address book is added as a tab to the <a href="qtabwidget.html" translate="no">QTabWidget</a> with the relevant label, obtained from the <a href="../qtcore/qstringlist.html" translate="no">QStringList</a> of groups.</p>
 <p class="centerAlign"><img src="images/addressbook-signals.png" alt="Signals and Slots Connections" /></p><p>We provide two <code translate="no">addEntry()</code> functions: One which is intended to be used to accept user input, and the other which performs the actual task of adding new entries to the address book. We divide the responsibility of adding entries into two parts to allow <code translate="no">newAddressTab</code> to insert data without having to popup a dialog.</p>
-<p>The first <code translate="no">addEntry()</code> function is a slot connected to the <code translate="no">MainWindow</code>'s <b translate="no">Add Entry..&#x2e;</b> action. This function creates an <code translate="no">AddDialog</code> object and then calls the second <code translate="no">addEntry()</code> function to actually add the contact to <code translate="no">table</code>.</p>
+<p>The first <code translate="no">addEntry()</code> function is a slot connected to the <code translate="no">MainWindow</code>'s <b translate="no">Add Entry...</b> action. This function creates an <code translate="no">AddDialog</code> object and then calls the second <code translate="no">addEntry()</code> function to actually add the contact to <code translate="no">table</code>.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> AddressWidget<span class="operator">::</span>showAddEntryDialog()
  {
@@ -628,7 +628,7 @@
      <span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span> <span class="operator">*</span>removeAct;
  };
 </pre>
-<p>The <code translate="no">MainWindow</code> class uses an <code translate="no">AddressWidget</code> as its central widget and provides the File menu with <b translate="no">Open</b>, <b translate="no">Close</b> and <b translate="no">Exit</b> actions, as well as the <b translate="no">Tools</b> menu with <b translate="no">Add Entry..&#x2e;</b>, <b translate="no">Edit Entry..&#x2e;</b> and <b translate="no">Remove Entry</b> actions.</p>
+<p>The <code translate="no">MainWindow</code> class uses an <code translate="no">AddressWidget</code> as its central widget and provides the File menu with <b translate="no">Open</b>, <b translate="no">Close</b> and <b translate="no">Exit</b> actions, as well as the <b translate="no">Tools</b> menu with <b translate="no">Add Entry...</b>, <b translate="no">Edit Entry...</b> and <b translate="no">Remove Entry</b> actions.</p>
 <h4 id="mainwindow-class-implementation">MainWindow Class Implementation</h4>
 <p>The constructor for <code translate="no">MainWindow</code> instantiates AddressWidget, sets it as its central widget and calls the <code translate="no">createMenus()</code> function.</p>
 <pre class="cpp" translate="no">
@@ -641,7 +641,7 @@
      setWindowTitle(tr(<span class="string">&quot;Address Book&quot;</span>));
  }
 </pre>
-<p>The <code translate="no">createMenus()</code> function sets up the <b translate="no">File</b> and <b translate="no">Tools</b> menus, connecting the actions to their respective slots. Both the <b translate="no">Edit Entry..&#x2e;</b> and <b translate="no">Remove Entry</b> actions are disabled by default as such actions cannot be carried out on an empty address book. They are only enabled when one or more contacts are added.</p>
+<p>The <code translate="no">createMenus()</code> function sets up the <b translate="no">File</b> and <b translate="no">Tools</b> menus, connecting the actions to their respective slots. Both the <b translate="no">Edit Entry...</b> and <b translate="no">Remove Entry</b> actions are disabled by default as such actions cannot be carried out on an empty address book. They are only enabled when one or more contacts are added.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> MainWindow<span class="operator">::</span>createMenus()
  {
@@ -683,7 +683,7 @@
      addressWidget<span class="operator">-</span><span class="operator">&gt;</span>writeToFile();
  }
 </pre>
-<p>The <code translate="no">updateActions()</code> function enables and disables <b translate="no">Edit Entry..&#x2e;</b> and <b translate="no">Remove Entry</b> depending on the contents of the address book. If the address book is empty, these actions are disabled; otherwise, they are enabled. This function is a slot is connected to the <code translate="no">AddressWidget</code>'s <code translate="no">selectionChanged()</code> signal.</p>
+<p>The <code translate="no">updateActions()</code> function enables and disables <b translate="no">Edit Entry...</b> and <b translate="no">Remove Entry</b> depending on the contents of the address book. If the address book is empty, these actions are disabled; otherwise, they are enabled. This function is a slot is connected to the <code translate="no">AddressWidget</code>'s <code translate="no">selectionChanged()</code> signal.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> MainWindow<span class="operator">::</span>updateActions(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qitemselection.html" translate="no">QItemSelection</a></span> <span class="operator">&amp;</span>selection)
  {
@@ -719,9 +719,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

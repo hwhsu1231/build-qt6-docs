@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qtexttospeech.cpp -->
   <meta name="description" content="The TextToSpeech type provides access to text-to-speech engines.">
-  <title>TextToSpeech QML Type | Qt TextToSpeech 6.6.0</title>
+  <title>TextToSpeech QML Type | Qt TextToSpeech 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qttexttospeech-index.html" translate="no">Qt TextToSpeech</a></li>
 <li><a href="qttexttospeech-qmlmodule.html" translate="no">QML Types</a></li>
 <li>TextToSpeech</li>
-<li id="buildversion"><a href="qttexttospeech-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qttexttospeech-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -71,7 +71,7 @@
 <h2 id="signals">Signals</h2>
 <ul>
 <li class="fn" translate="no"><b><a href="qml-qttexttospeech-texttospeech.html#aboutToSynthesize-signal" translate="no">aboutToSynthesize</a></b>(number <i>id</i>)</li>
-<li class="fn" translate="no">void <b><a href="qml-qttexttospeech-texttospeech.html#errorOccured-signal" translate="no">errorOccured</a></b>(enumeration <i>reason</i>, string <i>errorString</i>)</li>
+<li class="fn" translate="no">void <b><a href="qml-qttexttospeech-texttospeech.html#errorOccurred-signal" translate="no">errorOccurred</a></b>(enumeration <i>reason</i>, string <i>errorString</i>)</li>
 <li class="fn" translate="no"><b><a href="qml-qttexttospeech-texttospeech.html#sayingWord-signal" translate="no">sayingWord</a></b>(string <i>word</i>, int <i>id</i>, int <i>start</i>, int <i>length</i>)</li>
 </ul>
 <h2 id="methods">Methods</h2>
@@ -133,7 +133,7 @@
 <p>Alternatively, use <a href="qml-qttexttospeech-texttospeech.html#findVoices-method" translate="no">findVoices</a>() to get a list of matching voices, or use <a href="qml-qttexttospeech-texttospeech.html#availableVoices-method" translate="no">availableVoices</a>() to get the list of voices that support the current locale. Change the <a href="qml-qttexttospeech-texttospeech.html#locale-prop" translate="no">locale</a> property, using one of the <a href="qml-qttexttospeech-texttospeech.html#availableLocales-method" translate="no">availableLocales</a>() that is a good match for the language that the input text is in, and for the accent of the desired voice output. This will change the list of available voices on most platforms. Then use one of the available voices in the <a href="qml-qttexttospeech-texttospeech.html#voice-prop" translate="no">voice</a> property.</p>
 <p>Not every engine supports all features. Use the engineCapabilities() function to test which features are available, and adjust the usage of the type accordingly.</p>
 <div class="admonition note">
-<p><b>Note: </b>Which locales and voices the engine supports depends usually on the Operating System configuration. E.g&#x2e; on macOS, end users can install voices through the <i>Accessibility</i> panel in <i>System Preferences</i>.</p>
+<p><b>Note: </b>Which locales and voices the engine supports depends usually on the Operating System configuration. E.g. on macOS, end users can install voices through the <i>Accessibility</i> panel in <i>System Preferences</i>.</p>
 </div>
 <!-- @@@TextToSpeech -->
 <h2>Property Documentation</h2>
@@ -191,7 +191,7 @@
 <td class="tblQmlPropNode"><p>
 <span class="name">pitch</span> : <span class="type">double</span></p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>This property hold the voice pitch, ranging from -1.0 to 1.0&#x2e;</p>
+<div class="qmldoc"><p>This property hold the voice pitch, ranging from -1.0 to 1.0.</p>
 <p>The default of 0.0 is the normal speech pitch.</p>
 </div></div><!-- @@@pitch -->
 <br/>
@@ -202,7 +202,7 @@
 <td class="tblQmlPropNode"><p>
 <span class="name">rate</span> : <span class="type">double</span></p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>This property holds the current voice rate, ranging from -1.0 to 1.0&#x2e;</p>
+<div class="qmldoc"><p>This property holds the current voice rate, ranging from -1.0 to 1.0.</p>
 <p>The default of 0.0 is the normal speech flow.</p>
 </div></div><!-- @@@rate -->
 <br/>
@@ -215,7 +215,10 @@
 </table></div></div>
 <div class="qmldoc"><p>This property holds the current state of the speech synthesizer.</p>
 <pre class="qml" translate="no">
-         <span class="name">onStateChanged</span>: (<span class="keyword"></span>state) =&gt; {
+         <span class="name">onStateChanged</span>: <span class="name">updateStateLabel</span>(<span class="name">state</span>)
+
+         <span class="keyword">function </span><span class="name">updateStateLabel</span>(state)
+         {
              <span class="keyword">switch</span> (<span class="name">state</span>) {
                  <span class="keyword">case</span> <span class="name">TextToSpeech</span>.<span class="name">Ready</span>:
                      <span class="name">statusLabel</span>.<span class="name">text</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;Ready&quot;</span>)
@@ -254,7 +257,7 @@
 <td class="tblQmlPropNode"><p>
 <span class="name">volume</span> : <span class="type">double</span></p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>This property holds the current volume, ranging from 0.0 to 1.0&#x2e;</p>
+<div class="qmldoc"><p>This property holds the current volume, ranging from 0.0 to 1.0.</p>
 <p>The default value is the platform's default volume.</p>
 </div></div><!-- @@@volume -->
 <br/>
@@ -272,17 +275,17 @@
 <p><b>See also </b><a href="qml-qttexttospeech-texttospeech.html#enqueue-method" translate="no">enqueue</a>() and <a href="qml-qttexttospeech-texttospeech.html#voice-prop" translate="no">voice</a>.</p>
 </div></div><!-- @@@aboutToSynthesize -->
 <br/>
-<!-- $$$errorOccured[overload1]$$$errorOccuredenumerationstring -->
+<!-- $$$errorOccurred[overload1]$$$errorOccurredenumerationstring -->
 <div class="qmlitem"><div class="qmlproto" translate="no">
 <div class="table"><table class="qmlname">
-<tr valign="top" class="odd" id="errorOccured-signal">
+<tr valign="top" class="odd" id="errorOccurred-signal">
 <td class="tblQmlFuncNode"><p>
-<span class="type">void</span> <span class="name">errorOccured</span>(<span class="type">enumeration</span> <i>reason</i>, <span class="type">string</span> <i>errorString</i>)</p></td></tr>
+<span class="type">void</span> <span class="name">errorOccurred</span>(<span class="type">enumeration</span> <i>reason</i>, <span class="type">string</span> <i>errorString</i>)</p></td></tr>
 </table></div></div>
 <div class="qmldoc"><p>This signal is emitted after an error occurred and the <a href="qml-qttexttospeech-texttospeech.html#state-prop" translate="no">state</a> has been set to <code translate="no">TextToSpeech.Error</code>. The <i translate="no">reason</i> parameter specifies the type of error, and the <i translate="no">errorString</i> provides a human-readable error description.</p>
-<div class="admonition note"><p><b>Note: </b>The corresponding handler is <code translate="no">onErrorOccured</code>.</p>
+<div class="admonition note"><p><b>Note: </b>The corresponding handler is <code translate="no">onErrorOccurred</code>.</p>
 </div><p><b>See also </b><a href="qml-qttexttospeech-texttospeech.html#state-prop" translate="no">state</a>, <a href="qml-qttexttospeech-texttospeech.html#errorReason-method" translate="no">errorReason</a>(), and <a href="qml-qttexttospeech-texttospeech.html#errorString-method" translate="no">errorString</a>().</p>
-</div></div><!-- @@@errorOccured -->
+</div></div><!-- @@@errorOccurred -->
 <br/>
 <!-- $$$sayingWord[overload1]$$$sayingWordstringintintint -->
 <div class="qmlitem"><div class="qmlproto" translate="no">
@@ -463,9 +466,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

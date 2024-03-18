@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
 <!-- waterpump-qml.qdoc -->
-  <meta name="description" content="Interacting with an OPC UA server to build a QML-based HMI for a simple machine.">
-  <title>Qt Quick Waterpump Example | Qt OPC UA 6.6.0</title>
+  <meta name="description" content="Interacting with an OPC UA server to build a QML-based HMI for a simple water pump machine.">
+  <title>Qt Quick Water Pump | Qt OPC UA 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,24 +29,29 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtopcua-index.html" translate="no">Qt OPC UA</a></li>
 <li><a href="qtopcua-examples.html" translate="no">Qt OPC UA Examples</a></li>
-<li>Qt Quick Waterpump Example</li>
-<li id="buildversion"><a href="qtopcua-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li>Qt Quick Water Pump</li>
+<li id="buildversion"><a href="qtopcua-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
-<h1 class="title">Qt Quick Waterpump Example</h1>
+<h1 class="title">Qt Quick Water Pump</h1>
 <pre class="cpp" translate="no">
  <span class="comment">// Copyright (C) 2018 basysKom GmbH, opensource@basyskom.com</span>
  <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
 
- <span class="preprocessor">#include &lt;QGuiApplication&gt;</span>
- <span class="preprocessor">#include &lt;QQmlApplicationEngine&gt;</span>
- <span class="preprocessor">#include &lt;QFile&gt;</span>
  <span class="preprocessor">#include &lt;QDebug&gt;</span>
+ <span class="preprocessor">#include &lt;QFile&gt;</span>
+ <span class="preprocessor">#include &lt;QGuiApplication&gt;</span>
  <span class="preprocessor">#include &lt;QProcess&gt;</span>
+ <span class="preprocessor">#include &lt;QQmlApplicationEngine&gt;</span>
+ <span class="preprocessor">#include &lt;QString&gt;</span>
+ <span class="preprocessor">#include &lt;QStringLiteral&gt;</span>
+ <span class="preprocessor">#include &lt;QUrl&gt;</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
 
  <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
  {
@@ -55,14 +60,19 @@
      <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> serverExePath;
  <span class="preprocessor">#ifdef Q_OS_WIN</span>
      <span class="preprocessor">#ifdef EXAMPLES_CMAKE_SPECIFIC_PATH</span>
-         serverExePath <span class="operator">=</span> app<span class="operator">.</span>applicationDirPath()<span class="operator">.</span>append(<span class="string">&quot;/../simulationserver/simulationserver.exe&quot;</span>);
+         serverExePath <span class="operator">=</span> app<span class="operator">.</span>applicationDirPath()
+                             <span class="operator">.</span>append(<span class="string">&quot;/../simulationserver/simulationserver.exe&quot;</span>);
      <span class="preprocessor">#elif QT_DEBUG</span>
-         serverExePath <span class="operator">=</span> app<span class="operator">.</span>applicationDirPath()<span class="operator">.</span>append(<span class="string">&quot;/../../simulationserver/debug/simulationserver.exe&quot;</span>);
+         serverExePath <span class="operator">=</span> app<span class="operator">.</span>applicationDirPath()
+                             <span class="operator">.</span>append(<span class="string">&quot;/../../simulationserver/debug/simulationserver.exe&quot;</span>);
      <span class="preprocessor">#else</span>
-         serverExePath <span class="operator">=</span> app<span class="operator">.</span>applicationDirPath()<span class="operator">.</span>append(<span class="string">&quot;/../../simulationserver/release/simulationserver.exe&quot;</span>);
+         serverExePath <span class="operator">=</span> app<span class="operator">.</span>applicationDirPath()
+                             <span class="operator">.</span>append(<span class="string">&quot;/../../simulationserver/release/simulationserver.exe&quot;</span>);
      <span class="preprocessor">#endif</span>
  <span class="preprocessor">#elif defined(Q_OS_MACOS)</span>
-     serverExePath <span class="operator">=</span> app<span class="operator">.</span>applicationDirPath()<span class="operator">.</span>append(<span class="string">&quot;/../../../../simulationserver/simulationserver.app/Contents/MacOS/simulationserver&quot;</span>);
+     serverExePath <span class="operator">=</span> app<span class="operator">.</span>applicationDirPath()
+                         <span class="operator">.</span>append(<span class="string">&quot;/../../../../simulationserver/simulationserver&quot;</span>
+                                     <span class="string">&quot;.app/Contents/MacOS/simulationserver&quot;</span>);
  <span class="preprocessor">#else</span>
      serverExePath <span class="operator">=</span> app<span class="operator">.</span>applicationDirPath()<span class="operator">.</span>append(<span class="string">&quot;/../simulationserver/simulationserver&quot;</span>);
  <span class="preprocessor">#endif</span>
@@ -81,11 +91,11 @@
      }
 
      <span class="type"><a href="../qtqml/qqmlapplicationengine.html" translate="no">QQmlApplicationEngine</a></span> engine;
-     engine<span class="operator">.</span>load(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="type"><a href="../qtcore/qstring.html#QStringLiteral" translate="no">QStringLiteral</a></span>(<span class="string">&quot;qrc:/main.qml&quot;</span>)));
+     engine<span class="operator">.</span>load(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(u<span class="string">&quot;qrc:/main.qml&quot;</span>_s));
      <span class="keyword">if</span> (engine<span class="operator">.</span>rootObjects()<span class="operator">.</span>isEmpty())
          <span class="keyword">return</span> EXIT_FAILURE;
 
-     <span class="keyword">const</span> <span class="type">int</span> exitCode <span class="operator">=</span> <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>exec();
+     <span class="keyword">const</span> <span class="type">int</span> exitCode <span class="operator">=</span> app<span class="operator">.</span>exec();
      <span class="keyword">if</span> (serverProcess<span class="operator">.</span>state() <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qprocess.html" translate="no">QProcess</a></span><span class="operator">::</span>Running) {
  <span class="preprocessor">#ifndef Q_OS_WIN</span>
          serverProcess<span class="operator">.</span>terminate();

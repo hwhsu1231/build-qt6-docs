@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- virtualassistant.qdoc -->
+  <meta name="description" content="Qt Quick application that presents a 3D model of a virtual assistant with dynamic animations created using QML and timelines.">
+  <title>Qt Quick 3D - Virtual Assistant Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Virtual Assistant Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Virtual Assistant Example</h1>
+<pre class="cpp" translate="no">
+ import QmlProject
+
+ Project {
+     mainFile: &quot;content/App.qml&quot;
+     mainUiFile: &quot;content/Screen01.ui.qml&quot;
+
+     /* Include .qml, .js, and image files from current directory and subdirectories */
+     QmlFiles {
+         directory: &quot;content&quot;
+     }
+
+     QmlFiles {
+         directory: &quot;imports&quot;
+     }
+
+     JavaScriptFiles {
+         directory: &quot;content&quot;
+     }
+
+     JavaScriptFiles {
+         directory: &quot;imports&quot;
+     }
+
+     ImageFiles {
+         directory: &quot;content&quot;
+     }
+
+     ImageFiles {
+         directory: &quot;asset_imports&quot;
+     }
+
+     Files {
+         filter: &quot;*.conf&quot;
+         files: [&quot;qtquickcontrols2.conf&quot;]
+     }
+
+     Files {
+         filter: &quot;qmldir&quot;
+         directory: &quot;.&quot;
+     }
+
+     Files {
+         filter: &quot;*.ttf;*.otf&quot;
+     }
+
+     Files {
+         filter: &quot;*.wav;*.mp3&quot;
+     }
+
+     Files {
+         filter: &quot;*.mp4&quot;
+     }
+
+     Files {
+         filter: &quot;*.glsl;*.glslv;*.glslf;*.vsh;*.fsh;*.vert;*.frag&quot;
+     }
+
+     Files {
+         filter: &quot;*.qsb&quot;
+     }
+
+     Files {
+         filter: &quot;*.mesh&quot;
+         directory: &quot;asset_imports&quot;
+     }
+
+     Files {
+         filter: &quot;*.qml&quot;
+         directory: &quot;asset_imports&quot;
+     }
+
+     Environment {
+         QT_QUICK_CONTROLS_CONF: &quot;qtquickcontrols2.conf&quot;
+         QT_AUTO_SCREEN_SCALE_FACTOR: &quot;1&quot;
+         QML_COMPAT_RESOLVE_URLS_ON_ASSIGNMENT: &quot;1&quot;
+         QT_LOGGING_RULES: &quot;qt.qml.connections=false&quot;
+         QT_ENABLE_HIGHDPI_SCALING: &quot;0&quot;
+         /* Useful for debugging
+        QSG_VISUALIZE=batches
+        QSG_VISUALIZE=clip
+        QSG_VISUALIZE=changes
+        QSG_VISUALIZE=overdraw
+        */
+     }
+
+     qt6Project: true
+
+     /* List of plugin directories passed to QML runtime */
+     importPaths: [ &quot;imports&quot;, &quot;asset_imports&quot; ]
+
+     /* Required for deployment */
+     targetDirectory: &quot;/opt/VirtualAssistant&quot;
+
+     qdsVersion: &quot;4.3&quot;
+
+     quickVersion: &quot;6.5&quot;
+
+     /* If any modules the project imports require widgets (e.g. QtCharts), widgetApp must be true */
+     widgetApp: true
+
+     /* args: Specifies command line arguments for qsb tool to generate shaders.
+        files: Specifies target files for qsb tool. If path is included, it must be relative to this file.
+               Wildcard '*' can be used in the file name part of the path.
+               e.g. files: [ &quot;content/shaders/*.vert&quot;, &quot;*.frag&quot; ]  */
+     ShaderTool {
+         args: &quot;-s --glsl \&quot;100 es,120,150\&quot; --hlsl 50 --msl 12&quot;
+         files: [ &quot;content/shaders/*&quot; ]
+     }
+
+     multilanguageSupport: true
+     supportedLanguages: [&quot;en&quot;]
+     primaryLanguage: &quot;en&quot;
+
+ }
+</pre>

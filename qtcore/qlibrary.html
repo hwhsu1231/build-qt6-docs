@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qlibrary.cpp -->
   <meta name="description" content="The QLibrary class loads shared libraries at runtime.">
-  <title>QLibrary Class | Qt Core 6.6.0</title>
+  <title>QLibrary Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QLibrary</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -104,13 +104,13 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$QLibrary-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p>An instance of a QLibrary object operates on a single shared object file (which we call a &quot;library&quot;, but is also known as a &quot;DLL&quot;). A QLibrary provides access to the functionality in the library in a platform independent way. You can either pass a file name in the constructor, or set it explicitly with <a href="qlibrary.html#fileName-prop" translate="no">setFileName</a>(). When loading the library, QLibrary searches in all the system-specific library locations (e.g&#x2e; <code translate="no">LD_LIBRARY_PATH</code> on Unix), unless the file name has an absolute path.</p>
+<p>An instance of a QLibrary object operates on a single shared object file (which we call a &quot;library&quot;, but is also known as a &quot;DLL&quot;). A QLibrary provides access to the functionality in the library in a platform independent way. You can either pass a file name in the constructor, or set it explicitly with <a href="qlibrary.html#fileName-prop" translate="no">setFileName</a>(). When loading the library, QLibrary searches in all the system-specific library locations (e.g. <code translate="no">LD_LIBRARY_PATH</code> on Unix), unless the file name has an absolute path.</p>
 <p>If the file name is an absolute path then an attempt is made to load this path first. If the file cannot be found, QLibrary tries the name with different platform-specific file prefixes, like &quot;lib&quot; on Unix and Mac, and suffixes, like &quot;.so&quot; on Unix, &quot;.dylib&quot; on the Mac, or &quot;.dll&quot; on Windows.</p>
 <p>If the file path is not absolute then QLibrary modifies the search order to try the system-specific prefixes and suffixes first, followed by the file path specified.</p>
-<p>This makes it possible to specify shared libraries that are only identified by their basename (i.e&#x2e; without their suffix), so the same code will work on different operating systems yet still minimise the number of attempts to find the library.</p>
+<p>This makes it possible to specify shared libraries that are only identified by their basename (i.e. without their suffix), so the same code will work on different operating systems yet still minimise the number of attempts to find the library.</p>
 <p>The most important functions are <a href="qlibrary.html#load" translate="no">load</a>() to dynamically load the library file, <a href="qlibrary.html#isLoaded" translate="no">isLoaded</a>() to check whether loading was successful, and <a href="qlibrary.html#resolve" translate="no">resolve</a>() to resolve a symbol in the library. The <a href="qlibrary.html#resolve" translate="no">resolve</a>() function implicitly tries to load the library if it has not been loaded yet. Multiple instances of QLibrary can be used to access the same physical library. Once loaded, libraries remain in memory until the application terminates. You can attempt to unload a library using <a href="qlibrary.html#unload" translate="no">unload</a>(), but if other instances of QLibrary are using the same library, the call will fail, and unloading will only happen when every instance has called <a href="qlibrary.html#unload" translate="no">unload</a>().</p>
 <p>A typical use of QLibrary is to resolve an exported symbol in a library, and to call the C function that this symbol represents. This is called &quot;explicit linking&quot; in contrast to &quot;implicit linking&quot;, which is done by the link step in the build process when linking an executable against a library.</p>
-<p>The following code snippet loads a library, resolves the symbol &quot;mysymbol&quot;, and calls the function if everything succeeded. If something goes wrong, e.g&#x2e; the library file does not exist or the symbol is not defined, the function pointer will be <code translate="no">nullptr</code> and won't be called.</p>
+<p>The following code snippet loads a library, resolves the symbol &quot;mysymbol&quot;, and calls the function if everything succeeded. If something goes wrong, e.g. the library file does not exist or the symbol is not defined, the function pointer will be <code translate="no">nullptr</code> and won't be called.</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qlibrary.html#QLibrary" translate="no">QLibrary</a></span> myLib(<span class="string">&quot;mylib&quot;</span>);
  <span class="keyword">typedef</span> <span class="type">void</span> (<span class="operator">*</span>MyPrototype)();
@@ -189,17 +189,17 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$QLibrary$$$QLibraryconstQString&QObject* -->
 <h3 class="fn" translate="no" id="QLibrary-1"><code translate="no">[explicit] </code>QLibrary::<span class="name">QLibrary</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>, <span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span> *<i>parent</i> = nullptr)</h3>
 <p>Constructs a library object with the given <i translate="no">parent</i> that will load the library specified by <i translate="no">fileName</i>.</p>
-<p>We recommend omitting the file's suffix in <i translate="no">fileName</i>, since QLibrary will automatically look for the file with the appropriate suffix in accordance with the platform, e.g&#x2e; &quot;.so&quot; on Unix, &quot;.dylib&quot; on macOS and iOS, and &quot;.dll&quot; on Windows. (See <a href="qlibrary.html#fileName-prop" translate="no">fileName</a>.)</p>
+<p>We recommend omitting the file's suffix in <i translate="no">fileName</i>, since QLibrary will automatically look for the file with the appropriate suffix in accordance with the platform, e.g. &quot;.so&quot; on Unix, &quot;.dylib&quot; on macOS and iOS, and &quot;.dll&quot; on Windows. (See <a href="qlibrary.html#fileName-prop" translate="no">fileName</a>.)</p>
 <!-- @@@QLibrary -->
 <!-- $$$QLibrary$$$QLibraryconstQString&intQObject* -->
 <h3 class="fn" translate="no" id="QLibrary-2"><code translate="no">[explicit] </code>QLibrary::<span class="name">QLibrary</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>, <span class="type">int</span> <i>verNum</i>, <span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span> *<i>parent</i> = nullptr)</h3>
 <p>Constructs a library object with the given <i translate="no">parent</i> that will load the library specified by <i translate="no">fileName</i> and major version number <i translate="no">verNum</i>. Currently, the version number is ignored on Windows.</p>
-<p>We recommend omitting the file's suffix in <i translate="no">fileName</i>, since QLibrary will automatically look for the file with the appropriate suffix in accordance with the platform, e.g&#x2e; &quot;.so&quot; on Unix, &quot;.dylib&quot; on macOS and iOS, and &quot;.dll&quot; on Windows. (See <a href="qlibrary.html#fileName-prop" translate="no">fileName</a>.)</p>
+<p>We recommend omitting the file's suffix in <i translate="no">fileName</i>, since QLibrary will automatically look for the file with the appropriate suffix in accordance with the platform, e.g. &quot;.so&quot; on Unix, &quot;.dylib&quot; on macOS and iOS, and &quot;.dll&quot; on Windows. (See <a href="qlibrary.html#fileName-prop" translate="no">fileName</a>.)</p>
 <!-- @@@QLibrary -->
 <!-- $$$QLibrary$$$QLibraryconstQString&constQString&QObject* -->
 <h3 class="fn" translate="no" id="QLibrary-3"><code translate="no">[explicit] </code>QLibrary::<span class="name">QLibrary</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>, const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>version</i>, <span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span> *<i>parent</i> = nullptr)</h3>
 <p>Constructs a library object with the given <i translate="no">parent</i> that will load the library specified by <i translate="no">fileName</i> and full version number <i translate="no">version</i>. Currently, the version number is ignored on Windows.</p>
-<p>We recommend omitting the file's suffix in <i translate="no">fileName</i>, since QLibrary will automatically look for the file with the appropriate suffix in accordance with the platform, e.g&#x2e; &quot;.so&quot; on Unix, &quot;.dylib&quot; on macOS and iOS, and &quot;.dll&quot; on Windows. (See <a href="qlibrary.html#fileName-prop" translate="no">fileName</a>.)</p>
+<p>We recommend omitting the file's suffix in <i translate="no">fileName</i>, since QLibrary will automatically look for the file with the appropriate suffix in accordance with the platform, e.g. &quot;.so&quot; on Unix, &quot;.dylib&quot; on macOS and iOS, and &quot;.dll&quot; on Windows. (See <a href="qlibrary.html#fileName-prop" translate="no">fileName</a>.)</p>
 <!-- @@@QLibrary -->
 <!-- $$$~QLibrary[overload1]$$$~QLibrary -->
 <h3 class="fn" translate="no" id="dtor.QLibrary"><code translate="no">[virtual noexcept] </code>QLibrary::<span class="name">~QLibrary</span>()</h3>
@@ -238,7 +238,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>See also </b><a href="qlibrary.html#unload" translate="no">unload</a>().</p>
 <!-- @@@load -->
 <!-- $$$resolve[overload1]$$$resolveconstchar* -->
-<h3 class="fn" translate="no" id="resolve"><span class="type"><a href="qfunctionpointer-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QLibrary::<span class="name">resolve</span>(const <span class="type">char</span> *<i>symbol</i>)</h3>
+<h3 class="fn" translate="no" id="resolve"><span class="type"><a href="qfunctionpointer-qtcore-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QLibrary::<span class="name">resolve</span>(const <span class="type">char</span> *<i>symbol</i>)</h3>
 <p>Returns the address of the exported symbol <i translate="no">symbol</i>. The library is loaded if necessary. The function returns <code translate="no">nullptr</code> if the symbol could not be resolved or if the library could not be loaded.</p>
 <p>Example:</p>
 <pre class="cpp" translate="no">
@@ -267,21 +267,21 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <!-- @@@resolve -->
 <!-- $$$resolve$$$resolveconstQString&constchar* -->
-<h3 class="fn" translate="no" id="resolve-1"><code translate="no">[static] </code><span class="type"><a href="qfunctionpointer-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QLibrary::<span class="name">resolve</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>, const <span class="type">char</span> *<i>symbol</i>)</h3>
+<h3 class="fn" translate="no" id="resolve-1"><code translate="no">[static] </code><span class="type"><a href="qfunctionpointer-qtcore-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QLibrary::<span class="name">resolve</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>, const <span class="type">char</span> *<i>symbol</i>)</h3>
 <p>This is an overloaded function.</p>
 <p>Loads the library <i translate="no">fileName</i> and returns the address of the exported symbol <i translate="no">symbol</i>. Note that <i translate="no">fileName</i> should not include the platform-specific file suffix; (see <a href="qlibrary.html#fileName-prop" translate="no">fileName</a>). The library remains loaded until the application exits.</p>
 <p>The function returns <code translate="no">nullptr</code> if the symbol could not be resolved or if the library could not be loaded.</p>
 <p><b>See also </b><a href="qlibrary.html#resolve" translate="no">resolve</a>().</p>
 <!-- @@@resolve -->
 <!-- $$$resolve$$$resolveconstQString&intconstchar* -->
-<h3 class="fn" translate="no" id="resolve-2"><code translate="no">[static] </code><span class="type"><a href="qfunctionpointer-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QLibrary::<span class="name">resolve</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>, <span class="type">int</span> <i>verNum</i>, const <span class="type">char</span> *<i>symbol</i>)</h3>
+<h3 class="fn" translate="no" id="resolve-2"><code translate="no">[static] </code><span class="type"><a href="qfunctionpointer-qtcore-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QLibrary::<span class="name">resolve</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>, <span class="type">int</span> <i>verNum</i>, const <span class="type">char</span> *<i>symbol</i>)</h3>
 <p>This is an overloaded function.</p>
 <p>Loads the library <i translate="no">fileName</i> with major version number <i translate="no">verNum</i> and returns the address of the exported symbol <i translate="no">symbol</i>. Note that <i translate="no">fileName</i> should not include the platform-specific file suffix; (see <a href="qlibrary.html#fileName-prop" translate="no">fileName</a>). The library remains loaded until the application exits. <i translate="no">verNum</i> is ignored on Windows.</p>
 <p>The function returns <code translate="no">nullptr</code> if the symbol could not be resolved or if the library could not be loaded.</p>
 <p><b>See also </b><a href="qlibrary.html#resolve" translate="no">resolve</a>().</p>
 <!-- @@@resolve -->
 <!-- $$$resolve$$$resolveconstQString&constQString&constchar* -->
-<h3 class="fn" translate="no" id="resolve-3"><code translate="no">[static] </code><span class="type"><a href="qfunctionpointer-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QLibrary::<span class="name">resolve</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>, const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>version</i>, const <span class="type">char</span> *<i>symbol</i>)</h3>
+<h3 class="fn" translate="no" id="resolve-3"><code translate="no">[static] </code><span class="type"><a href="qfunctionpointer-qtcore-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QLibrary::<span class="name">resolve</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>fileName</i>, const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>version</i>, const <span class="type">char</span> *<i>symbol</i>)</h3>
 <p>This is an overloaded function.</p>
 <p>Loads the library <i translate="no">fileName</i> with full version number <i translate="no">version</i> and returns the address of the exported symbol <i translate="no">symbol</i>. Note that <i translate="no">fileName</i> should not include the platform-specific file suffix; (see <a href="qlibrary.html#fileName-prop" translate="no">fileName</a>). The library remains loaded until the application exits. <i translate="no">version</i> is ignored on Windows.</p>
 <p>The function returns <code translate="no">nullptr</code> if the symbol could not be resolved or if the library could not be loaded.</p>
@@ -313,9 +313,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

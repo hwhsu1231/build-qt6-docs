@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- coordsys.qdoc -->
   <meta name="description" content="Information about the coordinate system used by the paint system.">
-  <title>Coordinate System | Qt GUI 6.6.0</title>
+  <title>Coordinate System | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li>Coordinate System</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -54,7 +54,7 @@
 <div class="descr" id="details">
 <p>The coordinate system is controlled by the <a href="qpainter.html" translate="no">QPainter</a> class. Together with the <a href="qpaintdevice.html" translate="no">QPaintDevice</a> and <a href="qpaintengine.html" translate="no">QPaintEngine</a> classes, <a href="qpainter.html" translate="no">QPainter</a> form the basis of Qt's painting system, Arthur. <a href="qpainter.html" translate="no">QPainter</a> is used to perform drawing operations, <a href="qpaintdevice.html" translate="no">QPaintDevice</a> is an abstraction of a two-dimensional space that can be painted on using a <a href="qpainter.html" translate="no">QPainter</a>, and <a href="qpaintengine.html" translate="no">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices.</p>
 <p>The <a href="qpaintdevice.html" translate="no">QPaintDevice</a> class is the base class of objects that can be painted: Its drawing capabilities are inherited by the <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>, <a href="qimage.html" translate="no">QImage</a>, <a href="qpixmap.html" translate="no">QPixmap</a>, <a href="qpicture.html" translate="no">QPicture</a>, and <a href="../qtopengl/qopenglpaintdevice.html" translate="no">QOpenGLPaintDevice</a> classes. The default coordinate system of a paint device has its origin at the top-left corner. The <i>x</i> values increase to the right and the <i>y</i> values increase downwards. The default unit is one pixel on pixel-based devices and one point (1/72 of an inch) on printers.</p>
-<p>The mapping of the logical <a href="qpainter.html" translate="no">QPainter</a> coordinates to the physical <a href="qpaintdevice.html" translate="no">QPaintDevice</a> coordinates are handled by <a href="qpainter.html" translate="no">QPainter</a>'s transformation matrix, viewport and &quot;window&quot;. The logical and physical coordinate systems coincide by default. <a href="qpainter.html" translate="no">QPainter</a> also supports coordinate transformations (e.g&#x2e; rotation and scaling).</p>
+<p>The mapping of the logical <a href="qpainter.html" translate="no">QPainter</a> coordinates to the physical <a href="qpaintdevice.html" translate="no">QPaintDevice</a> coordinates are handled by <a href="qpainter.html" translate="no">QPainter</a>'s transformation matrix, viewport and &quot;window&quot;. The logical and physical coordinate systems coincide by default. <a href="qpainter.html" translate="no">QPainter</a> also supports coordinate transformations (e.g. rotation and scaling).</p>
 <h2 id="rendering">Rendering</h2>
 <h3 id="logical-representation">Logical Representation</h3>
 <p>The size (width and height) of a graphics primitive always correspond to its mathematical model, ignoring the width of the pen it is rendered with:</p>
@@ -67,7 +67,7 @@
 </table></div>
 <h3 id="aliased-painting">Aliased Painting</h3>
 <p>When drawing, the pixel rendering is controlled by the <a href="qpainter.html#RenderHint-enum" translate="no">QPainter::Antialiasing</a> render hint.</p>
-<p>The <a href="qpainter.html#RenderHint-enum" translate="no">RenderHint</a> enum is used to specify flags to <a href="qpainter.html" translate="no">QPainter</a> that may or may not be respected by any given engine. The <a href="qpainter.html#RenderHint-enum" translate="no">QPainter::Antialiasing</a> value indicates that the engine should antialias edges of primitives if possible, i.e&#x2e; smoothing the edges by using different color intensities.</p>
+<p>The <a href="qpainter.html#RenderHint-enum" translate="no">RenderHint</a> enum is used to specify flags to <a href="qpainter.html" translate="no">QPainter</a> that may or may not be respected by any given engine. The <a href="qpainter.html#RenderHint-enum" translate="no">QPainter::Antialiasing</a> value indicates that the engine should antialias edges of primitives if possible, i.e. smoothing the edges by using different color intensities.</p>
 <p>But by default the painter is <i>aliased</i> and other rules apply: When rendering with a one pixel wide pen the pixels will be rendered to the <i>right and below the mathematically defined points</i>. For example:</p>
 <div class="table"><table class="generic">
  <tr valign="top" class="odd"><td ><img src="images/coordinatesystem-rect-raster.png" alt="" /></td><td ><img src="images/coordinatesystem-line-raster.png" alt="" /></td></tr>
@@ -121,14 +121,14 @@
 </table></div>
 <h2 id="transformations">Transformations</h2>
 <p>By default, the <a href="qpainter.html" translate="no">QPainter</a> operates on the associated device's own coordinate system, but it also has complete support for affine coordinate transformations.</p>
-<p>You can scale the coordinate system by a given offset using the <a href="qpainter.html#scale" translate="no">QPainter::scale</a>() function, you can rotate it clockwise using the <a href="qpainter.html#rotate" translate="no">QPainter::rotate</a>() function and you can translate it (i.e&#x2e; adding a given offset to the points) using the <a href="qpainter.html#translate" translate="no">QPainter::translate</a>() function.</p>
+<p>You can scale the coordinate system by a given offset using the <a href="qpainter.html#scale" translate="no">QPainter::scale</a>() function, you can rotate it clockwise using the <a href="qpainter.html#rotate" translate="no">QPainter::rotate</a>() function and you can translate it (i.e. adding a given offset to the points) using the <a href="qpainter.html#translate" translate="no">QPainter::translate</a>() function.</p>
 <div class="table"><table class="generic">
  <tr valign="top" class="odd"><td ><img src="images/qpainter-clock.png" alt="" /></td><td ><img src="images/qpainter-rotation.png" alt="" /></td><td ><img src="images/qpainter-scale.png" alt="" /></td><td ><img src="images/qpainter-translation.png" alt="" /></td></tr>
 <tr valign="top" class="even"><td >nop</td><td ><a href="qpainter.html#rotate" translate="no">rotate</a>()</td><td ><a href="qpainter.html#scale" translate="no">scale</a>()</td><td ><a href="qpainter.html#translate" translate="no">translate</a>()</td></tr>
 </table></div>
 <p>You can also twist the coordinate system around the origin using the <a href="qpainter.html#shear" translate="no">QPainter::shear</a>() function. All the transformation operations operate on <a href="qpainter.html" translate="no">QPainter</a>'s transformation matrix that you can retrieve using the <a href="qpainter.html#worldTransform" translate="no">QPainter::worldTransform</a>() function. A matrix transforms a point in the plane to another point.</p>
 <p>If you need the same transformations over and over, you can also use <a href="qtransform.html" translate="no">QTransform</a> objects and the <a href="qpainter.html#worldTransform" translate="no">QPainter::worldTransform</a>() and <a href="qpainter.html#setWorldTransform" translate="no">QPainter::setWorldTransform</a>() functions. You can at any time save the <a href="qpainter.html" translate="no">QPainter</a>'s transformation matrix by calling the <a href="qpainter.html#save" translate="no">QPainter::save</a>() function which saves the matrix on an internal stack. The <a href="qpainter.html#restore" translate="no">QPainter::restore</a>() function pops it back.</p>
-<p>One frequent need for the transformation matrix is when reusing the same drawing code on a variety of paint devices. Without transformations, the results are tightly bound to the resolution of the paint device. Printers have high resolution, e.g&#x2e; 600 dots per inch, whereas screens often have between 72 and 100 dots per inch.</p>
+<p>One frequent need for the transformation matrix is when reusing the same drawing code on a variety of paint devices. Without transformations, the results are tightly bound to the resolution of the paint device. Printers have high resolution, e.g. 600 dots per inch, whereas screens often have between 72 and 100 dots per inch.</p>
 <div class="table"><table class="generic" width="100%">
  <thead><tr class="qt-style"><th  colspan="2">Analog Clock Example</th></tr></thead>
 <tr valign="top" class="odd"><td ><img src="images/coordinatesystem-analogclock.png" alt="" /></td><td >The Analog Clock example shows how to draw the contents of a custom widget using <a href="qpainter.html" translate="no">QPainter</a>'s transformation matrix.<p>We recommend compiling and running this example before you read any further. In particular, try resizing the window to different sizes.</p>
@@ -136,19 +136,29 @@
 <tr valign="top" class="even"><td  colspan="2"><pre class="cpp" translate="no">
  <span class="type">void</span> AnalogClock<span class="operator">::</span>paintEvent(<span class="type"><a href="qpaintevent.html" translate="no">QPaintEvent</a></span> <span class="operator">*</span>)
  {
-     <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> hourHand<span class="operator">[</span><span class="number">3</span><span class="operator">]</span> <span class="operator">=</span> {
-         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">7</span><span class="operator">,</span> <span class="number">8</span>)<span class="operator">,</span>
-         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="operator">-</span><span class="number">7</span><span class="operator">,</span> <span class="number">8</span>)<span class="operator">,</span>
-         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="operator">-</span><span class="number">40</span>)
+     <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> hourHand<span class="operator">[</span><span class="number">4</span><span class="operator">]</span> <span class="operator">=</span> {
+         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">5</span><span class="operator">,</span> <span class="number">14</span>)<span class="operator">,</span>
+         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="operator">-</span><span class="number">5</span><span class="operator">,</span> <span class="number">14</span>)<span class="operator">,</span>
+         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="operator">-</span><span class="number">4</span><span class="operator">,</span> <span class="operator">-</span><span class="number">71</span>)<span class="operator">,</span>
+         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">4</span><span class="operator">,</span> <span class="operator">-</span><span class="number">71</span>)
      };
-     <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> minuteHand<span class="operator">[</span><span class="number">3</span><span class="operator">]</span> <span class="operator">=</span> {
-         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">7</span><span class="operator">,</span> <span class="number">8</span>)<span class="operator">,</span>
-         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="operator">-</span><span class="number">7</span><span class="operator">,</span> <span class="number">8</span>)<span class="operator">,</span>
-         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">0</span><span class="operator">,</span> <span class="operator">-</span><span class="number">70</span>)
+     <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> minuteHand<span class="operator">[</span><span class="number">4</span><span class="operator">]</span> <span class="operator">=</span> {
+         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">4</span><span class="operator">,</span> <span class="number">14</span>)<span class="operator">,</span>
+         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="operator">-</span><span class="number">4</span><span class="operator">,</span> <span class="number">14</span>)<span class="operator">,</span>
+         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="operator">-</span><span class="number">3</span><span class="operator">,</span> <span class="operator">-</span><span class="number">89</span>)<span class="operator">,</span>
+         <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">3</span><span class="operator">,</span> <span class="operator">-</span><span class="number">89</span>)
      };
 
-     <span class="type"><a href="qcolor.html" translate="no">QColor</a></span> hourColor(<span class="number">127</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">127</span>);
-     <span class="type"><a href="qcolor.html" translate="no">QColor</a></span> minuteColor(<span class="number">0</span><span class="operator">,</span> <span class="number">127</span><span class="operator">,</span> <span class="number">127</span><span class="operator">,</span> <span class="number">191</span>);
+     <span class="keyword">static</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span> secondsHand<span class="operator">[</span><span class="number">4</span><span class="operator">]</span> <span class="operator">=</span> {
+        <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">1</span><span class="operator">,</span> <span class="number">14</span>)<span class="operator">,</span>
+        <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="number">14</span>)<span class="operator">,</span>
+        <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="operator">-</span><span class="number">1</span><span class="operator">,</span> <span class="operator">-</span><span class="number">89</span>)<span class="operator">,</span>
+        <span class="type"><a href="../qtcore/qpoint.html" translate="no">QPoint</a></span>(<span class="number">1</span><span class="operator">,</span> <span class="operator">-</span><span class="number">89</span>)
+     };
+
+     <span class="keyword">const</span> <span class="type"><a href="qcolor.html" translate="no">QColor</a></span> hourColor(palette()<span class="operator">.</span>color(<span class="type"><a href="qpalette.html" translate="no">QPalette</a></span><span class="operator">::</span>Text));
+     <span class="keyword">const</span> <span class="type"><a href="qcolor.html" translate="no">QColor</a></span> minuteColor(palette()<span class="operator">.</span>color(<span class="type"><a href="qpalette.html" translate="no">QPalette</a></span><span class="operator">::</span>Text));
+     <span class="keyword">const</span> <span class="type"><a href="qcolor.html" translate="no">QColor</a></span> secondsColor(palette()<span class="operator">.</span>color(<span class="type"><a href="qpalette.html" translate="no">QPalette</a></span><span class="operator">::</span>Accent));
 
      <span class="type">int</span> side <span class="operator">=</span> qMin(width()<span class="operator">,</span> height());
 
@@ -161,33 +171,35 @@
 <p>This will give us a 200 x 200 square area, with the origin (0, 0) in the center, that we can draw on. What we draw will show up in the largest possible square that will fit in the widget.</p>
 <p>See also the <a href="coordsys.html#window-viewport-conversion" translate="no">Window-Viewport Conversion</a> section.</p>
 <pre class="cpp" translate="no">
-     <span class="type"><a href="../qtcore/qtime.html" translate="no">QTime</a></span> time <span class="operator">=</span> <span class="type"><a href="../qtcore/qtime.html" translate="no">QTime</a></span><span class="operator">::</span>currentTime();
      painter<span class="operator">.</span>save();
      painter<span class="operator">.</span>rotate(<span class="number">30.0</span> <span class="operator">*</span> ((time<span class="operator">.</span>hour() <span class="operator">+</span> time<span class="operator">.</span>minute() <span class="operator">/</span> <span class="number">60.0</span>)));
-     painter<span class="operator">.</span>drawConvexPolygon(hourHand<span class="operator">,</span> <span class="number">3</span>);
+     painter<span class="operator">.</span>drawConvexPolygon(hourHand<span class="operator">,</span> <span class="number">4</span>);
      painter<span class="operator">.</span>restore();
 </pre>
 <p>We draw the clock's hour hand by rotating the coordinate system and calling <a href="qpainter.html#drawConvexPolygon" translate="no">QPainter::drawConvexPolygon</a>(). Thank's to the rotation, it's drawn pointed in the right direction.</p>
 <p>The polygon is specified as an array of alternating <i>x</i>, <i>y</i> values, stored in the <code translate="no">hourHand</code> static variable (defined at the beginning of the function), which corresponds to the three points (7, 8), (-7, 8), (0, -40).</p>
 <p>The calls to <a href="qpainter.html#save" translate="no">QPainter::save</a>() and <a href="qpainter.html#restore" translate="no">QPainter::restore</a>() surrounding the code guarantees that the code that follows won't be disturbed by the transformations we've used.</p>
 <pre class="cpp" translate="no">
-     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> <span class="number">12</span>; <span class="operator">+</span><span class="operator">+</span>i) {
-         painter<span class="operator">.</span>drawLine(<span class="number">88</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">96</span><span class="operator">,</span> <span class="number">0</span>);
-         painter<span class="operator">.</span>rotate(<span class="number">30.0</span>);
-     }
+     painter<span class="operator">.</span>setBrush(minuteColor);
+
+     painter<span class="operator">.</span>save();
+     painter<span class="operator">.</span>rotate(<span class="number">6.0</span> <span class="operator">*</span> time<span class="operator">.</span>minute());
+     painter<span class="operator">.</span>drawConvexPolygon(minuteHand<span class="operator">,</span> <span class="number">4</span>);
+     painter<span class="operator">.</span>restore();
 </pre>
 <p>After that, we draw the hour markers for the clock face, which consists of twelve short lines at 30-degree intervals. When that loop is done, the painter has been rotated a full circle back to its original state, so we don't need to save and restore the state.</p>
 <pre class="cpp" translate="no">
      painter<span class="operator">.</span>save();
-     painter<span class="operator">.</span>rotate(<span class="number">6.0</span> <span class="operator">*</span> (time<span class="operator">.</span>minute() <span class="operator">+</span> time<span class="operator">.</span>second() <span class="operator">/</span> <span class="number">60.0</span>));
-     painter<span class="operator">.</span>drawConvexPolygon(minuteHand<span class="operator">,</span> <span class="number">3</span>);
+     painter<span class="operator">.</span>rotate(<span class="number">6.0</span> <span class="operator">*</span> time<span class="operator">.</span>second());
+     painter<span class="operator">.</span>drawConvexPolygon(secondsHand<span class="operator">,</span> <span class="number">4</span>);
+     painter<span class="operator">.</span>drawEllipse(<span class="operator">-</span><span class="number">3</span><span class="operator">,</span> <span class="operator">-</span><span class="number">3</span><span class="operator">,</span> <span class="number">6</span><span class="operator">,</span> <span class="number">6</span>);
+     painter<span class="operator">.</span>drawEllipse(<span class="operator">-</span><span class="number">5</span><span class="operator">,</span> <span class="operator">-</span><span class="number">68</span><span class="operator">,</span> <span class="number">10</span><span class="operator">,</span> <span class="number">10</span>);
      painter<span class="operator">.</span>restore();
 </pre>
 <p>We do the same for the clock's minute hand, which is defined by the three points (7, 8), (-7, 8), (0, -70). These coordinates specify a hand that is thinner and longer than the minute hand.</p>
 <pre class="cpp" translate="no">
      <span class="keyword">for</span> (<span class="type">int</span> j <span class="operator">=</span> <span class="number">0</span>; j <span class="operator">&lt;</span> <span class="number">60</span>; <span class="operator">+</span><span class="operator">+</span>j) {
-         <span class="keyword">if</span> ((j <span class="operator">%</span> <span class="number">5</span>) <span class="operator">!</span><span class="operator">=</span> <span class="number">0</span>)
-             painter<span class="operator">.</span>drawLine(<span class="number">92</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">96</span><span class="operator">,</span> <span class="number">0</span>);
+         painter<span class="operator">.</span>drawLine(<span class="number">92</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">96</span><span class="operator">,</span> <span class="number">0</span>);
          painter<span class="operator">.</span>rotate(<span class="number">6.0</span>);
      }
 </pre>
@@ -213,8 +225,8 @@
  painter<span class="operator">.</span>setViewport(x<span class="operator">,</span> y<span class="operator">,</span> side<span class="operator">,</span> side);
 </pre>
 <p>If we make the logical coordinate system a square, we should also make the viewport a square using the <a href="qpainter.html#setViewport" translate="no">QPainter::setViewport</a>() function. In the example above we make it equivalent to the largest square that fit into the paint device's rectangle. By taking the paint device's size into consideration when setting the window or viewport, it is possible to keep the drawing code independent of the paint device.</p>
-<p>Note that the window-viewport conversion is only a linear transformation, i.e&#x2e; it does not perform clipping. This means that if you paint outside the currently set &quot;window&quot;, your painting is still transformed to the viewport using the same linear algebraic approach.</p>
-<p class="centerAlign"><img src="images/coordinatesystem-transformations.png" alt="" /></p><p>The viewport, &quot;window&quot; and transformation matrix determine how logical <a href="qpainter.html" translate="no">QPainter</a> coordinates map to the paint device's physical coordinates. By default the world transformation matrix is the identity matrix, and the &quot;window&quot; and viewport settings are equivalent to the paint device's settings, i.e&#x2e; the world, &quot;window&quot; and device coordinate systems are equivalent, but as we have seen, the systems can be manipulated using transformation operations and window-viewport conversion. The illustration above describes the process.</p>
+<p>Note that the window-viewport conversion is only a linear transformation, i.e. it does not perform clipping. This means that if you paint outside the currently set &quot;window&quot;, your painting is still transformed to the viewport using the same linear algebraic approach.</p>
+<p class="centerAlign"><img src="images/coordinatesystem-transformations.png" alt="" /></p><p>The viewport, &quot;window&quot; and transformation matrix determine how logical <a href="qpainter.html" translate="no">QPainter</a> coordinates map to the paint device's physical coordinates. By default the world transformation matrix is the identity matrix, and the &quot;window&quot; and viewport settings are equivalent to the paint device's settings, i.e. the world, &quot;window&quot; and device coordinate systems are equivalent, but as we have seen, the systems can be manipulated using transformation operations and window-viewport conversion. The illustration above describes the process.</p>
 </div>
 <p><b>See also </b><a href="../qtwidgets/qtwidgets-widgets-analogclock-example.html" translate="no">Analog Clock</a>.</p>
 <!-- @@@coordsys.html -->
@@ -225,9 +237,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

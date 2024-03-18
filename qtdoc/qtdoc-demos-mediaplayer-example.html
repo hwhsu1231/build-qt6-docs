@@ -28,7 +28,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Media Player Example</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -40,7 +40,12 @@
 <h3 id="toc">Contents</h3>
 <ul>
 <li class="level1"><a href="#running-the-example">Running the Example</a></li>
-<li class="level1"><a href="#overview">Overview</a></li>
+<li class="level1"><a href="#project-structure">Project structure</a></li>
+<li class="level1"><a href="#qt-quick-application">Qt Quick application</a></li>
+<li class="level1"><a href="#the-custom-config-qml-module">The custom Config QML module</a></li>
+<li class="level1"><a href="#the-custom-mediacontrols-qml-module">The custom MediaControls QML module</a></li>
+<li class="level1"><a href="#the-custom-mediaplayer-qml-module">The custom <code translate="no">MediaPlayer</code> QML module</a></li>
+<li class="level1"><a href="#new-functionality">New functionality</a></li>
 </ul>
 </div>
 <div class="sidebar-content" id="sidebar-content"></div></div>
@@ -53,8 +58,166 @@
 <p class="centerAlign"><img src="images/mediaplayer.png" alt="" /></p><p>This example demonstrates a simple multimedia player that can play audio and video files using various codecs.</p>
 <h4 id="running-the-example">Running the Example</h4>
 <p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
-<h4 id="overview">Overview</h4>
+<h4 id="project-structure">Project structure</h4>
+<p class="centerAlign"><img src="images/project_structure.png" alt="" /></p><p>This applications architecture is comprised of three custom QML modules:</p>
+<ul>
+<li><code translate="no">MediaControl</code></li>
+<li><code translate="no">MediaPlayer</code></li>
+<li><code translate="no">Config</code></li>
+</ul>
+<p>This is also reflected in the top-level <code translate="no">CMakeLists.txt</code> file:</p>
+<pre class="cpp" translate="no">
+ add_subdirectory(MediaPlayer)
+ add_subdirectory(MediaControls)
+ add_subdirectory(Config)
+
+ target_link_libraries(MediaPlayerApp PRIVATE
+     Qt6::Core
+     Qt6::Svg
+     Qt6::Quick
+     Qt6::Multimedia
+     MediaControlsplugin
+     MediaPlayer
+     Configplugin
+</pre>
+<p>Each QML module is created using the <a href="../qtqml/qt-add-qml-module.html" translate="no">qt_add_qml_module</a> macro, for example see how the Config module is created.</p>
+<pre class="cpp" translate="no">
+ qt_add_library(Config STATIC)
+
+ set_source_files_properties(Config.qml
+     PROPERTIES
+         QT_QML_SINGLETON_TYPE true
+ )
+
+ qt_add_qml_module(Config
+     URI &quot;Config&quot;
+     OUTPUT_DIRECTORY Config
+     QML_FILES
+         &quot;Config.qml&quot;
+ )
+</pre>
+<h4 id="qt-quick-application">Qt Quick application</h4>
 <p>At its core this is a QML application, see <a href="qtdoc-tutorials-alarms-example.html" translate="no">Getting Started Programming with Qt Quick</a> for information specific to that. This documentation is focused on how this example utilizes the <a href="../qtmultimedia/qtmultimedia-qmlmodule.html" translate="no">Qt Multimedia QML Types</a>.</p>
+<h4 id="the-custom-config-qml-module">The custom Config QML module</h4>
+<p>This type controls themes and layouts for an application, depending on the target operating system.</p>
+<p>First we declare it a singleton, as we only need it to be instantiated once and creating copies would be a waste of resources.</p>
+<p>To do that we add the following at the top of <code translate="no">Config.qml</code></p>
+<pre class="qml" translate="no">
+ pragma Singleton
+</pre>
+<p>We then create a qmldir file in the <code translate="no">Config</code> directory named <code translate="no">qmldir</code> that contains the following:</p>
+<pre class="cpp" translate="no">
+ module Config
+ singleton Config <span class="number">1.0</span> Config<span class="operator">.</span>qml
+</pre>
+<p>Now to use it in our application, see how it is referenced in <a href="../qtmultimedia/qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a>'s Main.qml file:</p>
+<pre class="cpp" translate="no">
+     <span class="name">color</span>: <span class="name">Config</span>.<span class="name">mainColor</span>
+</pre>
+<h4 id="the-custom-mediacontrols-qml-module">The custom MediaControls QML module</h4>
+<p>This module holds all the types used to define the application's controls including:</p>
+<p class="centerAlign"><img src="images/controls.png" alt="" /></p><ul>
+<li>AudioControl.qml</li>
+<li>ControlImages.qml</li>
+<li>CustomButton.qml</li>
+<li>CustomRadioButton.qml</li>
+<li>CustomSlider.qml</li>
+<li>PlaybackControl.qml</li>
+<li>PlaybackRateControl.qml</li>
+<li>PlaybackSeekControl.qml</li>
+</ul>
+<p>See each specific type's definition file for detail on how these controls are implemented. They are an evolution of the controls in the <a href="../qtmultimedia/qtmultimedia-video-mediaplayer-example.html" translate="no">QML Media Player Example</a>.</p>
+<h4 id="the-custom-mediaplayer-qml-module">The custom <code translate="no">MediaPlayer</code> QML module</h4>
+<p>This module has the Main.qml file which declares where most of the top level types for the application are used, and crucially where the Qt Multimedia <a href="../qtmultimedia/qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a> and <a href="../qtmultimedia/qml-qtmultimedia-videooutput.html" translate="no">VideoOutput</a> QML types are declared.</p>
+<pre class="cpp" translate="no">
+     <span class="type"><a href="../qtmultimedia/qml-qtmultimedia-mediaplayer.html" translate="no">MediaPlayer</a></span> {
+         <span class="name">id</span>: <span class="name">mediaPlayer</span>
+
+         <span class="name">playbackRate</span>: <span class="name">playbackControl</span>.<span class="name">playbackRate</span>
+         <span class="name">videoOutput</span>: <span class="name">videoOutput</span>
+         <span class="name">audioOutput</span>: <span class="name">AudioOutput</span> {
+             <span class="name">id</span>: <span class="name">audio</span>
+             <span class="name">volume</span>: <span class="name">playbackControl</span>.<span class="name">volume</span>
+         }
+         <span class="name">source</span>: new <span class="name">URL</span>(<span class="string">&quot;https://download.qt.io/learning/videos/media-player-example/Qt_LogoMergeEffect.mp4&quot;</span>)
+
+         <span class="keyword">function </span><span class="name">updateMetadata</span>() {
+             <span class="name">root</span>.<span class="name">metadataInfo</span>.<span class="name">clear</span>()
+             <span class="name">root</span>.<span class="name">metadataInfo</span>.<span class="name">read</span>(<span class="name">mediaPlayer</span>.<span class="name">metaData</span>)
+         }
+
+         <span class="name">onMetaDataChanged</span>: <span class="name">updateMetadata</span>()
+         <span class="name">onActiveTracksChanged</span>: <span class="name">updateMetadata</span>()
+         <span class="name">onErrorOccurred</span>: {
+             <span class="name">errorPopup</span>.<span class="name">errorMsg</span> <span class="operator">=</span> <span class="name">mediaPlayer</span>.<span class="name">errorString</span>
+             <span class="name">errorPopup</span>.<span class="name">open</span>()
+         }
+         <span class="name">onTracksChanged</span>: {
+             <span class="name">settingsInfo</span>.<span class="name">tracksInfo</span>.<span class="name">selectedAudioTrack</span> <span class="operator">=</span> <span class="name">mediaPlayer</span>.<span class="name">activeAudioTrack</span>
+             <span class="name">settingsInfo</span>.<span class="name">tracksInfo</span>.<span class="name">selectedVideoTrack</span> <span class="operator">=</span> <span class="name">mediaPlayer</span>.<span class="name">activeVideoTrack</span>
+             <span class="name">settingsInfo</span>.<span class="name">tracksInfo</span>.<span class="name">selectedSubtitleTrack</span> <span class="operator">=</span> <span class="name">mediaPlayer</span>.<span class="name">activeSubtitleTrack</span>
+             <span class="name">updateMetadata</span>()
+         }
+
+         <span class="name">onMediaStatusChanged</span>: {
+             <span class="keyword">if</span> ((<span class="name">MediaPlayer</span>.<span class="name">EndOfMedia</span> <span class="operator">===</span> <span class="name">mediaStatus</span> <span class="operator">&amp;&amp;</span> <span class="name">mediaPlayer</span>.<span class="name">loops</span> <span class="operator">!==</span> <span class="name">MediaPlayer</span>.<span class="name">Infinite</span>) <span class="operator">&amp;&amp;</span>
+                     ((<span class="name">root</span>.<span class="name">currentFile</span> <span class="operator">&lt;</span> <span class="name">playlistInfo</span>.<span class="name">mediaCount</span> <span class="operator">-</span> <span class="number">1</span>) <span class="operator">||</span> <span class="name">playlistInfo</span>.<span class="name">isShuffled</span>)) {
+                 <span class="keyword">if</span> (!<span class="name">playlistInfo</span>.<span class="name">isShuffled</span>) {
+                     ++<span class="name">root</span>.<span class="name">currentFile</span>
+                 }
+                 <span class="name">root</span>.<span class="name">playMedia</span>()
+             } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="name">MediaPlayer</span>.<span class="name">EndOfMedia</span> <span class="operator">===</span> <span class="name">mediaStatus</span> <span class="operator">&amp;&amp;</span> <span class="name">root</span>.<span class="name">playlistLooped</span> <span class="operator">&amp;&amp;</span> <span class="name">playlistInfo</span>.<span class="name">mediaCount</span>) {
+                 <span class="name">root</span>.<span class="name">currentFile</span> <span class="operator">=</span> <span class="number">0</span>
+                 <span class="name">root</span>.<span class="name">playMedia</span>()
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtmultimedia/qml-qtmultimedia-videooutput.html" translate="no">VideoOutput</a></span> {
+         <span class="name">id</span>: <span class="name">videoOutput</span>
+
+         <span class="name">anchors</span>.top: <span class="name">fullScreen</span> <span class="operator">||</span> <span class="name">Config</span>.<span class="name">isMobileTarget</span> ? <span class="name">parent</span>.<span class="name">top</span> : <span class="name">menuBar</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.bottom: <span class="name">fullScreen</span> ? <span class="name">parent</span>.<span class="name">bottom</span> : <span class="name">playbackControl</span>.<span class="name">top</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+         <span class="name">anchors</span>.leftMargin: <span class="name">fullScreen</span> ? <span class="number">0</span> : <span class="number">20</span>
+         <span class="name">anchors</span>.rightMargin: <span class="name">fullScreen</span> ? <span class="number">0</span> : <span class="number">20</span>
+         <span class="name">visible</span>: <span class="name">mediaPlayer</span>.<span class="name">hasVideo</span>
+
+         property <span class="type">bool</span> <span class="name">fullScreen</span>: <span class="number">false</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+             <span class="name">onDoubleTapped</span>: {
+                 <span class="keyword">if</span> (<span class="name">parent</span>.<span class="name">fullScreen</span>) {
+                     <span class="name">root</span>.<span class="name">showNormal</span>()
+                 } <span class="keyword">else</span> {
+                     <span class="name">root</span>.<span class="name">showFullScreen</span>()
+                 }
+                 <span class="name">parent</span>.<span class="name">fullScreen</span> <span class="operator">=</span> !<span class="name">parent</span>.<span class="name">fullScreen</span>
+             }
+             <span class="name">onTapped</span>: {
+                 <span class="name">root</span>.<span class="name">closeOverlays</span>()
+             }
+         }
+     }
+</pre>
+<p>The module contains the other customs types used for retrieving and displaying file information, as well as calling the file picker.</p>
+<ul>
+<li>ErrorPopup.qml</li>
+<li>Images.qml</li>
+<li>MetadataInfo.qml</li>
+<li>PlayerMenuBar.qml</li>
+<li>PlaylistInfo.qml</li>
+<li>SettingsInfo.qml</li>
+<li>ThemeInfo.qml</li>
+<li>TouchMenu.qml</li>
+<li>TracksInfo.qml</li>
+<li>TracksOptions.qml</li>
+<li>UrlPopup.qml</li>
+</ul>
+<p>See each specific type's definition file for detail on how types are implemented. Some are an evolution of those found in <a href="../qtmultimedia/qtmultimedia-video-mediaplayer-example.html" translate="no">QML Media Player Example</a>.</p>
+<h4 id="new-functionality">New functionality</h4>
+<p>This example application has some new functionality implemented by types, such as <code translate="no">PlaylistInfo</code> and <code translate="no">ThemeInfo</code>. See the respective .qml files for detail on how these are implemented.</p>
 <p><a href="https://code.qt.io/cgit/qt/qtdoc.git/tree/examples/demos/mediaplayer?h=6.6" translate="no">Example project @ code.qt.io</a></p>
 </div>
 <!-- @@@demos/mediaplayer -->
@@ -65,9 +228,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

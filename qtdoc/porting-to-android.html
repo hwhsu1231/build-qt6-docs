@@ -28,7 +28,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Porting to Android</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -42,15 +42,43 @@
 <span class="naviSeparator">  &#9702;  </span>
 <a class="nextPage" href="deployment-android.html">Deploying an Application on Android</a>
 </p>
-<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#porting-from-qt-desktop-applications">Porting from Qt desktop applications</a></li>
+<li class="level1"><a href="#adding-resources">Adding resources</a></li>
+<li class="level2"><a href="#the-qt-resource-system">The Qt resource system</a></li>
+<li class="level2"><a href="#adding-resources-using-the-asset-approach">Adding resources using the asset approach</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
 <h1 class="title">Porting to Android</h1>
 <!-- $$$porting-to-android.html-description -->
 <div class="descr" id="details">
-<p>Most Qt applications should be portable to Android with ease, unless they depend on a specific hardware or software feature not supported by Android. If your application is not using any such feature, deployment is the only step that might demands some changes to your application.</p>
+<p>Most Qt applications should be portable to Android with ease unless they depend on a specific hardware or software feature not supported by Android.</p>
+<p>The porting approach differs depending on whether the existing application is QML or Widget based, your intended build tool, and if you are porting from a mobile or desktop application.</p>
+<p>QML-based applications built with CMake are considered the best approach for mobile applications.</p>
+<h2 id="porting-from-qt-desktop-applications">Porting from Qt desktop applications</h2>
+<p>Most of your existing Qt code should work, but you must make some decisions around your UI scalability and layout for different orientations and screen sizes. Consider a <a href="https://www.qt.io/blog/responsive-layouts-in-qt" translate="no">responsive layouts</a> approach to fully take advantage of Qt Qml Applications.</p>
+<p>There are considerations that are not directly impacted by using Qt, such as app store guidelines, theme guidelines, and others that may impact the way you develop your application. These won't be discussed here.</p>
+<h2 id="adding-resources">Adding resources</h2>
+<p>Most applications need resources. Here, we discuss how that impacts porting your application to Android.</p>
+<h3 id="the-qt-resource-system">The Qt resource system</h3>
 <p>Like most UI applications, Qt applications also depend on resources such as images, icons, translation files, and so on. These resources must be made available on the device as they are required for the application to function correctly.</p>
 <p>The most convenient option is to bundle the resources into a qrc file, which gets built into the application binary. This approach reduces the porting effort considerably and provides faster access to the resources. It is also a cross-platform approach, which makes porting to other platforms easier.</p>
-<p>By default, all Qt applications can access the contents of a qrc file using the &quot;:/&quot; prefix or the URL scheme prefix, &quot;qrc:&quot;. To know more about qrc files and how they are handled, see <a href="../qtcore/resources.html" translate="no">the Qt Resource System</a>.</p>
-<p>The other approach is to deploy the resources into the package's <code translate="no">assets</code> directory. It is the best option if you want to achieve better interoperability with the Android APIs. You can access all resources in the directory using the &quot;assets:&quot; prefix. Unlike qrc, this approach is Android specific, not a cross-platform solution.</p>
+<p>By default, all Qt applications can access the contents of a qrc file using the &quot;:/&quot; prefix or the URL scheme prefix, &quot;qrc:&quot;. To know more about qrc files and how they are handled, see <a href="porting-to-android.html#the-qt-resource-system" translate="no">the Qt Resource System</a>.</p>
+<h3 id="adding-resources-using-the-asset-approach">Adding resources using the asset approach</h3>
+<p>The asset approach is the best option for better interoperability with the Android APIs. You can access all resources in the directory using the &quot;assets:&quot; prefix. Unlike qrc, this approach is Android-specific, not a cross-platform solution.</p>
+<h4 id="the-asset-approach-with-cmake">The asset approach with CMake</h4>
+<p>If you are new to using CMake or CMake with Qt for the first time, see <a href="../qtcmake/cmake-manual.html" translate="no">Build with CMake</a>. Here, the focus is on the steps applicable for adding resources.</p>
+<p>You will likely want to modify a few things that are controlled by the Android Manifest file. See <a href="../qtcore/android-manifest-file-configuration.html" translate="no">Qt Android Manifest File Configuration</a> for more information on that. So you likely have already set <a href="../qtcore/cmake-target-property-qt-android-package-source-dir.html" translate="no">QT_ANDROID_PACKAGE_SOURCE_DIR</a> like so:</p>
+<pre class="cpp plain" translate="no">
+ set_property(TARGET target_name PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+              &quot;${CMAKE_CURRENT_SOURCE_DIR}/android&quot;)
+</pre>
+<p>Once that is done, you can access your assets in your application as detailed in <a href="android-platform-notes.html#assets-file-system" translate="no">Assets File System</a>.</p>
+<h4 id="the-asset-approach-with-qmake">The asset approach with qmake</h4>
 <p>To use the &quot;assets:&quot; approach, for example, add the following lines into the <code translate="no">.pro</code> file:</p>
 <pre class="cpp plain" translate="no">
  android {
@@ -59,7 +87,7 @@
      INSTALLS += assets
  }
 </pre>
-<p>Then you can access that image asset from C++ as follows:</p>
+<p>Then, you can access that image asset from C++ as follows:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> image(<span class="string">&quot;assets:/images/happy.png&quot;</span>);
 </pre>
@@ -78,7 +106,7 @@
 <li>Deploy your application to a device or AVD. For more information, see <a href="https://doc.qt.io/qtcreator/creator-deploying-android.html" translate="no">Qt Creator: Deploying Applications to Android Devices</a>.</li>
 </ol>
 <div class="admonition note">
-<p><b>Note: </b>Qt Quick Controls will use the <a href="../qtquickcontrols/qtquickcontrols-material.html" translate="no">Material Style</a> if the target device is running Android 3.0 (API 11) or later. The application should function normally on devices with Android versions earlier than v3.0, but without native style for controls.</p>
+<p><b>Note: </b>Qt Quick Controls will use the <a href="../qtquickcontrols/qtquickcontrols-material.html" translate="no">Material Style</a> if the target device is running Android 3.0 (API 11) or later. The application should function normally on devices with Android versions earlier than v3.0 but without a native style for controls.</p>
 </div>
 </div>
 <!-- @@@porting-to-android.html -->
@@ -94,9 +122,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

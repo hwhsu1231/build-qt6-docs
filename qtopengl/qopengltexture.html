@@ -31,7 +31,7 @@
 <li><a href="qtopengl-module.html" translate="no">C++ Classes</a></li>
 <li>QtGui</li>
 <li>QOpenGLTexture</li>
-<li id="buildversion"><a href="qtopengl-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtopengl-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -192,10 +192,10 @@
 <p>The typical usage pattern for QOpenGLTexture is</p>
 <ul>
 <li>Instantiate the object specifying the texture target type</li>
-<li>Set properties that affect the storage requirements e.g&#x2e; storage format, dimensions</li>
+<li>Set properties that affect the storage requirements e.g. storage format, dimensions</li>
 <li>Allocate the server-side storage</li>
 <li>Optionally upload pixel data</li>
-<li>Optionally set any additional properties e.g&#x2e; filtering and border options</li>
+<li>Optionally set any additional properties e.g. filtering and border options</li>
 <li>Render with texture or render to texture</li>
 </ul>
 <p>In the common case of simply using a <a href="../qtgui/qimage.html" translate="no">QImage</a> as the source of texture pixel data most of the above steps are performed automatically.</p>
@@ -295,7 +295,7 @@
 <tr><td class="topAlign"><code translate="no">QOpenGLTexture::TextureBuffer</code></td><td class="topAlign tblval"><code translate="no">0x00000040</code></td><td class="topAlign">Support for textures that use OpenGL buffer objects as their data source</td></tr>
 <tr><td class="topAlign"><code translate="no">QOpenGLTexture::TextureCubeMapArrays</code></td><td class="topAlign tblval"><code translate="no">0x00000080</code></td><td class="topAlign">Support for cubemap array texture target</td></tr>
 <tr><td class="topAlign"><code translate="no">QOpenGLTexture::Swizzle</code></td><td class="topAlign tblval"><code translate="no">0x00000100</code></td><td class="topAlign">Support for texture component swizzle masks</td></tr>
-<tr><td class="topAlign"><code translate="no">QOpenGLTexture::StencilTexturing</code></td><td class="topAlign tblval"><code translate="no">0x00000200</code></td><td class="topAlign">Support for stencil texturing (i.e&#x2e; looking up depth or stencil components of a combined depth/stencil format texture in GLSL shaders).</td></tr>
+<tr><td class="topAlign"><code translate="no">QOpenGLTexture::StencilTexturing</code></td><td class="topAlign tblval"><code translate="no">0x00000200</code></td><td class="topAlign">Support for stencil texturing (i.e. looking up depth or stencil components of a combined depth/stencil format texture in GLSL shaders).</td></tr>
 <tr><td class="topAlign"><code translate="no">QOpenGLTexture::AnisotropicFiltering</code></td><td class="topAlign tblval"><code translate="no">0x00000400</code></td><td class="topAlign">Support for anisotropic texture filtering</td></tr>
 <tr><td class="topAlign"><code translate="no">QOpenGLTexture::NPOTTextures</code></td><td class="topAlign tblval"><code translate="no">0x00000800</code></td><td class="topAlign">Basic support for non-power-of-two textures</td></tr>
 <tr><td class="topAlign"><code translate="no">QOpenGLTexture::NPOTTextureRepeat</code></td><td class="topAlign tblval"><code translate="no">0x00001000</code></td><td class="topAlign">Full support for non-power-of-two textures including texture repeat modes</td></tr>
@@ -652,7 +652,7 @@
 <!-- @@@comparisonFunction -->
 <!-- $$$comparisonMode[overload1]$$$comparisonMode -->
 <h3 class="fn" translate="no" id="comparisonMode"><span class="type"><a href="qopengltexture.html#ComparisonMode-enum" translate="no">ComparisonMode</a></span> QOpenGLTexture::<span class="name">comparisonMode</span>() const</h3>
-<p>Returns the texture comparison mode set on this texture. By default, a texture has a <a href="qopengltexture.html#ComparisonMode-enum" translate="no">CompareNone</a> comparison mode (i.e&#x2e; comparisons are disabled).</p>
+<p>Returns the texture comparison mode set on this texture. By default, a texture has a <a href="qopengltexture.html#ComparisonMode-enum" translate="no">CompareNone</a> comparison mode (i.e. comparisons are disabled).</p>
 <p><b>See also </b><a href="qopengltexture.html#setComparisonMode" translate="no">setComparisonMode</a>().</p>
 <!-- @@@comparisonMode -->
 <!-- $$$create[overload1]$$$create -->
@@ -667,7 +667,7 @@
 <h3 class="fn" translate="no" id="createTextureView"><span class="type"><a href="qopengltexture.html#QOpenGLTexture" translate="no">QOpenGLTexture</a></span> *QOpenGLTexture::<span class="name">createTextureView</span>(<span class="type"><a href="qopengltexture.html#Target-enum" translate="no">Target</a></span> <i>target</i>, <span class="type"><a href="qopengltexture.html#TextureFormat-enum" translate="no">TextureFormat</a></span> <i>viewFormat</i>, <span class="type">int</span> <i>minimumMipmapLevel</i>, <span class="type">int</span> <i>maximumMipmapLevel</i>, <span class="type">int</span> <i>minimumLayer</i>, <span class="type">int</span> <i>maximumLayer</i>) const</h3>
 <p>Attempts to create a texture view onto this texture. A texture view is somewhat analogous to a view in SQL in that it presents a restricted or reinterpreted view of the original data. Texture views do not allocate any more server-side storage, instead relying on the storage buffer of the source texture.</p>
 <p>Texture views are only available when using immutable storage. For more information on texture views see http://www.opengl.org/wiki/Texture_Storage#Texture_views.</p>
-<p>The <i translate="no">target</i> argument specifies the target to use for the view. Only some targets can be used depending upon the target of the original target. For e.g&#x2e; a view onto a <a href="qopengltexture.html#Target-enum" translate="no">Target1DArray</a> texture can specify either <a href="qopengltexture.html#Target-enum" translate="no">Target1DArray</a> or <a href="qopengltexture.html#Target-enum" translate="no">Target1D</a> but for the latter the number of array layers specified with <i translate="no">minimumLayer</i> and <i translate="no">maximumLayer</i> must be exactly 1.</p>
+<p>The <i translate="no">target</i> argument specifies the target to use for the view. Only some targets can be used depending upon the target of the original target. For e.g. a view onto a <a href="qopengltexture.html#Target-enum" translate="no">Target1DArray</a> texture can specify either <a href="qopengltexture.html#Target-enum" translate="no">Target1DArray</a> or <a href="qopengltexture.html#Target-enum" translate="no">Target1D</a> but for the latter the number of array layers specified with <i translate="no">minimumLayer</i> and <i translate="no">maximumLayer</i> must be exactly 1.</p>
 <p>Simpliar constraints apply for the <i translate="no">viewFormat</i>. See the above link and the specification for more details.</p>
 <p>The <i translate="no">minimumMipmapLevel</i>, <i translate="no">maximumMipmapLevel</i>, <i translate="no">minimumLayer</i>, and <i translate="no">maximumLayer</i> arguments serve to restrict the parts of the texture accessible by the texture view.</p>
 <p>If creation of the texture view fails this function will return 0. If the function succeeds it will return a pointer to a new <a href="qopengltexture.html" translate="no">QOpenGLTexture</a> object that will return <code translate="no">true</code> from its <a href="qopengltexture.html#isTextureView" translate="no">isTextureView</a>() function.</p>
@@ -765,7 +765,7 @@
 <p><b>See also </b><a href="qopengltexture.html#setLayers" translate="no">setLayers</a>() and <a href="qopengltexture.html#isStorageAllocated" translate="no">isStorageAllocated</a>().</p>
 <!-- @@@layers -->
 <!-- $$$levelOfDetailRange[overload1]$$$levelOfDetailRange -->
-<h3 class="fn" translate="no" id="levelOfDetailRange"><span class="type"><a href="../qtcore/qpair-proxy.html#QPair-typedef" translate="no">QPair</a></span>&lt;<span class="type">float</span>, <span class="type">float</span>&gt; QOpenGLTexture::<span class="name">levelOfDetailRange</span>() const</h3>
+<h3 class="fn" translate="no" id="levelOfDetailRange"><span class="type"><a href="../qtcore/qpair-qtcore-proxy.html#QPair-typedef" translate="no">QPair</a></span>&lt;<span class="type">float</span>, <span class="type">float</span>&gt; QOpenGLTexture::<span class="name">levelOfDetailRange</span>() const</h3>
 <p>Returns the minimum and maximum level of detail parameters.</p>
 <p><b>See also </b><a href="qopengltexture.html#setLevelOfDetailRange" translate="no">setLevelOfDetailRange</a>(), <a href="qopengltexture.html#minimumLevelOfDetail" translate="no">minimumLevelOfDetail</a>(), and <a href="qopengltexture.html#maximumLevelOfDetail" translate="no">maximumLevelOfDetail</a>().</p>
 <!-- @@@levelOfDetailRange -->
@@ -795,7 +795,7 @@
 <p><b>See also </b><a href="qopengltexture.html#setMipLevels" translate="no">setMipLevels</a>(), <a href="qopengltexture.html#mipLevels" translate="no">mipLevels</a>(), and <a href="qopengltexture.html#setSize" translate="no">setSize</a>().</p>
 <!-- @@@maximumMipLevels -->
 <!-- $$$minMagFilters[overload1]$$$minMagFilters -->
-<h3 class="fn" translate="no" id="minMagFilters"><span class="type"><a href="../qtcore/qpair-proxy.html#QPair-typedef" translate="no">QPair</a></span>&lt;<span class="type"><a href="qopengltexture.html#Filter-enum" translate="no">Filter</a></span>, <span class="type"><a href="qopengltexture.html#Filter-enum" translate="no">Filter</a></span>&gt; QOpenGLTexture::<span class="name">minMagFilters</span>() const</h3>
+<h3 class="fn" translate="no" id="minMagFilters"><span class="type"><a href="../qtcore/qpair-qtcore-proxy.html#QPair-typedef" translate="no">QPair</a></span>&lt;<span class="type"><a href="qopengltexture.html#Filter-enum" translate="no">Filter</a></span>, <span class="type"><a href="qopengltexture.html#Filter-enum" translate="no">Filter</a></span>&gt; QOpenGLTexture::<span class="name">minMagFilters</span>() const</h3>
 <p>Returns the current minification and magnification filters.</p>
 <p><b>See also </b><a href="qopengltexture.html#setMinMagFilters" translate="no">setMinMagFilters</a>().</p>
 <!-- @@@minMagFilters -->
@@ -815,7 +815,7 @@
 <p><b>See also </b><a href="qopengltexture.html#setMipBaseLevel" translate="no">setMipBaseLevel</a>(), <a href="qopengltexture.html#mipMaxLevel" translate="no">mipMaxLevel</a>(), and <a href="qopengltexture.html#mipLevelRange" translate="no">mipLevelRange</a>().</p>
 <!-- @@@mipBaseLevel -->
 <!-- $$$mipLevelRange[overload1]$$$mipLevelRange -->
-<h3 class="fn" translate="no" id="mipLevelRange"><span class="type"><a href="../qtcore/qpair-proxy.html#QPair-typedef" translate="no">QPair</a></span>&lt;<span class="type">int</span>, <span class="type">int</span>&gt; QOpenGLTexture::<span class="name">mipLevelRange</span>() const</h3>
+<h3 class="fn" translate="no" id="mipLevelRange"><span class="type"><a href="../qtcore/qpair-qtcore-proxy.html#QPair-typedef" translate="no">QPair</a></span>&lt;<span class="type">int</span>, <span class="type">int</span>&gt; QOpenGLTexture::<span class="name">mipLevelRange</span>() const</h3>
 <p>Returns the range of mipmap levels that can be used for texture lookups with this texture.</p>
 <p><b>See also </b><a href="qopengltexture.html#setMipLevelRange" translate="no">setMipLevelRange</a>(), <a href="qopengltexture.html#mipBaseLevel" translate="no">mipBaseLevel</a>(), and <a href="qopengltexture.html#mipMaxLevel" translate="no">mipMaxLevel</a>().</p>
 <!-- @@@mipLevelRange -->
@@ -850,7 +850,7 @@
 <p>If <i translate="no">enabled</i> is <code translate="no">true</code>, enables automatic mipmap generation for this texture object to occur whenever the level 0 mipmap data is set via <a href="qopengltexture.html#setData" translate="no">setData</a>().</p>
 <p>The automatic mipmap generation is enabled by default.</p>
 <div class="admonition note">
-<p><b>Note: </b>Mipmap generation is not supported for compressed textures with OpenGL ES 2.0&#x2e;</p>
+<p><b>Note: </b>Mipmap generation is not supported for compressed textures with OpenGL ES 2.0.</p>
 </div>
 <p><b>See also </b><a href="qopengltexture.html#isAutoMipMapGenerationEnabled" translate="no">isAutoMipMapGenerationEnabled</a>() and <a href="qopengltexture.html#generateMipMaps" translate="no">generateMipMaps</a>().</p>
 <!-- @@@setAutoMipMapGenerationEnabled -->
@@ -1095,7 +1095,7 @@
 <!-- @@@setSize -->
 <!-- $$$setSwizzleMask[overload1]$$$setSwizzleMaskSwizzleComponentSwizzleValue -->
 <h3 class="fn" translate="no" id="setSwizzleMask"><span class="type">void</span> QOpenGLTexture::<span class="name">setSwizzleMask</span>(<span class="type"><a href="qopengltexture.html#SwizzleComponent-enum" translate="no">SwizzleComponent</a></span> <i>component</i>, <span class="type"><a href="qopengltexture.html#SwizzleValue-enum" translate="no">SwizzleValue</a></span> <i>value</i>)</h3>
-<p>GLSL shaders are able to reorder the components of the vec4 returned by texture functions. It is also desirable to be able to control this reordering from CPU side code. This is made possible by swizzle masks since OpenGL 3.3&#x2e;</p>
+<p>GLSL shaders are able to reorder the components of the vec4 returned by texture functions. It is also desirable to be able to control this reordering from CPU side code. This is made possible by swizzle masks since OpenGL 3.3.</p>
 <p>Each component of the texture can be mapped to one of the <a href="qopengltexture.html#SwizzleValue-enum" translate="no">SwizzleValue</a> options.</p>
 <p>This function maps <i translate="no">component</i> to the output <i translate="no">value</i>.</p>
 <div class="admonition note">
@@ -1150,9 +1150,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

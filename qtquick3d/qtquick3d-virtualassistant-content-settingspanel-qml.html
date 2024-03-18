@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- virtualassistant.qdoc -->
+  <meta name="description" content="Qt Quick application that presents a 3D model of a virtual assistant with dynamic animations created using QML and timelines.">
+  <title>Qt Quick 3D - Virtual Assistant Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Virtual Assistant Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Virtual Assistant Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2021 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Layouts
+ import QtQuick.Controls
+ import VirtualAssistant.Constants
+
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-pane.html" translate="no">Pane</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+
+     <span class="name">topPadding</span>: <span class="number">10</span>
+     <span class="name">leftPadding</span>: <span class="number">40</span>
+     <span class="name">rightPadding</span>: <span class="number">40</span>
+     <span class="name">bottomPadding</span>: <span class="number">40</span>
+
+     required property <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span> <span class="name">camera</span>
+
+     property <span class="type">alias</span> <span class="name">cameraControllerEnabled</span>: <span class="name">enableCamera</span>.<span class="name">checked</span>
+     property <span class="type">alias</span> <span class="name">cameraFov</span>: <span class="name">fov</span>.<span class="name">value</span>
+     property <span class="type">alias</span> <span class="name">skyboxRotation</span>: <span class="name">skyboxRot</span>.<span class="name">value</span>
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">spacing</span>: <span class="number">10</span>
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Scene settings&quot;</span>)
+             <span class="name">font</span>.pixelSize: <span class="number">24</span>
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+         }
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-checkbox.html" translate="no">CheckBox</a></span> {
+             <span class="name">id</span>: <span class="name">enableCamera</span>
+
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Enable Camera Controller&quot;</span>)
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+             <span class="name">spacing</span>: <span class="number">5</span>
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Camera Fov: &quot;</span>) <span class="operator">+</span> <span class="name">fov</span>.<span class="name">value</span>
+                 <span class="name">font</span>.pixelSize: <span class="number">14</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">fov</span>
+
+                 <span class="name">from</span>: <span class="number">35</span>
+                 <span class="name">to</span>: <span class="number">125</span>
+                 <span class="name">value</span>: <span class="number">80</span>
+                 <span class="name">stepSize</span>: <span class="number">1</span>
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+             <span class="name">spacing</span>: <span class="number">5</span>
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Skybox rotation: &quot;</span>) <span class="operator">+</span> <span class="name">skyboxRot</span>.<span class="name">value</span>
+                 <span class="name">font</span>.pixelSize: <span class="number">14</span>
+             }
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+                 <span class="name">id</span>: <span class="name">skyboxRot</span>
+
+                 <span class="name">from</span>: <span class="number">0</span>
+                 <span class="name">to</span>: <span class="number">360</span>
+                 <span class="name">value</span>: <span class="number">180</span>
+                 <span class="name">stepSize</span>: <span class="number">1</span>
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+             <span class="name">spacing</span>: <span class="number">4</span>
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                 <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Camera position: &quot;</span>)
+             }
+
+             <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+                 <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+                 <span class="name">spacing</span>: <span class="number">5</span>
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                     <span class="name">text</span>: <span class="string">&quot;x: &quot;</span> <span class="operator">+</span> <span class="name">root</span>.<span class="name">camera</span>.<span class="name">x</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+                 }
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                     <span class="name">text</span>: <span class="string">&quot;y: &quot;</span> <span class="operator">+</span> <span class="name">root</span>.<span class="name">camera</span>.<span class="name">y</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+                 }
+                 <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+                     <span class="name">text</span>: <span class="string">&quot;z: &quot;</span> <span class="operator">+</span> <span class="name">root</span>.<span class="name">camera</span>.<span class="name">z</span>.<span class="name">toFixed</span>(<span class="number">2</span>)
+                 }
+             }
+         }
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Reset default settings&quot;</span>)
+             <span class="name">onClicked</span>: {
+                 <span class="name">fov</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">Constants</span>.<span class="name">defaultFov</span>;
+                 <span class="name">enableCamera</span>.<span class="name">checked</span> <span class="operator">=</span> <span class="number">false</span>;
+                 <span class="name">skyboxRot</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">Constants</span>.<span class="name">defaultRotation</span>;
+                 <span class="name">root</span>.<span class="name">camera</span>.<span class="name">position</span> <span class="operator">=</span> <span class="name">Constants</span>.<span class="name">defaultCameraPosition</span>
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+             <span class="name">Layout</span>.fillHeight: <span class="number">true</span>
+             <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+         }
+     }
+ }
+</pre>

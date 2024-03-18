@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- sql-driver.qdoc -->
   <meta name="description" content="How to configure and install Qt SQL drivers for supported databases.">
-  <title>SQL Database Drivers | Qt SQL 6.6.0</title>
+  <title>SQL Database Drivers | Qt SQL 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtsql-index.html" translate="no">Qt SQL</a></li>
 <li>SQL Database Drivers</li>
-<li id="buildversion"><a href="qtsql-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtsql-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -67,7 +67,7 @@
 <div class="table"><table class="generic">
  <thead><tr class="qt-style"><th >Driver name</th><th >DBMS</th></tr></thead>
 <tr valign="top" class="odd"><td ><a href="sql-driver.html#qdb2" translate="no">QDB2</a></td><td >IBM DB2 (version 7.1 and above)</td></tr>
-<tr valign="top" class="even"><td ><a href="sql-driver.html#qibase" translate="no">#QIBASE</a></td><td >Borland InterBase / Firebird</td></tr>
+<tr valign="top" class="even"><td ><a href="sql-driver.html#qibase" translate="no">QIBASE</a></td><td >Borland InterBase / Firebird</td></tr>
 <tr valign="top" class="odd"><td ><a href="sql-driver.html#qmysql" translate="no">QMYSQL / MARIADB</a></td><td >MySQL or MariaDB (version 5.6 and above)</td></tr>
 <tr valign="top" class="even"><td ><a href="sql-driver.html#qoci" translate="no">QOCI</a></td><td >Oracle Call Interface Driver (version 12.1 and above)</td></tr>
 <tr valign="top" class="odd"><td ><a href="sql-driver.html#qodbc" translate="no">QODBC</a></td><td >Open Database Connectivity (ODBC) - Microsoft SQL Server and other ODBC-compliant databases</td></tr>
@@ -97,7 +97,7 @@
 
  <span class="operator">[</span><span class="operator">.</span><span class="operator">.</span><span class="operator">.</span><span class="operator">]</span>
 </pre>
-<p>The <code translate="no">configure</code> script cannot detect the necessary libraries and include files if they are not in the standard paths, so it may be necessary to specify these paths using either driver-specific include and library path variables or <code translate="no">CMAKE_INCLUDE_PATH</code> and <code translate="no">CMAKE_LIBRARY_PATH</code>. For example, if your MySQL files are installed in <code translate="no">C:\mysql-connector-c-6.1&#x2e;11-winx64</code> on Windows, then pass the following parameter to double-dash part of configure line:</p>
+<p>The <code translate="no">configure</code> script cannot detect the necessary libraries and include files if they are not in the standard paths, so it may be necessary to specify these paths using either driver-specific include and library path variables or <code translate="no">CMAKE_INCLUDE_PATH</code> and <code translate="no">CMAKE_LIBRARY_PATH</code>. For example, if your MySQL files are installed in <code translate="no">C:\mysql-connector-c-6.1.11-winx64</code> on Windows, then pass the following parameter to double-dash part of configure line:</p>
 <pre class="cpp" translate="no">
  C:\<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span>\<span class="number">6.0.0</span>\Src\configure<span class="operator">.</span>bat <span class="operator">-</span>sql<span class="operator">-</span>mysql <span class="operator">-</span><span class="operator">-</span> <span class="operator">-</span>DMySQL_INCLUDE_DIR<span class="operator">=</span><span class="string">&quot;C:\mysql-8.0.22-winx64\include&quot;</span> <span class="operator">-</span>DMySQL_LIBRARY<span class="operator">=</span><span class="string">&quot;C:\mysql-8.0.22-winx64\lib\libmysql.lib&quot;</span>
  Configure summary:
@@ -116,7 +116,7 @@
  <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
 </pre>
 <p>When you configure drivers in the manner described above, CMake skips any dependency checks and uses the provided paths as is. This is especially useful if the package provides its own set of system libraries that should not be recognized by the build routine.</p>
-<p>In some cases it's more convenient to use <code translate="no">CMAKE_INCLUDE_PATH</code> and <code translate="no">CMAKE_LIBRARY_PATH</code> variables to locate required libraries. You should prefer this method if module needs to set properties for the provided target libraries (e.g&#x2e; this is required for PostgreSQL and SQLite). For example, you can do this as follows, to locate MySQL:</p>
+<p>In some cases it's more convenient to use <code translate="no">CMAKE_INCLUDE_PATH</code> and <code translate="no">CMAKE_LIBRARY_PATH</code> variables to locate required libraries. You should prefer this method if module needs to set properties for the provided target libraries (e.g. this is required for PostgreSQL and SQLite). For example, you can do this as follows, to locate MySQL:</p>
 <pre class="cpp" translate="no">
  C:\<span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span>\<span class="number">6.0.0</span>\Src\configure<span class="operator">.</span>bat <span class="operator">-</span>sql<span class="operator">-</span>mysql <span class="operator">-</span><span class="operator">-</span> <span class="operator">-</span>DCMAKE_INCLUDE_PATH<span class="operator">=</span><span class="string">&quot;C:\mysql-8.0.22-winx64\include&quot;</span> <span class="operator">-</span>DCMAKE_LIBRARY_PATH<span class="operator">=</span><span class="string">&quot;C:\mysql-8.0.22-winx64\lib&quot;</span>
  Configure summary:
@@ -236,7 +236,7 @@
  cmake <span class="operator">-</span><span class="operator">-</span>install <span class="operator">.</span>
 </pre>
 <h4 id="how-to-build-the-qmysql-plugin-on-windows">How to Build the QMYSQL Plugin on Windows</h4>
-<p>You need to get the MySQL installation files (e.g&#x2e; <a href="https://dev.mysql.com/downloads/installer/" translate="no">MySQL web installer</a> or <a href="https://downloads.mariadb.com/Connectors/c/" translate="no">MariaDB C Connector</a>). Run the installer, select custom installation and install the MySQL C Connector which matches your Qt installation (x86 or x64). After installation check that the needed files are there:</p>
+<p>You need to get the MySQL installation files (e.g. <a href="https://dev.mysql.com/downloads/installer/" translate="no">MySQL web installer</a> or <a href="https://downloads.mariadb.com/Connectors/c/" translate="no">MariaDB C Connector</a>). Run the installer, select custom installation and install the MySQL C Connector which matches your Qt installation (x86 or x64). After installation check that the needed files are there:</p>
 <ul>
 <li><code translate="no">&lt;MySQL dir&gt;/lib/libmysql.lib</code></li>
 <li><code translate="no">&lt;MySQL dir&gt;/lib/libmysql.dll</code></li>
@@ -249,9 +249,9 @@
 <li><code translate="no">&lt;MariaDB dir&gt;/include/mysql.h</code></li>
 </ul>
 <div class="admonition note">
-<p><b>Note: </b>As of MySQL 8.0&#x2e;19, the C Connector is no longer offered as a standalone installable component. Instead, you can get <code translate="no">mysql.h</code> and <code translate="no">libmysql.*</code> by installing the full MySQL Server (x64 only) or the <a href="https://downloads.mariadb.org/connector-c/" translate="no">MariaDB C Connector</a>.</p>
+<p><b>Note: </b>As of MySQL 8.0.19, the C Connector is no longer offered as a standalone installable component. Instead, you can get <code translate="no">mysql.h</code> and <code translate="no">libmysql.*</code> by installing the full MySQL Server (x64 only) or the <a href="https://downloads.mariadb.org/connector-c/" translate="no">MariaDB C Connector</a>.</p>
 </div>
-<p>Build the plugin as follows (here it is assumed that <code translate="no">&lt;MySQL dir&gt;</code> is <code translate="no">C:\mysql-8.0&#x2e;22-winx64</code>):</p>
+<p>Build the plugin as follows (here it is assumed that <code translate="no">&lt;MySQL dir&gt;</code> is <code translate="no">C:\mysql-8.0.22-winx64</code>):</p>
 <pre class="cpp" translate="no">
  mkdir build<span class="operator">-</span>sqldrivers
  cd build<span class="operator">-</span>sqldrivers
@@ -320,7 +320,7 @@
 <p>On Windows, an ODBC driver manager should be installed by default. For Unix systems, there are some implementations which must be installed first. Note that every end user of your application is required to have an ODBC driver manager installed, otherwise the QODBC plugin will not work.</p>
 <p>When connecting to an ODBC datasource, you should pass the name of the ODBC datasource to the <a href="qsqldatabase.html#setDatabaseName" translate="no">QSqlDatabase::setDatabaseName</a>() function, rather than the actual database name.</p>
 <p>The QODBC Plugin needs an ODBC compliant driver manager version 2.0 or later. Some ODBC drivers claim to be version-2.0-compliant, but do not offer all the necessary functionality. The QODBC plugin therefore checks whether the data source can be used after a connection has been established, and refuses to work if the check fails. If you do not like this behavior, you can remove the <code translate="no">#define ODBC_CHECK_DRIVER</code> line from the file <code translate="no">qsql_odbc.cpp</code>. Do this at your own risk!</p>
-<p>By default, Qt instructs the ODBC driver to behave as an ODBC 2.x driver. However, for some <i>driver-manager/ODBC 3.x-driver</i> combinations (e.g&#x2e;, <i>unixODBC/MaxDB ODBC</i>), telling the ODBC driver to behave as a 2.x driver can cause the driver plugin to have unexpected behavior. To avoid this problem, instruct the ODBC driver to behave as a 3.x driver by <a href="qsqldatabase.html#setConnectOptions" translate="no">setting the connect option</a> <code translate="no">&quot;SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3&quot;</code> before you <a href="qsqldatabase.html#open" translate="no">open your database connection</a>. Note that this will affect multiple aspects of ODBC driver behavior, e.g&#x2e;, the SQLSTATEs. Before setting this connect option, consult your ODBC documentation about behavior differences you can expect.</p>
+<p>By default, Qt instructs the ODBC driver to behave as an ODBC 2.x driver. However, for some <i>driver-manager/ODBC 3.x-driver</i> combinations (e.g., <i>unixODBC/MaxDB ODBC</i>), telling the ODBC driver to behave as a 2.x driver can cause the driver plugin to have unexpected behavior. To avoid this problem, instruct the ODBC driver to behave as a 3.x driver by <a href="qsqldatabase.html#setConnectOptions" translate="no">setting the connect option</a> <code translate="no">&quot;SQL_ATTR_ODBC_VERSION=SQL_OV_ODBC3&quot;</code> before you <a href="qsqldatabase.html#open" translate="no">open your database connection</a>. Note that this will affect multiple aspects of ODBC driver behavior, e.g., the SQLSTATEs. Before setting this connect option, consult your ODBC documentation about behavior differences you can expect.</p>
 <p>If you experience very slow access of the ODBC datasource, make sure that ODBC call tracing is turned off in the ODBC datasource manager.</p>
 <p>Some drivers do not support scrollable cursors. In that case, only queries in <a href="qsqlquery.html#setForwardOnly" translate="no">QSqlQuery::setForwardOnly</a>() mode can be used successfully.</p>
 <h4 id="odbc-stored-procedure-support">ODBC Stored Procedure Support</h4>
@@ -476,7 +476,7 @@
 <p>Users of MinGW may wish to consult the following online document: <a href="http://www.postgresql.org/docs/current/static/installation-platform-notes.html#INSTALLATION-NOTES-MINGW" translate="no">PostgreSQL MinGW/Native Windows</a>.</p>
 <p>When you distribute your application, remember to include libpq.dll in your installation package. It must be placed in the same folder as the application executable.</p>
 <span id="qdb2"></span><h3 id="qdb2-for-ibm-db2-version-7-1-and-above">QDB2 for IBM DB2 (Version 7.1 and above)</h3>
-<p>The Qt DB2 plugin makes it possible to access IBM DB2 databases. It has been tested with IBM DB2 v7.1 and 7.2&#x2e; You must install the IBM DB2 development client library, which contains the header and library files necessary for compiling the QDB2 plugin.</p>
+<p>The Qt DB2 plugin makes it possible to access IBM DB2 databases. It has been tested with IBM DB2 v7.1 and 7.2. You must install the IBM DB2 development client library, which contains the header and library files necessary for compiling the QDB2 plugin.</p>
 <p>The QDB2 driver supports prepared queries, reading/writing of Unicode strings and reading/writing of BLOBs.</p>
 <p>We suggest using a forward-only query when calling stored procedures in DB2 (see <a href="qsqlquery.html#setForwardOnly" translate="no">QSqlQuery::setForwardOnly</a>()).</p>
 <h4 id="connection-options">Connection options</h4>
@@ -547,7 +547,7 @@
 </pre>
 <p>For better performance the regular expressions are cached internally. By default the cache size is 25, but it can be changed through the option's value. For example passing &quot;<code translate="no">QSQLITE_ENABLE_REGEXP=10</code>&quot; reduces the cache size to 10.</p>
 <h4 id="qsqlite-file-format-compatibility">QSQLITE File Format Compatibility</h4>
-<p>SQLite minor releases sometimes break file format forward compatibility. For example, SQLite 3.3 can read database files created with SQLite 3.2, but databases created with SQLite 3.3 cannot be read by SQLite 3.2&#x2e; Please refer to the SQLite documentation and change logs for information about file format compatibility between versions.</p>
+<p>SQLite minor releases sometimes break file format forward compatibility. For example, SQLite 3.3 can read database files created with SQLite 3.2, but databases created with SQLite 3.3 cannot be read by SQLite 3.2. Please refer to the SQLite documentation and change logs for information about file format compatibility between versions.</p>
 <p>Qt minor releases usually follow the SQLite minor releases, while Qt patch releases follow SQLite patch releases. Patch releases are therefore both backward and forward compatible.</p>
 <p>To force SQLite to use a specific file format, it is necessary to build and ship your own database plugin with your own SQLite library as illustrated above. Some versions of SQLite can be forced to write a specific file format by setting the <code translate="no">SQLITE_DEFAULT_FILE_FORMAT</code> define when building SQLite.</p>
 <span id="qmimer"></span><h3 id="qmimer-for-mimer-sql-version-11-and-higher">QMIMER for Mimer SQL version 11 and higher</h3>
@@ -656,7 +656,7 @@
 </pre>
 <p>Note that <code translate="no">C:\interbase\bin</code> must be in the <code translate="no">PATH</code>.</p>
 <span id="troubleshooting"></span><h2 id="troubleshooting">Troubleshooting</h2>
-<p>You should always use client libraries that have been compiled with the same compiler as you are using for your project. If you cannot get a source distribution to compile the client libraries yourself, you must make sure that the pre-compiled library is compatible with your compiler, otherwise you will get a lot of &quot;undefined symbols&quot; errors. Some compilers have tools to convert libraries, e.g&#x2e; Borland ships the tool <code translate="no">COFF2OMF.EXE</code> to convert libraries that have been generated with Microsoft Visual C++.</p>
+<p>You should always use client libraries that have been compiled with the same compiler as you are using for your project. If you cannot get a source distribution to compile the client libraries yourself, you must make sure that the pre-compiled library is compatible with your compiler, otherwise you will get a lot of &quot;undefined symbols&quot; errors. Some compilers have tools to convert libraries, e.g. Borland ships the tool <code translate="no">COFF2OMF.EXE</code> to convert libraries that have been generated with Microsoft Visual C++.</p>
 <p>If the compilation of a plugin succeeds but it cannot be loaded, make sure that the following requirements are met:</p>
 <ul>
 <li>Ensure that the plugin is in the correct directory. You can use QApplication::libraryPaths() to determine where Qt looks for plugins.</li>
@@ -715,9 +715,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

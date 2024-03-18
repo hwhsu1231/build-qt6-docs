@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- model-view-programming.qdoc -->
   <meta name="description" content="A guide to Qt's extensible model/view architecture.">
-  <title>Model/View Programming | Qt Widgets 6.6.0</title>
+  <title>Model/View Programming | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li>Model/View Programming</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -131,7 +131,7 @@
 <p>Delegates are described in the section on <a href="model-view-programming.html#delegate-classes" translate="no">Delegate Classes</a>.</p>
 <h4 id="sorting">Sorting</h4>
 <p>There are two ways of approaching sorting in the model/view architecture; which approach to choose depends on your underlying model.</p>
-<p>If your model is sortable, i.e, if it reimplements the <a href="../qtcore/qabstractitemmodel.html#sort" translate="no">QAbstractItemModel::sort</a>() function, both <a href="qtableview.html" translate="no">QTableView</a> and <a href="qtreeview.html" translate="no">QTreeView</a> provide an API that allows you to sort your model data programmatically. In addition, you can enable interactive sorting (i.e&#x2e; allowing the users to sort the data by clicking the view's headers), by connecting the <a href="qheaderview.html#sortIndicatorChanged" translate="no">QHeaderView::sortIndicatorChanged</a>() signal to the <a href="qtableview.html#sortByColumn" translate="no">QTableView::sortByColumn</a>() slot or the <a href="qtreeview.html#sortByColumn" translate="no">QTreeView::sortByColumn</a>() slot, respectively.</p>
+<p>If your model is sortable, i.e, if it reimplements the <a href="../qtcore/qabstractitemmodel.html#sort" translate="no">QAbstractItemModel::sort</a>() function, both <a href="qtableview.html" translate="no">QTableView</a> and <a href="qtreeview.html" translate="no">QTreeView</a> provide an API that allows you to sort your model data programmatically. In addition, you can enable interactive sorting (i.e. allowing the users to sort the data by clicking the view's headers), by connecting the <a href="qheaderview.html#sortIndicatorChanged" translate="no">QHeaderView::sortIndicatorChanged</a>() signal to the <a href="qtableview.html#sortByColumn" translate="no">QTableView::sortByColumn</a>() slot or the <a href="qtreeview.html#sortByColumn" translate="no">QTreeView::sortByColumn</a>() slot, respectively.</p>
 <p>The alternative approach, if your model does not have the required interface or if you want to use a list view to present your data, is to use a proxy model to transform the structure of your model before presenting the data in the view. This is covered in detail in the section on <a href="model-view-programming.html#proxy-models" translate="no">Proxy Models</a>.</p>
 <h4 id="convenience-classes">Convenience classes</h4>
 <p>A number of <i>convenience</i> classes are derived from the standard view classes for the benefit of applications that rely on Qt's item-based item view and table classes. They are not intended to be subclassed.</p>
@@ -456,7 +456,7 @@
 <div class="table"><table class="generic" width="70%">
  <thead><tr class="qt-style"><th >Current Item</th><th >Selected Items</th></tr></thead>
 <tr valign="top" class="odd"><td >There can only be one current item.</td><td >There can be multiple selected items.</td></tr>
-<tr valign="top" class="even"><td >The current item will be changed with key navigation or mouse button clicks.</td><td >The selected state of items is set or unset, depending on several pre-defined modes - e.g&#x2e;, single selection, multiple selection, etc. - when the user interacts with the items.</td></tr>
+<tr valign="top" class="even"><td >The current item will be changed with key navigation or mouse button clicks.</td><td >The selected state of items is set or unset, depending on several pre-defined modes - e.g., single selection, multiple selection, etc. - when the user interacts with the items.</td></tr>
 <tr valign="top" class="odd"><td >The current item will be edited if the edit key, <b translate="no">F2</b>, is pressed or the item is double-clicked (provided that editing is enabled).</td><td >The current item can be used together with an anchor to specify a range that should be selected or deselected (or a combination of the two).</td></tr>
 <tr valign="top" class="even"><td >The current item is indicated by the focus rectangle.</td><td >The selected items are indicated with the selection rectangle.</td></tr>
 </table></div>
@@ -992,7 +992,7 @@
 <h4 id="inserting-dropped-data-into-a-model">Inserting dropped data into a model</h4>
 <p>The way that any given model handles dropped data depends on both its type (list, table, or tree) and the way its contents is likely to be presented to the user. Generally, the approach taken to accommodate dropped data should be the one that most suits the model's underlying data store.</p>
 <p>Different types of model tend to handle dropped data in different ways. List and table models only provide a flat structure in which items of data are stored. As a result, they may insert new rows (and columns) when data is dropped on an existing item in a view, or they may overwrite the item's contents in the model using some of the data supplied. Tree models are often able to add child items containing new data to their underlying data stores, and will therefore behave more predictably as far as the user is concerned.</p>
-<p>Dropped data is handled by a model's reimplementation of <a href="../qtcore/qabstractitemmodel.html#dropMimeData" translate="no">QAbstractItemModel::dropMimeData</a>(). For example, a model that handles a simple list of strings can provide an implementation that handles data dropped onto existing items separately to data dropped into the top level of the model (i.e&#x2e;, onto an invalid item).</p>
+<p>Dropped data is handled by a model's reimplementation of <a href="../qtcore/qabstractitemmodel.html#dropMimeData" translate="no">QAbstractItemModel::dropMimeData</a>(). For example, a model that handles a simple list of strings can provide an implementation that handles data dropped onto existing items separately to data dropped into the top level of the model (i.e., onto an invalid item).</p>
 <p>Models can forbid dropping on certain items, or depending on the dropped data, by reimplementing <a href="../qtcore/qabstractitemmodel.html#canDropMimeData" translate="no">QAbstractItemModel::canDropMimeData</a>().</p>
 <p>The model first has to make sure that the operation should be acted on, the data supplied is in a format that can be used, and that its destination within the model is valid:</p>
 <pre class="cpp" translate="no">
@@ -1262,9 +1262,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

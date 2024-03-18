@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- definetypes.qdoc -->
   <meta name="description" content="Description of ways to define QML object types from C++ code">
-  <title>Defining QML Types from C++ | Qt QML 6.6.0</title>
+  <title>Defining QML Types from C++ | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li>Defining QML Types from C++</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -44,6 +44,7 @@
 <li class="level2"><a href="#preconditions">Preconditions</a></li>
 <li class="level2"><a href="#registering-an-instantiable-object-type">Registering an Instantiable Object Type</a></li>
 <li class="level2"><a href="#registering-value-types">Registering Value Types</a></li>
+<li class="level2"><a href="#value-types-with-enumerations">Value Types with Enumerations</a></li>
 <li class="level2"><a href="#registering-non-instantiable-types">Registering Non-Instantiable Types</a></li>
 <li class="level2"><a href="#final-properties">Final properties</a></li>
 <li class="level2"><a href="#type-revisions-and-versions">Type Revisions and Versions</a></li>
@@ -79,7 +80,7 @@
 <p>Furthermore, your class declarations have to live in headers reachable via your project's include path. The declarations are used to generate registration code at compile time, and the registration code needs to include the headers that contain the declarations.</p>
 <h3 id="registering-an-instantiable-object-type">Registering an Instantiable Object Type</h3>
 <p><b>Any <a href="../qtcore/qobject.html" translate="no">QObject</a>-derived C++ class can be registered as the definition of a <a href="qtqml-typesystem-objecttypes.html" translate="no">QML object type</a></b>. Once a class is registered with the QML type system, the class can be declared and instantiated like any other object type from QML code. Once created, a class instance can be manipulated from QML; as <a href="qtqml-cppintegration-exposecppattributes.html" translate="no">Exposing Attributes of C++ Types to QML</a> explains, the properties, methods and signals of any <a href="../qtcore/qobject.html" translate="no">QObject</a>-derived class are accessible from QML code.</p>
-<p>To register a <a href="../qtcore/qobject.html" translate="no">QObject</a>-derived class as an instantiable QML object type, add <code translate="no">QML_ELEMENT</code> or <code translate="no">QML_NAMED_ELEMENT(&lt;name&gt;)</code> to the class declaration. You also need to make adjustments in the build system. For qmake, add <code translate="no">CONFIG += qmltypes</code>, a <code translate="no">QML_IMPORT_NAME</code>, and a <code translate="no">QML_IMPORT_MAJOR_VERSION</code> to your project file. For CMake, the file containing the class should be part of a target set-up with <a href="qt-add-qml-module.html" translate="no">qt_add_qml_module()</a>. This will register the class into the type namespace under the given major version, using either the class name or an explicitly given name as QML type name. The minor version(s) will be derived from any revisions attached to properties, methods, or signals. The default minor version is <code translate="no">0</code>. You can explicitly restrict the type to be available only from specific minor versions by adding the <code translate="no">QML_ADDED_IN_MINOR_VERSION()</code> macro to the class declaration. Clients can import suitable versions of the namespace in order to use the type.</p>
+<p>To register a <a href="../qtcore/qobject.html" translate="no">QObject</a>-derived class as an instantiable QML object type, add <code translate="no">QML_ELEMENT</code> or <code translate="no">QML_NAMED_ELEMENT(&lt;name&gt;)</code> to the class declaration. You also need to make adjustments in the build system. For qmake, add <code translate="no">CONFIG += qmltypes</code>, a <code translate="no">QML_IMPORT_NAME</code>, and a <code translate="no">QML_IMPORT_MAJOR_VERSION</code> to your project file. For CMake, the file containing the class should be part of a target set-up with <a href="qt-add-qml-module.html" translate="no">qt_add_qml_module()</a>. This will register the class into the type namespace under the given major version, using either the class name or an explicitly given name as QML type name. The minor version(s) will be derived from any revisions attached to properties, methods, or signals. The default minor version is <code translate="no">0</code>. You can explicitly restrict the type to be available only from specific minor versions by adding the <code translate="no">QML_ADDED_IN_VERSION()</code> macro to the class declaration. Clients can import suitable versions of the namespace in order to use the type.</p>
 <p>For example, suppose there is a <code translate="no">Message</code> class with <code translate="no">author</code> and <code translate="no">creationDate</code> properties:</p>
 <pre class="cpp" translate="no">
  <span class="keyword">class</span> Message : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
@@ -122,7 +123,7 @@
  }
 </pre>
 <h3 id="registering-value-types">Registering Value Types</h3>
-<p>Any type with a <a href="../qtcore/qobject.html#Q_GADGET" translate="no">Q_GADGET</a> macro can the registered as a <a href="qtqml-typesystem-valuetypes.html" translate="no">QML value type</a>}. Once such a type is registered with the QML type system it can be used as property type in QML code. Such an instance can be manipulated from QML; as <a href="qtqml-cppintegration-exposecppattributes.html" translate="no">Exposing Attributes of C++ Types to QML</a> explains, the properties and methods of any value type are accessible from QML code.</p>
+<p>Any type with a <a href="../qtcore/qobject.html#Q_GADGET" translate="no">Q_GADGET</a> macro can the registered as a <a href="qtqml-typesystem-valuetypes.html" translate="no">QML value type</a>. Once such a type is registered with the QML type system it can be used as property type in QML code. Such an instance can be manipulated from QML; as <a href="qtqml-cppintegration-exposecppattributes.html" translate="no">Exposing Attributes of C++ Types to QML</a> explains, the properties and methods of any value type are accessible from QML code.</p>
 <p>In contrast to object types, value types require <b>lower case</b> names. The preferred way to register them is using the <a href="qqmlengine.html#QML_VALUE_TYPE" translate="no">QML_VALUE_TYPE</a> or <a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a> macros. There is no equivalent to <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a> as your C++ classes are typically going to have upper case names. Otherwise the registration is very similar to the registration of object types.</p>
 <p>For example, suppose you want to register a value type <code translate="no">person</code> that consists of two strings for first and last name:</p>
 <pre class="cpp" translate="no">
@@ -144,6 +145,42 @@
 <li>Value types cannot provide attached properties.</li>
 <li>The API to define extensions to value types (<a href="qqmlengine.html#QML_EXTENDED" translate="no">QML_EXTENDED</a>) is not public and subject to future changes.</li>
 </ul>
+<h3 id="value-types-with-enumerations">Value Types with Enumerations</h3>
+<p>Exposing enumerations from a value type to QML requires some extra steps.</p>
+<p>Value types have lower case names in QML and types with lower case names are generally not addressable in JavaScript code (unless you specify <a href="qtqml-documents-definetypes.html#valuetypebehavior" translate="no">pragma ValueTypeBehavior: Addressable</a>). If you have a value type in C++ with an enumeration you want to expose to QML, you need to expose the enumeration separately.</p>
+<p>This can be solved by using <a href="qqmlengine.html#QML_FOREIGN_NAMESPACE" translate="no">QML_FOREIGN_NAMESPACE</a>. First, derive from your value type to create a separate C++ type:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">class</span> Person
+ {
+     Q_GADGET
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> firstName READ firstName WRITE setFirstName)
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> lastName READ lastName WRITE setLastName)
+     QML_VALUE_TYPE(person)
+ <span class="keyword">public</span>:
+     <span class="keyword">enum</span> TheEnum { A<span class="operator">,</span> B<span class="operator">,</span> C };
+     Q_ENUM(TheEnum)
+     <span class="comment">//...</span>
+ };
+
+ <span class="keyword">class</span> PersonDerived: <span class="keyword">public</span> Person
+ {
+     Q_GADGET
+ };
+</pre>
+<p>Then expose the derived type as a foreign namespace:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">namespace</span> PersonDerivedForeign
+ {
+     Q_NAMESPACE
+     QML_NAMED_ELEMENT(Person)
+     QML_FOREIGN_NAMESPACE(PersonDerived)
+ }
+</pre>
+<p>This produces a <a href="qtqml-typesystem-namespaces.html" translate="no">QML Namespace</a> called <code translate="no">Person</code> (upper case) with an enumeration called <code translate="no">TheEnum</code> and values <code translate="no">A</code>, <code translate="no">B</code>, and <code translate="no">C</code>. Then you can write the following in QML:</p>
+<pre class="qml" translate="no">
+ someProperty: Person.A
+</pre>
+<p>At the same time you can still use your value type called <code translate="no">person</code> (lower case) exactly as before.</p>
 <h3 id="registering-non-instantiable-types">Registering Non-Instantiable Types</h3>
 <p>Sometimes a <a href="../qtcore/qobject.html" translate="no">QObject</a>-derived class may need to be registered with the QML type system but not as an instantiable type. For example, this is the case if a C++ class:</p>
 <ul>
@@ -215,9 +252,9 @@
  };
 </pre>
 <p>The revisions given this way are automatically interpreted as minor versions to the major version given in the project file. In this case, <code translate="no">root</code> is only available when <code translate="no">MyTypes</code> version 1.1 or higher is imported. Imports of <code translate="no">MyTypes</code> version 1.0 remain unaffected.</p>
-<p>For the same reason, new types introduced in later versions should be tagged with the <a href="qqmlengine.html#QML_ADDED_IN_MINOR_VERSION" translate="no">QML_ADDED_IN_MINOR_VERSION</a> macro.</p>
+<p>For the same reason, new types introduced in later versions should be tagged with the <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a> macro.</p>
 <p>This feature of the language allows for behavioural changes to be made without breaking existing applications. Consequently QML module authors should always remember to document what changed between minor versions, and QML module users should check that their application still runs correctly before deploying an updated import statement.</p>
-<p>Revisions of a base class that your type depends upon are automatically registered when registering the type itself. This is useful when deriving from base classes provided by other authors, e.g&#x2e; when extending classes from the Qt Quick module.</p>
+<p>Revisions of a base class that your type depends upon are automatically registered when registering the type itself. This is useful when deriving from base classes provided by other authors, e.g. when extending classes from the Qt Quick module.</p>
 <div class="admonition note">
 <p><b>Note: </b>The QML engine does not support revisions for properties or signals of grouped and attached property objects.</p>
 </div>
@@ -248,7 +285,7 @@
      <span class="comment">// QML_EXTENDED, QML_SINGLETON ...</span>
  };
 </pre>
-<p>From this code, you get a QML type with the methods and properties of Immutable3rdParty, and the QML traits (e.g&#x2e;: singleton, extended) specified in Foreign.</p>
+<p>From this code, you get a QML type with the methods and properties of Immutable3rdParty, and the QML traits (e.g.: singleton, extended) specified in Foreign.</p>
 <h2 id="defining-qml-specific-types-and-attributes">Defining QML-Specific Types and Attributes</h2>
 <h3 id="providing-attached-properties">Providing Attached Properties</h3>
 <p>In the QML language syntax, there is a notion of <a href="qtqml-syntax-objectattributes.html#attached-properties-and-attached-signal-handlers" translate="no"><i>attached properties</i> and <i>attached signal handlers</i></a>, which are additional attributes that are attached to an object. Essentially, such attributes are implemented and provided by an <i>attaching type</i>, and these attributes may be <i>attached</i> to an object of another type. This contrasts with ordinary object properties which are provided by the object type itself (or the object's inherited type).</p>
@@ -531,9 +568,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

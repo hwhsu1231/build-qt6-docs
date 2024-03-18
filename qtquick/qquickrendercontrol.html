@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qquickrendercontrol.cpp -->
   <meta name="description" content="The QQuickRenderControl class provides a mechanism for rendering the Qt Quick scenegraph onto an offscreen render target in a fully application-controlled manner.">
-  <title>QQuickRenderControl Class | Qt Quick 6.6.0</title>
+  <title>QQuickRenderControl Class | Qt Quick 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtquick-index.html" translate="no">Qt Quick</a></li>
 <li><a href="qtquick-module.html" translate="no">C++ Classes</a></li>
 <li>QQuickRenderControl</li>
-<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -127,32 +127,32 @@ target_link_libraries(mytarget PRIVATE Qt6::Quick)</td></tr>
 <p>Specifies the start of a graphics frame. Calls to <a href="qquickrendercontrol.html#sync" translate="no">sync</a>() or <a href="qquickrendercontrol.html#render" translate="no">render</a>() must be enclosed by calls to beginFrame() and <a href="qquickrendercontrol.html#endFrame" translate="no">endFrame</a>().</p>
 <p>Unlike the earlier OpenGL-only world of Qt 5, rendering with other graphics APIs requires more well-defined points of starting and ending a frame. When manually driving the rendering loop via <a href="qquickrendercontrol.html" translate="no">QQuickRenderControl</a>, it now falls to the user of <a href="qquickrendercontrol.html" translate="no">QQuickRenderControl</a> to specify these points.</p>
 <p>A typical update step, including initialization of rendering into an existing texture, could look like the following. The example snippet assumes Direct3D 11 but the same concepts apply other graphics APIs as well.</p>
-<pre class="cpp plain" translate="no">
- if (!m_quickInitialized) {
-     m_quickWindow-&gt;setGraphicsDevice(QQuickGraphicsDevice::fromDeviceAndContext(m_engine-&gt;device(), m_engine-&gt;context()));
+<pre class="cpp" translate="no">
+ <span class="keyword">if</span> (<span class="operator">!</span>m_quickInitialized) {
+     m_quickWindow<span class="operator">-</span><span class="operator">&gt;</span>setGraphicsDevice(<span class="type"><a href="qquickgraphicsdevice.html" translate="no">QQuickGraphicsDevice</a></span><span class="operator">::</span>fromDeviceAndContext(m_engine<span class="operator">-</span><span class="operator">&gt;</span>device()<span class="operator">,</span> m_engine<span class="operator">-</span><span class="operator">&gt;</span>context()));
 
-     if (!m_renderControl-&gt;initialize())
-         qWarning(&quot;Failed to initialize redirected Qt Quick rendering&quot;);
+     <span class="keyword">if</span> (<span class="operator">!</span>m_renderControl<span class="operator">-</span><span class="operator">&gt;</span>initialize())
+         <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>(<span class="string">&quot;Failed to initialize redirected Qt Quick rendering&quot;</span>);
 
-     m_quickWindow-&gt;setRenderTarget(QQuickRenderTarget::fromNativeTexture({ quint64(m_res.texture), 0 },
-                                                                          QSize(QML_WIDTH, QML_HEIGHT),
+     m_quickWindow<span class="operator">-</span><span class="operator">&gt;</span>setRenderTarget(<span class="type"><a href="qquickrendertarget.html" translate="no">QQuickRenderTarget</a></span><span class="operator">::</span>fromNativeTexture({ <span class="type"><a href="../qtcore/qttypes.html#quint64-typedef" translate="no">quint64</a></span>(m_res<span class="operator">.</span>texture)<span class="operator">,</span> <span class="number">0</span> }<span class="operator">,</span>
+                                                                          <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(QML_WIDTH<span class="operator">,</span> QML_HEIGHT)<span class="operator">,</span>
                                                                           SAMPLE_COUNT));
 
-     m_quickInitialized = true;
+     m_quickInitialized <span class="operator">=</span> <span class="keyword">true</span>;
  }
 
- m_renderControl-&gt;polishItems();
+ m_renderControl<span class="operator">-</span><span class="operator">&gt;</span>polishItems();
 
- m_renderControl-&gt;beginFrame();
- m_renderControl-&gt;sync();
- m_renderControl-&gt;render();
- m_renderControl-&gt;endFrame(); // Qt Quick's rendering commands are submitted to the device context here
+ m_renderControl<span class="operator">-</span><span class="operator">&gt;</span>beginFrame();
+ m_renderControl<span class="operator">-</span><span class="operator">&gt;</span>sync();
+ m_renderControl<span class="operator">-</span><span class="operator">&gt;</span>render();
+ m_renderControl<span class="operator">-</span><span class="operator">&gt;</span>endFrame(); <span class="comment">// Qt Quick's rendering commands are submitted to the device context here</span>
 </pre>
 <div class="admonition note">
 <p><b>Note: </b>This function does not need to be, and must not be, called when using the <code translate="no">software</code> adaptation of Qt Quick.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>Internally beginFrame() and <a href="qquickrendercontrol.html#endFrame" translate="no">endFrame</a>() invoke QRhi::beginOffscreenFrame() and QRhi::endOffscreenFrame(), respectively. This implies that there must not be a frame (neither offscreen, nor swapchain-based) being recorded on the <a href="../qtgui/qrhi.html" translate="no">QRhi</a> when this function is called.</p>
+<p><b>Note: </b>Internally beginFrame() and <a href="qquickrendercontrol.html#endFrame" translate="no">endFrame</a>() invoke <a href="../qtgui/qrhi.html#beginOffscreenFrame" translate="no">beginOffscreenFrame</a>() and <a href="../qtgui/qrhi.html#endOffscreenFrame" translate="no">endOffscreenFrame</a>(), respectively. This implies that there must not be a frame (neither offscreen, nor swapchain-based) being recorded on the <a href="../qtgui/qrhi.html" translate="no">QRhi</a> when this function is called.</p>
 </div>
 <p>This function was introduced in Qt 6.0.</p>
 <p><b>See also </b><a href="qquickrendercontrol.html#endFrame" translate="no">endFrame</a>(), <a href="qquickrendercontrol.html#initialize" translate="no">initialize</a>(), <a href="qquickrendercontrol.html#sync" translate="no">sync</a>(), <a href="qquickrendercontrol.html#render" translate="no">render</a>(), <a href="qquickgraphicsdevice.html" translate="no">QQuickGraphicsDevice</a>, and <a href="qquickrendertarget.html" translate="no">QQuickRenderTarget</a>.</p>
@@ -191,7 +191,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Quick)</td></tr>
 <div class="admonition note">
 <p><b>Note: </b>This function does not need to be, and must not be, called when using the <code translate="no">software</code> adaptation of Qt Quick.</p>
 </div>
-<p>With the default Qt Quick adaptation this function creates a new <a href="../qtgui/qrhi.html" translate="no">QRhi</a> object, similarly to what would happen with an on-screen <a href="qquickwindow.html" translate="no">QQuickWindow</a> when <a href="qquickrendercontrol.html" translate="no">QQuickRenderControl</a> was not used. To make this new <a href="../qtgui/qrhi.html" translate="no">QRhi</a> object adopt some existing device or context resource (e.g&#x2e; use an existing <a href="../qtgui/qopenglcontext.html" translate="no">QOpenGLContext</a> instead of creating a new one), use <a href="qquickwindow.html#setGraphicsDevice" translate="no">QQuickWindow::setGraphicsDevice</a>() as mentioned above. When the application wants to make the Qt Quick rendering use an already existing <a href="../qtgui/qrhi.html" translate="no">QRhi</a> object, that is possible as well via <a href="qquickgraphicsdevice.html#fromRhi" translate="no">QQuickGraphicsDevice::fromRhi</a>(). When such a <a href="qquickgraphicsdevice.html" translate="no">QQuickGraphicsDevice</a>, referencing an already existing <a href="../qtgui/qrhi.html" translate="no">QRhi</a>, is set, there will be no new, dedicated <a href="../qtgui/qrhi.html" translate="no">QRhi</a> object created in initialize().</p>
+<p>With the default Qt Quick adaptation this function creates a new <a href="../qtgui/qrhi.html" translate="no">QRhi</a> object, similarly to what would happen with an on-screen <a href="qquickwindow.html" translate="no">QQuickWindow</a> when <a href="qquickrendercontrol.html" translate="no">QQuickRenderControl</a> was not used. To make this new <a href="../qtgui/qrhi.html" translate="no">QRhi</a> object adopt some existing device or context resource (e.g. use an existing <a href="../qtgui/qopenglcontext.html" translate="no">QOpenGLContext</a> instead of creating a new one), use <a href="qquickwindow.html#setGraphicsDevice" translate="no">QQuickWindow::setGraphicsDevice</a>() as mentioned above. When the application wants to make the Qt Quick rendering use an already existing <a href="../qtgui/qrhi.html" translate="no">QRhi</a> object, that is possible as well via <a href="qquickgraphicsdevice.html#fromRhi" translate="no">QQuickGraphicsDevice::fromRhi</a>(). When such a <a href="qquickgraphicsdevice.html" translate="no">QQuickGraphicsDevice</a>, referencing an already existing <a href="../qtgui/qrhi.html" translate="no">QRhi</a>, is set, there will be no new, dedicated <a href="../qtgui/qrhi.html" translate="no">QRhi</a> object created in initialize().</p>
 <p>This function was introduced in Qt 6.0.</p>
 <p><b>See also </b><a href="qquickrendertarget.html" translate="no">QQuickRenderTarget</a>, <a href="qquickgraphicsdevice.html" translate="no">QQuickGraphicsDevice</a>, and <a href="qquickgraphicsconfiguration.html#preferredInstanceExtensions" translate="no">QQuickGraphicsConfiguration::preferredInstanceExtensions</a>().</p>
 <!-- @@@initialize -->
@@ -294,9 +294,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Quick)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

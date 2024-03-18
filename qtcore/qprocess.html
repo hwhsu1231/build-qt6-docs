@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qprocess.cpp -->
   <meta name="description" content="The QProcess class is used to start external programs and to communicate with them.">
-  <title>QProcess Class | Qt Core 6.6.0</title>
+  <title>QProcess Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QProcess</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -212,7 +212,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>On Windows, the &quot;.exe&quot; suffix is not required for most uses, except those outlined in the <a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw" translate="no">CreateProcess</a> documentation. Additionally, QProcess will convert the Unix-style forward slashes to Windows path backslashes for the program name. This allows code using QProcess to be written in a cross-platform manner, as shown in the examples above.</p>
 <p>QProcess does not support directly executing Unix shell or Windows command interpreter built-in functions, such as <code translate="no">cmd.exe</code>'s <code translate="no">dir</code> command or the Bourne shell's <code translate="no">export</code>. On Unix, even though many shell built-ins are also provided as separate executables, their behavior may differ from those implemented as built-ins. To run those commands, one should explicitly execute the interpreter with suitable options. For Unix systems, launch &quot;/bin/sh&quot; with two arguments: &quot;-c&quot; and a string with the command-line to be run. For Windows, due to the non-standard way <code translate="no">cmd.exe</code> parses its command-line, use <a href="qprocess.html#setNativeArguments" translate="no">setNativeArguments</a>() (for example, &quot;/c dir d:&quot;).</p>
 <h3 id="environment-variables">Environment variables</h3>
-<p>The QProcess API offers methods to manipulate the environment variables that the child process will see. By default, the child process will have a copy of the current process environment variables that exist at the time the <a href="qprocess.html#start" translate="no">start</a>() function is called. This means that any modifications performed using <a href="qtenvironmentvariables-proxy.html#qputenv" translate="no">qputenv</a>() prior to that call will be reflected in the child process' environment. Note that QProcess makes no attempt to prevent race conditions with <a href="qtenvironmentvariables-proxy.html#qputenv" translate="no">qputenv</a>() happening in other threads, so it is recommended to avoid <a href="qtenvironmentvariables-proxy.html#qputenv" translate="no">qputenv</a>() after the application's initial start up.</p>
+<p>The QProcess API offers methods to manipulate the environment variables that the child process will see. By default, the child process will have a copy of the current process environment variables that exist at the time the <a href="qprocess.html#start" translate="no">start</a>() function is called. This means that any modifications performed using <a href="qtenvironmentvariables-qtcore-proxy.html#qputenv" translate="no">qputenv</a>() prior to that call will be reflected in the child process' environment. Note that QProcess makes no attempt to prevent race conditions with <a href="qtenvironmentvariables-qtcore-proxy.html#qputenv" translate="no">qputenv</a>() happening in other threads, so it is recommended to avoid <a href="qtenvironmentvariables-qtcore-proxy.html#qputenv" translate="no">qputenv</a>() after the application's initial start up.</p>
 <p>The environment for a specific child can be modified using the <a href="qprocess.html#processEnvironment" translate="no">processEnvironment</a>() and <a href="qprocess.html#setProcessEnvironment" translate="no">setProcessEnvironment</a>() functions, which use the <a href="qprocessenvironment.html" translate="no">QProcessEnvironment</a> class. By default, <a href="qprocess.html#processEnvironment" translate="no">processEnvironment</a>() will return an object for which <a href="qprocessenvironment.html#inheritsFromParent" translate="no">QProcessEnvironment::inheritsFromParent</a>() is true. Setting an environment that does not inherit from the parent will cause QProcess to use exactly that environment for the child when it is started.</p>
 <p>The normal scenario starts from the current environment by calling <a href="qprocessenvironment.html#systemEnvironment" translate="no">QProcessEnvironment::systemEnvironment</a>() and then proceeds to adding, changing, or removing specific variables. The resulting variable roster can then be applied to a QProcess with <a href="qprocess.html#setProcessEnvironment" translate="no">setProcessEnvironment</a>().</p>
 <p>It is possible to remove all variables from the environment or to start from an empty environment, using the QProcessEnvironment() default constructor. This is not advisable outside of controlled and system-specific conditions, as there may be system variables that are set in the current process environment and are required for proper execution of the child process.</p>
@@ -308,8 +308,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <tr><td class="topAlign"><code translate="no">QProcess::SeparateChannels</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign"><a href="qprocess.html" translate="no">QProcess</a> manages the output of the running process, keeping standard output and standard error data in separate internal buffers. You can select the <a href="qprocess.html" translate="no">QProcess</a>'s current read channel by calling <a href="qprocess.html#setReadChannel" translate="no">setReadChannel</a>(). This is the default channel mode of <a href="qprocess.html" translate="no">QProcess</a>.</td></tr>
 <tr><td class="topAlign"><code translate="no">QProcess::MergedChannels</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign"><a href="qprocess.html" translate="no">QProcess</a> merges the output of the running process into the standard output channel (<code translate="no">stdout</code>). The standard error channel (<code translate="no">stderr</code>) will not receive any data. The standard output and standard error data of the running process are interleaved. For detached processes, the merged output of the running process is forwarded onto the main process.</td></tr>
 <tr><td class="topAlign"><code translate="no">QProcess::ForwardedChannels</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign"><a href="qprocess.html" translate="no">QProcess</a> forwards the output of the running process onto the main process. Anything the child process writes to its standard output and standard error will be written to the standard output and standard error of the main process.</td></tr>
-<tr><td class="topAlign"><code translate="no">QProcess::ForwardedErrorChannel</code></td><td class="topAlign tblval"><code translate="no">4</code></td><td class="topAlign"><a href="qprocess.html" translate="no">QProcess</a> manages the standard output of the running process, but forwards its standard error onto the main process. This reflects the typical use of command line tools as filters, where the standard output is redirected to another process or a file, while standard error is printed to the console for diagnostic purposes. (This value was introduced in Qt 5.2&#x2e;)</td></tr>
-<tr><td class="topAlign"><code translate="no">QProcess::ForwardedOutputChannel</code></td><td class="topAlign tblval"><code translate="no">3</code></td><td class="topAlign">Complementary to ForwardedErrorChannel. (This value was introduced in Qt 5.2&#x2e;)</td></tr>
+<tr><td class="topAlign"><code translate="no">QProcess::ForwardedErrorChannel</code></td><td class="topAlign tblval"><code translate="no">4</code></td><td class="topAlign"><a href="qprocess.html" translate="no">QProcess</a> manages the standard output of the running process, but forwards its standard error onto the main process. This reflects the typical use of command line tools as filters, where the standard output is redirected to another process or a file, while standard error is printed to the console for diagnostic purposes. (This value was introduced in Qt 5.2.)</td></tr>
+<tr><td class="topAlign"><code translate="no">QProcess::ForwardedOutputChannel</code></td><td class="topAlign tblval"><code translate="no">3</code></td><td class="topAlign">Complementary to ForwardedErrorChannel. (This value was introduced in Qt 5.2.)</td></tr>
 </table></div>
 <div class="admonition note">
 <p><b>Note: </b>Windows intentionally suppresses output from GUI-only applications to inherited consoles. This does <i>not</i> apply to output redirected to files or pipes. To forward the output of GUI-only applications on the console nonetheless, you must use SeparateChannels and do the forwarding yourself by reading the output and writing it to the appropriate output channels.</p>
@@ -361,7 +361,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@QProcess -->
 <!-- $$$~QProcess[overload1]$$$~QProcess -->
 <h3 class="fn" translate="no" id="dtor.QProcess"><code translate="no">[virtual noexcept] </code>QProcess::<span class="name">~QProcess</span>()</h3>
-<p>Destructs the <a href="qprocess.html" translate="no">QProcess</a> object, i.e&#x2e;, killing the process.</p>
+<p>Destructs the <a href="qprocess.html" translate="no">QProcess</a> object, i.e., killing the process.</p>
 <p>Note that this function will not return until the process is terminated.</p>
 <!-- @@@~QProcess -->
 <!-- $$$arguments[overload1]$$$arguments -->
@@ -714,16 +714,10 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@splitCommand -->
 <!-- $$$start[overload1]$$$startconstQString&constQStringList&OpenMode -->
 <h3 class="fn" translate="no" id="start"><span class="type">void</span> QProcess::<span class="name">start</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>program</i>, const <span class="type"><a href="qstringlist.html" translate="no">QStringList</a></span> &amp;<i>arguments</i> = {}, <span class="type"><a href="qiodevicebase.html#OpenModeFlag-enum" translate="no">OpenMode</a></span> <i>mode</i> = ReadWrite)</h3>
-<p>Starts the given <i translate="no">program</i> in a new process, passing the command line arguments in <i translate="no">arguments</i>. See <a href="qprocess.html#setProgram" translate="no">setProgram</a>() for information about how <a href="qprocess.html" translate="no">QProcess</a> searches for the executable to be run.</p>
-<p>The <a href="qprocess.html" translate="no">QProcess</a> object will immediately enter the Starting state. If the process starts successfully, <a href="qprocess.html" translate="no">QProcess</a> will emit <a href="qprocess.html#started" translate="no">started</a>(); otherwise, <a href="qprocess.html#errorOccurred" translate="no">errorOccurred</a>() will be emitted.</p>
-<div class="admonition note">
-<p><b>Note: </b>Processes are started asynchronously, which means the <a href="qprocess.html#started" translate="no">started</a>() and <a href="qprocess.html#errorOccurred" translate="no">errorOccurred</a>() signals may be delayed. Call <a href="qprocess.html#waitForStarted" translate="no">waitForStarted</a>() to make sure the process has started (or has failed to start) and those signals have been emitted.</p>
-</div>
-<div class="admonition note">
-<p><b>Note: </b>No further splitting of the arguments is performed.</p>
-</div>
+<p>Starts the given <i translate="no">program</i> in a new process, passing the command line arguments in <i translate="no">arguments</i>. See <a href="qprocess.html#setProgram" translate="no">setProgram</a>() for information about how <a href="qprocess.html" translate="no">QProcess</a> searches for the executable to be run. The OpenMode is set to <i translate="no">mode</i>. No further splitting of the arguments is performed.</p>
+<p>The <a href="qprocess.html" translate="no">QProcess</a> object will immediately enter the Starting state. If the process starts successfully, <a href="qprocess.html" translate="no">QProcess</a> will emit <a href="qprocess.html#started" translate="no">started</a>(); otherwise, <a href="qprocess.html#errorOccurred" translate="no">errorOccurred</a>() will be emitted. Do note that on platforms that are able to start child processes synchronously (notably Windows), those signals will be emitted before this function returns and this <a href="qprocess.html" translate="no">QProcess</a> object will transition to either <a href="qprocess.html#ProcessState-enum" translate="no">QProcess::Running</a> or <a href="qprocess.html#ProcessState-enum" translate="no">QProcess::NotRunning</a> state, respectively. On others paltforms, the <a href="qprocess.html#started" translate="no">started</a>() and <a href="qprocess.html#errorOccurred" translate="no">errorOccurred</a>() signals will be delayed.</p>
+<p>Call <a href="qprocess.html#waitForStarted" translate="no">waitForStarted</a>() to make sure the process has started (or has failed to start) and those signals have been emitted. It is safe to call that function even if the process starting state is already known, though the signal will not be emitted again.</p>
 <p><b>Windows:</b> The arguments are quoted and joined into a command line that is compatible with the <code translate="no">CommandLineToArgvW()</code> Windows function. For programs that have different command line quoting requirements, you need to use <a href="qprocess.html#setNativeArguments" translate="no">setNativeArguments</a>(). One notable program that does not follow the <code translate="no">CommandLineToArgvW()</code> rules is cmd.exe and, by consequence, all batch scripts.</p>
-<p>The OpenMode is set to <i translate="no">mode</i>.</p>
 <p>If the <a href="qprocess.html" translate="no">QProcess</a> object is already running a process, a warning may be printed at the console, and the existing process will continue running unaffected.</p>
 <p><b>See also </b><a href="qprocess.html#processId" translate="no">processId</a>(), <a href="qprocess.html#started" translate="no">started</a>(), <a href="qprocess.html#waitForStarted" translate="no">waitForStarted</a>(), and <a href="qprocess.html#setNativeArguments" translate="no">setNativeArguments</a>().</p>
 <!-- @@@start -->
@@ -862,7 +856,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$waitForStarted[overload1]$$$waitForStartedint -->
 <h3 class="fn" translate="no" id="waitForStarted"><span class="type">bool</span> QProcess::<span class="name">waitForStarted</span>(<span class="type">int</span> <i>msecs</i> = 30000)</h3>
 <p>Blocks until the process has started and the <a href="qprocess.html#started" translate="no">started</a>() signal has been emitted, or until <i translate="no">msecs</i> milliseconds have passed.</p>
-<p>Returns <code translate="no">true</code> if the process was started successfully; otherwise returns <code translate="no">false</code> (if the operation timed out or if an error occurred).</p>
+<p>Returns <code translate="no">true</code> if the process was started successfully; otherwise returns <code translate="no">false</code> (if the operation timed out or if an error occurred). If the process had already started successfully before this function, it returns immediately.</p>
 <p>This function can operate without an event loop. It is useful when writing non-GUI applications and when performing I/O operations in a non-GUI thread.</p>
 <div class="admonition warning">
 <p><b>Warning: </b>Calling this function from the main (GUI) thread might cause your user interface to freeze.</p>
@@ -875,7 +869,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@waitForStarted -->
 <!-- $$$workingDirectory[overload1]$$$workingDirectory -->
 <h3 class="fn" translate="no" id="workingDirectory"><span class="type"><a href="qstring.html" translate="no">QString</a></span> QProcess::<span class="name">workingDirectory</span>() const</h3>
-<p>If <a href="qprocess.html" translate="no">QProcess</a> has been assigned a working directory, this function returns the working directory that the <a href="qprocess.html" translate="no">QProcess</a> will enter before the program has started. Otherwise, (i.e&#x2e;, no directory has been assigned,) an empty string is returned, and <a href="qprocess.html" translate="no">QProcess</a> will use the application's current working directory instead.</p>
+<p>If <a href="qprocess.html" translate="no">QProcess</a> has been assigned a working directory, this function returns the working directory that the <a href="qprocess.html" translate="no">QProcess</a> will enter before the program has started. Otherwise, (i.e., no directory has been assigned,) an empty string is returned, and <a href="qprocess.html" translate="no">QProcess</a> will use the application's current working directory instead.</p>
 <p><b>See also </b><a href="qprocess.html#setWorkingDirectory" translate="no">setWorkingDirectory</a>().</p>
 <!-- @@@workingDirectory -->
 <!-- $$$writeData[overload1]$$$writeDataconstchar*qint64 -->
@@ -890,9 +884,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

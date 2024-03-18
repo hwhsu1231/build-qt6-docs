@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qbytearray.cpp -->
   <meta name="description" content="The QByteArray class provides an array of bytes.">
-  <title>QByteArray Class | Qt Core 6.6.0</title>
+  <title>QByteArray Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QByteArray</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -325,12 +325,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
 <p>QByteArray can be used to store both raw bytes (including '\0's) and traditional 8-bit '\0'-terminated strings. Using QByteArray is much more convenient than using <code translate="no">const char *</code>. Behind the scenes, it always ensures that the data is followed by a '\0' terminator, and uses <a href="implicit-sharing.html" translate="no">implicit sharing</a> (copy-on-write) to reduce memory usage and avoid needless copying of data.</p>
-<p>In addition to QByteArray, Qt also provides the <a href="qstring.html" translate="no">QString</a> class to store string data. For most purposes, <a href="qstring.html" translate="no">QString</a> is the class you want to use. It understands its content as Unicode text (encoded using UTF-16) where QByteArray aims to avoid assumptions about the encoding or semantics of the bytes it stores (aside from a few legacy cases where it uses ASCII). Furthermore, <a href="qstring.html" translate="no">QString</a> is used throughout in the Qt API. The two main cases where QByteArray is appropriate are when you need to store raw binary data, and when memory conservation is critical (e.g&#x2e;, with Qt for Embedded Linux).</p>
+<p>In addition to QByteArray, Qt also provides the <a href="qstring.html" translate="no">QString</a> class to store string data. For most purposes, <a href="qstring.html" translate="no">QString</a> is the class you want to use. It understands its content as Unicode text (encoded using UTF-16) where QByteArray aims to avoid assumptions about the encoding or semantics of the bytes it stores (aside from a few legacy cases where it uses ASCII). Furthermore, <a href="qstring.html" translate="no">QString</a> is used throughout in the Qt API. The two main cases where QByteArray is appropriate are when you need to store raw binary data, and when memory conservation is critical (e.g., with Qt for Embedded Linux).</p>
 <p>One way to initialize a QByteArray is simply to pass a <code translate="no">const char *</code> to its constructor. For example, the following code creates a byte array of size 5 containing the data &quot;Hello&quot;:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> ba(<span class="string">&quot;Hello&quot;</span>);
 </pre>
-<p>Although the <a href="qbytearray.html#size" translate="no">size</a>() is 5, the byte array also maintains an extra '\0' byte at the end so that if a function is used that asks for a pointer to the underlying data (e.g&#x2e; a call to <a href="qbytearray.html#data" translate="no">data</a>()), the data pointed to is guaranteed to be '\0'-terminated.</p>
+<p>Although the <a href="qbytearray.html#size" translate="no">size</a>() is 5, the byte array also maintains an extra '\0' byte at the end so that if a function is used that asks for a pointer to the underlying data (e.g. a call to <a href="qbytearray.html#data" translate="no">data</a>()), the data pointed to is guaranteed to be '\0'-terminated.</p>
 <p>QByteArray makes a deep copy of the <code translate="no">const char *</code> data, so you can modify it later without experiencing side effects. (If, for example for performance reasons, you don't want to take a deep copy of the data, use <a href="qbytearray.html#fromRawData" translate="no">QByteArray::fromRawData</a>() instead.)</p>
 <p>Another approach is to set the size of the array using <a href="qbytearray.html#resize" translate="no">resize</a>() and to initialize the data byte by byte. QByteArray uses 0-based indexes, just like C++ arrays. To access the byte at a particular index position, you can use operator[](). On non-const byte arrays, operator[]() returns a reference to a byte that can be used on the left side of an assignment. For example:</p>
 <pre class="cpp" translate="no">
@@ -387,7 +387,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Note that using non-const operators and functions can cause QByteArray to do a deep copy of the data, due to <a href="implicit-sharing.html" translate="no">implicit sharing</a>.</p>
 <p>QByteArray provides <a href="containers.html#stl-style-iterators" translate="no">STL-style iterators</a> (<a href="qbytearray.html#const_iterator-typedef" translate="no">QByteArray::const_iterator</a> and <a href="qbytearray.html#iterator-typedef" translate="no">QByteArray::iterator</a>). In practice, iterators are handy when working with generic algorithms provided by the C++ standard library.</p>
 <div class="admonition note">
-<p><b>Note: </b>Iterators and references to individual QByteArray elements are subject to stability issues. They are often invalidated when a QByteArray-modifying operation (e.g&#x2e; <a href="qbytearray.html#insert" translate="no">insert</a>() or <a href="qbytearray.html#remove" translate="no">remove</a>()) is called. When stability and iterator-like functionality is required, you should use indexes instead of iterators as they are not tied to QByteArray's internal state and thus do not get invalidated.</p>
+<p><b>Note: </b>Iterators and references to individual QByteArray elements are subject to stability issues. They are often invalidated when a QByteArray-modifying operation (e.g. <a href="qbytearray.html#insert" translate="no">insert</a>() or <a href="qbytearray.html#remove" translate="no">remove</a>()) is called. When stability and iterator-like functionality is required, you should use indexes instead of iterators as they are not tied to QByteArray's internal state and thus do not get invalidated.</p>
 </div>
 <div class="admonition note">
 <p><b>Note: </b>Iterators over a QByteArray, and references to individual bytes within one, cannot be relied on to remain valid when any non-const method of the QByteArray is called. Accessing such an iterator or reference after the call to a non-const method leads to undefined behavior. When stability for iterator-like functionality is required, you should use indexes instead of iterators as they are not tied to QByteArray's internal state and thus do not get invalidated.</p>
@@ -425,7 +425,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Traditional C strings, also known as '\0'-terminated strings, are sequences of bytes, specified by a start-point and implicitly including each byte up to, but not including, the first '\0' byte thereafter. Methods that accept such a pointer, without a length, will interpret it as this sequence of bytes. Such a sequence, by construction, cannot contain a '\0' byte.</p>
 <p>Other overloads accept a start-pointer and a byte-count; these use the given number of bytes, following the start address, regardless of whether any of them happen to be '\0' bytes. In some cases, where there is no overload taking only a pointer, passing a length of -1 will cause the method to use the offset of the first '\0' byte after the pointer as the length; a length of -1 should only be passed if the method explicitly says it does this (in which case it is typically a default argument).</p>
 <h4 id="spacing-characters">Spacing Characters</h4>
-<p>A frequent requirement is to remove spacing characters from a byte array (<code translate="no">'\n'</code>, <code translate="no">'\t'</code>, <code translate="no">' '</code>, etc.)&#x2e; If you want to remove spacing from both ends of a QByteArray, use <a href="qbytearray.html#trimmed" translate="no">trimmed</a>(). If you want to also replace each run of spacing characters with a single space character within the byte array, use <a href="qbytearray.html#simplified" translate="no">simplified</a>(). Only ASCII spacing characters are recognized for these purposes.</p>
+<p>A frequent requirement is to remove spacing characters from a byte array (<code translate="no">'\n'</code>, <code translate="no">'\t'</code>, <code translate="no">' '</code>, etc.). If you want to remove spacing from both ends of a QByteArray, use <a href="qbytearray.html#trimmed" translate="no">trimmed</a>(). If you want to also replace each run of spacing characters with a single space character within the byte array, use <a href="qbytearray.html#simplified" translate="no">simplified</a>(). Only ASCII spacing characters are recognized for these purposes.</p>
 <h4 id="number-string-conversions">Number-String Conversions</h4>
 <p>Functions that perform conversions between numeric data types and string representations are performed in the C locale, regardless of the user's locale settings. Use <a href="qlocale.html" translate="no">QLocale</a> to perform locale-aware conversions between numbers and strings.</p>
 <h4 id="character-case">Character Case</h4>
@@ -613,7 +613,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$at[overload1]$$$atqsizetype -->
 <h3 class="fn" translate="no" id="at"><span class="type">char</span> QByteArray::<span class="name">at</span>(<span class="type">qsizetype</span> <i>i</i>) const</h3>
 <p>Returns the byte at index position <i translate="no">i</i> in the byte array.</p>
-<p><i translate="no">i</i> must be a valid index position in the byte array (i.e&#x2e;, 0 &lt;= <i translate="no">i</i> &lt; <a href="qbytearray.html#size" translate="no">size</a>()).</p>
+<p><i translate="no">i</i> must be a valid index position in the byte array (i.e., 0 &lt;= <i translate="no">i</i> &lt; <a href="qbytearray.html#size" translate="no">size</a>()).</p>
 <p><b>See also </b><a href="qbytearray.html#operator-5b-5d" translate="no">operator[]</a>().</p>
 <!-- @@@at -->
 <!-- $$$back[overload1]$$$back -->
@@ -769,7 +769,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@crend -->
 <!-- $$$data[overload1]$$$data -->
 <h3 class="fn" translate="no" id="data"><span class="type">char</span> *QByteArray::<span class="name">data</span>()</h3>
-<p>Returns a pointer to the data stored in the byte array. The pointer can be used to access and modify the bytes that compose the array. The data is '\0'-terminated, i.e&#x2e; the number of bytes you can access following the returned pointer is <a href="qbytearray.html#size" translate="no">size</a>() + 1, including the '\0' terminator.</p>
+<p>Returns a pointer to the data stored in the byte array. The pointer can be used to access and modify the bytes that compose the array. The data is '\0'-terminated, i.e. the number of bytes you can access following the returned pointer is <a href="qbytearray.html#size" translate="no">size</a>() + 1, including the '\0' terminator.</p>
 <p>Example:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> ba(<span class="string">&quot;Hello world&quot;</span>);
@@ -904,7 +904,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="fromEcmaUint8Array"><code translate="no">[static, since 6.5] </code><span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> QByteArray::<span class="name">fromEcmaUint8Array</span>(<span class="type">emscripten::val</span> <i>uint8array</i>)</h3>
 <p>Constructs a new <a href="qbytearray.html" translate="no">QByteArray</a> containing a copy of the Uint8Array <i translate="no">uint8array</i>.</p>
 <p>This function transfers data from a JavaScript data buffer - which is not addressable from C++ code - to heap memory owned by a <a href="qbytearray.html" translate="no">QByteArray</a>. The Uint8Array can be released once this function returns and a copy has been made.</p>
-<p>The <i translate="no">uint8array</i> argument must an emscripten::val referencing an Uint8Array object, e.g&#x2e; obtained from a global JavaScript variable:</p>
+<p>The <i translate="no">uint8array</i> argument must an emscripten::val referencing an Uint8Array object, e.g. obtained from a global JavaScript variable:</p>
 <pre class="cpp" translate="no">
  emscripten<span class="operator">::</span>val uint8array <span class="operator">=</span> emscripten<span class="operator">::</span>val<span class="operator">::</span>global(<span class="string">&quot;g_uint8array&quot;</span>);
  <span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> byteArray <span class="operator">=</span> <span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span><span class="operator">::</span>fromEcmaUint8Array(uint8array);
@@ -1381,7 +1381,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@remove -->
 <!-- $$$removeAt[overload1]$$$removeAtqsizetype -->
 <h3 class="fn" translate="no" id="removeAt"><code translate="no">[since 6.5] </code><span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> &amp;QByteArray::<span class="name">removeAt</span>(<span class="type">qsizetype</span> <i>pos</i>)</h3>
-<p>Removes the character at index <i translate="no">pos</i>. If <i translate="no">pos</i> is out of bounds (i.e&#x2e; <i translate="no">pos</i> &gt;= <a href="qbytearray.html#size" translate="no">size</a>()) this function does nothing.</p>
+<p>Removes the character at index <i translate="no">pos</i>. If <i translate="no">pos</i> is out of bounds (i.e. <i translate="no">pos</i> &gt;= <a href="qbytearray.html#size" translate="no">size</a>()) this function does nothing.</p>
 <p>This function was introduced in Qt 6.5.</p>
 <p><b>See also </b><a href="qbytearray.html#remove" translate="no">remove</a>().</p>
 <!-- @@@removeAt -->
@@ -1703,7 +1703,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$toDouble[overload1]$$$toDoublebool* -->
 <h3 class="fn" translate="no" id="toDouble"><span class="type">double</span> QByteArray::<span class="name">toDouble</span>(<span class="type">bool</span> *<i>ok</i> = nullptr) const</h3>
 <p>Returns the byte array converted to a <code translate="no">double</code> value.</p>
-<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g&#x2e; underflow).</p>
+<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g. underflow).</p>
 <p>If <i translate="no">ok</i> is not <code translate="no">nullptr</code>, failure is reported by setting *<i translate="no">ok</i> to <code translate="no">false</code>, and success by setting *<i translate="no">ok</i> to <code translate="no">true</code>.</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> string(<span class="string">&quot;1234.56&quot;</span>);
@@ -1737,7 +1737,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$toFloat[overload1]$$$toFloatbool* -->
 <h3 class="fn" translate="no" id="toFloat"><span class="type">float</span> QByteArray::<span class="name">toFloat</span>(<span class="type">bool</span> *<i>ok</i> = nullptr) const</h3>
 <p>Returns the byte array converted to a <code translate="no">float</code> value.</p>
-<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g&#x2e; underflow).</p>
+<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g. underflow).</p>
 <p>If <i translate="no">ok</i> is not <code translate="no">nullptr</code>, failure is reported by setting *<i translate="no">ok</i> to <code translate="no">false</code>, and success by setting *<i translate="no">ok</i> to <code translate="no">true</code>.</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> string(<span class="string">&quot;1234.56&quot;</span>);
@@ -1785,7 +1785,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Note: </b>The conversion of the number is performed in the default C locale, regardless of the user's locale. Use <a href="qlocale.html" translate="no">QLocale</a> to perform locale-aware conversions between numbers and strings.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qbytearray.html#number" translate="no">number</a>().</p>
 <!-- @@@toInt -->
@@ -1805,7 +1805,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Note: </b>The conversion of the number is performed in the default C locale, regardless of the user's locale. Use <a href="qlocale.html" translate="no">QLocale</a> to perform locale-aware conversions between numbers and strings.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qbytearray.html#number" translate="no">number</a>().</p>
 <!-- @@@toLong -->
@@ -1819,7 +1819,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Note: </b>The conversion of the number is performed in the default C locale, regardless of the user's locale. Use <a href="qlocale.html" translate="no">QLocale</a> to perform locale-aware conversions between numbers and strings.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qbytearray.html#number" translate="no">number</a>().</p>
 <!-- @@@toLongLong -->
@@ -1880,7 +1880,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Note: </b>The conversion of the number is performed in the default C locale, regardless of the user's locale. Use <a href="qlocale.html" translate="no">QLocale</a> to perform locale-aware conversions between numbers and strings.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qbytearray.html#number" translate="no">number</a>().</p>
 <!-- @@@toShort -->
@@ -1900,7 +1900,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Note: </b>The conversion of the number is performed in the default C locale, regardless of the user's locale. Use <a href="qlocale.html" translate="no">QLocale</a> to perform locale-aware conversions between numbers and strings.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qbytearray.html#number" translate="no">number</a>().</p>
 <!-- @@@toUInt -->
@@ -1914,7 +1914,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Note: </b>The conversion of the number is performed in the default C locale, regardless of the user's locale. Use <a href="qlocale.html" translate="no">QLocale</a> to perform locale-aware conversions between numbers and strings.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qbytearray.html#number" translate="no">number</a>().</p>
 <!-- @@@toULong -->
@@ -1928,7 +1928,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Note: </b>The conversion of the number is performed in the default C locale, regardless of the user's locale. Use <a href="qlocale.html" translate="no">QLocale</a> to perform locale-aware conversions between numbers and strings.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qbytearray.html#number" translate="no">number</a>().</p>
 <!-- @@@toULongLong -->
@@ -1942,7 +1942,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Note: </b>The conversion of the number is performed in the default C locale, regardless of the user's locale. Use <a href="qlocale.html" translate="no">QLocale</a> to perform locale-aware conversions between numbers and strings.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4&#x2e;</p>
+<p><b>Note: </b>Support for the &quot;0b&quot; prefix was added in Qt 6.4.</p>
 </div>
 <p><b>See also </b><a href="qbytearray.html#number" translate="no">number</a>().</p>
 <!-- @@@toUShort -->
@@ -2058,7 +2058,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$operator[][overload1]$$$operator[]qsizetype -->
 <h3 class="fn" translate="no" id="operator-5b-5d"><span class="type">char</span> &amp;QByteArray::<span class="name">operator[]</span>(<span class="type">qsizetype</span> <i>i</i>)</h3>
 <p>Returns the byte at index position <i translate="no">i</i> as a modifiable reference.</p>
-<p><i translate="no">i</i> must be a valid index position in the byte array (i.e&#x2e;, 0 &lt;= <i translate="no">i</i> &lt; <a href="qbytearray.html#size" translate="no">size</a>()).</p>
+<p><i translate="no">i</i> must be a valid index position in the byte array (i.e., 0 &lt;= <i translate="no">i</i> &lt; <a href="qbytearray.html#size" translate="no">size</a>()).</p>
 <p>Example:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> ba(<span class="string">&quot;Hello, world&quot;</span>);
@@ -2099,7 +2099,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$qCompress[overload1]$$$qCompressconstQByteArray&int -->
 <h3 class="fn" translate="no" id="qCompress"><span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> <span class="name">qCompress</span>(const <span class="type"><a href="qbytearray.html#QByteArray" translate="no">QByteArray</a></span> &amp;<i>data</i>, <span class="type">int</span> <i>compressionLevel</i> = -1)</h3>
 <p>Compresses the <i translate="no">data</i> byte array and returns the compressed data in a new byte array.</p>
-<p>The <i translate="no">compressionLevel</i> parameter specifies how much compression should be used. Valid values are between 0 and 9, with 9 corresponding to the greatest compression (i.e&#x2e; smaller compressed data) at the cost of using a slower algorithm. Smaller values (8, 7, ..&#x2e;, 1) provide successively less compression at slightly faster speeds. The value 0 corresponds to no compression at all. The default value is -1, which specifies zlib's default compression.</p>
+<p>The <i translate="no">compressionLevel</i> parameter specifies how much compression should be used. Valid values are between 0 and 9, with 9 corresponding to the greatest compression (i.e. smaller compressed data) at the cost of using a slower algorithm. Smaller values (8, 7, ..., 1) provide successively less compression at slightly faster speeds. The value 0 corresponds to no compression at all. The default value is -1, which specifies zlib's default compression.</p>
 <p><b>See also </b><a href="qbytearray.html#qUncompress-1" translate="no">qUncompress</a>(const QByteArray &amp;data).</p>
 <!-- @@@qCompress -->
 <!-- $$$qCompress$$$qCompressconstuchar*qsizetypeint -->
@@ -2396,9 +2396,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

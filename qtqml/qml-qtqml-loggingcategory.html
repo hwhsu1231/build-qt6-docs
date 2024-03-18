@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qqmlloggingcategory.cpp -->
   <meta name="description" content="Defines a logging category in QML.">
-  <title>LoggingCategory QML Type | Qt QML 6.6.0</title>
+  <title>LoggingCategory QML Type | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li><a href="qtqml-qmlmodule.html" translate="no">QML Types</a></li>
 <li>LoggingCategory</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -61,9 +61,9 @@
 </ul>
 <!-- $$$LoggingCategory-description -->
 <h2 id="details">Detailed Description</h2>
-<p>A logging category can be passed to console.log() and friends as the first argument. If supplied to the logger the LoggingCategory's name will be used as Logging Category otherwise the default logging category will be used.</p>
+<p>A logging category can be passed to console.log() and friends as the first argument. If supplied to the logger the LoggingCategory's name will be used as logging category. Otherwise the default logging category will be used.</p>
 <pre class="qml" translate="no">
- import QtQuick 2.8
+ import QtQuick
 
  <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
      <span class="type"><a href="qml-qtqml-loggingcategory.html" translate="no">LoggingCategory</a></span> {
@@ -73,10 +73,12 @@
      }
 
      <span class="name">Component</span>.onCompleted: {
-       <span class="name">console</span>.<span class="name">log</span>(<span class="name">category</span>, <span class="string">&quot;message&quot;</span>);
+         <span class="name">console</span>.<span class="name">log</span>(<span class="name">category</span>, <span class="string">&quot;log message&quot;</span>);
+         <span class="name">console</span>.<span class="name">warn</span>(<span class="name">category</span>, <span class="string">&quot;warning message&quot;</span>);
      }
  }
 </pre>
+<p>By default this outputs only <code translate="no">com.qt.category: warning message</code>. The <code translate="no">log message</code> is suppressed due to the <a href="qml-qtqml-loggingcategory.html#defaultLogLevel-prop" translate="no">defaultLogLevel</a>. You can, however, configure log levels for QML logging categories the same way you can configure them for <a href="../qtcore/qloggingcategory.html#configuring-categories" translate="no">QLoggingCategory</a>.</p>
 <div class="admonition note">
 <p><b>Note: </b>As the creation of objects is expensive, it is encouraged to put the needed LoggingCategory definitions into a singleton and import this where needed.</p>
 </div>
@@ -91,9 +93,19 @@
 <span class="name">defaultLogLevel</span> : <span class="type"><a href="qml-enumeration.html" translate="no">enumeration</a></span></p></td></tr>
 </table></div></div>
 <div class="qmldoc"><p>Holds the default log level of the logging category. By default it is created with the <a href="qml-qtqml-loggingcategory.html" translate="no">LoggingCategory</a>.Debug log level.</p>
+<p>The following enumeration values are available:</p>
+<ul>
+<li><a href="qml-qtqml-loggingcategory.html" translate="no">LoggingCategory</a>.Debug</li>
+<li><a href="qml-qtqml-loggingcategory.html" translate="no">LoggingCategory</a>.Info</li>
+<li><a href="qml-qtqml-loggingcategory.html" translate="no">LoggingCategory</a>.Warning</li>
+<li><a href="qml-qtqml-loggingcategory.html" translate="no">LoggingCategory</a>.Critical</li>
+<li><a href="qml-qtqml-loggingcategory.html" translate="no">LoggingCategory</a>.Fatal</li>
+</ul>
+<p>They mirror the values of the <a href="../qtcore/qtlogging.html#QtMsgType-enum" translate="no">QtMsgType</a> enumeration.</p>
 <div class="admonition note">
 <p><b>Note: </b>This property needs to be set when declaring the <a href="qml-qtqml-loggingcategory.html" translate="no">LoggingCategory</a> and cannot be changed later.</p>
 </div>
+<p><b>See also </b><a href="../qtcore/qtlogging.html#QtMsgType-enum" translate="no">QtMsgType</a>.</p>
 </div></div><!-- @@@defaultLogLevel -->
 <br/>
 <!-- $$$name -->
@@ -117,9 +129,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

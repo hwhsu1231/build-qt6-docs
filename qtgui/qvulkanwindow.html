@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qvulkanwindow.cpp -->
   <meta name="description" content="The QVulkanWindow class is a convenience subclass of QWindow to perform Vulkan rendering.">
-  <title>QVulkanWindow Class | Qt GUI 6.6.0</title>
+  <title>QVulkanWindow Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QVulkanWindow</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -211,7 +211,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p>In order to help applications migrate from OpenGL-based code without having to flip Y coordinates in the vertex data, and to allow using <a href="qmatrix4x4.html" translate="no">QMatrix4x4</a> functions like <a href="qmatrix4x4.html#perspective" translate="no">QMatrix4x4::perspective</a>() while keeping the Vulkan viewport's minDepth and maxDepth set to 0 and 1, QVulkanWindow provides a correction matrix retrievable by calling <a href="qvulkanwindow.html#clipCorrectionMatrix" translate="no">clipCorrectionMatrix</a>().</p>
 <h3 id="multisampling">Multisampling</h3>
 <p>While disabled by default, multisample antialiasing is fully supported by QVulkanWindow. Additional color buffers and resolving into the swapchain's non-multisample buffers are all managed automatically.</p>
-<p>To query the supported sample counts, call <a href="qvulkanwindow.html#supportedSampleCounts" translate="no">supportedSampleCounts</a>(). When the returned set contains 4, 8, ..&#x2e;, passing one of those values to <a href="qvulkanwindow.html#setSampleCount" translate="no">setSampleCount</a>() requests multisample rendering.</p>
+<p>To query the supported sample counts, call <a href="qvulkanwindow.html#supportedSampleCounts" translate="no">supportedSampleCounts</a>(). When the returned set contains 4, 8, ..., passing one of those values to <a href="qvulkanwindow.html#setSampleCount" translate="no">setSampleCount</a>() requests multisample rendering.</p>
 <div class="admonition note">
 <p><b>Note: </b>unlike <a href="qsurfaceformat.html#setSamples" translate="no">QSurfaceFormat::setSamples</a>(), the list of supported sample counts are exposed to the applications in advance and there is no automatic falling back to lower sample counts in <a href="qvulkanwindow.html#setSampleCount" translate="no">setSampleCount</a>(). If the requested value is not supported, a warning is shown and a no multisampling will be used.</p>
 </div>
@@ -225,7 +225,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p><b>Note: </b>Be aware of platform-specific differences. On desktop platforms installing the <a href="https://www.lunarg.com/vulkan-sdk/" translate="no">Vulkan SDK</a> is typically sufficient. However, Android for example requires deploying additional shared libraries together with the application, and also mandates a different list of validation layer names. See <a href="https://developer.android.com/ndk/guides/graphics/validation-layer.html" translate="no">the Android Vulkan development pages</a> for more information.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>QVulkanWindow does not expose device layers since this functionality has been deprecated since version 1.0&#x2e;13 of the Vulkan API.</p>
+<p><b>Note: </b>QVulkanWindow does not expose device layers since this functionality has been deprecated since version 1.0.13 of the Vulkan API.</p>
 </div>
 <h3 id="layers-device-features-and-extensions">Layers, device features, and extensions</h3>
 <p>To enable instance layers, call <a href="qvulkaninstance.html#setLayers" translate="no">QVulkanInstance::setLayers</a>() before creating the <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a>. To query what instance layer are available, call <a href="qvulkaninstance.html#supportedLayers-1" translate="no">QVulkanInstance::supportedLayers</a>().</p>
@@ -260,7 +260,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- $$$QueueCreateInfoModifier -->
 <h3 class="fn" translate="no" id="QueueCreateInfoModifier-typedef">QVulkanWindow::<span class="name">QueueCreateInfoModifier</span></h3>
 <p>A function that is called during graphics initialization to add additional queues that should be created.</p>
-<p>Set if the renderer needs additional queues besides the default graphics queue (e.g&#x2e; a transfer queue). The provided queue family properties can be used to select the indices for the additional queues. The renderer can subsequently request the actual queue in initResources().</p>
+<p>Set if the renderer needs additional queues besides the default graphics queue (e.g. a transfer queue). The provided queue family properties can be used to select the indices for the additional queues. The renderer can subsequently request the actual queue in initResources().</p>
 <div class="admonition note">
 <p><b>Note: </b>When requesting additional graphics queues, Qt itself always requests a graphics queue. You'll need to search queueCreateInfo for the appropriate entry and manipulate it to obtain the additional queue.</p>
 </div>
@@ -340,7 +340,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- $$$currentFrame[overload1]$$$currentFrame -->
 <h3 class="fn" translate="no" id="currentFrame"><span class="type">int</span> QVulkanWindow::<span class="name">currentFrame</span>() const</h3>
 <p>Returns the current frame index in the range [0, <a href="qvulkanwindow.html#concurrentFrameCount" translate="no">concurrentFrameCount</a>() - 1].</p>
-<p>Renderer implementations will have to ensure that uniform data and other dynamic resources exist in multiple copies, in order to prevent frame N altering the data used by the still-active frames N - 1, N - 2, ..&#x2e; N - <a href="qvulkanwindow.html#concurrentFrameCount" translate="no">concurrentFrameCount</a>() + 1.</p>
+<p>Renderer implementations will have to ensure that uniform data and other dynamic resources exist in multiple copies, in order to prevent frame N altering the data used by the still-active frames N - 1, N - 2, ... N - <a href="qvulkanwindow.html#concurrentFrameCount" translate="no">concurrentFrameCount</a>() + 1.</p>
 <p>To avoid relying on dynamic array sizes, applications can use <a href="qvulkanwindow.html#MAX_CONCURRENT_FRAME_COUNT-var" translate="no">MAX_CONCURRENT_FRAME_COUNT</a> when declaring arrays. This is guaranteed to be always equal to or greater than the value returned from <a href="qvulkanwindow.html#concurrentFrameCount" translate="no">concurrentFrameCount</a>(). Such arrays can then be indexed by the value returned from this function.</p>
 <pre class="cpp" translate="no">
      <span class="keyword">class</span> Renderer {
@@ -454,6 +454,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 class="fn" translate="no" id="grab"><span class="type"><a href="qimage.html" translate="no">QImage</a></span> QVulkanWindow::<span class="name">grab</span>()</h3>
 <p>Builds and renders the next frame without presenting it, then performs a blocking readback of the image content.</p>
 <p>Returns the image if the renderer's <a href="qvulkanwindowrenderer.html#startNextFrame" translate="no">startNextFrame</a>() implementation calls back <a href="qvulkanwindow.html#frameReady" translate="no">frameReady</a>() directly. Otherwise, returns an incomplete image, that has the correct size but not the content yet. The content will be delivered via the <a href="qvulkanwindow.html#frameGrabbed" translate="no">frameGrabbed</a>() signal in the latter case.</p>
+<p>The returned <a href="qimage.html" translate="no">QImage</a> always has a format of <a href="qimage.html#Format-enum" translate="no">QImage::Format_RGBA8888</a>. If the <a href="qvulkanwindow.html#colorFormat" translate="no">colorFormat</a>() is <code translate="no">VK_FORMAT_B8G8R8A8_UNORM</code>, the red and blue channels are swapped automatically since this format is commonly used as the default choice for swapchain color buffers. With any other color buffer format, there is no conversion performed by this function.</p>
 <div class="admonition note">
 <p><b>Note: </b>This function should not be called when a frame is in progress (that is, <a href="qvulkanwindow.html#frameReady" translate="no">frameReady</a>() has not yet been called back by the application).</p>
 </div>
@@ -588,7 +589,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@setQueueCreateInfoModifier -->
 <!-- $$$setSampleCount[overload1]$$$setSampleCountint -->
 <h3 class="fn" translate="no" id="setSampleCount"><span class="type">void</span> QVulkanWindow::<span class="name">setSampleCount</span>(<span class="type">int</span> <i>sampleCount</i>)</h3>
-<p>Requests multisample antialiasing with the given <i translate="no">sampleCount</i>. The valid values are 1, 2, 4, 8, ..&#x2e; up until the maximum value supported by the physical device.</p>
+<p>Requests multisample antialiasing with the given <i translate="no">sampleCount</i>. The valid values are 1, 2, 4, 8, ... up until the maximum value supported by the physical device.</p>
 <p>When the sample count is greater than 1, <a href="qvulkanwindow.html" translate="no">QVulkanWindow</a> will create a multisample color buffer instead of simply targeting the swapchain's images. The rendering in the multisample buffer will get resolved into the non-multisample buffers at the end of each frame.</p>
 <p>To examine the list of supported sample counts, call <a href="qvulkanwindow.html#supportedSampleCounts" translate="no">supportedSampleCounts</a>().</p>
 <p>When setting up the rendering pipeline, call <a href="qvulkanwindow.html#sampleCountFlagBits" translate="no">sampleCountFlagBits</a>() to query the active sample count as a <code translate="no">VkSampleCountFlagBits</code> value.</p>
@@ -607,7 +608,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- $$$supportedSampleCounts[overload1]$$$supportedSampleCounts -->
 <h3 class="fn" translate="no" id="supportedSampleCounts"><span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span>&lt;<span class="type">int</span>&gt; QVulkanWindow::<span class="name">supportedSampleCounts</span>()</h3>
 <p>Returns the set of supported sample counts when using the physical device selected by <a href="qvulkanwindow.html#setPhysicalDeviceIndex" translate="no">setPhysicalDeviceIndex</a>(), as a sorted list.</p>
-<p>By default <a href="qvulkanwindow.html" translate="no">QVulkanWindow</a> uses a sample count of 1. By calling <a href="qvulkanwindow.html#setSampleCount" translate="no">setSampleCount</a>() with a different value (2, 4, 8, ..&#x2e;) from the set returned by this function, multisample anti-aliasing can be requested.</p>
+<p>By default <a href="qvulkanwindow.html" translate="no">QVulkanWindow</a> uses a sample count of 1. By calling <a href="qvulkanwindow.html#setSampleCount" translate="no">setSampleCount</a>() with a different value (2, 4, 8, ...) from the set returned by this function, multisample anti-aliasing can be requested.</p>
 <div class="admonition note">
 <p><b>Note: </b>This function can be called before making the window visible.</p>
 </div>
@@ -642,6 +643,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 class="fn" translate="no" id="swapChainImageSize"><span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> QVulkanWindow::<span class="name">swapChainImageSize</span>() const</h3>
 <p>Returns the image size of the swapchain.</p>
 <p>This usually matches the size of the window, but may also differ in case <code translate="no">vkGetPhysicalDeviceSurfaceCapabilitiesKHR</code> reports a fixed size.</p>
+<p>In addition, it has been observed on some platforms that the Vulkan-reported surface size is different with high DPI scaling active, meaning the <a href="qwindow.html" translate="no">QWindow</a>-reported <a href="qwindow.html#size" translate="no">size</a>() multiplied with the <a href="qwindow.html#devicePixelRatio" translate="no">devicePixelRatio</a>() was 1 pixel less or more when compared to the value returned from here, presumably due to differences in rounding. Rendering code should be aware of this, and any related rendering logic must be based in the value returned from here, never on the <a href="qwindow.html" translate="no">QWindow</a>-reported size. Regardless of which pixel size is correct in theory, Vulkan rendering must only ever rely on the Vulkan API-reported surface size. Otherwise validation errors may occur, e.g. when setting the viewport, because the application-provided values may become out-of-bounds from Vulkan's perspective.</p>
 <div class="admonition note">
 <p><b>Note: </b>Calling this function is only valid from the invocation of <a href="qvulkanwindowrenderer.html#initSwapChainResources" translate="no">QVulkanWindowRenderer::initSwapChainResources</a>() up until <a href="qvulkanwindowrenderer.html#releaseSwapChainResources" translate="no">QVulkanWindowRenderer::releaseSwapChainResources</a>().</p>
 </div>
@@ -669,9 +671,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

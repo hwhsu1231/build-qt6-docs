@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qquicktreeview.cpp -->
   <meta name="description" content="Provides a tree view to display data from a QAbstractItemModel.">
-  <title>TreeView QML Type | Qt Quick 6.6.0</title>
+  <title>TreeView QML Type | Qt Quick 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtquick-index.html" translate="no">Qt Quick</a></li>
 <li><a href="qtquick-qmlmodule.html" translate="no">QML Types</a></li>
 <li>TreeView</li>
-<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -83,27 +83,32 @@
 <p>TreeView inherits <a href="qml-qtquick-tableview.html" translate="no">TableView</a>. This means that even if the model has a parent-child tree structure, TreeView is internally using a proxy model that converts that structure into a flat table model that can be rendered by <a href="qml-qtquick-tableview.html" translate="no">TableView</a>. Each node in the tree ends up occupying one row in the table, where the first column renders the tree itself. By indenting each delegate item in that column according to its parent-child depth in the model, it will end up looking like a tree, even if it's technically still just a flat list of items.</p>
 <p>To allow for maximum flexibility, TreeView itself will not position the delegate items into a tree structure. This burden is placed on the delegate. <a href="../qtquickcontrols/qtquickcontrols-index.html" translate="no">Qt Quick Controls</a> offers a ready-made <a href="../qtquickcontrols/qml-qtquick-controls-treeviewdelegate.html" translate="no">TreeViewDelegate</a> that can be used for this, which has the advantage that it works out-of-the-box and renders a tree which follows the style of the platform where the application runs.</p>
 <p>Even if <a href="../qtquickcontrols/qml-qtquick-controls-treeviewdelegate.html" translate="no">TreeViewDelegate</a> is customizable, there might be situations where you want to render the tree in a different way, or ensure that the delegate ends up as minimal as possible, perhaps for performance reasons. Creating your own delegate from scratch is easy, since TreeView offers a set of properties that can be used to position and render each node in the tree correctly.</p>
-<p>An example of a custom delegate is shown below:</p>
+<p>An example of a custom delegate with an animating indicator is shown below:</p>
 <pre class="qml" translate="no">
  import QtQuick
+ import QtQuick.Controls
 
- <span class="type"><a href="qml-qtquick-window.html" translate="no">Window</a></span> {
-     <span class="name">width</span>: <span class="number">600</span>
-     <span class="name">height</span>: <span class="number">400</span>
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a></span> {
+     <span class="name">width</span>: <span class="number">800</span>
+     <span class="name">height</span>: <span class="number">600</span>
      <span class="name">visible</span>: <span class="number">true</span>
 
      <span class="type"><a href="qml-qtquick-treeview.html" translate="no">TreeView</a></span> {
+         <span class="name">id</span>: <span class="name">treeView</span>
          <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">anchors</span>.margins: <span class="number">10</span>
+         <span class="name">clip</span>: <span class="number">true</span>
+
+         <span class="name">selectionModel</span>: <span class="name">ItemSelectionModel</span> {}
+
          <span class="comment">// The model needs to be a QAbstractItemModel</span>
          <span class="comment">// model: yourTreeModel</span>
 
          <span class="name">delegate</span>: <span class="name">Item</span> {
-             <span class="name">id</span>: <span class="name">treeDelegate</span>
-
              <span class="name">implicitWidth</span>: <span class="name">padding</span> <span class="operator">+</span> <span class="name">label</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">label</span>.<span class="name">implicitWidth</span> <span class="operator">+</span> <span class="name">padding</span>
              <span class="name">implicitHeight</span>: <span class="name">label</span>.<span class="name">implicitHeight</span> <span class="operator">*</span> <span class="number">1.5</span>
 
-             readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">indent</span>: <span class="number">20</span>
+             readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">indentation</span>: <span class="number">20</span>
              readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">padding</span>: <span class="number">5</span>
 
              <span class="comment">// Assigned to by TreeView:</span>
@@ -112,24 +117,52 @@
              required property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">expanded</span>
              required property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">hasChildren</span>
              required property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">depth</span>
+             required property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">row</span>
+             required property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">column</span>
+             required property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">current</span>
 
-             <span class="type"><a href="qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
-                 <span class="name">onTapped</span>: <span class="name">treeView</span>.<span class="name">toggleExpanded</span>(<span class="name">row</span>)
+             <span class="comment">// Rotate indicator when expanded by the user</span>
+             <span class="comment">// (requires TreeView to have a selectionModel)</span>
+             property <span class="type"><a href="qml-qtquick-animation.html" translate="no">Animation</a></span> <span class="name">indicatorAnimation</span>: <span class="name">NumberAnimation</span> {
+                 <span class="name">target</span>: <span class="name">indicator</span>
+                 <span class="name">property</span>: <span class="string">&quot;rotation&quot;</span>
+                 <span class="name">from</span>: <span class="name">expanded</span> ? <span class="number">0</span> : <span class="number">90</span>
+                 <span class="name">to</span>: <span class="name">expanded</span> ? <span class="number">90</span> : <span class="number">0</span>
+                 <span class="name">duration</span>: <span class="number">100</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">OutQuart</span>
+             }
+             <span class="name">TableView</span>.onPooled: <span class="name">indicatorAnimation</span>.<span class="name">complete</span>()
+             <span class="name">TableView</span>.onReused: <span class="keyword">if</span> (<span class="name">current</span>) <span class="name">indicatorAnimation</span>.<span class="name">start</span>()
+             <span class="name">onExpandedChanged</span>: <span class="name">indicator</span>.<span class="name">rotation</span> <span class="operator">=</span> <span class="name">expanded</span> ? <span class="number">90</span> : <span class="number">0</span>
+
+             <span class="type"><a href="qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+                 <span class="name">id</span>: <span class="name">background</span>
+                 <span class="name">anchors</span>.fill: <span class="name">parent</span>
+                 <span class="name">color</span>: <span class="name">row</span> <span class="operator">===</span> <span class="name">treeView</span>.<span class="name">currentRow</span> ? <span class="name">palette</span>.<span class="name">highlight</span> : <span class="string">&quot;black&quot;</span>
+                 <span class="name">opacity</span>: (<span class="name">treeView</span>.<span class="name">alternatingRows</span> <span class="operator">&amp;&amp;</span> <span class="name">row</span> <span class="operator">%</span> <span class="number">2</span> <span class="operator">!==</span> <span class="number">0</span>) ? <span class="number">0.3</span> : <span class="number">0.1</span>
              }
 
-             <span class="type"><a href="qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
                  <span class="name">id</span>: <span class="name">indicator</span>
-                 <span class="name">visible</span>: <span class="name">treeDelegate</span>.<span class="name">isTreeNode</span> <span class="operator">&amp;&amp;</span> <span class="name">treeDelegate</span>.<span class="name">hasChildren</span>
-                 <span class="name">x</span>: <span class="name">padding</span> <span class="operator">+</span> (<span class="name">treeDelegate</span>.<span class="name">depth</span> <span class="operator">*</span> <span class="name">treeDelegate</span>.<span class="name">indent</span>)
-                 <span class="name">anchors</span>.verticalCenter: <span class="name">label</span>.<span class="name">verticalCenter</span>
-                 <span class="name">text</span>: <span class="string">&quot;▸&quot;</span>
-                 <span class="name">rotation</span>: <span class="name">treeDelegate</span>.<span class="name">expanded</span> ? <span class="number">90</span> : <span class="number">0</span>
+                 <span class="name">x</span>: <span class="name">padding</span> <span class="operator">+</span> (<span class="name">depth</span> <span class="operator">*</span> <span class="name">indentation</span>)
+                 <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+                 <span class="name">visible</span>: <span class="name">isTreeNode</span> <span class="operator">&amp;&amp;</span> <span class="name">hasChildren</span>
+                 <span class="name">text</span>: <span class="string">&quot;▶&quot;</span>
+
+                 <span class="type"><a href="qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+                     <span class="name">onSingleTapped</span>: {
+                         let index = <span class="name">treeView</span>.<span class="name">index</span>(<span class="name">row</span>, <span class="name">column</span>)
+                         <span class="name">treeView</span>.<span class="name">selectionModel</span>.<span class="name">setCurrentIndex</span>(<span class="name">index</span>, <span class="name">ItemSelectionModel</span>.<span class="name">NoUpdate</span>)
+                         <span class="name">treeView</span>.<span class="name">toggleExpanded</span>(<span class="name">row</span>)
+                     }
+                 }
              }
 
-             <span class="type"><a href="qml-qtquick-text.html" translate="no">Text</a></span> {
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
                  <span class="name">id</span>: <span class="name">label</span>
-                 <span class="name">x</span>: <span class="name">padding</span> <span class="operator">+</span> (<span class="name">treeDelegate</span>.<span class="name">isTreeNode</span> ? (<span class="name">treeDelegate</span>.<span class="name">depth</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">*</span> <span class="name">treeDelegate</span>.<span class="name">indent</span> : <span class="number">0</span>)
-                 <span class="name">width</span>: <span class="name">treeDelegate</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">treeDelegate</span>.<span class="name">padding</span> <span class="operator">-</span> <span class="name">x</span>
+                 <span class="name">x</span>: <span class="name">padding</span> <span class="operator">+</span> (<span class="name">isTreeNode</span> ? (<span class="name">depth</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">*</span> <span class="name">indentation</span> : <span class="number">0</span>)
+                 <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+                 <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">padding</span> <span class="operator">-</span> <span class="name">x</span>
                  <span class="name">clip</span>: <span class="number">true</span>
                  <span class="name">text</span>: <span class="name">model</span>.<span class="name">display</span>
              }
@@ -329,9 +362,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

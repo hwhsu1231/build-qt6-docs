@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qcolor.cpp -->
   <meta name="description" content="The QColor class provides colors based on RGB, HSV or CMYK values.">
-  <title>QColor Class | Qt GUI 6.6.0</title>
+  <title>QColor Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QColor</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -222,8 +222,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p>QColor is platform and device independent. The <a href="../qtwidgets/qcolormap.html" translate="no">QColormap</a> class maps the color to the hardware.</p>
 <p>For more information about painting in general, see the <a href="paintsystem.html" translate="no">Paint System</a> documentation.</p>
 <h3 id="integer-vs-floating-point-precision">Integer vs. Floating Point Precision</h3>
-<p>QColor supports floating point precision and provides floating point versions of all the color components functions, e.g&#x2e; <a href="qcolor.html#getRgbF" translate="no">getRgbF</a>(), <a href="qcolor.html#hueF" translate="no">hueF</a>() and <a href="qcolor.html#fromCmykF" translate="no">fromCmykF</a>(). Note that since the components are stored using 16-bit integers, there might be minor deviations between the values set using, for example, <a href="qcolor.html#setRgbF" translate="no">setRgbF</a>() and the values returned by the <a href="qcolor.html#getRgbF" translate="no">getRgbF</a>() function due to rounding.</p>
-<p>While the integer based functions take values in the range 0-255 (except <a href="qcolor.html#hue" translate="no">hue</a>() which must have values within the range 0-359), the floating point functions accept values in the range 0.0 - 1.0&#x2e;</p>
+<p>QColor supports floating point precision and provides floating point versions of all the color components functions, e.g. <a href="qcolor.html#getRgbF" translate="no">getRgbF</a>(), <a href="qcolor.html#hueF" translate="no">hueF</a>() and <a href="qcolor.html#fromCmykF" translate="no">fromCmykF</a>(). Note that since the components are stored using 16-bit integers, there might be minor deviations between the values set using, for example, <a href="qcolor.html#setRgbF" translate="no">setRgbF</a>() and the values returned by the <a href="qcolor.html#getRgbF" translate="no">getRgbF</a>() function due to rounding.</p>
+<p>While the integer based functions take values in the range 0-255 (except <a href="qcolor.html#hue" translate="no">hue</a>() which must have values within the range 0-359), the floating point functions accept values in the range 0.0 - 1.0.</p>
 <h3 id="alpha-blended-drawing">Alpha-Blended Drawing</h3>
 <p>QColor also support alpha-blended outlining and filling. The alpha channel of a color specifies the transparency effect, 0 represents a fully transparent color, while 255 represents a fully opaque color. For example:</p>
 <pre class="cpp" translate="no">
@@ -240,12 +240,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 id="predefined-colors">Predefined Colors</h3>
 <p>There are 20 predefined QColor objects in the <code translate="no">QColorConstants</code> namespace, including black, white, primary and secondary colors, darker versions of these colors, and three shades of gray. Furthermore, the <code translate="no">QColorConstants::Svg</code> namespace defines QColor objects for the standard <a href="https://www.w3.org/TR/SVG11/types.html#ColorKeywords" translate="no">SVG color keyword names</a>.</p>
 <p class="centerAlign"><img src="images/qt-colors.png" alt="Qt Colors" /></p><p>The <code translate="no">QColorConstants::Color0</code>, <code translate="no">QColorConstants::Color1</code> and <code translate="no">QColorConstants::Transparent</code> colors are used for special purposes.</p>
-<p><code translate="no">QColorConstants::Color0</code> (zero pixel value) and <code translate="no">QColorConstants::Color1</code> (non-zero pixel value) are special colors for drawing in QBitmaps. Painting with <code translate="no">QColorConstants::Color0</code> sets the bitmap bits to 0 (transparent; i.e&#x2e;, background), and painting with c{QColorConstants::Color1} sets the bits to 1 (opaque; i.e&#x2e;, foreground).</p>
+<p><code translate="no">QColorConstants::Color0</code> (zero pixel value) and <code translate="no">QColorConstants::Color1</code> (non-zero pixel value) are special colors for drawing in QBitmaps. Painting with <code translate="no">QColorConstants::Color0</code> sets the bitmap bits to 0 (transparent; i.e., background), and painting with c{QColorConstants::Color1} sets the bits to 1 (opaque; i.e., foreground).</p>
 <p><code translate="no">QColorConstants::Transparent</code> is used to indicate a transparent pixel. When painting with this value, a pixel value will be used that is appropriate for the underlying pixel format in use.</p>
 <p>For historical reasons, the 20 predefined colors are also available in the <a href="../qtcore/qt.html#GlobalColor-enum" translate="no">Qt::GlobalColor</a> enumeration.</p>
 <p>Finally, QColor recognizes a variety of color names (as strings); the static <a href="qcolor.html#colorNames" translate="no">colorNames</a>() function returns a <a href="../qtcore/qstringlist.html" translate="no">QStringList</a> color names that QColor knows about.</p>
 <h3 id="the-extended-rgb-color-model">The Extended RGB Color Model</h3>
-<p>The extended RGB color model, also known as the scRGB color space, is the same the RGB color model except it allows values under 0.0, and over 1.0&#x2e; This makes it possible to represent colors that would otherwise be outside the range of the RGB colorspace but still use the same values for colors inside the RGB colorspace.</p>
+<p>The extended RGB color model, also known as the scRGB color space, is the same the RGB color model except it allows values under 0.0, and over 1.0. This makes it possible to represent colors that would otherwise be outside the range of the RGB colorspace but still use the same values for colors inside the RGB colorspace.</p>
 <h3 id="the-hsv-color-model">The HSV Color Model</h3>
 <p>The RGB model is hardware-oriented. Its representation is close to what most monitors show. In contrast, HSV represents color in a way more suited to the human perception of color. For example, the relationships &quot;stronger than&quot;, &quot;darker than&quot;, and &quot;the opposite of&quot; are easily expressed in HSV but are much harder to express in RGB.</p>
 <p>HSV, like RGB, has three components:</p>
@@ -278,8 +278,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 class="fn" translate="no" id="NameFormat-enum">enum QColor::<span class="name">NameFormat</span></h3>
 <p>How to format the output of the <a href="qcolor.html#name" translate="no">name</a>() function</p>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
-<tr><td class="topAlign"><code translate="no">QColor::HexRgb</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">#RRGGBB A &quot;#&quot; character followed by three two-digit hexadecimal numbers (i.e&#x2e; <code translate="no">#RRGGBB</code>).</td></tr>
-<tr><td class="topAlign"><code translate="no">QColor::HexArgb</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">#AARRGGBB A &quot;#&quot; character followed by four two-digit hexadecimal numbers (i.e&#x2e; <code translate="no">#AARRGGBB</code>).</td></tr>
+<tr><td class="topAlign"><code translate="no">QColor::HexRgb</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">#RRGGBB A &quot;#&quot; character followed by three two-digit hexadecimal numbers (i.e. <code translate="no">#RRGGBB</code>).</td></tr>
+<tr><td class="topAlign"><code translate="no">QColor::HexArgb</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">#AARRGGBB A &quot;#&quot; character followed by four two-digit hexadecimal numbers (i.e. <code translate="no">#AARRGGBB</code>).</td></tr>
 </table></div>
 <p><b>See also </b><a href="qcolor.html#name" translate="no">name</a>().</p>
 <!-- @@@NameFormat -->
@@ -404,58 +404,58 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@darker -->
 <!-- $$$fromCmyk[overload1]$$$fromCmykintintintintint -->
 <h3 class="fn" translate="no" id="fromCmyk"><code translate="no">[static] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromCmyk</span>(<span class="type">int</span> <i>c</i>, <span class="type">int</span> <i>m</i>, <span class="type">int</span> <i>y</i>, <span class="type">int</span> <i>k</i>, <span class="type">int</span> <i>a</i> = 255)</h3>
-<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the given CMYK color values: <i translate="no">c</i> (cyan), <i translate="no">m</i> (magenta), <i translate="no">y</i> (yellow), <i translate="no">k</i> (black), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
+<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the given CMYK color values: <i translate="no">c</i> (cyan), <i translate="no">m</i> (magenta), <i translate="no">y</i> (yellow), <i translate="no">k</i> (black), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
 <p>All the values must be in the range 0-255.</p>
 <p><b>See also </b><a href="qcolor.html#toCmyk" translate="no">toCmyk</a>(), <a href="qcolor.html#fromCmykF" translate="no">fromCmykF</a>(), <a href="qcolor.html#isValid" translate="no">isValid</a>(), and <a href="qcolor.html#the-cmyk-color-model" translate="no">The CMYK Color Model</a>.</p>
 <!-- @@@fromCmyk -->
 <!-- $$$fromCmykF[overload1]$$$fromCmykFfloatfloatfloatfloatfloat -->
 <h3 class="fn" translate="no" id="fromCmykF"><code translate="no">[static] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromCmykF</span>(<span class="type">float</span> <i>c</i>, <span class="type">float</span> <i>m</i>, <span class="type">float</span> <i>y</i>, <span class="type">float</span> <i>k</i>, <span class="type">float</span> <i>a</i> = 1.0)</h3>
 <p>This is an overloaded function.</p>
-<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the given CMYK color values: <i translate="no">c</i> (cyan), <i translate="no">m</i> (magenta), <i translate="no">y</i> (yellow), <i translate="no">k</i> (black), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
-<p>All the values must be in the range 0.0-1.0&#x2e;</p>
+<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the given CMYK color values: <i translate="no">c</i> (cyan), <i translate="no">m</i> (magenta), <i translate="no">y</i> (yellow), <i translate="no">k</i> (black), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
+<p>All the values must be in the range 0.0-1.0.</p>
 <p><b>See also </b><a href="qcolor.html#toCmyk" translate="no">toCmyk</a>(), <a href="qcolor.html#fromCmyk" translate="no">fromCmyk</a>(), <a href="qcolor.html#isValid" translate="no">isValid</a>(), and <a href="qcolor.html#the-cmyk-color-model" translate="no">The CMYK Color Model</a>.</p>
 <!-- @@@fromCmykF -->
 <!-- $$$fromHsl[overload1]$$$fromHslintintintint -->
 <h3 class="fn" translate="no" id="fromHsl"><code translate="no">[static] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromHsl</span>(<span class="type">int</span> <i>h</i>, <span class="type">int</span> <i>s</i>, <span class="type">int</span> <i>l</i>, <span class="type">int</span> <i>a</i> = 255)</h3>
-<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the HSV color values, <i translate="no">h</i> (hue), <i translate="no">s</i> (saturation), <i translate="no">l</i> (lightness), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
+<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the HSV color values, <i translate="no">h</i> (hue), <i translate="no">s</i> (saturation), <i translate="no">l</i> (lightness), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
 <p>The value of <i translate="no">s</i>, <i translate="no">l</i>, and <i translate="no">a</i> must all be in the range 0-255; the value of <i translate="no">h</i> must be in the range 0-359.</p>
 <p><b>See also </b><a href="qcolor.html#toHsl" translate="no">toHsl</a>(), <a href="qcolor.html#fromHslF" translate="no">fromHslF</a>(), <a href="qcolor.html#isValid" translate="no">isValid</a>(), and <a href="qcolor.html#the-hsl-color-model" translate="no">The HSL Color Model</a>.</p>
 <!-- @@@fromHsl -->
 <!-- $$$fromHslF[overload1]$$$fromHslFfloatfloatfloatfloat -->
 <h3 class="fn" translate="no" id="fromHslF"><code translate="no">[static] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromHslF</span>(<span class="type">float</span> <i>h</i>, <span class="type">float</span> <i>s</i>, <span class="type">float</span> <i>l</i>, <span class="type">float</span> <i>a</i> = 1.0)</h3>
 <p>This is an overloaded function.</p>
-<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the HSV color values, <i translate="no">h</i> (hue), <i translate="no">s</i> (saturation), <i translate="no">l</i> (lightness), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
-<p>All the values must be in the range 0.0-1.0&#x2e;</p>
+<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the HSV color values, <i translate="no">h</i> (hue), <i translate="no">s</i> (saturation), <i translate="no">l</i> (lightness), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
+<p>All the values must be in the range 0.0-1.0.</p>
 <p><b>See also </b><a href="qcolor.html#toHsl" translate="no">toHsl</a>(), <a href="qcolor.html#fromHsl" translate="no">fromHsl</a>(), <a href="qcolor.html#isValid" translate="no">isValid</a>(), and <a href="qcolor.html#the-hsl-color-model" translate="no">The HSL Color Model</a>.</p>
 <!-- @@@fromHslF -->
 <!-- $$$fromHsv[overload1]$$$fromHsvintintintint -->
 <h3 class="fn" translate="no" id="fromHsv"><code translate="no">[static] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromHsv</span>(<span class="type">int</span> <i>h</i>, <span class="type">int</span> <i>s</i>, <span class="type">int</span> <i>v</i>, <span class="type">int</span> <i>a</i> = 255)</h3>
-<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the HSV color values, <i translate="no">h</i> (hue), <i translate="no">s</i> (saturation), <i translate="no">v</i> (value), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
+<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the HSV color values, <i translate="no">h</i> (hue), <i translate="no">s</i> (saturation), <i translate="no">v</i> (value), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
 <p>The value of <i translate="no">s</i>, <i translate="no">v</i>, and <i translate="no">a</i> must all be in the range 0-255; the value of <i translate="no">h</i> must be in the range 0-359.</p>
 <p><b>See also </b><a href="qcolor.html#toHsv" translate="no">toHsv</a>(), <a href="qcolor.html#fromHsvF" translate="no">fromHsvF</a>(), <a href="qcolor.html#isValid" translate="no">isValid</a>(), and <a href="qcolor.html#the-hsv-color-model" translate="no">The HSV Color Model</a>.</p>
 <!-- @@@fromHsv -->
 <!-- $$$fromHsvF[overload1]$$$fromHsvFfloatfloatfloatfloat -->
 <h3 class="fn" translate="no" id="fromHsvF"><code translate="no">[static] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromHsvF</span>(<span class="type">float</span> <i>h</i>, <span class="type">float</span> <i>s</i>, <span class="type">float</span> <i>v</i>, <span class="type">float</span> <i>a</i> = 1.0)</h3>
 <p>This is an overloaded function.</p>
-<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the HSV color values, <i translate="no">h</i> (hue), <i translate="no">s</i> (saturation), <i translate="no">v</i> (value), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
-<p>All the values must be in the range 0.0-1.0&#x2e;</p>
+<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the HSV color values, <i translate="no">h</i> (hue), <i translate="no">s</i> (saturation), <i translate="no">v</i> (value), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
+<p>All the values must be in the range 0.0-1.0.</p>
 <p><b>See also </b><a href="qcolor.html#toHsv" translate="no">toHsv</a>(), <a href="qcolor.html#fromHsv" translate="no">fromHsv</a>(), <a href="qcolor.html#isValid" translate="no">isValid</a>(), and <a href="qcolor.html#the-hsv-color-model" translate="no">The HSV Color Model</a>.</p>
 <!-- @@@fromHsvF -->
 <!-- $$$fromRgb[overload1]$$$fromRgbQRgb -->
 <h3 class="fn" translate="no" id="fromRgb"><code translate="no">[static noexcept] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromRgb</span>(<span class="type"><a href="qcolor.html#QRgb-typedef" translate="no">QRgb</a></span> <i>rgb</i>)</h3>
 <p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the given <a href="qcolor.html#QRgb-typedef" translate="no">QRgb</a> value <i translate="no">rgb</i>.</p>
-<p>The alpha component of <i translate="no">rgb</i> is ignored (i.e&#x2e; it is automatically set to 255), use the <a href="qcolor.html#fromRgba" translate="no">fromRgba</a>() function to include the alpha-channel specified by the given <a href="qcolor.html#QRgb-typedef" translate="no">QRgb</a> value.</p>
+<p>The alpha component of <i translate="no">rgb</i> is ignored (i.e. it is automatically set to 255), use the <a href="qcolor.html#fromRgba" translate="no">fromRgba</a>() function to include the alpha-channel specified by the given <a href="qcolor.html#QRgb-typedef" translate="no">QRgb</a> value.</p>
 <p><b>See also </b><a href="qcolor.html#fromRgba" translate="no">fromRgba</a>(), <a href="qcolor.html#fromRgbF" translate="no">fromRgbF</a>(), <a href="qcolor.html#toRgb" translate="no">toRgb</a>(), and <a href="qcolor.html#isValid" translate="no">isValid</a>().</p>
 <!-- @@@fromRgb -->
 <!-- $$$fromRgb$$$fromRgbintintintint -->
 <h3 class="fn" translate="no" id="fromRgb-1"><code translate="no">[static] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromRgb</span>(<span class="type">int</span> <i>r</i>, <span class="type">int</span> <i>g</i>, <span class="type">int</span> <i>b</i>, <span class="type">int</span> <i>a</i> = 255)</h3>
-<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the RGB color values, <i translate="no">r</i> (red), <i translate="no">g</i> (green), <i translate="no">b</i> (blue), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
+<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the RGB color values, <i translate="no">r</i> (red), <i translate="no">g</i> (green), <i translate="no">b</i> (blue), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
 <p>All the values must be in the range 0-255.</p>
 <p><b>See also </b><a href="qcolor.html#toRgb" translate="no">toRgb</a>(), <a href="qcolor.html#fromRgba64" translate="no">fromRgba64</a>(), <a href="qcolor.html#fromRgbF" translate="no">fromRgbF</a>(), and <a href="qcolor.html#isValid" translate="no">isValid</a>().</p>
 <!-- @@@fromRgb -->
 <!-- $$$fromRgba64[overload1]$$$fromRgba64ushortushortushortushort -->
 <h3 class="fn" translate="no" id="fromRgba64"><code translate="no">[static noexcept] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromRgba64</span>(<span class="type"><a href="../qtcore/qttypes.html#ushort-typedef" translate="no">ushort</a></span> <i>r</i>, <span class="type"><a href="../qtcore/qttypes.html#ushort-typedef" translate="no">ushort</a></span> <i>g</i>, <span class="type"><a href="../qtcore/qttypes.html#ushort-typedef" translate="no">ushort</a></span> <i>b</i>, <span class="type"><a href="../qtcore/qttypes.html#ushort-typedef" translate="no">ushort</a></span> <i>a</i> = USHRT_MAX)</h3>
-<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the RGBA64 color values, <i translate="no">r</i> (red), <i translate="no">g</i> (green), <i translate="no">b</i> (blue), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
+<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the RGBA64 color values, <i translate="no">r</i> (red), <i translate="no">g</i> (green), <i translate="no">b</i> (blue), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
 <p><b>See also </b><a href="qcolor.html#fromRgb" translate="no">fromRgb</a>(), <a href="qcolor.html#fromRgbF" translate="no">fromRgbF</a>(), <a href="qcolor.html#toRgb" translate="no">toRgb</a>(), and <a href="qcolor.html#isValid" translate="no">isValid</a>().</p>
 <!-- @@@fromRgba64 -->
 <!-- $$$fromRgba64$$$fromRgba64QRgba64 -->
@@ -465,8 +465,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@fromRgba64 -->
 <!-- $$$fromRgbF[overload1]$$$fromRgbFfloatfloatfloatfloat -->
 <h3 class="fn" translate="no" id="fromRgbF"><code translate="no">[static] </code><span class="type"><a href="qcolor.html#QColor" translate="no">QColor</a></span> QColor::<span class="name">fromRgbF</span>(<span class="type">float</span> <i>r</i>, <span class="type">float</span> <i>g</i>, <span class="type">float</span> <i>b</i>, <span class="type">float</span> <i>a</i> = 1.0)</h3>
-<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the RGB color values, <i translate="no">r</i> (red), <i translate="no">g</i> (green), <i translate="no">b</i> (blue), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
-<p>The alpha value must be in the range 0.0-1.0&#x2e; If any of the other values are outside the range of 0.0-1.0 the color model will be set as <code translate="no">ExtendedRgb</code>.</p>
+<p>Static convenience function that returns a <a href="qcolor.html" translate="no">QColor</a> constructed from the RGB color values, <i translate="no">r</i> (red), <i translate="no">g</i> (green), <i translate="no">b</i> (blue), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
+<p>The alpha value must be in the range 0.0-1.0. If any of the other values are outside the range of 0.0-1.0 the color model will be set as <code translate="no">ExtendedRgb</code>.</p>
 <p><b>See also </b><a href="qcolor.html#fromRgb" translate="no">fromRgb</a>(), <a href="qcolor.html#fromRgba64" translate="no">fromRgba64</a>(), <a href="qcolor.html#toRgb" translate="no">toRgb</a>(), and <a href="qcolor.html#isValid" translate="no">isValid</a>().</p>
 <!-- @@@fromRgbF -->
 <!-- $$$fromRgba[overload1]$$$fromRgbaQRgb -->
@@ -484,7 +484,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <li>#AARRGGBB (Since 5.2)</li>
 <li>#RRRGGGBBB</li>
 <li>#RRRRGGGGBBBB</li>
-<li>A name from the list of colors defined in the list of <a href="https://www.w3.org/TR/SVG11/types.html#ColorKeywords" translate="no">SVG color keyword names</a> provided by the World Wide Web Consortium; for example, &quot;steelblue&quot; or &quot;gainsboro&quot;. These color names work on all platforms. Note that these color names are <i>not</i> the same as defined by the <a href="../qtcore/qt.html#GlobalColor-enum" translate="no">Qt::GlobalColor</a> enums, e.g&#x2e; &quot;green&quot; and <a href="../qtcore/qt.html#GlobalColor-enum" translate="no">Qt::green</a> does not refer to the same color.</li>
+<li>A name from the list of colors defined in the list of <a href="https://www.w3.org/TR/SVG11/types.html#ColorKeywords" translate="no">SVG color keyword names</a> provided by the World Wide Web Consortium; for example, &quot;steelblue&quot; or &quot;gainsboro&quot;. These color names work on all platforms. Note that these color names are <i>not</i> the same as defined by the <a href="../qtcore/qt.html#GlobalColor-enum" translate="no">Qt::GlobalColor</a> enums, e.g. &quot;green&quot; and <a href="../qtcore/qt.html#GlobalColor-enum" translate="no">Qt::green</a> does not refer to the same color.</li>
 <li><code translate="no">transparent</code> - representing the absence of a color.</li>
 </ul>
 <p>Returns an invalid color if <i translate="no">name</i> cannot be parsed.</p>
@@ -690,7 +690,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@setAlpha -->
 <!-- $$$setAlphaF[overload1]$$$setAlphaFfloat -->
 <h3 class="fn" translate="no" id="setAlphaF"><span class="type">void</span> QColor::<span class="name">setAlphaF</span>(<span class="type">float</span> <i>alpha</i>)</h3>
-<p>Sets the alpha of this color to <i translate="no">alpha</i>. float alpha is specified in the range 0.0-1.0&#x2e;</p>
+<p>Sets the alpha of this color to <i translate="no">alpha</i>. float alpha is specified in the range 0.0-1.0.</p>
 <p><b>See also </b><a href="qcolor.html#alphaF" translate="no">alphaF</a>(), <a href="qcolor.html#alpha" translate="no">alpha</a>(), and <a href="qcolor.html#alpha-blended-drawing" translate="no">Alpha-Blended Drawing</a>.</p>
 <!-- @@@setAlphaF -->
 <!-- $$$setBlue[overload1]$$$setBlueint -->
@@ -705,15 +705,15 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@setBlueF -->
 <!-- $$$setCmyk[overload1]$$$setCmykintintintintint -->
 <h3 class="fn" translate="no" id="setCmyk"><span class="type">void</span> QColor::<span class="name">setCmyk</span>(<span class="type">int</span> <i>c</i>, <span class="type">int</span> <i>m</i>, <span class="type">int</span> <i>y</i>, <span class="type">int</span> <i>k</i>, <span class="type">int</span> <i>a</i> = 255)</h3>
-<p>Sets the color to CMYK values, <i translate="no">c</i> (cyan), <i translate="no">m</i> (magenta), <i translate="no">y</i> (yellow), <i translate="no">k</i> (black), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
+<p>Sets the color to CMYK values, <i translate="no">c</i> (cyan), <i translate="no">m</i> (magenta), <i translate="no">y</i> (yellow), <i translate="no">k</i> (black), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
 <p>All the values must be in the range 0-255.</p>
 <p><b>See also </b><a href="qcolor.html#getCmyk" translate="no">getCmyk</a>(), <a href="qcolor.html#setCmykF" translate="no">setCmykF</a>(), and <a href="qcolor.html#the-cmyk-color-model" translate="no">The CMYK Color Model</a>.</p>
 <!-- @@@setCmyk -->
 <!-- $$$setCmykF[overload1]$$$setCmykFfloatfloatfloatfloatfloat -->
 <h3 class="fn" translate="no" id="setCmykF"><span class="type">void</span> QColor::<span class="name">setCmykF</span>(<span class="type">float</span> <i>c</i>, <span class="type">float</span> <i>m</i>, <span class="type">float</span> <i>y</i>, <span class="type">float</span> <i>k</i>, <span class="type">float</span> <i>a</i> = 1.0)</h3>
 <p>This is an overloaded function.</p>
-<p>Sets the color to CMYK values, <i translate="no">c</i> (cyan), <i translate="no">m</i> (magenta), <i translate="no">y</i> (yellow), <i translate="no">k</i> (black), and <i translate="no">a</i> (alpha-channel, i.e&#x2e; transparency).</p>
-<p>All the values must be in the range 0.0-1.0&#x2e;</p>
+<p>Sets the color to CMYK values, <i translate="no">c</i> (cyan), <i translate="no">m</i> (magenta), <i translate="no">y</i> (yellow), <i translate="no">k</i> (black), and <i translate="no">a</i> (alpha-channel, i.e. transparency).</p>
+<p>All the values must be in the range 0.0-1.0.</p>
 <p><b>See also </b><a href="qcolor.html#getCmykF" translate="no">getCmykF</a>(), <a href="qcolor.html#setCmyk" translate="no">setCmyk</a>(), and <a href="qcolor.html#the-cmyk-color-model" translate="no">The CMYK Color Model</a>.</p>
 <!-- @@@setCmykF -->
 <!-- $$$setGreen[overload1]$$$setGreenint -->
@@ -735,7 +735,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- $$$setHslF[overload1]$$$setHslFfloatfloatfloatfloat -->
 <h3 class="fn" translate="no" id="setHslF"><span class="type">void</span> QColor::<span class="name">setHslF</span>(<span class="type">float</span> <i>h</i>, <span class="type">float</span> <i>s</i>, <span class="type">float</span> <i>l</i>, <span class="type">float</span> <i>a</i> = 1.0)</h3>
 <p>Sets a HSL color lightness; <i translate="no">h</i> is the hue, <i translate="no">s</i> is the saturation, <i translate="no">l</i> is the lightness and <i translate="no">a</i> is the alpha component of the HSL color.</p>
-<p>All the values must be in the range 0.0-1.0&#x2e;</p>
+<p>All the values must be in the range 0.0-1.0.</p>
 <p><b>See also </b><a href="qcolor.html#getHslF" translate="no">getHslF</a>() and <a href="qcolor.html#setHsl" translate="no">setHsl</a>().</p>
 <!-- @@@setHslF -->
 <!-- $$$setHsv[overload1]$$$setHsvintintintint -->
@@ -747,7 +747,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- $$$setHsvF[overload1]$$$setHsvFfloatfloatfloatfloat -->
 <h3 class="fn" translate="no" id="setHsvF"><span class="type">void</span> QColor::<span class="name">setHsvF</span>(<span class="type">float</span> <i>h</i>, <span class="type">float</span> <i>s</i>, <span class="type">float</span> <i>v</i>, <span class="type">float</span> <i>a</i> = 1.0)</h3>
 <p>Sets a HSV color value; <i translate="no">h</i> is the hue, <i translate="no">s</i> is the saturation, <i translate="no">v</i> is the value and <i translate="no">a</i> is the alpha component of the HSV color.</p>
-<p>All the values must be in the range 0.0-1.0&#x2e;</p>
+<p>All the values must be in the range 0.0-1.0.</p>
 <p><b>See also </b><a href="qcolor.html#getHsvF" translate="no">getHsvF</a>(), <a href="qcolor.html#setHsv" translate="no">setHsv</a>(), and <a href="qcolor.html#the-hsv-color-model" translate="no">The HSV Color Model</a>.</p>
 <!-- @@@setHsvF -->
 <!-- $$$setRed[overload1]$$$setRedint -->
@@ -779,7 +779,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- $$$setRgbF[overload1]$$$setRgbFfloatfloatfloatfloat -->
 <h3 class="fn" translate="no" id="setRgbF"><span class="type">void</span> QColor::<span class="name">setRgbF</span>(<span class="type">float</span> <i>r</i>, <span class="type">float</span> <i>g</i>, <span class="type">float</span> <i>b</i>, <span class="type">float</span> <i>a</i> = 1.0)</h3>
 <p>Sets the color channels of this color to <i translate="no">r</i> (red), <i translate="no">g</i> (green), <i translate="no">b</i> (blue) and <i translate="no">a</i> (alpha, transparency).</p>
-<p>The alpha value must be in the range 0.0-1.0&#x2e; If any of the other values are outside the range of 0.0-1.0 the color model will be set as <code translate="no">ExtendedRgb</code>.</p>
+<p>The alpha value must be in the range 0.0-1.0. If any of the other values are outside the range of 0.0-1.0 the color model will be set as <code translate="no">ExtendedRgb</code>.</p>
 <p><b>See also </b><a href="qcolor.html#rgb" translate="no">rgb</a>(), <a href="qcolor.html#getRgbF" translate="no">getRgbF</a>(), and <a href="qcolor.html#setRgb" translate="no">setRgb</a>().</p>
 <!-- @@@setRgbF -->
 <!-- $$$setRgba[overload1]$$$setRgbaQRgb -->
@@ -983,9 +983,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

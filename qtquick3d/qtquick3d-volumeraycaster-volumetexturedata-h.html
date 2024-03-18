@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- volumeraycaster.qdoc -->
+  <meta name="description" content="Demonstrates how to do volumetric rendering in Qt Quick 3D.">
+  <title>Qt Quick 3D - Volumetric Rendering Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Volumetric Rendering Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Volumetric Rendering Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#ifndef VOLUMETEXTUREDATA_H</span>
+ <span class="preprocessor">#define VOLUMETEXTUREDATA_H</span>
+
+ <span class="preprocessor">#include &quot;qthread.h&quot;</span>
+ <span class="preprocessor">#include &lt;QMutex&gt;</span>
+ <span class="preprocessor">#include &lt;QtQuick3D/QQuick3DTextureData&gt;</span>
+ <span class="preprocessor">#include &lt;QtQml/QQmlEngine&gt;</span>
+
+ <span class="preprocessor">#include &lt;QtGui/QColor&gt;</span>
+ <span class="preprocessor">#include &lt;QtCore/QByteArray&gt;</span>
+ <span class="preprocessor">#include &lt;QUrl&gt;</span>
+ <span class="preprocessor">#include &lt;QVector3D&gt;</span>
+
+ <span class="keyword">class</span> VolumeTextureData : <span class="keyword">public</span> QQuick3DTextureData
+ {
+     Q_OBJECT
+     QML_ELEMENT
+
+ <span class="keyword">public</span>:
+     <span class="keyword">struct</span> AsyncLoaderData
+     {
+         <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> source;
+         qsizetype width <span class="operator">=</span> <span class="number">0</span>;
+         qsizetype height <span class="operator">=</span> <span class="number">0</span>;
+         qsizetype depth <span class="operator">=</span> <span class="number">0</span>;
+         <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> dataType;
+         <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> volumeData <span class="operator">=</span> {};
+         <span class="type">bool</span> success <span class="operator">=</span> <span class="keyword">false</span>;
+     };
+
+     VolumeTextureData();
+     <span class="operator">~</span>VolumeTextureData();
+
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> source READ source WRITE setSource NOTIFY sourceChanged)
+     Q_PROPERTY(qsizetype width READ width WRITE setWidth NOTIFY widthChanged FINAL)
+     Q_PROPERTY(qsizetype height READ height WRITE setHeight NOTIFY heightChanged FINAL)
+     Q_PROPERTY(qsizetype depth READ depth WRITE setDepth NOTIFY depthChanged FINAL)
+     Q_PROPERTY(<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> dataType READ dataType WRITE setDataType NOTIFY dataTypeChanged FINAL)
+
+     <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> source() <span class="keyword">const</span>;
+     <span class="type">void</span> setSource(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> <span class="operator">&amp;</span>newSource);
+
+     qsizetype width() <span class="keyword">const</span>;
+     <span class="type">void</span> setWidth(qsizetype newWidth);
+
+     qsizetype height() <span class="keyword">const</span>;
+     <span class="type">void</span> setHeight(qsizetype newHeight);
+
+     qsizetype depth() <span class="keyword">const</span>;
+     <span class="type">void</span> setDepth(qsizetype newDepth);
+
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> dataType() <span class="keyword">const</span>;
+     <span class="type">void</span> setDataType(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>newDataType);
+
+     Q_INVOKABLE <span class="type">void</span> loadAsync(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> source<span class="operator">,</span> qsizetype width<span class="operator">,</span> qsizetype height<span class="operator">,</span> qsizetype depth<span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> dataType);
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> sourceChanged();
+     <span class="type">void</span> widthChanged();
+     <span class="type">void</span> heightChanged();
+     <span class="type">void</span> depthChanged();
+     <span class="type">void</span> dataTypeChanged();
+     <span class="type">void</span> loadSucceeded(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> source<span class="operator">,</span> qsizetype width<span class="operator">,</span> qsizetype height<span class="operator">,</span> qsizetype depth<span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> dataType);
+     <span class="type">void</span> loadFailed(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> source<span class="operator">,</span> qsizetype width<span class="operator">,</span> qsizetype height<span class="operator">,</span> qsizetype depth<span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> dataType);
+
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> handleResults(VolumeTextureData<span class="operator">::</span>AsyncLoaderData result);
+
+ <span class="keyword">private</span>:
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> startWorker(VolumeTextureData<span class="operator">::</span>AsyncLoaderData data);
+
+ <span class="keyword">private</span>:
+     <span class="type">void</span> updateTextureDimensions();
+     <span class="type">void</span> initWorker();
+
+     <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> m_source;
+     qsizetype m_width <span class="operator">=</span> <span class="number">0</span>;
+     qsizetype m_height <span class="operator">=</span> <span class="number">0</span>;
+     qsizetype m_depth <span class="operator">=</span> <span class="number">0</span>;
+     qsizetype m_currentDataSize <span class="operator">=</span> <span class="number">0</span>;
+     <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> m_dataType;
+
+     <span class="comment">// Async variables</span>
+     AsyncLoaderData loaderData;
+     <span class="type">bool</span> m_isLoading <span class="operator">=</span> <span class="keyword">false</span>;
+     <span class="type">bool</span> m_isAborting <span class="operator">=</span> <span class="keyword">false</span>;
+     <span class="type"><a href="../qtcore/qthread.html" translate="no">QThread</a></span> workerThread;
+ };
+
+
+ <span class="preprocessor">#endif // VOLUMETEXTUREDATA_H</span>
+</pre>

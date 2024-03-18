@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qrhi.cpp -->
   <meta name="description" content="Texture resource.">
-  <title>QRhiTexture Class | Qt GUI 6.6.0</title>
+  <title>QRhiTexture Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QRhiTexture</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -117,7 +117,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
  commandBuffer<span class="operator">-</span><span class="operator">&gt;</span>resourceUpdate(batch); <span class="comment">// or, alternatively, pass 'batch' to a beginPass() call</span>
 </pre>
 <h4 id="common-patterns">Common patterns</h4>
-<p>A call to <a href="qrhitexture.html#create" translate="no">create</a>() destroys any existing native resources if <a href="qrhitexture.html#create" translate="no">create</a>() was successfully called before. If those native resources are still in use by an in-flight frame (i.e&#x2e;, there's a chance they are still read by the GPU), the destroying of those resources is deferred automatically. Thus a very common and convenient pattern to safely change the size of an already existing texture is the following. In practice this drops and creates a whole new native texture resource underneath, so it is not necessarily a cheap operation, but is more convenient and still faster than the alternatives, because by not destroying the <code translate="no">texture</code> object itself, all references to it stay valid in other data structures (e.g&#x2e;, in any QShaderResourceBinding the QRhiTexture is referenced from).</p>
+<p>A call to <a href="qrhitexture.html#create" translate="no">create</a>() destroys any existing native resources if <a href="qrhitexture.html#create" translate="no">create</a>() was successfully called before. If those native resources are still in use by an in-flight frame (i.e., there's a chance they are still read by the GPU), the destroying of those resources is deferred automatically. Thus a very common and convenient pattern to safely change the size of an already existing texture is the following. In practice this drops and creates a whole new native texture resource underneath, so it is not necessarily a cheap operation, but is more convenient and still faster than the alternatives, because by not destroying the <code translate="no">texture</code> object itself, all references to it stay valid in other data structures (e.g., in any QShaderResourceBinding the QRhiTexture is referenced from).</p>
 <pre class="cpp" translate="no">
  <span class="comment">// determine newSize, e.g. based on the swapchain's output size or other factors</span>
  <span class="keyword">if</span> (texture<span class="operator">-</span><span class="operator">&gt;</span>pixelSize() <span class="operator">!</span><span class="operator">=</span> newSize) {
@@ -149,7 +149,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <tr><td class="topAlign"><code translate="no">QRhiTexture::ExternalOES</code></td><td class="topAlign tblval"><code translate="no">1 &lt;&lt; 9</code></td><td class="topAlign">The texture should use the GL_TEXTURE_EXTERNAL_OES target with OpenGL. This flag is ignored with other graphics APIs.</td></tr>
 <tr><td class="topAlign"><code translate="no">QRhiTexture::ThreeDimensional</code></td><td class="topAlign tblval"><code translate="no">1 &lt;&lt; 10</code></td><td class="topAlign">The texture is a 3D texture. Such textures should be created with the <a href="qrhi.html#newTexture" translate="no">QRhi::newTexture</a>() overload taking a depth in addition to width and height. A 3D texture can have mipmaps but cannot be multisample. When rendering into, or uploading data to a 3D texture, the <code translate="no">layer</code> specified in the render target's color attachment or the upload description refers to a single slice in range [0..depth-1]. The underlying graphics API may not support 3D textures at run time. Support is indicated by the <a href="qrhi.html#Feature-enum" translate="no">QRhi::ThreeDimensionalTextures</a> feature.</td></tr>
 <tr><td class="topAlign"><code translate="no">QRhiTexture::TextureRectangleGL</code></td><td class="topAlign tblval"><code translate="no">1 &lt;&lt; 11</code></td><td class="topAlign">The texture should use the GL_TEXTURE_RECTANGLE target with OpenGL. This flag is ignored with other graphics APIs. Just like ExternalOES, this flag is useful when working with platform APIs where native OpenGL texture objects received from the platform are wrapped in a <a href="qrhitexture.html" translate="no">QRhiTexture</a>, and the platform can only provide textures for a non-2D texture target.</td></tr>
-<tr><td class="topAlign"><code translate="no">QRhiTexture::TextureArray</code></td><td class="topAlign tblval"><code translate="no">1 &lt;&lt; 12</code></td><td class="topAlign">The texture is a texture array, i.e&#x2e; a single texture object that is a homogeneous array of 2D textures. Texture arrays are created with <a href="qrhi.html#newTextureArray" translate="no">QRhi::newTextureArray</a>(). The underlying graphics API may not support texture array objects at run time. Support is indicated by the <a href="qrhi.html#Feature-enum" translate="no">QRhi::TextureArrays</a> feature. When rendering into, or uploading data to a texture array, the <code translate="no">layer</code> specified in the render target's color attachment or the upload description selects a single element in the array.</td></tr>
+<tr><td class="topAlign"><code translate="no">QRhiTexture::TextureArray</code></td><td class="topAlign tblval"><code translate="no">1 &lt;&lt; 12</code></td><td class="topAlign">The texture is a texture array, i.e. a single texture object that is a homogeneous array of 2D textures. Texture arrays are created with <a href="qrhi.html#newTextureArray" translate="no">QRhi::newTextureArray</a>(). The underlying graphics API may not support texture array objects at run time. Support is indicated by the <a href="qrhi.html#Feature-enum" translate="no">QRhi::TextureArrays</a> feature. When rendering into, or uploading data to a texture array, the <code translate="no">layer</code> specified in the render target's color attachment or the upload description selects a single element in the array.</td></tr>
 <tr><td class="topAlign"><code translate="no">QRhiTexture::OneDimensional</code></td><td class="topAlign tblval"><code translate="no">1 &lt;&lt; 13</code></td><td class="topAlign">The texture is a 1D texture. Such textures can be created by passing a 0 height and depth to <a href="qrhi.html#newTexture" translate="no">QRhi::newTexture</a>(). Note that there can be limitations on one dimensional textures depending on the underlying graphics API. For example, rendering to them or using them with mipmap-based filtering may be unsupported. This is indicated by the <a href="qrhi.html#Feature-enum" translate="no">QRhi::OneDimensionalTextures</a> and <a href="qrhi.html#Feature-enum" translate="no">QRhi::OneDimensionalTextureMipmaps</a> feature flags.</td></tr>
 </table></div>
 <p>The Flags type is a typedef for <a href="../qtcore/qflags.html">QFlags</a>&lt;Flag&gt;. It stores an OR combination of Flag values.</p>
@@ -299,7 +299,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 class="fn" translate="no" id="setFormat"><span class="type">void</span> QRhiTexture::<span class="name">setFormat</span>(<span class="type"><a href="qrhitexture.html#Format-enum" translate="no">Format</a></span> <i>fmt</i>)</h3>
 <p>Sets the requested texture format to <i translate="no">fmt</i>.</p>
 <div class="admonition note">
-<p><b>Note: </b>The value set is only taken into account upon the next call to <a href="qrhitexture.html#create" translate="no">create</a>(), i.e&#x2e; when the underlying graphics resource are (re)created. Setting a new value is futile otherwise and must be avoided since it can lead to inconsistent state.</p>
+<p><b>Note: </b>The value set is only taken into account upon the next call to <a href="qrhitexture.html#create" translate="no">create</a>(), i.e. when the underlying graphics resource are (re)created. Setting a new value is futile otherwise and must be avoided since it can lead to inconsistent state.</p>
 </div>
 <p><b>See also </b><a href="qrhitexture.html#format" translate="no">format</a>().</p>
 <!-- @@@setFormat -->
@@ -317,7 +317,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 class="fn" translate="no" id="setPixelSize"><span class="type">void</span> QRhiTexture::<span class="name">setPixelSize</span>(const <span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span> &amp;<i>sz</i>)</h3>
 <p>Sets the texture size, specified in pixels, to <i translate="no">sz</i>.</p>
 <div class="admonition note">
-<p><b>Note: </b>The value set is only taken into account upon the next call to <a href="qrhitexture.html#create" translate="no">create</a>(), i.e&#x2e; when the underlying graphics resource are (re)created. Setting a new value is futile otherwise and must be avoided since it can lead to inconsistent state. The same applies to all other setters as well.</p>
+<p><b>Note: </b>The value set is only taken into account upon the next call to <a href="qrhitexture.html#create" translate="no">create</a>(), i.e. when the underlying graphics resource are (re)created. Setting a new value is futile otherwise and must be avoided since it can lead to inconsistent state. The same applies to all other setters as well.</p>
 </div>
 <p><b>See also </b><a href="qrhitexture.html#pixelSize" translate="no">pixelSize</a>().</p>
 <!-- @@@setPixelSize -->
@@ -334,9 +334,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

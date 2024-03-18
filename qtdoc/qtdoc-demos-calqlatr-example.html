@@ -28,7 +28,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Calqlatr</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -72,7 +72,12 @@
      <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
          <span class="name">id</span>: <span class="name">pad</span>
          <span class="name">width</span>: <span class="number">180</span>
-         <span class="type">NumberPad</span> { <span class="name">id</span>: <span class="name">numPad</span>; <span class="name">y</span>: <span class="number">10</span>; <span class="name">anchors</span>.horizontalCenter: <span class="name">pad</span>.<span class="name">horizontalCenter</span> }
+         <span class="type">NumberPad</span> {
+             <span class="name">id</span>: <span class="name">numPad</span>
+             <span class="name">y</span>: <span class="number">10</span>
+             <span class="name">anchors</span>.horizontalCenter: <span class="name">pad</span>.<span class="name">horizontalCenter</span>
+             <span class="name">display</span>: <span class="name">display</span>
+         }
      }
 </pre>
 <p>Further, we use the CalculatorButton type in the <code translate="no">NumberPad</code> type to create the calculator buttons. <code translate="no">CalculatorButton.qml</code> specifies the basic properties for a button that we can modify for each button instance in <code translate="no">NumberPad.qml</code>. For the digit and separator buttons, we additionally specify the <code translate="no">text</code> property.</p>
@@ -80,31 +85,36 @@
 <p>We place the buttons inside a <a href="../qtquick/qml-qtquick-grid.html" translate="no">Grid</a> QML type to position them in a grid:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="../qtquick/qml-qtquick-grid.html" translate="no">Grid</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
      <span class="name">columns</span>: <span class="number">3</span>
      <span class="name">columnSpacing</span>: <span class="number">2</span>
      <span class="name">rowSpacing</span>: <span class="number">2</span>
 
-     <span class="keyword">function </span><span class="name">updateDimmed</span>(){
-         <span class="keyword">for</span> (let i = 0; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">children</span>.<span class="name">length</span>; i++){
-             <span class="name">children</span>[<span class="name">i</span>].<span class="name">dimmed</span> <span class="operator">=</span> <span class="name">window</span>.<span class="name">isButtonDisabled</span>(<span class="name">children</span>[<span class="name">i</span>].<span class="name">text</span>)
+     required property <span class="type">Display</span> <span class="name">display</span>
+
+     <span class="keyword">function </span><span class="name">updateDimmed</span>() {
+         <span class="keyword">for</span> (let i = 0; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">children</span>.<span class="name">length</span>; i++) {
+             <span class="name">children</span>[<span class="name">i</span>].<span class="name">dimmed</span> <span class="operator">=</span> <span class="name">CalcEngine</span>.<span class="name">isOperationDisabled</span>(<span class="name">children</span>[<span class="name">i</span>].<span class="name">text</span>)
          }
      }
 
      component DigitButton: <span class="type">CalculatorButton</span> {
          <span class="name">onPressed</span>: <span class="keyword">function</span>() {
-             <span class="name">window</span>.<span class="name">digitPressed</span>(<span class="name">text</span>)
-             <span class="name">updateDimmed</span>()
+             <span class="name">CalcEngine</span>.<span class="name">digitPressed</span>(<span class="name">text</span>, <span class="name">root</span>.<span class="name">display</span>)
+             <span class="name">root</span>.<span class="name">updateDimmed</span>()
          }
      }
 
      component OperatorButton: <span class="type">CalculatorButton</span> {
          <span class="name">onPressed</span>: <span class="keyword">function</span>() {
-             <span class="name">window</span>.<span class="name">operatorPressed</span>(<span class="name">text</span>)
-             <span class="name">updateDimmed</span>()
+             <span class="name">CalcEngine</span>.<span class="name">operatorPressed</span>(<span class="name">text</span>, <span class="name">root</span>.<span class="name">display</span>)
+             <span class="name">root</span>.<span class="name">updateDimmed</span>()
          }
          <span class="name">textColor</span>: <span class="string">&quot;#6da43d&quot;</span>
          <span class="name">dimmable</span>: <span class="number">true</span>
      }
+
+     <span class="name">Component</span>.onCompleted: <span class="name">updateDimmed</span>()
 
      <span class="type">DigitButton</span> {
          <span class="name">text</span>: <span class="string">&quot;7&quot;</span>
@@ -170,8 +180,6 @@
      <span class="type">OperatorButton</span> {
          <span class="name">text</span>: <span class="string">&quot;=&quot;</span>
      }
-
-     <span class="name">Component</span>.onCompleted: <span class="name">updateDimmed</span>()
  }
 </pre>
 <p>Some of the buttons also have a <code translate="no">dimmable</code> property set, meaning that they can be visually disabled (dimmed) whenever the calculator engine does not accept input from that button. As an example, the button for square root operator is dimmed for negative values.</p>
@@ -195,12 +203,39 @@
      <span class="type"><a href="../qt3d/qml-qt3d-animation-animationcontroller.html" translate="no">AnimationController</a></span> {
          <span class="name">id</span>: <span class="name">controller</span>
          <span class="name">animation</span>: <span class="name">ParallelAnimation</span> {
-             <span class="name">id</span>: <span class="name">anim</span>
-             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">target</span>: <span class="name">display</span>; <span class="name">property</span>: <span class="string">&quot;x&quot;</span>; <span class="name">duration</span>: <span class="number">400</span>; <span class="name">from</span>: -<span class="number">16</span>; <span class="name">to</span>: <span class="name">window</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">display</span>.<span class="name">width</span>; <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span> }
-             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">target</span>: <span class="name">pad</span>; <span class="name">property</span>: <span class="string">&quot;x&quot;</span>; <span class="name">duration</span>: <span class="number">400</span>; <span class="name">from</span>: <span class="name">window</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">pad</span>.<span class="name">width</span>; <span class="name">to</span>: <span class="number">0</span>; <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span> }
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">target</span>: <span class="name">display</span>
+                 <span class="name">property</span>: <span class="string">&quot;x&quot;</span>
+                 <span class="name">duration</span>: <span class="number">400</span>
+                 <span class="name">from</span>: -<span class="number">16</span>
+                 <span class="name">to</span>: <span class="name">window</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">display</span>.<span class="name">width</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                 <span class="name">target</span>: <span class="name">pad</span>
+                 <span class="name">property</span>: <span class="string">&quot;x&quot;</span>
+                 <span class="name">duration</span>: <span class="number">400</span>
+                 <span class="name">from</span>: <span class="name">window</span>.<span class="name">width</span> <span class="operator">-</span> <span class="name">pad</span>.<span class="name">width</span>
+                 <span class="name">to</span>: <span class="number">0</span>
+                 <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+             }
              <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
-                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">target</span>: <span class="name">pad</span>; <span class="name">property</span>: <span class="string">&quot;scale&quot;</span>; <span class="name">duration</span>: <span class="number">200</span>; <span class="name">from</span>: <span class="number">1</span>; <span class="name">to</span>: <span class="number">0.97</span>; <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span> }
-                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">target</span>: <span class="name">pad</span>; <span class="name">property</span>: <span class="string">&quot;scale&quot;</span>; <span class="name">duration</span>: <span class="number">200</span>; <span class="name">from</span>: <span class="number">0.97</span>; <span class="name">to</span>: <span class="number">1</span>; <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span> }
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">target</span>: <span class="name">pad</span>
+                     <span class="name">property</span>: <span class="string">&quot;scale&quot;</span>
+                     <span class="name">duration</span>: <span class="number">200</span>
+                     <span class="name">from</span>: <span class="number">1</span>
+                     <span class="name">to</span>: <span class="number">0.97</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                 }
+                 <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> {
+                     <span class="name">target</span>: <span class="name">pad</span>
+                     <span class="name">property</span>: <span class="string">&quot;scale&quot;</span>
+                     <span class="name">duration</span>: <span class="number">200</span>
+                     <span class="name">from</span>: <span class="number">0.97</span>
+                     <span class="name">to</span>: <span class="number">1</span>
+                     <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span>
+                 }
              }
          }
      }
@@ -209,7 +244,9 @@
 <p>In <code translate="no">CalculatorButton.qml</code>, the text colors of the number pad buttons are also animated.</p>
 <pre class="cpp" translate="no">
          ...
-         <span class="name">color</span>: (<span class="name">button</span>.<span class="name">dimmable</span> <span class="operator">&amp;&amp;</span> <span class="name">button</span>.<span class="name">dimmed</span>) ? <span class="name">Qt</span>.<span class="name">darker</span>(<span class="name">button</span>.<span class="name">textColor</span>) : <span class="name">button</span>.<span class="name">textColor</span>
+         <span class="name">color</span>: <span class="name">button</span>.<span class="name">dimmable</span> <span class="operator">&amp;&amp;</span> <span class="name">button</span>.<span class="name">dimmed</span>
+             ? <span class="name">Qt</span>.<span class="name">darker</span>(<span class="name">button</span>.<span class="name">textColor</span>)
+             : (<span class="name">button</span>.<span class="name">pressed</span> ? <span class="name">Qt</span>.<span class="name">lighter</span>(<span class="name">button</span>.<span class="name">textColor</span>) : <span class="name">button</span>.<span class="name">textColor</span>)
          Behavior on <span class="name">color</span> {
              <span class="type"><a href="../qtquick/qml-qtquick-coloranimation.html" translate="no">ColorAnimation</a></span> {
                  <span class="name">duration</span>: <span class="number">120</span>
@@ -221,23 +258,23 @@
 <p>The color changes are animated by defining a <a href="../qtquick/qml-qtquick-behavior.html" translate="no">Behavior</a> on the <code translate="no">color</code> property.</p>
 <p>In order to dynamically change the <code translate="no">dimmed</code> property of all the buttons of the <code translate="no">NumberPad</code>, we connect its <code translate="no">buttonPressed</code> signal to the <code translate="no">NumberPad</code>'s <code translate="no">updateDimmed()</code> function.</p>
 <pre class="cpp" translate="no">
-     <span class="keyword">function </span><span class="name">updateDimmed</span>(){
-         <span class="keyword">for</span> (let i = 0; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">children</span>.<span class="name">length</span>; i++){
-             <span class="name">children</span>[<span class="name">i</span>].<span class="name">dimmed</span> <span class="operator">=</span> <span class="name">window</span>.<span class="name">isButtonDisabled</span>(<span class="name">children</span>[<span class="name">i</span>].<span class="name">text</span>)
+     <span class="keyword">function </span><span class="name">updateDimmed</span>() {
+         <span class="keyword">for</span> (let i = 0; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">children</span>.<span class="name">length</span>; i++) {
+             <span class="name">children</span>[<span class="name">i</span>].<span class="name">dimmed</span> <span class="operator">=</span> <span class="name">CalcEngine</span>.<span class="name">isOperationDisabled</span>(<span class="name">children</span>[<span class="name">i</span>].<span class="name">text</span>)
          }
      }
 
      component DigitButton: <span class="type">CalculatorButton</span> {
          <span class="name">onPressed</span>: <span class="keyword">function</span>() {
-             <span class="name">window</span>.<span class="name">digitPressed</span>(<span class="name">text</span>)
-             <span class="name">updateDimmed</span>()
+             <span class="name">CalcEngine</span>.<span class="name">digitPressed</span>(<span class="name">text</span>, <span class="name">root</span>.<span class="name">display</span>)
+             <span class="name">root</span>.<span class="name">updateDimmed</span>()
          }
      }
 
      component OperatorButton: <span class="type">CalculatorButton</span> {
          <span class="name">onPressed</span>: <span class="keyword">function</span>() {
-             <span class="name">window</span>.<span class="name">operatorPressed</span>(<span class="name">text</span>)
-             <span class="name">updateDimmed</span>()
+             <span class="name">CalcEngine</span>.<span class="name">operatorPressed</span>(<span class="name">text</span>, <span class="name">root</span>.<span class="name">display</span>)
+             <span class="name">root</span>.<span class="name">updateDimmed</span>()
          }
          <span class="name">textColor</span>: <span class="string">&quot;#6da43d&quot;</span>
          <span class="name">dimmable</span>: <span class="number">true</span>
@@ -249,19 +286,74 @@
 <pre class="cpp" translate="no">
  import <span class="string">&quot;content/calculator.js&quot;</span> as CalcEngine
 </pre>
-<p>Importing the engine creates a new instance of it. Therefore, we only do it in the main QML file, <code translate="no">calqlatr.qml</code>. The root item defined in this file contains helper functions that allow other types to access the calculator engine:</p>
+<p>By default, <a href="../qtqml/qtqml-javascript-resources.html" translate="no">importing a JavaScript file from QML creates a new instance of it</a>, and any state it contains is unique to that instance. For this example we want the state to be shared amongst all users of the script, so we use <code translate="no">.pragma library</code> to indicate that:</p>
 <pre class="cpp" translate="no">
-     <span class="keyword">function </span><span class="name">operatorPressed</span>(operator) {
-         <span class="name">CalcEngine</span>.<span class="name">operatorPressed</span>(<span class="name">operator</span>)
-     }
-     <span class="keyword">function </span><span class="name">digitPressed</span>(digit) {
-         <span class="name">CalcEngine</span>.<span class="name">digitPressed</span>(<span class="name">digit</span>)
-     }
-     <span class="keyword">function </span><span class="name">isButtonDisabled</span>(op) {
-         <span class="keyword">return</span> <span class="name">CalcEngine</span>.<span class="name">disabled</span>(<span class="name">op</span>)
-     }
+ .pragma library
 </pre>
 <p>When users press a digit, the text from the digit appears on the display. When they press an operator, the appropriate calculation is performed, and the result can be displayed using the equals (=) operator. The clear (C) operator resets the calculator engine.</p>
+<pre class="cpp" translate="no">
+ function isOperationDisabled(op) {
+     if (digits === &quot;&quot; &amp;&amp; !((op &gt;= &quot;0&quot; &amp;&amp; op &lt;= &quot;9&quot;) || op === &quot;.&quot;))
+         return true
+     else if (op === '=' &amp;&amp; previousOperator.length !== 1)
+         return true
+     else if (op === &quot;.&quot; &amp;&amp; digits.toString().search(/\./) !== -1) {
+         return true
+     } else if (op === &quot;√&quot; &amp;&amp;  digits.toString().search(/-/) !== -1) {
+         return true
+     } else {
+         return false
+     }
+ }
+
+ function digitPressed(op, display) {
+     if (isOperationDisabled(op))
+         return
+     if (digits.toString().length &gt;= display.maxDigits)
+         return
+     if (lastOp.toString().length === 1 &amp;&amp; ((lastOp &gt;= &quot;0&quot; &amp;&amp; lastOp &lt;= &quot;9&quot;) || lastOp === &quot;.&quot;) ) {
+         digits = digits + op.toString()
+         display.appendDigit(op.toString())
+     } else {
+         digits = op
+         display.appendDigit(op.toString())
+     }
+     lastOp = op
+ }
+
+ function operatorPressed(op, display) {
+     if (isOperationDisabled(op))
+         return
+     lastOp = op
+
+     if (op === &quot;±&quot;) {
+             digits = Number(digits.valueOf() * -1)
+             display.setDigit(display.displayNumber(digits))
+             return
+         }
+
+     if (previousOperator === &quot;+&quot;) {
+         digits = Number(digits.valueOf()) + Number(curVal.valueOf())
+     } else if (previousOperator === &quot;−&quot;) {
+         digits = Number(curVal.valueOf()) - Number(digits.valueOf())
+     } else if (previousOperator === &quot;×&quot;) {
+         digits = Number(curVal) * Number(digits.valueOf())
+     } else if (previousOperator === &quot;÷&quot;) {
+         digits = Number(curVal) / Number(digits.valueOf())
+     }
+
+     if (op === &quot;+&quot; || op === &quot;−&quot; || op === &quot;×&quot; || op === &quot;÷&quot;) {
+         previousOperator = op
+         curVal = digits.valueOf()
+         digits = &quot;&quot;
+         display.displayOperator(previousOperator)
+         return
+     }
+
+     if (op === &quot;=&quot;) {
+         display.newLine(&quot;=&quot;, digits.valueOf())
+     }
+</pre>
 <h4 id="list-of-files">List of Files</h4>
 <p><a href="https://code.qt.io/cgit/qt/qtdoc.git/tree/examples/demos/calqlatr?h=6.6" translate="no">Example project @ code.qt.io</a></p>
 </div>
@@ -274,9 +366,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

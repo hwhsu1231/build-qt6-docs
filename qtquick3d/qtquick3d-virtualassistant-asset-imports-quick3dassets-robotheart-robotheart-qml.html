@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- virtualassistant.qdoc -->
+  <meta name="description" content="Qt Quick application that presents a 3D model of a virtual assistant with dynamic animations created using QML and timelines.">
+  <title>Qt Quick 3D - Virtual Assistant Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Virtual Assistant Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Virtual Assistant Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick3D
+
+ import QtQuick.Timeline
+
+ <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+     <span class="name">id</span>: <span class="name">node</span>
+
+     property <span class="type">alias</span> <span class="name">heartTimeline</span>: <span class="name">heartTimeline</span>
+     property <span class="type">alias</span> <span class="name">heartAnimation</span>: <span class="name">heartAnimation</span>
+
+     <span class="name">scale</span>.x: <span class="number">0.4</span>
+     <span class="name">scale</span>.y: <span class="number">0.4</span>
+     <span class="name">scale</span>.z: <span class="number">0.4</span>
+
+     <span class="comment">// Resources</span>
+     <span class="type"><a href="qml-qtquick3d-skin.html" translate="no">Skin</a></span> {
+         <span class="name">id</span>: <span class="name">skin</span>
+         <span class="name">joints</span>: <span class="name">base</span>
+         <span class="name">inverseBindPoses</span>: <span class="name">Qt</span>.<span class="name">matrix4x4</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)
+     }
+
+     <span class="comment">// Nodes:</span>
+     <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+         <span class="name">id</span>: <span class="name">heart_Arm</span>
+         <span class="type"><a href="qml-qtquick3d-model.html" translate="no">Model</a></span> {
+             <span class="name">id</span>: <span class="name">plane</span>
+             <span class="name">source</span>: <span class="string">&quot;meshes/plane.mesh&quot;</span>
+             <span class="name">skin</span>: <span class="name">skin</span>
+             <span class="name">materials</span>: <span class="name">heartMaterial_material</span>
+         }
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">base</span>
+         }
+     }
+
+     <span class="comment">// Animations:</span>
+     <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-timeline.html" translate="no">Timeline</a></span> {
+         <span class="name">id</span>: <span class="name">heartTimeline</span>
+         <span class="name">startFrame</span>: <span class="number">0</span>
+         <span class="name">endFrame</span>: <span class="number">1334</span>
+         <span class="name">currentFrame</span>: <span class="number">0</span>
+         <span class="name">enabled</span>: <span class="number">false</span>
+         <span class="name">animations</span>: <span class="name">TimelineAnimation</span> {
+             <span class="name">id</span>: <span class="name">heartAnimation</span>
+             <span class="name">duration</span>: <span class="number">1334</span>
+             <span class="name">from</span>: <span class="number">0</span>
+             <span class="name">to</span>: <span class="number">1334</span>
+             <span class="name">running</span>: <span class="name">heartTimeline</span>.<span class="name">enabled</span>
+             <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+             <span class="name">alwaysRunToEnd</span>: <span class="number">true</span>
+         }
+         <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframegroup.html" translate="no">KeyframeGroup</a></span> {
+             <span class="name">target</span>: <span class="name">base</span>
+             <span class="name">property</span>: <span class="string">&quot;scale&quot;</span>
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">0</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.897612</span>, <span class="number">0.897612</span>, <span class="number">0.897612</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">33.3333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.898435</span>, <span class="number">0.898435</span>, <span class="number">0.898435</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">66.6667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.900828</span>, <span class="number">0.900828</span>, <span class="number">0.900828</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">100</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.904679</span>, <span class="number">0.904679</span>, <span class="number">0.904679</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">133.333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.909876</span>, <span class="number">0.909876</span>, <span class="number">0.909876</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">166.667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.916307</span>, <span class="number">0.916307</span>, <span class="number">0.916307</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">200</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.92386</span>, <span class="number">0.92386</span>, <span class="number">0.92386</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">233.333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.932423</span>, <span class="number">0.932423</span>, <span class="number">0.932423</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">266.667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.941883</span>, <span class="number">0.941883</span>, <span class="number">0.941883</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">300</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.952128</span>, <span class="number">0.952128</span>, <span class="number">0.952128</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">333.333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.963046</span>, <span class="number">0.963046</span>, <span class="number">0.963046</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">366.667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.974525</span>, <span class="number">0.974525</span>, <span class="number">0.974525</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">400</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.986453</span>, <span class="number">0.986453</span>, <span class="number">0.986453</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">433.333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.998717</span>, <span class="number">0.998717</span>, <span class="number">0.998717</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">466.667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.01121</span>, <span class="number">1.01121</span>, <span class="number">1.01121</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">500</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.02381</span>, <span class="number">1.02381</span>, <span class="number">1.02381</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">533.333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.03641</span>, <span class="number">1.03641</span>, <span class="number">1.03641</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">566.667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.0489</span>, <span class="number">1.0489</span>, <span class="number">1.0489</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">600</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.06116</span>, <span class="number">1.06116</span>, <span class="number">1.06116</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">633.333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.07309</span>, <span class="number">1.07309</span>, <span class="number">1.07309</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">666.667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.08457</span>, <span class="number">1.08457</span>, <span class="number">1.08457</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">700</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.09548</span>, <span class="number">1.09548</span>, <span class="number">1.09548</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">733.333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.10573</span>, <span class="number">1.10573</span>, <span class="number">1.10573</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">766.667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.11519</span>, <span class="number">1.11519</span>, <span class="number">1.11519</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">800</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.12375</span>, <span class="number">1.12375</span>, <span class="number">1.12375</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">833.333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.1313</span>, <span class="number">1.1313</span>, <span class="number">1.1313</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">866.667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.13774</span>, <span class="number">1.13774</span>, <span class="number">1.13774</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">900</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.14293</span>, <span class="number">1.14293</span>, <span class="number">1.14293</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">933.333</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.14678</span>, <span class="number">1.14678</span>, <span class="number">1.14678</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">966.667</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.14918</span>, <span class="number">1.14918</span>, <span class="number">1.14918</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1000</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.15</span>, <span class="number">1.15</span>, <span class="number">1.15</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1033.33</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.14293</span>, <span class="number">1.14293</span>, <span class="number">1.14293</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1066.67</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.12375</span>, <span class="number">1.12375</span>, <span class="number">1.12375</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1100</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.09548</span>, <span class="number">1.09548</span>, <span class="number">1.09548</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1133.33</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.06116</span>, <span class="number">1.06116</span>, <span class="number">1.06116</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1166.67</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1.02381</span>, <span class="number">1.02381</span>, <span class="number">1.02381</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1200</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.986453</span>, <span class="number">0.986453</span>, <span class="number">0.986453</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1233.33</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.952128</span>, <span class="number">0.952128</span>, <span class="number">0.952128</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1266.67</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.92386</span>, <span class="number">0.92386</span>, <span class="number">0.92386</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1300</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.904679</span>, <span class="number">0.904679</span>, <span class="number">0.904679</span>)
+             }
+             <span class="type"><a href="../qtquicktimeline/qml-qtquick-timeline-keyframe.html" translate="no">Keyframe</a></span> {
+                 <span class="name">frame</span>: <span class="number">1333.33</span>
+                 <span class="name">value</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0.897612</span>, <span class="number">0.897612</span>, <span class="number">0.897612</span>)
+             }
+         }
+     }
+
+     <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+         <span class="name">id</span>: <span class="name">__materialLibrary__</span>
+
+         <span class="type"><a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a></span> {
+             <span class="name">id</span>: <span class="name">heartMaterial_material</span>
+             <span class="name">objectName</span>: <span class="string">&quot;heartMaterial_material&quot;</span>
+             <span class="name">baseColor</span>: <span class="string">&quot;#ff197c1a&quot;</span>
+             <span class="name">roughness</span>: <span class="number">0.09734514355659485</span>
+             <span class="name">cullMode</span>: <span class="name">PrincipledMaterial</span>.<span class="name">NoCulling</span>
+             <span class="name">alphaMode</span>: <span class="name">PrincipledMaterial</span>.<span class="name">Opaque</span>
+         }
+     }
+ }
+</pre>

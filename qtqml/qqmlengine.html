@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qqmlengine.cpp -->
   <meta name="description" content="The QQmlEngine class provides an environment for instantiating QML components.">
-  <title>QQmlEngine Class | Qt QML 6.6.0</title>
+  <title>QQmlEngine Class | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li><a href="qtqml-module.html" translate="no">C++ Classes</a></li>
 <li>QQmlEngine</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -160,7 +160,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 </table></div>
 <h2 id="macros">Macros</h2>
 <div class="table"><table class="alignedsummary" translate="no">
-<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_ADDED_IN_MINOR_VERSION" translate="no">QML_ADDED_IN_MINOR_VERSION</a></b>(<i>VERSION</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a></b>(<i>MAJOR</i>, <i>MINOR</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a></b></td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_ATTACHED" translate="no">QML_ATTACHED</a></b>(<i>ATTACHED_TYPE</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_DECLARE_TYPE" translate="no">QML_DECLARE_TYPE</a></b></td></tr>
@@ -174,7 +174,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_IMPLEMENTS_INTERFACES" translate="no">QML_IMPLEMENTS_INTERFACES</a></b>(<i>interfaces</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_INTERFACE" translate="no">QML_INTERFACE</a></b></td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a></b>(<i>name</i>)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_REMOVED_IN_MINOR_VERSION" translate="no">QML_REMOVED_IN_MINOR_VERSION</a></b>(<i>VERSION</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_REMOVED_IN_VERSION" translate="no">QML_REMOVED_IN_VERSION</a></b>(<i>MAJOR</i>, <i>MINOR</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_SEQUENTIAL_CONTAINER" translate="no">QML_SEQUENTIAL_CONTAINER</a></b>(<i>VALUE_TYPE</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_SINGLETON" translate="no">QML_SINGLETON</a></b></td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qqmlengine.html#QML_UNAVAILABLE" translate="no">QML_UNAVAILABLE</a></b></td></tr>
@@ -184,20 +184,10 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- $$$QQmlEngine-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p>Each QML component is instantiated in a <a href="qqmlcontext.html" translate="no">QQmlContext</a>. <a href="qqmlcontext.html" translate="no">QQmlContext</a>'s are essential for passing data to QML components. In QML, contexts are arranged hierarchically and this hierarchy is managed by the QQmlEngine.</p>
-<p>Prior to creating any QML components, an application must have created a QQmlEngine to gain access to a QML context. The following example shows how to create a simple Text item.</p>
-<pre class="cpp" translate="no">
- <span class="type"><a href="qqmlengine.html#QQmlEngine" translate="no">QQmlEngine</a></span> engine;
- <span class="type"><a href="qqmlcomponent.html" translate="no">QQmlComponent</a></span> component(<span class="operator">&amp;</span>engine);
- component<span class="operator">.</span>setData(<span class="string">&quot;import QtQuick 2.0\nText { text: \&quot;Hello world!\&quot; }&quot;</span><span class="operator">,</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>());
- <span class="type"><a href="../qtquick/qquickitem.html" translate="no">QQuickItem</a></span> <span class="operator">*</span>item <span class="operator">=</span> qobject_cast<span class="operator">&lt;</span><span class="type"><a href="../qtquick/qquickitem.html" translate="no">QQuickItem</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(component<span class="operator">.</span>create());
-
- <span class="comment">//add item to view, etc</span>
- <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
-</pre>
-<p>In this case, the Text item will be created in the engine's <a href="qqmlengine.html#rootContext" translate="no">root context</a>.</p>
+<p>A QQmlEngine is used to manage QQmlComponent and objects created from them and execute their bindings and functions. QQmlEngine also inherits from <a href="qjsengine.html" translate="no">QJSEngine</a> which allows seamless integration between your QML components and JavaScript code.</p>
+<p>Each QML component is instantiated in a <a href="qqmlcontext.html" translate="no">QQmlContext</a>. In QML, contexts are arranged hierarchically and this hierarchy is managed by the QQmlEngine. By default, components are instantiated in the <a href="qqmlengine.html#rootContext" translate="no">root context</a>.</p>
 </div>
-<p><b>See also </b><a href="qqmlcomponent.html" translate="no">QQmlComponent</a>, <a href="qqmlcontext.html" translate="no">QQmlContext</a>, and <a href="qtqml-javascript-qmlglobalobject.html" translate="no">QML Global Object</a>.</p>
+<p><b>See also </b><a href="qqmlcomponent.html" translate="no">QQmlComponent</a>, <a href="qqmlcontext.html" translate="no">QQmlContext</a>, <a href="qtqml-javascript-qmlglobalobject.html" translate="no">QML Global Object</a>, and <a href="qqmlapplicationengine.html" translate="no">QQmlApplicationEngine</a>.</p>
 <!-- @@@QQmlEngine -->
 <div class="prop">
 <h2>Property Documentation</h2>
@@ -250,7 +240,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- $$$addPluginPath[overload1]$$$addPluginPathconstQString& -->
 <h3 class="fn" translate="no" id="addPluginPath"><span class="type">void</span> QQmlEngine::<span class="name">addPluginPath</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>path</i>)</h3>
 <p>Adds <i translate="no">path</i> as a directory where the engine searches for native plugins for imported modules (referenced in the <code translate="no">qmldir</code> file).</p>
-<p>By default, the list contains only <code translate="no">.</code>, i.e&#x2e; the engine searches in the directory of the <code translate="no">qmldir</code> file itself.</p>
+<p>By default, the list contains only <code translate="no">.</code>, i.e. the engine searches in the directory of the <code translate="no">qmldir</code> file itself.</p>
 <p>The newly added <i translate="no">path</i> will be first in the <a href="qqmlengine.html#pluginPathList" translate="no">pluginPathList</a>().</p>
 <p><b>See also </b><a href="qqmlengine.html#setPluginPathList" translate="no">setPluginPathList</a>().</p>
 <!-- @@@addPluginPath -->
@@ -373,7 +363,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- $$$pluginPathList[overload1]$$$pluginPathList -->
 <h3 class="fn" translate="no" id="pluginPathList"><span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> QQmlEngine::<span class="name">pluginPathList</span>() const</h3>
 <p>Returns the list of directories where the engine searches for native plugins for imported modules (referenced in the <code translate="no">qmldir</code> file).</p>
-<p>By default, the list contains only <code translate="no">.</code>, i.e&#x2e; the engine searches in the directory of the <code translate="no">qmldir</code> file itself.</p>
+<p>By default, the list contains only <code translate="no">.</code>, i.e. the engine searches in the directory of the <code translate="no">qmldir</code> file itself.</p>
 <p><b>See also </b><a href="qqmlengine.html#addPluginPath" translate="no">addPluginPath</a>() and <a href="qqmlengine.html#setPluginPathList" translate="no">setPluginPathList</a>().</p>
 <!-- @@@pluginPathList -->
 <!-- $$$quit[overload1]$$$quit -->
@@ -447,7 +437,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- $$$setPluginPathList[overload1]$$$setPluginPathListconstQStringList& -->
 <h3 class="fn" translate="no" id="setPluginPathList"><span class="type">void</span> QQmlEngine::<span class="name">setPluginPathList</span>(const <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> &amp;<i>paths</i>)</h3>
 <p>Sets the list of directories where the engine searches for native plugins for imported modules (referenced in the <code translate="no">qmldir</code> file) to <i translate="no">paths</i>.</p>
-<p>By default, the list contains only <code translate="no">.</code>, i.e&#x2e; the engine searches in the directory of the <code translate="no">qmldir</code> file itself.</p>
+<p>By default, the list contains only <code translate="no">.</code>, i.e. the engine searches in the directory of the <code translate="no">qmldir</code> file itself.</p>
 <p><b>See also </b><a href="qqmlengine.html#pluginPathList" translate="no">pluginPathList</a>() and <a href="qqmlengine.html#addPluginPath" translate="no">addPluginPath</a>().</p>
 <!-- @@@setPluginPathList -->
 <!-- $$$singletonInstance[overload1]$$$singletonInstanceint -->
@@ -482,7 +472,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
      <span class="type"><a href="qqmlengine.html#QQmlEngine" translate="no">QQmlEngine</a></span> engine;
      <span class="type"><a href="qjsvalue.html" translate="no">QJSValue</a></span> instance <span class="operator">=</span> engine<span class="operator">.</span>singletonInstance<span class="operator">&lt;</span><span class="type"><a href="qjsvalue.html" translate="no">QJSValue</a></span><span class="operator">&gt;</span>(typeId);
 </pre>
-<p>It is recommended to store the QML type id, e.g&#x2e; as a static member in the singleton class. The lookup via <a href="qqmlengine.html#qmlTypeId" translate="no">qmlTypeId</a>() is costly.</p>
+<p>It is recommended to store the QML type id, e.g. as a static member in the singleton class. The lookup via <a href="qqmlengine.html#qmlTypeId" translate="no">qmlTypeId</a>() is costly.</p>
 <p><b>See also </b><a href="qqmlengine.html#QML_SINGLETON" translate="no">QML_SINGLETON</a>, <a href="qqmlengine.html#qmlRegisterSingletonType" translate="no">qmlRegisterSingletonType</a>(), and <a href="qqmlengine.html#qmlTypeId" translate="no">qmlTypeId</a>().</p>
 <!-- @@@singletonInstance -->
 <!-- $$$singletonInstance$$$singletonInstanceQAnyStringViewQAnyStringView -->
@@ -866,7 +856,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- @@@qmlRegisterSingletonType -->
 <!-- $$$qmlRegisterSingletonType$$$qmlRegisterSingletonTypeconstQUrl&constchar*intintconstchar* -->
 <h3 class="fn" translate="no" id="qmlRegisterSingletonType-3"><span class="type">int</span> <span class="name">qmlRegisterSingletonType</span>(const <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> &amp;<i>url</i>, const <span class="type">char</span> *<i>uri</i>, <span class="type">int</span> <i>versionMajor</i>, <span class="type">int</span> <i>versionMinor</i>, const <span class="type">char</span> *<i>qmlName</i>)</h3>
-<p>This function may be used to register a singleton type with the name <i translate="no">qmlName</i>, in the library imported from <i translate="no">uri</i> having the version number composed from <i translate="no">versionMajor</i> and <i translate="no">versionMinor</i>. The type is defined by the QML file located at <i translate="no">url</i>. The url must be an absolute URL, i.e&#x2e; url.isRelative() == false.</p>
+<p>This function may be used to register a singleton type with the name <i translate="no">qmlName</i>, in the library imported from <i translate="no">uri</i> having the version number composed from <i translate="no">versionMajor</i> and <i translate="no">versionMinor</i>. The type is defined by the QML file located at <i translate="no">url</i>. The url must be an absolute URL, i.e. url.isRelative() == false.</p>
 <p>In addition the type's QML file must have pragma Singleton statement among its import statements.</p>
 <p>A singleton type may be referenced via the type name with which it was registered, and this typename may be used as the target in a <a href="qml-qtqml-connections.html" translate="no">Connections</a> type or otherwise used as any other type id would. One exception to this is that a singleton type property may not be aliased (because the singleton type name does not identify an object within the same component as any other item).</p>
 <p>Usage:</p>
@@ -924,7 +914,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- @@@qmlRegisterType -->
 <!-- $$$qmlRegisterType$$$qmlRegisterTypeconstQUrl&constchar*intintconstchar* -->
 <h3 class="fn" translate="no" id="qmlRegisterType-1"><span class="type">int</span> <span class="name">qmlRegisterType</span>(const <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> &amp;<i>url</i>, const <span class="type">char</span> *<i>uri</i>, <span class="type">int</span> <i>versionMajor</i>, <span class="type">int</span> <i>versionMinor</i>, const <span class="type">char</span> *<i>qmlName</i>)</h3>
-<p>This function registers a type in the QML system with the name <i translate="no">qmlName</i>, in the library imported from <i translate="no">uri</i> having the version number composed from <i translate="no">versionMajor</i> and <i translate="no">versionMinor</i>. The type is defined by the QML file located at <i translate="no">url</i>. The url must be an absolute URL, i.e&#x2e; url.isRelative() == false.</p>
+<p>This function registers a type in the QML system with the name <i translate="no">qmlName</i>, in the library imported from <i translate="no">uri</i> having the version number composed from <i translate="no">versionMajor</i> and <i translate="no">versionMinor</i>. The type is defined by the QML file located at <i translate="no">url</i>. The url must be an absolute URL, i.e. url.isRelative() == false.</p>
 <p>Normally QML files can be loaded as types directly from other QML files, or using a qmldir file. This function allows registration of files to types from C++ code, such as when the type mapping needs to be procedurally determined at startup.</p>
 <p>Returns -1 if the registration was not successful.</p>
 <!-- @@@qmlRegisterType -->
@@ -964,7 +954,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
        Key1<span class="operator">,</span>
        Key2<span class="operator">,</span>
    };
-   Q_ENUM(MyEnum)
+   Q_ENUM_NS(MyEnum)
  }
 
  <span class="comment">//...</span>
@@ -1001,13 +991,13 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 </div>
 <div class="macros">
 <h2>Macro Documentation</h2>
-<!-- $$$QML_ADDED_IN_MINOR_VERSION[overload1]$$$QML_ADDED_IN_MINOR_VERSION -->
-<h3 class="fn" translate="no" id="QML_ADDED_IN_MINOR_VERSION"><span class="name">QML_ADDED_IN_MINOR_VERSION</span>(<i>VERSION</i>)</h3>
-<p>Declares that the enclosing type or namespace was added in the specified minor <i translate="no">VERSION</i>, relative to the module major version. The minor version is assumed to be in line with any revisions given by <a href="../qtcore/qobject.html#Q_REVISION" translate="no">Q_REVISION</a>() macros on methods, slots, or signals, and any REVISION tags on properties declared with <a href="../qtcore/qobject.html#Q_PROPERTY" translate="no">Q_PROPERTY</a>().</p>
-<p>QML_ADDED_IN_MINOR_VERSION() only takes effect if the type or namespace is available in QML, by having a <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a>, or <a href="qqmlengine.html#QML_INTERFACE" translate="no">QML_INTERFACE</a> macro.</p>
+<!-- $$$QML_ADDED_IN_VERSION[overload1]$$$QML_ADDED_IN_VERSION -->
+<h3 class="fn" translate="no" id="QML_ADDED_IN_VERSION"><span class="name">QML_ADDED_IN_VERSION</span>(<i>MAJOR</i>, <i>MINOR</i>)</h3>
+<p>Declares that the enclosing type or namespace was added in the specified <i translate="no">MAJOR</i>.<i translate="no">MINOR</i> version. The version is assumed to be in line with any revisions given by <a href="../qtcore/qobject.html#Q_REVISION" translate="no">Q_REVISION</a>() macros on methods, slots, or signals, and any REVISION() attributes on properties declared with <a href="../qtcore/qobject.html#Q_PROPERTY" translate="no">Q_PROPERTY</a>().</p>
+<p>QML_ADDED_IN_VERSION() only takes effect if the type or namespace is available in QML, by having a <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a>, or <a href="qqmlengine.html#QML_INTERFACE" translate="no">QML_INTERFACE</a> macro.</p>
 <p>If the QML module the type belongs to is imported with a lower version than the one determined this way, the QML type is invisible.</p>
-<p><b>See also </b><a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a> and <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>().</p>
-<!-- @@@QML_ADDED_IN_MINOR_VERSION -->
+<p><b>See also </b><a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a> and <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>.</p>
+<!-- @@@QML_ADDED_IN_VERSION -->
 <!-- $$$QML_ANONYMOUS[overload1]$$$QML_ANONYMOUS -->
 <h3 class="fn" translate="no" id="QML_ANONYMOUS"><span class="name">QML_ANONYMOUS</span></h3>
 <p>Declares the enclosing type to be available, but anonymous in QML. The type cannot be created or used to declare properties in QML, but when passed from C++, it is recognized. In QML, you can use properties of this type if they are declared in C++.</p>
@@ -1033,13 +1023,23 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- $$$QML_ELEMENT[overload1]$$$QML_ELEMENT -->
 <h3 class="fn" translate="no" id="QML_ELEMENT"><span class="name">QML_ELEMENT</span></h3>
 <p>Declares the enclosing type or namespace to be available in QML, using its class or namespace name as the QML element name.</p>
-<p>For example, this makes the C++ class <code translate="no">Slider</code> available as a QML type named <code translate="no">Slider</code>.</p>
+<p>For example, this makes the C++ class <code translate="no">Slider</code> available as a QML type named <code translate="no">Slider</code>. All its properties, invokable methods and enums are exposed.</p>
 <pre class="cpp" translate="no">
  <span class="keyword">class</span> Slider : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html#QObject" translate="no">QObject</a></span>
  {
      Q_OBJECT
      QML_ELEMENT
-     <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
+     Q_PROPERTY(<span class="type">int</span> value READ value WRITE setValue NOTIFY valueChanged FINAL)
+     <span class="comment">// ...</span>
+ <span class="keyword">public</span>:
+     <span class="keyword">enum</span> Slippiness {
+         Dry<span class="operator">,</span> Wet<span class="operator">,</span> Icy
+     };
+     Q_ENUM(Slippiness)
+
+     Q_INVOKABLE <span class="type">void</span> slide(Slippiness slippiness);
+
+     <span class="comment">// ...</span>
  }
 </pre>
 <p>You can use the build system to register the type in the type namespace <i>com.mycompany.qmlcomponents</i> with major version <code translate="no">1</code>. For qmake, specify the following in your project file:</p>
@@ -1060,15 +1060,34 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
  import com.mycompany.qmlcomponents 1.0
 
  <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a></span> {
+     <span class="name">value</span>: <span class="number">12</span>
+     <span class="name">Component</span>.onCompleted: <span class="name">slide</span>(<span class="name">Slider</span>.<span class="name">Icy</span>)
+
      <span class="comment">// ...</span>
  }
 </pre>
-<p>You can also make namespaces tagged with <a href="../qtcore/qobject.html#Q_NAMESPACE" translate="no">Q_NAMESPACE</a> available this way, in order to expose any enums tagged with <a href="../qtcore/qobject.html#Q_ENUM_NS" translate="no">Q_ENUM_NS</a> they contain.</p>
+<p>You can also make namespaces tagged with <a href="../qtcore/qobject.html#Q_NAMESPACE" translate="no">Q_NAMESPACE</a> available this way, in order to expose any enums tagged with <a href="../qtcore/qobject.html#Q_ENUM_NS" translate="no">Q_ENUM_NS</a> they contain:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">namespace</span> MyNamespace {
+   Q_NAMESPACE
+   QML_ELEMENT
+
+   <span class="keyword">enum</span> MyEnum {
+       Key1<span class="operator">,</span>
+       Key2<span class="operator">,</span>
+   };
+   Q_ENUM_NS(MyEnum)
+ }
+</pre>
+<p>In QML, you can then use the enums:</p>
+<pre class="qml" translate="no">
+ Component.onCompleted: console.log(MyNamespace.Key2)
+</pre>
 <p><b>NOTE:</b> When classes have the same name but are located in different namespaces using QML_ELEMENT on both of them will cause a conflict. Make sure to use <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>() for one of them instead.</p>
 <div class="admonition note">
 <p><b>Note: </b>The class name needs to be fully qualified, even if you're already inside the namespace.</p>
 </div>
-<p><b>See also </b><a href="qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml" translate="no">Choosing the Correct Integration Method Between C++ and QML</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="../qtcore/qobject.html#Q_REVISION" translate="no">Q_REVISION</a>(), and <a href="qqmlengine.html#QML_ADDED_IN_MINOR_VERSION" translate="no">QML_ADDED_IN_MINOR_VERSION</a>().</p>
+<p><b>See also </b><a href="qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml" translate="no">Choosing the Correct Integration Method Between C++ and QML</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="../qtcore/qobject.html#Q_REVISION" translate="no">Q_REVISION</a>(), and <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a>().</p>
 <!-- @@@QML_ELEMENT -->
 <!-- $$$QML_EXTENDED[overload1]$$$QML_EXTENDED -->
 <h3 class="fn" translate="no" id="QML_EXTENDED"><span class="name">QML_EXTENDED</span>(<i>EXTENDED_TYPE</i>)</h3>
@@ -1109,7 +1128,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <p><b>Note: </b>EXTENDED_NAMESPACE can also be a <a href="../qtcore/qobject.html" translate="no">QObject</a> or QGadget; in that case - and in contrast to <a href="qqmlengine.html#QML_EXTENDED" translate="no">QML_EXTENDED</a>, which also exposes methods and properties - only its enumerations are exposed.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b><i translate="no">EXTENDED_NAMESPACE</i> must have a metaobject; i.e&#x2e; it must either be a namespace which contains the <a href="../qtcore/qobject.html#Q_NAMESPACE" translate="no">Q_NAMESPACE</a> macro or a <a href="../qtcore/qobject.html" translate="no">QObject</a>/QGadget.</p>
+<p><b>Note: </b><i translate="no">EXTENDED_NAMESPACE</i> must have a metaobject; i.e. it must either be a namespace which contains the <a href="../qtcore/qobject.html#Q_NAMESPACE" translate="no">Q_NAMESPACE</a> macro or a <a href="../qtcore/qobject.html" translate="no">QObject</a>/QGadget.</p>
 </div>
 <div class="admonition note">
 <p><b>Note: </b>The class name needs to be fully qualified, even if you're already inside the namespace.</p>
@@ -1121,21 +1140,24 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <p>Declare that the type should also be available in version <i translate="no">MAJOR</i>.<i translate="no">MINOR</i>. This can be helpful if a type should be available in multiple major versions.</p>
 <p>Types are automatically registered for:</p>
 <ul>
-<li>The major version they were introduced in, see QML_ADDED_IN_VERSION.</li>
+<li>The major version they were introduced in, see <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a>.</li>
 <li>Any major versions any their members were introduced in.</li>
-<li>The current major version of their module, unless they were QML_REMOVED_IN_VERSION before that.</li>
+<li>The current major version of their module, unless they were <a href="qqmlengine.html#QML_REMOVED_IN_VERSION" translate="no">QML_REMOVED_IN_VERSION</a> before that.</li>
 </ul>
 <p>Notably, they are not automatically registered in any <a href="qt-add-qml-module.html#past-major-versions" translate="no">PAST_MAJOR_VERSIONS</a> between the above. You can use QML_EXTRA_VERSION to manually register your types in further major versions.</p>
 <div class="admonition note">
 <p><b>Note: </b>Keeping multiple <a href="qt-add-qml-module.html#past-major-versions" translate="no">PAST_MAJOR_VERSIONS</a> around is computationally expensive.</p>
 </div>
-<p><b>See also </b><a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a> and <a href="qqmlengine.html#QML_ADDED_IN_MINOR_VERSION" translate="no">QML_ADDED_IN_MINOR_VERSION</a>.</p>
+<p><b>See also </b><a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a> and <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a>.</p>
 <!-- @@@QML_EXTRA_VERSION -->
 <!-- $$$QML_FOREIGN[overload1]$$$QML_FOREIGN -->
 <h3 class="fn" translate="no" id="QML_FOREIGN"><span class="name">QML_FOREIGN</span>(<i>FOREIGN_TYPE</i>)</h3>
-<p>Declares that any <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a>, <a href="qqmlengine.html#QML_INTERFACE" translate="no">QML_INTERFACE</a>, <a href="qqmlengine.html#QML_UNCREATABLE" translate="no">QML_UNCREATABLE</a>(), <a href="qqmlengine.html#QML_SINGLETON" translate="no">QML_SINGLETON</a>, <a href="qqmlengine.html#QML_ADDED_IN_MINOR_VERSION" translate="no">QML_ADDED_IN_MINOR_VERSION</a>(), <a href="qqmlengine.html#QML_REMOVED_IN_MINOR_VERSION" translate="no">QML_REMOVED_IN_MINOR_VERSION</a>(), <a href="qqmlengine.html#QML_ATTACHED" translate="no">QML_ATTACHED</a>(), <a href="qqmlengine.html#QML_EXTENDED" translate="no">QML_EXTENDED</a>(), or <a href="qqmlengine.html#QML_EXTENDED_NAMESPACE" translate="no">QML_EXTENDED_NAMESPACE</a>() macros in the enclosing C++ type do not apply to the enclosing type but instead to <i translate="no">FOREIGN_TYPE</i>. The enclosing type still needs to be registered with the <a href="../qtcore/metaobjects.html" translate="no">meta object system</a> using a <a href="../qtcore/qobject.html#Q_GADGET" translate="no">Q_GADGET</a> or <a href="../qtcore/qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a> macro.</p>
+<p>Declares that any <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a>, <a href="qqmlengine.html#QML_INTERFACE" translate="no">QML_INTERFACE</a>, <a href="qqmlengine.html#QML_UNCREATABLE" translate="no">QML_UNCREATABLE</a>(), <a href="qqmlengine.html#QML_SINGLETON" translate="no">QML_SINGLETON</a>, <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a>(), <a href="qqmlengine.html#QML_REMOVED_IN_VERSION" translate="no">QML_REMOVED_IN_VERSION</a>(), <a href="qqmlengine-obsolete.html#QML_ADDED_IN_MINOR_VERSION" translate="no">QML_ADDED_IN_MINOR_VERSION</a>(), <a href="qqmlengine-obsolete.html#QML_REMOVED_IN_MINOR_VERSION" translate="no">QML_REMOVED_IN_MINOR_VERSION</a>(), <a href="qqmlengine.html#QML_EXTENDED" translate="no">QML_EXTENDED</a>(), or <a href="qqmlengine.html#QML_EXTENDED_NAMESPACE" translate="no">QML_EXTENDED_NAMESPACE</a>() macros in the enclosing C++ type do not apply to the enclosing type but instead to <i translate="no">FOREIGN_TYPE</i>. The enclosing type still needs to be registered with the <a href="../qtcore/metaobjects.html" translate="no">meta object system</a> using a <a href="../qtcore/qobject.html#Q_GADGET" translate="no">Q_GADGET</a> or <a href="../qtcore/qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a> macro.</p>
 <p>This is useful for registering types that cannot be amended to add the macros, for example because they belong to 3rdparty libraries. To register a namespace, see <a href="qqmlengine.html#QML_FOREIGN_NAMESPACE" translate="no">QML_FOREIGN_NAMESPACE</a>().</p>
 <p><b>NOTE:</b> You may want to use <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>() instead of <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a> due to the fact that the element will be named like the struct it is contained in, not the foreign type. See the Extension Objects for an example.</p>
+<div class="admonition note">
+<p><b>Note: </b><a href="qqmlengine.html#QML_ATTACHED" translate="no">QML_ATTACHED</a>() can currently not be redirected like this. It has to be specificed in the same type that implements qmlAttachedProperties().</p>
+</div>
 <div class="admonition note">
 <p><b>Note: </b>The class name needs to be fully qualified, even if you're already inside the namespace.</p>
 </div>
@@ -1143,7 +1165,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- @@@QML_FOREIGN -->
 <!-- $$$QML_FOREIGN_NAMESPACE[overload1]$$$QML_FOREIGN_NAMESPACE -->
 <h3 class="fn" translate="no" id="QML_FOREIGN_NAMESPACE"><span class="name">QML_FOREIGN_NAMESPACE</span>(<i>FOREIGN_NAMESPACE</i>)</h3>
-<p>Declares that any <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a>, <a href="qqmlengine.html#QML_INTERFACE" translate="no">QML_INTERFACE</a>, <a href="qqmlengine.html#QML_UNCREATABLE" translate="no">QML_UNCREATABLE</a>(), <a href="qqmlengine.html#QML_SINGLETON" translate="no">QML_SINGLETON</a>, <a href="qqmlengine.html#QML_ADDED_IN_MINOR_VERSION" translate="no">QML_ADDED_IN_MINOR_VERSION</a>(), or <a href="qqmlengine.html#QML_REMOVED_IN_MINOR_VERSION" translate="no">QML_REMOVED_IN_MINOR_VERSION</a>() macros in the enclosing C++ namespace do not apply to the enclosing type but instead to <i translate="no">FOREIGN_NAMESPACE</i>. The enclosing namespace still needs to be registered with the <a href="../qtcore/metaobjects.html" translate="no">meta object system</a> using a <a href="../qtcore/qobject.html#Q_NAMESPACE" translate="no">Q_NAMESPACE</a> macro.</p>
+<p>Declares that any <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a>, <a href="qqmlengine.html#QML_INTERFACE" translate="no">QML_INTERFACE</a>, <a href="qqmlengine.html#QML_UNCREATABLE" translate="no">QML_UNCREATABLE</a>(), <a href="qqmlengine.html#QML_SINGLETON" translate="no">QML_SINGLETON</a>, <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a>(), <a href="qqmlengine.html#QML_REMOVED_IN_VERSION" translate="no">QML_REMOVED_IN_VERSION</a>(), <a href="qqmlengine-obsolete.html#QML_ADDED_IN_MINOR_VERSION" translate="no">QML_ADDED_IN_MINOR_VERSION</a>(), or <a href="qqmlengine-obsolete.html#QML_REMOVED_IN_MINOR_VERSION" translate="no">QML_REMOVED_IN_MINOR_VERSION</a>() macros in the enclosing C++ namespace do not apply to the enclosing type but instead to <i translate="no">FOREIGN_NAMESPACE</i>. The enclosing namespace still needs to be registered with the <a href="../qtcore/metaobjects.html" translate="no">meta object system</a> using a <a href="../qtcore/qobject.html#Q_NAMESPACE" translate="no">Q_NAMESPACE</a> macro.</p>
 <p>This is useful for registering namespaces that cannot be amended to add the macros, for example because they belong to 3rdparty libraries.</p>
 <p><b>See also </b><a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), and <a href="qqmlengine.html#QML_FOREIGN" translate="no">QML_FOREIGN</a>().</p>
 <!-- @@@QML_FOREIGN_NAMESPACE -->
@@ -1188,12 +1210,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 </pre>
 <p><b>See also </b><a href="qtqml-cppintegration-overview.html#choosing-the-correct-integration-method-between-c-and-qml" translate="no">Choosing the Correct Integration Method Between C++ and QML</a> and <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>.</p>
 <!-- @@@QML_NAMED_ELEMENT -->
-<!-- $$$QML_REMOVED_IN_MINOR_VERSION[overload1]$$$QML_REMOVED_IN_MINOR_VERSION -->
-<h3 class="fn" translate="no" id="QML_REMOVED_IN_MINOR_VERSION"><span class="name">QML_REMOVED_IN_MINOR_VERSION</span>(<i>VERSION</i>)</h3>
-<p>Declares that the enclosing type or namespace was removed in the specified minor <i translate="no">VERSION</i>, relative to the module major version. This is primarily useful when replacing the implementation of a QML type. If a corresponding <a href="qqmlengine.html#QML_ADDED_IN_MINOR_VERSION" translate="no">QML_ADDED_IN_MINOR_VERSION</a>() is present on a different type or namespace of the same QML name, then the removed type is used when importing versions of the module lower than <i translate="no">VERSION</i>, and the added type is used when importing versions of the module greater or equal <i translate="no">VERSION</i>.</p>
-<p>QML_REMOVED_IN_MINOR_VERSION() only takes effect if type or namespace is available in QML, by having a <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a>, or <a href="qqmlengine.html#QML_INTERFACE" translate="no">QML_INTERFACE</a> macro.</p>
-<p><b>See also </b><a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a> and <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>().</p>
-<!-- @@@QML_REMOVED_IN_MINOR_VERSION -->
+<!-- $$$QML_REMOVED_IN_VERSION[overload1]$$$QML_REMOVED_IN_VERSION -->
+<h3 class="fn" translate="no" id="QML_REMOVED_IN_VERSION"><span class="name">QML_REMOVED_IN_VERSION</span>(<i>MAJOR</i>, <i>MINOR</i>)</h3>
+<p>Declares that the enclosing type or namespace was removed in the specified <i translate="no">MAJOR</i>.<i translate="no">MINOR</i> version. This is primarily useful when replacing the implementation of a QML type. If a corresponding <a href="qqmlengine.html#QML_ADDED_IN_VERSION" translate="no">QML_ADDED_IN_VERSION</a>() is present on a different type or namespace of the same QML name, then the removed type is used when importing versions of the module lower than <i translate="no">MAJOR</i>.<i translate="no">MINOR</i>, and the added type is used when importing versions of the module greater or equal <i translate="no">MAJOR</i>.<i translate="no">MINOR</i>.</p>
+<p>QML_REMOVED_IN_VERSION() only takes effect if type or namespace is available in QML, by having a <a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a>, <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>(), <a href="qqmlengine.html#QML_ANONYMOUS" translate="no">QML_ANONYMOUS</a>, or <a href="qqmlengine.html#QML_INTERFACE" translate="no">QML_INTERFACE</a> macro.</p>
+<p><b>See also </b><a href="qqmlengine.html#QML_ELEMENT" translate="no">QML_ELEMENT</a> and <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a>.</p>
+<!-- @@@QML_REMOVED_IN_VERSION -->
 <!-- $$$QML_SEQUENTIAL_CONTAINER[overload1]$$$QML_SEQUENTIAL_CONTAINER -->
 <h3 class="fn" translate="no" id="QML_SEQUENTIAL_CONTAINER"><span class="name">QML_SEQUENTIAL_CONTAINER</span>(<i>VALUE_TYPE</i>)</h3>
 <p>This macro declares the enclosing or referenced type as a sequential container managing a sequence of <i translate="no">VALUE_TYPE</i> elements. <i translate="no">VALUE_TYPE</i> can be an actual <a href="qtqml-typesystem-valuetypes.html" translate="no">value type</a> or a pointer to an <a href="qtqml-typesystem-objecttypes.html" translate="no">object type</a>. You will rarely be able to add this macro to the actual container declaration since containers are usually templates. You should use <a href="qqmlengine.html#QML_FOREIGN" translate="no">QML_FOREIGN</a> to attach the type registration to a template instantiation. Using this technique you can, for example, declare sequential containers like this:</p>
@@ -1232,7 +1254,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <p><b>Note: </b>For <a href="qtqml-typesystem-valuetypes.html" translate="no">QML Value Types</a> <a href="../qtcore/qlist.html" translate="no">QList</a> is automatically registered as sequential container. For <a href="qtqml-typesystem-objecttypes.html" translate="no">QML Object Types</a> <a href="qqmllistproperty.html" translate="no">QQmlListProperty</a> is. You don't have to add these registrations.</p>
 </div>
 <div class="admonition note">
-<p><b>Note: </b>You cannot currently give the container a custom name. Any argument passed to <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a> is ignored. The automatically registered sequential containers are available under the familiar <i>list&lt;..&#x2e;&gt;</i> names, for example <i>list&lt;<a href="qml-qtqml-qtobject.html" translate="no">QtObject</a>&gt;</i> or <i>list&lt;font&gt;</i>.</p>
+<p><b>Note: </b>You cannot currently give the container a custom name. Any argument passed to <a href="qqmlengine.html#QML_NAMED_ELEMENT" translate="no">QML_NAMED_ELEMENT</a> is ignored. The automatically registered sequential containers are available under the familiar <i>list&lt;...&gt;</i> names, for example <i>list&lt;<a href="qml-qtqml-qtobject.html" translate="no">QtObject</a>&gt;</i> or <i>list&lt;font&gt;</i>.</p>
 </div>
 <div class="admonition note">
 <p><b>Note: </b>The class name needs to be fully qualified, even if you're already inside the namespace.</p>
@@ -1407,9 +1429,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- volumeraycaster.qdoc -->
+  <meta name="description" content="Demonstrates how to do volumetric rendering in Qt Quick 3D.">
+  <title>Qt Quick 3D - Volumetric Rendering Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Volumetric Rendering Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Volumetric Rendering Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only</span>
+ import QtQuick
+ import QtQuick3D
+
+ <span class="comment">// The rotation math is based on the paper</span>
+ <span class="comment">// ARCBALL:</span>
+ <span class="comment">// A User Interface for Specifying Three-Dimensional Orientation Using a Mouse</span>
+ <span class="comment">// by Ken Shoemake, 1992</span>
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+     <span class="name">visible</span>: <span class="number">false</span>
+
+     required property <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> <span class="name">controlledObject</span>
+     property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">lastPos</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+     property <span class="type"><a href="../qtqml/qml-bool.html" translate="no">bool</a></span> <span class="name">moving</span>: <span class="number">false</span>
+
+     <span class="comment">// From Shoemake 1992:</span>
+     <span class="comment">// pt.x &lt;- (screen.x - center.x)/radius;</span>
+     <span class="comment">// pt.y &lt;- (screen.y - center.y)/radius;</span>
+     <span class="comment">// r &lt;- pt.x*pt.x + pt.y*pt.y;</span>
+     <span class="comment">// IF r &gt; 1.0</span>
+     <span class="comment">//   THEN s &lt;- 1.0/Sqrt[r];</span>
+     <span class="comment">//     pt.x &lt;- s*pt.x;</span>
+     <span class="comment">//     pt.y &lt;- s*pt.y;</span>
+     <span class="comment">//     pt.z &lt;- 0.0;</span>
+     <span class="comment">//   ELSE pt.z &lt;- Sqrt[1.0 - r] ;</span>
+     <span class="keyword">function </span><span class="name">pos2DToPos3D</span>(posNDC) {
+         var pt = <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">posNDC</span>.<span class="name">x</span>, <span class="name">posNDC</span>.<span class="name">y</span>, <span class="number">0</span>)
+         let r = <span class="name">posNDC</span>.<span class="name">x</span> <span class="operator">*</span> <span class="name">posNDC</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">posNDC</span>.<span class="name">y</span> <span class="operator">*</span> <span class="name">posNDC</span>.<span class="name">y</span>
+         <span class="keyword">if</span> (<span class="name">r</span> <span class="operator">&gt;</span> <span class="number">1.0</span>) {
+             let s = <span class="number">1.0</span> <span class="operator">/</span> <span class="name">Math</span>.<span class="name">sqrt</span>(<span class="name">r</span>)
+             <span class="name">pt</span>.<span class="name">x</span> <span class="operator">=</span> <span class="name">s</span> <span class="operator">*</span> <span class="name">pt</span>.<span class="name">x</span>
+             <span class="name">pt</span>.<span class="name">y</span> <span class="operator">=</span> <span class="name">s</span> <span class="operator">*</span> <span class="name">pt</span>.<span class="name">y</span>
+             <span class="name">pt</span>.<span class="name">z</span> <span class="operator">=</span> <span class="number">0.0</span>
+         } <span class="keyword">else</span> {
+             <span class="name">pt</span>.<span class="name">z</span> <span class="operator">=</span> <span class="name">Math</span>.<span class="name">sqrt</span>(<span class="number">1.0</span> <span class="operator">-</span> <span class="name">r</span>)
+         }
+
+         <span class="keyword">return</span> <span class="name">pt</span>
+     }
+
+     <span class="keyword">function </span><span class="name">mousePressed</span>(posNDC) {
+         <span class="name">lastPos</span> <span class="operator">=</span> <span class="name">pos2DToPos3D</span>(<span class="name">posNDC</span>)
+         <span class="name">moving</span> <span class="operator">=</span> <span class="number">true</span>
+     }
+
+     <span class="keyword">function </span><span class="name">mouseReleased</span>(posNDC) {
+         <span class="name">moving</span> <span class="operator">=</span> <span class="number">false</span>
+     }
+
+     <span class="keyword">function </span><span class="name">mouseMoved</span>(posNDC) {
+         <span class="keyword">if</span> (!<span class="name">moving</span>)
+             <span class="keyword">return</span>
+
+         let currentPos = <span class="name">pos2DToPos3D</span>(<span class="name">posNDC</span>)
+
+         <span class="comment">// From Shoemake 1992:</span>
+         <span class="comment">// [q.x, q.y, q.z] &lt;- V3_Cross[pO, p1];</span>
+         <span class="comment">// q.w &lt;- V3_Dot[pO, p1];</span>
+         <span class="comment">// qnow &lt;- QuatMul[q, qstart];</span>
+         let p0 = <span class="name">lastPos</span>
+         let p1 = <span class="name">currentPos</span>
+         let p0p1 = <span class="name">p0</span>.<span class="name">crossProduct</span>(<span class="name">p1</span>)
+         let q = <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="name">p0</span>.<span class="name">dotProduct</span>(<span class="name">p1</span>), <span class="name">p0p1</span>.<span class="name">x</span>, <span class="name">p0p1</span>.<span class="name">y</span>, <span class="name">p0p1</span>.<span class="name">z</span>)
+         let qnow = <span class="name">q</span>.<span class="name">times</span>(<span class="name">controlledObject</span>.<span class="name">rotation</span>)
+         <span class="name">controlledObject</span>.<span class="name">rotation</span> <span class="operator">=</span> <span class="name">qnow</span>
+         <span class="name">lastPos</span> <span class="operator">=</span> <span class="name">currentPos</span>
+     }
+ }
+</pre>

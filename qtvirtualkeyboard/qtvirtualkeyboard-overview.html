@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- technical-guide.qdoc -->
   <meta name="description" content="Describes the technical details of the Qt Virtual Keyboard module. This document provides a technical overview of the Qt Virtual Keyboard plugin.">
-  <title>Qt Virtual Keyboard Overview | Qt Virtual Keyboard 6.6.0</title>
+  <title>Qt Virtual Keyboard Overview | Qt Virtual Keyboard 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -230,7 +230,7 @@
 <p>The input method instance can be created in various ways, depending on the use case:</p>
 <ul>
 <li><code translate="no">KeyboardLayout::inputMethod</code>: the keyboard layout can create an input method instance solely for this keyboard layout. It should be noted that this instance will be destroyed when the keyboard layout changes. Therefore, this method is usually limited to very narrow use cases.</li>
-<li><code translate="no">KeyboardLayout::createInputMethod()</code>: the keyboard layout can dynamically create an input method that can be used with this layout and also with the <a href="qml-qtquick-virtualkeyboard-components-keyboardlayout.html#sharedLayouts-prop" translate="no">shared layouts</a> (e.g&#x2e; symbol layout). This is the preferred way for creating specialized input methods, such as those involving complex languages or handwriting.</li>
+<li><code translate="no">KeyboardLayout::createInputMethod()</code>: the keyboard layout can dynamically create an input method that can be used with this layout and also with the <a href="qml-qtquick-virtualkeyboard-components-keyboardlayout.html#sharedLayouts-prop" translate="no">shared layouts</a> (e.g. symbol layout). This is the preferred way for creating specialized input methods, such as those involving complex languages or handwriting.</li>
 <li><code translate="no">DefaultInputMethod</code>: the virtual keyboard attempts to create this type of input method at startup. This instance will be used as the default input method across all keyboard layouts, unless the keyboard layout uses a custom input method. This instance outlives keyboard layout changes across languages and is the preferred way of creating and overriding the default input method.</li>
 </ul>
 <h2 id="virtual-keyboard-plugins">Virtual Keyboard Plugins</h2>
@@ -248,7 +248,7 @@
 <p>The following example shows the minimum functionality that is required from an input method:</p>
 <pre class="cpp" translate="no">
  <span class="comment">// Copyright (C) 2016 The Qt Company Ltd.</span>
- <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
 
  import QtQuick
  import QtQuick.VirtualKeyboard
@@ -347,9 +347,9 @@
 <p>When the input begins, the virtual keyboard calls the input method function <a href="qvirtualkeyboardabstractinputmethod.html#traceBegin" translate="no"> traceBegin </a>, which returns a new <a href="qvirtualkeyboardtrace.html" translate="no">Trace</a> object to which the input is collected on behalf of the input method. Similarly, when the finger or stylus is raised, the event is terminated with the <a href="qvirtualkeyboardabstractinputmethod.html#traceEnd" translate="no"> traceEnd </a> call. The input method processes the collected data and produces text using the <a href="qvirtualkeyboardinputcontext.html" translate="no">InputContext</a> interface.</p>
 <p>There are predefined keyboard layouts for handwriting. However, they are not included by default, and the handwriting plugin should include them in its own resources. For examples of how to do this, see the existing plugins for handwriting from <i>MyScript</i> or <i>Cerence</i>.</p>
 <h3 id="data-model-for-handwriting-input">Data Model for Handwriting Input</h3>
-<p>Virtual keyboard collects the handwriting data in a special data model <a href="qvirtualkeyboardtrace.html" translate="no">QVirtualKeyboardTrace</a>. Each trace represents a collection of data sampled from one touch (e.g&#x2e; a swipe on the screen). There will be as many instances of <a href="qvirtualkeyboardtrace.html" translate="no">QVirtualKeyboardTrace</a> as there are touches on the handwriting input area.</p>
+<p>Virtual keyboard collects the handwriting data in a special data model <a href="qvirtualkeyboardtrace.html" translate="no">QVirtualKeyboardTrace</a>. Each trace represents a collection of data sampled from one touch (e.g. a swipe on the screen). There will be as many instances of <a href="qvirtualkeyboardtrace.html" translate="no">QVirtualKeyboardTrace</a> as there are touches on the handwriting input area.</p>
 <p>By definition, <i>trace</i> is a set of data sampled from one touch. In addition to the basic point data, it can also include other types of data, such as the time of each point. The input method can define the desired input channels in the beginning of a trace event.</p>
-<p>The input method does not participate in the actual collection of trace data. However, the input method has full control over the input since it can either accept or reject a <a href="qvirtualkeyboardtrace.html" translate="no">QVirtualKeyboardTrace</a> (e.g&#x2e; if there are too many instances to handle). This also allows for precise control over how many fingers can be used simultaneously.</p>
+<p>The input method does not participate in the actual collection of trace data. However, the input method has full control over the input since it can either accept or reject a <a href="qvirtualkeyboardtrace.html" translate="no">QVirtualKeyboardTrace</a> (e.g. if there are too many instances to handle). This also allows for precise control over how many fingers can be used simultaneously.</p>
 <p>The input method can collect as many traces as it sees fit and it can begin processing them when necessary. The processing can even be performed in parallel while sampling the data, although it is not recommended because of the potential performance issues. The recommended way is to start processing in a background thread after a suitable delay from the last input, so that the processing does not affect negatively to the user interface.</p>
 <h3 id="trace-api-for-input-methods">Trace API for Input Methods</h3>
 <p>The trace API consists of the following virtual methods, which the input method must implement in order to receive and process trace input data.</p>
@@ -358,7 +358,7 @@
 <li><a href="qvirtualkeyboardabstractinputmethod.html#traceBegin" translate="no"> traceBegin </a></li>
 <li><a href="qvirtualkeyboardabstractinputmethod.html#traceEnd" translate="no"> traceEnd </a></li>
 </ul>
-<p>By implementing these methods, the input method can receive and process data from a variety of input sources (e.g&#x2e; keyboard layout or full screen).</p>
+<p>By implementing these methods, the input method can receive and process data from a variety of input sources (e.g. keyboard layout or full screen).</p>
 <p>The patternRecognitionModes method returns a list of pattern recognition modes, which are supported by the input method. A pattern recognition mode, such as <a href="qvirtualkeyboardinputengine.html#PatternRecognitionMode-enum" translate="no"> Handwriting </a>, defines the method by which the input method processes the data.</p>
 <p>The trace interaction is started when an input source detects a new contact point, and calls the traceBegin method for a new trace object. If the input method accepts the interaction, it creates a new trace object and returns it to the caller. From this point on, trace data is collected until the traceEnd method is called.</p>
 <p>When the traceEnd method is called, the input method may begin processing of the data contained in the trace object. After processing the data, the input method should destroy the object. This also removes the trace rendered to the screen.</p>
@@ -504,13 +504,13 @@
 <p>The handwriting layout may also include <a href="qml-qtquick-virtualkeyboard-components-changelanguagekey.html" translate="no">ChangeLanguageKey</a>. For this purpose, it is important to use the <a href="qml-qtquick-virtualkeyboard-components-changelanguagekey.html#customLayoutsOnly-prop" translate="no">customLayoutsOnly</a> attribute, which will filter out languages that do not use handwriting.</p>
 <p>Both the main and handwriting layouts should contain a key to activate and deactivate the handwriting input mode. This can be done by adding a <a href="qml-qtquick-virtualkeyboard-components-handwritingmodekey.html" translate="no">HandwritingModeKey</a> to the layout.</p>
 <h3 id="adding-custom-layouts">Adding Custom Layouts</h3>
-<p>The virtual keyboard layouts system supports built-in layouts as well as custom layouts. The built-in layouts are embedded as <a href="../qtcore/resources.html" translate="no">Qt Resources</a> into the plugin binary. Custom layouts are located in the file system, so that they can be installed without recompiling the virtual keyboard itself, or they can be located in a resource file.</p>
+<p>The virtual keyboard layouts system supports built-in layouts as well as custom layouts. The built-in layouts are embedded as <a href="../qtdoc/porting-to-android.html#the-qt-resource-system" translate="no">Qt Resources</a> into the plugin binary. Custom layouts are located in the file system, so that they can be installed without recompiling the virtual keyboard itself, or they can be located in a resource file.</p>
 <p>The selection of layouts at runtime is affected by the <code translate="no">QT_VIRTUALKEYBOARD_LAYOUT_PATH</code> environment variable.</p>
 <p>In case the environment variable is not set, or contains an invalid directory, the virtual keyboard falls back to the default built-in layouts.</p>
 <p>To prevent the built-in layouts from being built into the virtual keyboard plugin when using custom layouts, add <code translate="no">-no-vkb-layouts</code> option to the <code translate="no">configure</code> script. For more information, see <a href="../qmake/qmake-advanced-usage.html" translate="no">Configuration Options</a>.</p>
 <h2 id="keyboard-styles">Keyboard Styles</h2>
 <p>The virtual keyboard styling system supports built-in styles as well as custom styles. The built-in styles are embedded as Qt Resources into the plugin binary and the custom styles are located in the file system and can be installed without recompiling the virtual keyboard itself.</p>
-<p>The selection of the runtime style is affected by an environment variable QT_VIRTUALKEYBOARD_STYLE, which can be set to the name of the built-in style, e.g&#x2e; &quot;retro&quot;, or any of the custom styles installed into the Styles directory:</p>
+<p>The selection of the runtime style is affected by an environment variable QT_VIRTUALKEYBOARD_STYLE, which can be set to the name of the built-in style, e.g. &quot;retro&quot;, or any of the custom styles installed into the Styles directory:</p>
 <pre class="cpp" translate="no">
  $$<span class="operator">[</span>QT_INSTALL_QML<span class="operator">]</span><span class="operator">/</span><span class="type"><a href="../qtquick/qtquick-module.html" translate="no">QtQuick</a></span><span class="operator">/</span>VirtualKeyboard<span class="operator">/</span>Styles
 </pre>
@@ -556,9 +556,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

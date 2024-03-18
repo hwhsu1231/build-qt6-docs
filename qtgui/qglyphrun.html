@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qglyphrun.cpp -->
   <meta name="description" content="The QGlyphRun class provides direct access to the internal glyphs in a font.">
-  <title>QGlyphRun Class | Qt GUI 6.6.0</title>
+  <title>QGlyphRun Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QGlyphRun</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -105,7 +105,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- $$$QGlyphRun-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p>When Qt displays a string of text encoded in Unicode, it will first convert the Unicode points into a list of glyph indexes and a list of positions based on one or more fonts. The Unicode representation of the text and the <a href="qfont.html" translate="no">QFont</a> object will in this case serve as a convenient abstraction that hides the details of what actually takes place when displaying the text on-screen. For instance, by the time the text actually reaches the screen, it may be represented by a set of fonts in addition to the one specified by the user, e.g&#x2e; in case the originally selected font did not support all the writing systems contained in the text.</p>
+<p>When Qt displays a string of text encoded in Unicode, it will first convert the Unicode points into a list of glyph indexes and a list of positions based on one or more fonts. The Unicode representation of the text and the <a href="qfont.html" translate="no">QFont</a> object will in this case serve as a convenient abstraction that hides the details of what actually takes place when displaying the text on-screen. For instance, by the time the text actually reaches the screen, it may be represented by a set of fonts in addition to the one specified by the user, e.g. in case the originally selected font did not support all the writing systems contained in the text.</p>
 <p>Under certain circumstances, it can be useful as an application developer to have more low-level control over which glyphs in a specific font are drawn to the screen. This could for instance be the case in applications that use an external font engine and text shaper together with Qt. QGlyphRun provides an interface to the raw data needed to get text on the screen. It contains a list of glyph indexes, a position for each glyph and a font.</p>
 <p>It is the user's responsibility to ensure that the selected font actually contains the provided glyph indexes.</p>
 <p><a href="qtextlayout.html#glyphRuns" translate="no">QTextLayout::glyphRuns</a>() or <a href="qtextfragment.html#glyphRuns" translate="no">QTextFragment::glyphRuns</a>() can be used to convert unicode encoded text into a list of QGlyphRun objects, and <a href="qpainter.html#drawGlyphRun" translate="no">QPainter::drawGlyphRun</a>() can be used to draw the glyphs.</p>
@@ -124,7 +124,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <tr><td class="topAlign"><code translate="no">QGlyphRun::Underline</code></td><td class="topAlign tblval"><code translate="no">0x02</code></td><td class="topAlign">Indicates that the glyphs should be visualized together with an underline.</td></tr>
 <tr><td class="topAlign"><code translate="no">QGlyphRun::StrikeOut</code></td><td class="topAlign tblval"><code translate="no">0x04</code></td><td class="topAlign">Indicates that the glyphs should be struck out visually.</td></tr>
 <tr><td class="topAlign"><code translate="no">QGlyphRun::RightToLeft</code></td><td class="topAlign tblval"><code translate="no">0x08</code></td><td class="topAlign">Indicates that the glyphs are ordered right to left. This can affect the positioning of other screen elements that are relative to the glyph run, such as an inline text object.</td></tr>
-<tr><td class="topAlign"><code translate="no">QGlyphRun::SplitLigature</code></td><td class="topAlign tblval"><code translate="no">0x10</code></td><td class="topAlign">Indicates that the glyph run splits a ligature glyph. This means that a ligature glyph is included in the run, but the characters represented by it corresponds only to part of that ligature. The glyph run's <a href="qglyphrun.html#boundingRect" translate="no">boundingRect</a>() function can in this case be used to retrieve the area covered by glyphs that correspond to the characters represented by the glyph run. When visualizing the glyphs, care needs to be taken to clip to this bounding rect to ensure that only the corresponding part of the ligature is painted. In particular, this can be the case when retrieving a glyph run from a <a href="qtextlayout.html" translate="no">QTextLayout</a> for a specific character range, e.g&#x2e; when retrieving the selected area of a <a href="qtextlayout.html" translate="no">QTextLayout</a>.</td></tr>
+<tr><td class="topAlign"><code translate="no">QGlyphRun::SplitLigature</code></td><td class="topAlign tblval"><code translate="no">0x10</code></td><td class="topAlign">Indicates that the glyph run splits a ligature glyph. This means that a ligature glyph is included in the run, but the characters represented by it corresponds only to part of that ligature. The glyph run's <a href="qglyphrun.html#boundingRect" translate="no">boundingRect</a>() function can in this case be used to retrieve the area covered by glyphs that correspond to the characters represented by the glyph run. When visualizing the glyphs, care needs to be taken to clip to this bounding rect to ensure that only the corresponding part of the ligature is painted. In particular, this can be the case when retrieving a glyph run from a <a href="qtextlayout.html" translate="no">QTextLayout</a> for a specific character range, e.g. when retrieving the selected area of a <a href="qtextlayout.html" translate="no">QTextLayout</a>.</td></tr>
 </table></div>
 <p>The GlyphRunFlags type is a typedef for <a href="../qtcore/qflags.html">QFlags</a>&lt;GlyphRunFlag&gt;. It stores an OR combination of GlyphRunFlag values.</p>
 <!-- @@@GlyphRunFlag -->
@@ -190,7 +190,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 class="fn" translate="no" id="setBoundingRect"><span class="type">void</span> QGlyphRun::<span class="name">setBoundingRect</span>(const <span class="type"><a href="../qtcore/qrectf.html" translate="no">QRectF</a></span> &amp;<i>boundingRect</i>)</h3>
 <p>Sets the bounding rect of the glyphs in this <a href="qglyphrun.html" translate="no">QGlyphRun</a> to be <i translate="no">boundingRect</i>. This rectangle will be returned by <a href="qglyphrun.html#boundingRect" translate="no">boundingRect</a>() unless it is null, in which case the bounding rectangle of the glyphs in the glyph run will be returned instead.</p>
 <div class="admonition note">
-<p><b>Note: </b>Unless you are implementing text shaping, you should not have to use this function. It is used specifically when the <a href="qglyphrun.html" translate="no">QGlyphRun</a> should represent an area which is smaller than the area of the glyphs it contains. This could happen e.g&#x2e; if the glyph run is retrieved by calling <a href="qtextlayout.html#glyphRuns" translate="no">QTextLayout::glyphRuns</a>() and the specified range only includes part of a ligature (where two or more characters are combined to a single glyph.) When this is the case, the bounding rect should only include the appropriate part of the ligature glyph, based on a calculation of the average width of the characters in the ligature.</p>
+<p><b>Note: </b>Unless you are implementing text shaping, you should not have to use this function. It is used specifically when the <a href="qglyphrun.html" translate="no">QGlyphRun</a> should represent an area which is smaller than the area of the glyphs it contains. This could happen e.g. if the glyph run is retrieved by calling <a href="qtextlayout.html#glyphRuns" translate="no">QTextLayout::glyphRuns</a>() and the specified range only includes part of a ligature (where two or more characters are combined to a single glyph.) When this is the case, the bounding rect should only include the appropriate part of the ligature glyph, based on a calculation of the average width of the characters in the ligature.</p>
 </div>
 <p>In order to support such a case (an example is selections which should be drawn with a different color than the main text color), it is necessary to clip the painting mechanism to the rectangle returned from <a href="qglyphrun.html#boundingRect" translate="no">boundingRect</a>() to avoid drawing the entire ligature glyph.</p>
 <p><b>See also </b><a href="qglyphrun.html#boundingRect" translate="no">boundingRect</a>().</p>
@@ -307,9 +307,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

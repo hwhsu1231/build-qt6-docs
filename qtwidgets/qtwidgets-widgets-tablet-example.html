@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- tablet.qdoc -->
   <meta name="description" content="This example shows how to use a Wacom tablet in Qt applications.">
-  <title>Tablet Example | Qt Widgets 6.6.0</title>
+  <title>Tablet Example | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li><a href="examples-widgets.html" translate="no">Qt Widgets Examples</a></li>
 <li>Tablet Example</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -57,7 +57,7 @@
 <!-- @@@widgets/tablet -->
 <!-- $$$widgets/tablet-description -->
 <div class="descr" id="details">
-<p class="centerAlign"><img src="images/tabletexample.png" alt="" /></p><p>When you use a tablet with Qt applications, <a href="../qtgui/qtabletevent.html" translate="no">QTabletEvent</a>s are generated. You need to reimplement the <a href="qwidget.html#tabletEvent" translate="no">tabletEvent</a>() event handler if you want to handle tablet events. Events are generated when the tool (stylus) used for drawing enters and leaves the proximity of the tablet (i.e&#x2e;, when it is closed but not pressed down on it), when the tool is pressed down and released from it, when the tool is moved across the tablet, and when one of the buttons on the tool is pressed or released.</p>
+<p class="centerAlign"><img src="images/tabletexample.png" alt="" /></p><p>When you use a tablet with Qt applications, <a href="../qtgui/qtabletevent.html" translate="no">QTabletEvent</a>s are generated. You need to reimplement the <a href="qwidget.html#tabletEvent" translate="no">tabletEvent</a>() event handler if you want to handle tablet events. Events are generated when the tool (stylus) used for drawing enters and leaves the proximity of the tablet (i.e., when it is closed but not pressed down on it), when the tool is pressed down and released from it, when the tool is moved across the tablet, and when one of the buttons on the tool is pressed or released.</p>
 <p>The information available in <a href="../qtgui/qtabletevent.html" translate="no">QTabletEvent</a> depends on the device used. This example can handle a tablet with up to three different drawing tools: a stylus, an airbrush, and an art pen. For any of these the event will contain the position of the tool, pressure on the tablet, button status, vertical tilt, and horizontal tilt (i.e, the angle between the device and the perpendicular of the tablet, if the tablet hardware can provide it). The airbrush has a finger wheel; the position of this is also available in the tablet event. The art pen provides rotation around the axis perpendicular to the tablet surface, so that it can be used for calligraphy.</p>
 <p>In this example we implement a drawing program. You can use the stylus to draw on the tablet as you use a pencil on paper. When you draw with the airbrush you get a spray of virtual paint; the finger wheel is used to change the density of the spray. When you draw with the art pen, you get a line whose width and endpoint angle depend on the rotation of the pen. The pressure and tilt can also be assigned to change the alpha and saturation values of the color and the width of the stroke.</p>
 <p>The example consists of the following:</p>
@@ -151,7 +151,7 @@
      connect(alphaChannelGroup<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtgui/qactiongroup.html" translate="no">QActionGroup</a></span><span class="operator">::</span>triggered<span class="operator">,</span>
              <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>MainWindow<span class="operator">::</span>setAlphaValuator);
 </pre>
-<p>We want the user to be able to choose whether the drawing color's alpha component should be modulated by the tablet pressure, tilt, or the position of the thumbwheel on the airbrush tool. We have one action for each choice, and an additional action to choose not to change the alpha, that is, to keep the color opaque. We make the actions checkable; the <code translate="no">alphaChannelGroup</code> will then ensure that only one of the actions are checked at any time. The <code translate="no">triggered()</code> signal is emitted from the group when an action is checked, so we connect that to <code translate="no">MainWindow::setAlphaValuator()</code>. It will need to know which property (valuator) of the <a href="../qtgui/qtabletevent.html" translate="no">QTabletEvent</a> to pay attention to from now on, so we use the <a href="../qtgui/qaction.html#data" translate="no">QAction::data</a> property to pass this information along. (In order for this to be possible, the enum <code translate="no">Valuator</code> must be a registered metatype, so that it can be inserted into a <a href="../qtcore/qvariant.html" translate="no">QVariant</a>. That is accomplished by the <code translate="no">Q_ENUM</code> declaration in tabletcanvas.h&#x2e;)</p>
+<p>We want the user to be able to choose whether the drawing color's alpha component should be modulated by the tablet pressure, tilt, or the position of the thumbwheel on the airbrush tool. We have one action for each choice, and an additional action to choose not to change the alpha, that is, to keep the color opaque. We make the actions checkable; the <code translate="no">alphaChannelGroup</code> will then ensure that only one of the actions are checked at any time. The <code translate="no">triggered()</code> signal is emitted from the group when an action is checked, so we connect that to <code translate="no">MainWindow::setAlphaValuator()</code>. It will need to know which property (valuator) of the <a href="../qtgui/qtabletevent.html" translate="no">QTabletEvent</a> to pay attention to from now on, so we use the <a href="../qtgui/qaction.html#data" translate="no">QAction::data</a> property to pass this information along. (In order for this to be possible, the enum <code translate="no">Valuator</code> must be a registered metatype, so that it can be inserted into a <a href="../qtcore/qvariant.html" translate="no">QVariant</a>. That is accomplished by the <code translate="no">Q_ENUM</code> declaration in tabletcanvas.h.)</p>
 <p>Here is the implementation of <code translate="no">setAlphaValuator()</code>:</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> MainWindow<span class="operator">::</span>setAlphaValuator(<span class="type"><a href="../qtgui/qaction.html" translate="no">QAction</a></span> <span class="operator">*</span>action)
@@ -173,7 +173,7 @@
      m_colorDialog<span class="operator">-</span><span class="operator">&gt;</span>setVisible(<span class="keyword">true</span>);
  }
 </pre>
-<p>We do lazy initialization of a <a href="qcolordialog.html" translate="no">QColorDialog</a> the first time the user chooses <b>Brush color..&#x2e;</b> from the menu or via the action shortcut. While the dialog is open, each time the user chooses a different color, <code translate="no">TabletCanvas::setColor()</code> will be called to change the drawing color. Because it is a non-modal dialog, the user is free to leave the color dialog open, so as to be able to conveniently and frequently change colors, or close it and re-open it later.</p>
+<p>We do lazy initialization of a <a href="qcolordialog.html" translate="no">QColorDialog</a> the first time the user chooses <b>Brush color...</b> from the menu or via the action shortcut. While the dialog is open, each time the user chooses a different color, <code translate="no">TabletCanvas::setColor()</code> will be called to change the drawing color. Because it is a non-modal dialog, the user is free to leave the color dialog open, so as to be able to conveniently and frequently change colors, or close it and re-open it later.</p>
 <p>Here is the implementation of <code translate="no">save()</code>:</p>
 <pre class="cpp" translate="no">
  <span class="type">bool</span> MainWindow<span class="operator">::</span>save()
@@ -517,7 +517,7 @@
      <span class="type">int</span> vValue <span class="operator">=</span> <span class="type">int</span>(((event<span class="operator">-</span><span class="operator">&gt;</span>yTilt() <span class="operator">+</span> <span class="number">60.0</span>) <span class="operator">/</span> <span class="number">120.0</span>) <span class="operator">*</span> <span class="number">255</span>);
      <span class="type">int</span> hValue <span class="operator">=</span> <span class="type">int</span>(((event<span class="operator">-</span><span class="operator">&gt;</span>xTilt() <span class="operator">+</span> <span class="number">60.0</span>) <span class="operator">/</span> <span class="number">120.0</span>) <span class="operator">*</span> <span class="number">255</span>);
 </pre>
-<p>We fetch the current drawingcolor's hue, saturation, value, and alpha values. <code translate="no">hValue</code> and <code translate="no">vValue</code> are set to the horizontal and vertical tilt as a number from 0 to 255. The original values are in degrees from -60 to 60, i.e&#x2e;, 0 equals -60, 127 equals 0, and 255 equals 60 degrees. The angle measured is between the device and the perpendicular of the tablet (see <a href="../qtgui/qtabletevent.html" translate="no">QTabletEvent</a> for an illustration).</p>
+<p>We fetch the current drawingcolor's hue, saturation, value, and alpha values. <code translate="no">hValue</code> and <code translate="no">vValue</code> are set to the horizontal and vertical tilt as a number from 0 to 255. The original values are in degrees from -60 to 60, i.e., 0 equals -60, 127 equals 0, and 255 equals 60 degrees. The angle measured is between the device and the perpendicular of the tablet (see <a href="../qtgui/qtabletevent.html" translate="no">QTabletEvent</a> for an illustration).</p>
 <pre class="cpp" translate="no">
      <span class="keyword">switch</span> (m_alphaChannelValuator) {
          <span class="keyword">case</span> PressureValuator:
@@ -537,7 +537,7 @@
              m_color<span class="operator">.</span>setAlpha(<span class="number">255</span>);
      }
 </pre>
-<p>The alpha channel of <a href="../qtgui/qcolor.html" translate="no">QColor</a> is given as a number between 0 and 255 where 0 is transparent and 255 is opaque, or as a floating-point number where 0 is transparent and 1.0 is opaque. <a href="../qtgui/qtabletevent.html#pressure" translate="no">pressure</a>() returns the pressure as a qreal between 0.0 and 1.0&#x2e; We get the smallest alpha values (i.e&#x2e;, the color is most transparent) when the pen is perpendicular to the tablet. We select the largest of the vertical and horizontal tilt values.</p>
+<p>The alpha channel of <a href="../qtgui/qcolor.html" translate="no">QColor</a> is given as a number between 0 and 255 where 0 is transparent and 255 is opaque, or as a floating-point number where 0 is transparent and 1.0 is opaque. <a href="../qtgui/qtabletevent.html#pressure" translate="no">pressure</a>() returns the pressure as a qreal between 0.0 and 1.0. We get the smallest alpha values (i.e., the color is most transparent) when the pen is perpendicular to the tablet. We select the largest of the vertical and horizontal tilt values.</p>
 <pre class="cpp" translate="no">
      <span class="keyword">switch</span> (m_colorSaturationValuator) {
          <span class="keyword">case</span> VTiltValuator:
@@ -639,9 +639,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

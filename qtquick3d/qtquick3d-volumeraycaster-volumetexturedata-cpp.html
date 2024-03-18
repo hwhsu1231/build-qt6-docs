@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- volumeraycaster.qdoc -->
+  <meta name="description" content="Demonstrates how to do volumetric rendering in Qt Quick 3D.">
+  <title>Qt Quick 3D - Volumetric Rendering Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Volumetric Rendering Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Volumetric Rendering Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;volumetexturedata.h&quot;</span>
+ <span class="preprocessor">#include &quot;qthread.h&quot;</span>
+ <span class="preprocessor">#include &lt;QSize&gt;</span>
+ <span class="preprocessor">#include &lt;QFile&gt;</span>
+ <span class="preprocessor">#include &lt;QElapsedTimer&gt;</span>
+
+ <span class="keyword">enum</span> ExampleId { Helix<span class="operator">,</span> Box<span class="operator">,</span> Colormap };
+
+ <span class="comment">// Method to convert data from T to uint8_t</span>
+ <span class="keyword">template</span><span class="operator">&lt;</span><span class="keyword">typename</span> T<span class="operator">&gt;</span>
+ <span class="keyword">static</span> <span class="type">void</span> convertData(<span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> <span class="operator">&amp;</span>imageData<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> <span class="operator">&amp;</span>imageDataSource)
+ {
+     Q_ASSERT(imageDataSource<span class="operator">.</span>size() <span class="operator">&gt;</span> <span class="number">0</span>);
+     constexpr <span class="keyword">auto</span> kScale <span class="operator">=</span> <span class="keyword">sizeof</span>(T) <span class="operator">/</span> <span class="keyword">sizeof</span>(uint8_t);
+     <span class="keyword">auto</span> imageDataSourceData <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span><span class="keyword">const</span> T <span class="operator">*</span><span class="operator">&gt;</span>(imageDataSource<span class="operator">.</span>constData());
+     qsizetype imageDataSourceSize <span class="operator">=</span> imageDataSource<span class="operator">.</span>size() <span class="operator">/</span> kScale;
+     imageData<span class="operator">.</span>resize(imageDataSourceSize);
+     <span class="keyword">auto</span> imageDataPtr <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span>uint8_t <span class="operator">*</span><span class="operator">&gt;</span>(imageData<span class="operator">.</span>data());
+
+     T min <span class="operator">=</span> std<span class="operator">::</span>numeric_limits<span class="operator">&lt;</span>T<span class="operator">&gt;</span><span class="operator">::</span>max();
+     T max <span class="operator">=</span> std<span class="operator">::</span>numeric_limits<span class="operator">&lt;</span>T<span class="operator">&gt;</span><span class="operator">::</span>min();
+
+ <span class="preprocessor">#pragma omp parallel for</span>
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> imageDataSourceSize; i<span class="operator">+</span><span class="operator">+</span>) {
+         <span class="keyword">if</span> (imageDataSourceData<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">&gt;</span> max) {
+ <span class="preprocessor">#pragma omp critical</span>
+             max <span class="operator">=</span> qMax(max<span class="operator">,</span> imageDataSourceData<span class="operator">[</span>i<span class="operator">]</span>);
+         }
+     }
+
+ <span class="preprocessor">#pragma omp parallel for</span>
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> imageDataSourceSize; i<span class="operator">+</span><span class="operator">+</span>) {
+         <span class="keyword">if</span> (imageDataSourceData<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">&lt;</span> min) {
+ <span class="preprocessor">#pragma omp critical</span>
+             min <span class="operator">=</span> qMin(min<span class="operator">,</span> imageDataSourceData<span class="operator">[</span>i<span class="operator">]</span>);
+         }
+     }
+     <span class="keyword">const</span> T range <span class="operator">=</span> max <span class="operator">-</span> min;
+     <span class="keyword">const</span> <span class="type">double</span> rangeInv <span class="operator">=</span> <span class="number">255.0</span> <span class="operator">/</span> range; <span class="comment">// use double for optimal precision</span>
+
+ <span class="preprocessor">#pragma omp parallel for</span>
+     <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> imageDataSourceSize; i<span class="operator">+</span><span class="operator">+</span>) {
+         imageDataPtr<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">=</span> (imageDataSourceData<span class="operator">[</span>i<span class="operator">]</span> <span class="operator">-</span> min) <span class="operator">*</span> rangeInv;
+     }
+ }
+
+ <span class="keyword">static</span> <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> createBuiltinVolume(<span class="type">int</span> exampleId)
+ {
+     constexpr <span class="type">int</span> size <span class="operator">=</span> <span class="number">256</span>;
+
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> byteArray(size <span class="operator">*</span> size <span class="operator">*</span> size<span class="operator">,</span> <span class="number">0</span>);
+     uint8_t <span class="operator">*</span>data <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span>uint8_t <span class="operator">*</span><span class="operator">&gt;</span>(byteArray<span class="operator">.</span>data());
+     <span class="keyword">const</span> <span class="keyword">auto</span> cellIndex <span class="operator">=</span> <span class="operator">[</span>size<span class="operator">]</span>(<span class="type">int</span> x<span class="operator">,</span> <span class="type">int</span> y<span class="operator">,</span> <span class="type">int</span> z) {
+         Q_UNUSED(size); <span class="comment">// MSVC specific</span>
+         <span class="keyword">const</span> <span class="type">int</span> index <span class="operator">=</span> x <span class="operator">+</span> size <span class="operator">*</span> (z <span class="operator">+</span> size <span class="operator">*</span> y);
+         Q_ASSERT(index <span class="operator">&lt;</span> size <span class="operator">*</span> size <span class="operator">*</span> size <span class="operator">&amp;</span><span class="operator">&amp;</span> index <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span>);
+         <span class="keyword">return</span> index;
+     };
+
+     <span class="keyword">const</span> <span class="keyword">auto</span> createHelix <span class="operator">=</span> <span class="operator">[</span><span class="operator">&amp;</span><span class="operator">]</span>(<span class="type">float</span> zOffset<span class="operator">,</span> uint8_t color) {
+         <span class="comment">//  x = radius * cos(t)</span>
+         <span class="comment">//  y = radius * sin(t)</span>
+         <span class="comment">//  z = climb * t</span>
+         <span class="comment">//</span>
+         <span class="comment">// We go through t until z is outside of box</span>
+
+         constexpr <span class="type">float</span> radius <span class="operator">=</span> <span class="number">70.f</span>;
+         constexpr <span class="type">float</span> climb <span class="operator">=</span> <span class="number">15.f</span>;
+         constexpr <span class="type">float</span> offset <span class="operator">=</span> <span class="number">256</span> <span class="operator">/</span> <span class="number">2</span>;
+         constexpr <span class="type">int</span> thick <span class="operator">=</span> <span class="number">6</span>; <span class="comment">// half radius</span>
+
+         <span class="type">int</span> i <span class="operator">=</span> <span class="operator">-</span><span class="number">1</span>;
+         QVector3D lastCell <span class="operator">=</span> QVector3D(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">0</span>);
+         <span class="keyword">while</span> (<span class="keyword">true</span>) {
+             i<span class="operator">+</span><span class="operator">+</span>;
+             <span class="keyword">const</span> <span class="type">float</span> t <span class="operator">=</span> i <span class="operator">*</span> <span class="number">0.005f</span>;
+             <span class="keyword">const</span> <span class="type">int</span> cellX <span class="operator">=</span> offset <span class="operator">+</span> radius <span class="operator">*</span> <a href="../qtcore/qtmath.html#qCos" translate="no">qCos</a>(t);
+             <span class="keyword">const</span> <span class="type">int</span> cellY <span class="operator">=</span> offset <span class="operator">+</span> radius <span class="operator">*</span> <a href="../qtcore/qtmath.html#qSin" translate="no">qSin</a>(t);
+             <span class="keyword">const</span> <span class="type">int</span> cellZ <span class="operator">=</span> (climb <span class="operator">*</span> t) <span class="operator">-</span> zOffset;
+             <span class="keyword">if</span> (cellZ <span class="operator">&lt;</span> <span class="number">0</span>) {
+                 <span class="keyword">continue</span>;
+             }
+             <span class="keyword">if</span> (cellZ <span class="operator">&gt;</span> <span class="number">255</span>)
+                 <span class="keyword">break</span>;
+
+             QVector3D originalCell(cellX<span class="operator">,</span> cellY<span class="operator">,</span> cellZ);
+             <span class="keyword">if</span> (originalCell <span class="operator">=</span><span class="operator">=</span> lastCell)
+                 <span class="keyword">continue</span>;
+             lastCell <span class="operator">=</span> originalCell;
+
+ <span class="preprocessor">#pragma omp parallel for</span>
+             <span class="keyword">for</span> (<span class="type">int</span> z <span class="operator">=</span> cellZ <span class="operator">-</span> thick; z <span class="operator">&lt;</span> cellZ <span class="operator">+</span> thick; z<span class="operator">+</span><span class="operator">+</span>) {
+                 <span class="keyword">if</span> (z <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> z <span class="operator">&gt;</span> <span class="number">255</span>)
+                     <span class="keyword">continue</span>;
+                 <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> cellY <span class="operator">-</span> thick; y <span class="operator">&lt;</span> cellY <span class="operator">+</span> thick; y<span class="operator">+</span><span class="operator">+</span>) {
+                     <span class="keyword">if</span> (y <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> y <span class="operator">&gt;</span> <span class="number">255</span>)
+                         <span class="keyword">continue</span>;
+                     <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> cellX <span class="operator">-</span> thick; x <span class="operator">&lt;</span> cellX <span class="operator">+</span> thick; x<span class="operator">+</span><span class="operator">+</span>) {
+                         <span class="keyword">if</span> (x <span class="operator">&lt;</span> <span class="number">0</span> <span class="operator">|</span><span class="operator">|</span> x <span class="operator">&gt;</span> <span class="number">255</span>)
+                             <span class="keyword">continue</span>;
+                         QVector3D currCell(x<span class="operator">,</span> y<span class="operator">,</span> z);
+                         <span class="type">float</span> dist <span class="operator">=</span> originalCell<span class="operator">.</span>distanceToPoint(currCell);
+                         <span class="keyword">if</span> (dist <span class="operator">&lt;</span> thick) {
+                             data<span class="operator">[</span>cellIndex(x<span class="operator">,</span> y<span class="operator">,</span> z)<span class="operator">]</span> <span class="operator">=</span> color;
+                         }
+                     }
+                 }
+             }
+         }
+     };
+
+     <span class="keyword">if</span> (exampleId <span class="operator">=</span><span class="operator">=</span> ExampleId<span class="operator">::</span>Helix) {
+         <span class="comment">// Fill with weird ball and holes</span>
+         QVector3D centreCell(size <span class="operator">/</span> <span class="number">2</span><span class="operator">,</span> size <span class="operator">/</span> <span class="number">2</span><span class="operator">,</span> size <span class="operator">/</span> <span class="number">2</span>);
+ <span class="preprocessor">#pragma omp parallel for</span>
+         <span class="keyword">for</span> (<span class="type">int</span> z <span class="operator">=</span> <span class="number">0</span>; z <span class="operator">&lt;</span> size; z<span class="operator">+</span><span class="operator">+</span>) {
+             <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> size; y<span class="operator">+</span><span class="operator">+</span>) {
+                 <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> size; x<span class="operator">+</span><span class="operator">+</span>) {
+                     <span class="keyword">const</span> <span class="type">float</span> dist <span class="operator">=</span> centreCell<span class="operator">.</span>distanceToPoint(QVector3D(x<span class="operator">,</span> y<span class="operator">,</span> z));
+                     <span class="keyword">const</span> <span class="type">float</span> value <span class="operator">=</span> dist <span class="operator">*</span> <span class="number">0.5f</span> <span class="operator">-</span> <span class="number">40.f</span>; <span class="comment">// Negative value means cell is inside of sphere</span>
+                     data<span class="operator">[</span>cellIndex(x<span class="operator">,</span> y<span class="operator">,</span> z)<span class="operator">]</span> <span class="operator">=</span> value <span class="operator">&gt;</span><span class="operator">=</span> <span class="number">0</span> <span class="operator">?</span> <span class="type"><a href="../qtcore/qttypes.html#quint8-typedef" translate="no">quint8</a></span>(qBound(value<span class="operator">,</span> <span class="number">0.f</span><span class="operator">,</span> <span class="number">80.f</span>)) : <span class="number">80</span>;
+                 }
+             }
+         }
+         createHelix(<span class="number">0</span><span class="operator">,</span> <span class="number">200</span>);
+         createHelix(<span class="number">30</span><span class="operator">,</span> <span class="number">150</span>);
+         createHelix(<span class="number">60</span><span class="operator">,</span> <span class="number">100</span>);
+
+     } <span class="keyword">else</span> <span class="keyword">if</span> (exampleId <span class="operator">=</span><span class="operator">=</span> ExampleId<span class="operator">::</span>Colormap) {
+ <span class="preprocessor">#pragma omp parallel for</span>
+         <span class="keyword">for</span> (<span class="type">int</span> z <span class="operator">=</span> <span class="number">0</span>; z <span class="operator">&lt;</span> <span class="number">256</span>; z<span class="operator">+</span><span class="operator">+</span>) {
+             <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> <span class="number">256</span>; y<span class="operator">+</span><span class="operator">+</span>) {
+                 <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> <span class="number">256</span>; x<span class="operator">+</span><span class="operator">+</span>) {
+                     data<span class="operator">[</span>cellIndex(x<span class="operator">,</span> y<span class="operator">,</span> z)<span class="operator">]</span> <span class="operator">=</span> x;
+                 }
+             }
+         }
+     } <span class="keyword">else</span> <span class="keyword">if</span> (exampleId <span class="operator">=</span><span class="operator">=</span> ExampleId<span class="operator">::</span>Box) {
+         std<span class="operator">::</span>array<span class="operator">&lt;</span><span class="type">int</span><span class="operator">,</span> <span class="number">6</span><span class="operator">&gt;</span> colors <span class="operator">=</span> { <span class="number">50</span><span class="operator">,</span> <span class="number">100</span><span class="operator">,</span> <span class="number">255</span><span class="operator">,</span> <span class="number">200</span><span class="operator">,</span> <span class="number">150</span><span class="operator">,</span> <span class="number">10</span> };
+         constexpr <span class="type">int</span> width <span class="operator">=</span> <span class="number">10</span>;
+ <span class="preprocessor">#pragma omp parallel for</span>
+         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> width; i<span class="operator">+</span><span class="operator">+</span>) {
+             <span class="type">int</span> x0 <span class="operator">=</span> i;
+             <span class="type">int</span> x1 <span class="operator">=</span> <span class="number">255</span> <span class="operator">-</span> i;
+             <span class="keyword">for</span> (<span class="type">int</span> z <span class="operator">=</span> <span class="number">0</span>; z <span class="operator">&lt;</span> <span class="number">256</span>; z<span class="operator">+</span><span class="operator">+</span>) {
+                 <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> <span class="number">256</span>; y<span class="operator">+</span><span class="operator">+</span>) {
+                     data<span class="operator">[</span>cellIndex(x0<span class="operator">,</span> y<span class="operator">,</span> z)<span class="operator">]</span> <span class="operator">=</span> colors<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>;
+                     data<span class="operator">[</span>cellIndex(x1<span class="operator">,</span> y<span class="operator">,</span> z)<span class="operator">]</span> <span class="operator">=</span> colors<span class="operator">[</span><span class="number">1</span><span class="operator">]</span>;
+                 }
+             }
+         }
+ <span class="preprocessor">#pragma omp parallel for</span>
+         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> width; i<span class="operator">+</span><span class="operator">+</span>) {
+             <span class="type">int</span> y0 <span class="operator">=</span> i;
+             <span class="type">int</span> y1 <span class="operator">=</span> <span class="number">255</span> <span class="operator">-</span> i;
+             <span class="keyword">for</span> (<span class="type">int</span> z <span class="operator">=</span> <span class="number">0</span>; z <span class="operator">&lt;</span> <span class="number">256</span>; z<span class="operator">+</span><span class="operator">+</span>) {
+                 <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> <span class="number">256</span>; x<span class="operator">+</span><span class="operator">+</span>) {
+                     data<span class="operator">[</span>cellIndex(x<span class="operator">,</span> y0<span class="operator">,</span> z)<span class="operator">]</span> <span class="operator">=</span> colors<span class="operator">[</span><span class="number">2</span><span class="operator">]</span>;
+                     data<span class="operator">[</span>cellIndex(x<span class="operator">,</span> y1<span class="operator">,</span> z)<span class="operator">]</span> <span class="operator">=</span> colors<span class="operator">[</span><span class="number">3</span><span class="operator">]</span>;
+                 }
+             }
+         }
+ <span class="preprocessor">#pragma omp parallel for</span>
+         <span class="keyword">for</span> (<span class="type">int</span> i <span class="operator">=</span> <span class="number">0</span>; i <span class="operator">&lt;</span> width; i<span class="operator">+</span><span class="operator">+</span>) {
+             <span class="type">int</span> z0 <span class="operator">=</span> i;
+             <span class="type">int</span> z1 <span class="operator">=</span> <span class="number">255</span> <span class="operator">-</span> i;
+             <span class="keyword">for</span> (<span class="type">int</span> y <span class="operator">=</span> <span class="number">0</span>; y <span class="operator">&lt;</span> <span class="number">256</span>; y<span class="operator">+</span><span class="operator">+</span>) {
+                 <span class="keyword">for</span> (<span class="type">int</span> x <span class="operator">=</span> <span class="number">0</span>; x <span class="operator">&lt;</span> <span class="number">256</span>; x<span class="operator">+</span><span class="operator">+</span>) {
+                     data<span class="operator">[</span>cellIndex(x<span class="operator">,</span> y<span class="operator">,</span> z0)<span class="operator">]</span> <span class="operator">=</span> colors<span class="operator">[</span><span class="number">4</span><span class="operator">]</span>;
+                     data<span class="operator">[</span>cellIndex(x<span class="operator">,</span> y<span class="operator">,</span> z1)<span class="operator">]</span> <span class="operator">=</span> colors<span class="operator">[</span><span class="number">5</span><span class="operator">]</span>;
+                 }
+             }
+         }
+     }
+
+     <span class="keyword">return</span> byteArray;
+ }
+
+ <span class="keyword">static</span> VolumeTextureData<span class="operator">::</span>AsyncLoaderData loadVolume(<span class="keyword">const</span> VolumeTextureData<span class="operator">::</span>AsyncLoaderData <span class="operator">&amp;</span>input)
+ {
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> imageDataSource;
+
+     <span class="keyword">if</span> (input<span class="operator">.</span>source <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;file:///default_helix&quot;</span>)) {
+         imageDataSource <span class="operator">=</span> createBuiltinVolume(ExampleId<span class="operator">::</span>Helix);
+     } <span class="keyword">else</span> <span class="keyword">if</span> (input<span class="operator">.</span>source <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;file:///default_box&quot;</span>)) {
+         imageDataSource <span class="operator">=</span> createBuiltinVolume(ExampleId<span class="operator">::</span>Box);
+     } <span class="keyword">else</span> <span class="keyword">if</span> (input<span class="operator">.</span>source <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;file:///default_colormap&quot;</span>)) {
+         imageDataSource <span class="operator">=</span> createBuiltinVolume(ExampleId<span class="operator">::</span>Colormap);
+     } <span class="keyword">else</span> {
+         <span class="comment">// NOTE: we always assume a local file is opened</span>
+         <span class="type"><a href="../qtcore/qfile.html" translate="no">QFile</a></span> file(input<span class="operator">.</span>source<span class="operator">.</span>toLocalFile());
+         <span class="keyword">if</span> (<span class="operator">!</span>file<span class="operator">.</span>open(<span class="type"><a href="../qtcore/qiodevice.html" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly)) {
+             <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Could not open file: &quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> file<span class="operator">.</span>fileName();
+             <span class="keyword">auto</span> result <span class="operator">=</span> input;
+             result<span class="operator">.</span>success <span class="operator">=</span> <span class="keyword">false</span>;
+             <span class="keyword">return</span> result;
+         }
+
+         imageDataSource <span class="operator">=</span> file<span class="operator">.</span>readAll();
+         file<span class="operator">.</span>close();
+     }
+
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> imageData;
+
+     <span class="comment">// We scale the values to uint8_t data size</span>
+     <span class="keyword">if</span> (input<span class="operator">.</span>dataType <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;uint8&quot;</span>) {
+         imageData <span class="operator">=</span> imageDataSource;
+     } <span class="keyword">else</span> <span class="keyword">if</span> (input<span class="operator">.</span>dataType <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;uint16&quot;</span>) {
+         convertData<span class="operator">&lt;</span>uint16_t<span class="operator">&gt;</span>(imageData<span class="operator">,</span> imageDataSource);
+     } <span class="keyword">else</span> <span class="keyword">if</span> (input<span class="operator">.</span>dataType <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;int16&quot;</span>) {
+         convertData<span class="operator">&lt;</span>int16_t<span class="operator">&gt;</span>(imageData<span class="operator">,</span> imageDataSource);
+     } <span class="keyword">else</span> <span class="keyword">if</span> (input<span class="operator">.</span>dataType <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;float32&quot;</span>) {
+         convertData<span class="operator">&lt;</span><span class="type">float</span><span class="operator">&gt;</span>(imageData<span class="operator">,</span> imageDataSource);
+     } <span class="keyword">else</span> <span class="keyword">if</span> (input<span class="operator">.</span>dataType <span class="operator">=</span><span class="operator">=</span> <span class="string">&quot;float64&quot;</span>) {
+         convertData<span class="operator">&lt;</span><span class="type">double</span><span class="operator">&gt;</span>(imageData<span class="operator">,</span> imageDataSource);
+     } <span class="keyword">else</span> {
+         <a href="../qtcore/qtlogging.html#qWarning" translate="no">qWarning</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Unknown data type, assuming uint8&quot;</span>;
+         imageData <span class="operator">=</span> imageDataSource;
+     }
+
+     <span class="comment">// If our source data is smaller than expected we need to expand the texture</span>
+     <span class="comment">// and fill with something</span>
+     qsizetype dataSize <span class="operator">=</span> input<span class="operator">.</span>depth <span class="operator">*</span> input<span class="operator">.</span>width <span class="operator">*</span> input<span class="operator">.</span>height;
+     <span class="keyword">if</span> (imageData<span class="operator">.</span>size() <span class="operator">&lt;</span> dataSize) {
+         imageData<span class="operator">.</span>resize(dataSize<span class="operator">,</span> <span class="char">'0'</span>);
+     }
+
+     <span class="keyword">auto</span> result <span class="operator">=</span> input;
+     result<span class="operator">.</span>volumeData <span class="operator">=</span> imageData;
+     result<span class="operator">.</span>success <span class="operator">=</span> <span class="keyword">true</span>;
+     <span class="keyword">return</span> result;
+ }
+
+ <span class="keyword">class</span> Worker : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span>
+ {
+     Q_OBJECT
+
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
+     <span class="type">void</span> doWork(VolumeTextureData<span class="operator">::</span>AsyncLoaderData data)
+     {
+         <span class="keyword">auto</span> result <span class="operator">=</span> loadVolume(data);
+         <span class="keyword">emit</span> resultReady(result);
+     }
+
+ <span class="keyword">signals</span>:
+     <span class="type">void</span> resultReady(<span class="keyword">const</span> VolumeTextureData<span class="operator">::</span>AsyncLoaderData result);
+ };
+
+ <span class="comment">///////////////////////////////////////////////////////////////////////</span>
+
+ VolumeTextureData<span class="operator">::</span>VolumeTextureData()
+ {
+     <span class="comment">// Load a volume by default so we have something to render to avoid crashes</span>
+     m_source <span class="operator">=</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;file:///default_colormap&quot;</span>);
+     m_width <span class="operator">=</span> <span class="number">256</span>;
+     m_height <span class="operator">=</span> <span class="number">256</span>;
+     m_depth <span class="operator">=</span> <span class="number">256</span>;
+     m_dataType <span class="operator">=</span> <span class="string">&quot;uint8&quot;</span>;
+     <span class="keyword">auto</span> result <span class="operator">=</span> loadVolume(AsyncLoaderData { m_source<span class="operator">,</span> m_width<span class="operator">,</span> m_height<span class="operator">,</span> m_depth<span class="operator">,</span> m_dataType });
+     setFormat(Format<span class="operator">::</span>R8);
+     setTextureData(result<span class="operator">.</span>volumeData);
+     setSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(m_width<span class="operator">,</span> m_height));
+     QQuick3DTextureData<span class="operator">::</span>setDepth(m_depth);
+ }
+
+ VolumeTextureData<span class="operator">::</span><span class="operator">~</span>VolumeTextureData()
+ {
+     workerThread<span class="operator">.</span>quit();
+     workerThread<span class="operator">.</span>wait();
+ }
+
+ <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> VolumeTextureData<span class="operator">::</span>source() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_source;
+ }
+
+ <span class="type">void</span> VolumeTextureData<span class="operator">::</span>setSource(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> <span class="operator">&amp;</span>newSource)
+ {
+     <span class="keyword">if</span> (m_source <span class="operator">=</span><span class="operator">=</span> newSource)
+         <span class="keyword">return</span>;
+
+     m_source <span class="operator">=</span> newSource;
+     <span class="keyword">if</span> (<span class="operator">!</span>m_isLoading <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>m_source<span class="operator">.</span>isEmpty())
+         loadAsync(m_source<span class="operator">,</span> m_width<span class="operator">,</span> m_height<span class="operator">,</span> m_depth<span class="operator">,</span> m_dataType);
+     <span class="keyword">emit</span> sourceChanged();
+ }
+
+ qsizetype VolumeTextureData<span class="operator">::</span>width() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_width;
+ }
+
+ <span class="type">void</span> VolumeTextureData<span class="operator">::</span>setWidth(qsizetype newWidth)
+ {
+     <span class="keyword">if</span> (m_width <span class="operator">=</span><span class="operator">=</span> newWidth)
+         <span class="keyword">return</span>;
+
+     m_width <span class="operator">=</span> newWidth;
+     updateTextureDimensions();
+     <span class="keyword">emit</span> widthChanged();
+ }
+
+ qsizetype VolumeTextureData<span class="operator">::</span>height() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_height;
+ }
+
+ <span class="type">void</span> VolumeTextureData<span class="operator">::</span>setHeight(qsizetype newHeight)
+ {
+     <span class="keyword">if</span> (m_height <span class="operator">=</span><span class="operator">=</span> newHeight)
+         <span class="keyword">return</span>;
+
+     m_height <span class="operator">=</span> newHeight;
+     updateTextureDimensions();
+     <span class="keyword">emit</span> heightChanged();
+ }
+
+ qsizetype VolumeTextureData<span class="operator">::</span>depth() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_depth;
+ }
+
+ <span class="type">void</span> VolumeTextureData<span class="operator">::</span>setDepth(qsizetype newDepth)
+ {
+     <span class="keyword">if</span> (m_depth <span class="operator">=</span><span class="operator">=</span> newDepth)
+         <span class="keyword">return</span>;
+
+     m_depth <span class="operator">=</span> newDepth;
+     updateTextureDimensions();
+     <span class="keyword">emit</span> depthChanged();
+ }
+
+ <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> VolumeTextureData<span class="operator">::</span>dataType() <span class="keyword">const</span>
+ {
+     <span class="keyword">return</span> m_dataType;
+ }
+
+ <span class="type">void</span> VolumeTextureData<span class="operator">::</span>setDataType(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>newDataType)
+ {
+     <span class="keyword">if</span> (m_dataType <span class="operator">=</span><span class="operator">=</span> newDataType)
+         <span class="keyword">return</span>;
+     m_dataType <span class="operator">=</span> newDataType;
+     <span class="keyword">if</span> (<span class="operator">!</span>m_isLoading <span class="operator">&amp;</span><span class="operator">&amp;</span> <span class="operator">!</span>m_source<span class="operator">.</span>isEmpty())
+         loadAsync(m_source<span class="operator">,</span> m_width<span class="operator">,</span> m_height<span class="operator">,</span> m_depth<span class="operator">,</span> m_dataType);
+     <span class="keyword">emit</span> dataTypeChanged();
+ }
+
+ <span class="type">void</span> VolumeTextureData<span class="operator">::</span>updateTextureDimensions()
+ {
+     <span class="keyword">if</span> (m_width <span class="operator">*</span> m_height <span class="operator">*</span> m_depth <span class="operator">&gt;</span> m_currentDataSize)
+         <span class="keyword">return</span>;
+
+     setSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(m_width<span class="operator">,</span> m_height));
+     QQuick3DTextureData<span class="operator">::</span>setDepth(m_depth);
+ }
+
+ <span class="type">void</span> VolumeTextureData<span class="operator">::</span>loadAsync(<span class="type"><a href="../qtcore/qurl.html" translate="no">QUrl</a></span> source<span class="operator">,</span> qsizetype width<span class="operator">,</span> qsizetype height<span class="operator">,</span> qsizetype depth<span class="operator">,</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> dataType)
+ {
+     loaderData<span class="operator">.</span>source <span class="operator">=</span> source;
+     loaderData<span class="operator">.</span>width <span class="operator">=</span> width;
+     loaderData<span class="operator">.</span>height <span class="operator">=</span> height;
+     loaderData<span class="operator">.</span>depth <span class="operator">=</span> depth;
+     loaderData<span class="operator">.</span>dataType <span class="operator">=</span> dataType;
+
+     <span class="keyword">if</span> (m_isLoading) {
+         m_isAborting <span class="operator">=</span> <span class="keyword">true</span>;
+         <span class="keyword">return</span>;
+     }
+
+     m_isLoading <span class="operator">=</span> <span class="keyword">true</span>;
+     Q_ASSERT(<span class="operator">!</span>workerThread<span class="operator">.</span>isRunning());
+     initWorker();
+ }
+
+ <span class="type">void</span> VolumeTextureData<span class="operator">::</span>initWorker()
+ {
+     Worker <span class="operator">*</span>worker <span class="operator">=</span> <span class="keyword">new</span> Worker;
+     worker<span class="operator">-</span><span class="operator">&gt;</span>moveToThread(<span class="operator">&amp;</span>workerThread);
+     connect(<span class="operator">&amp;</span>workerThread<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtcore/qthread.html" translate="no">QThread</a></span><span class="operator">::</span>finished<span class="operator">,</span> worker<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span><span class="operator">::</span>deleteLater); <span class="comment">// delete worker on thread exit</span>
+     connect(<span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>VolumeTextureData<span class="operator">::</span>startWorker<span class="operator">,</span> worker<span class="operator">,</span> <span class="operator">&amp;</span>Worker<span class="operator">::</span>doWork);
+     connect(worker<span class="operator">,</span> <span class="operator">&amp;</span>Worker<span class="operator">::</span>resultReady<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>VolumeTextureData<span class="operator">::</span>handleResults);
+     workerThread<span class="operator">.</span>start();
+     <span class="keyword">emit</span> startWorker(loaderData);
+ }
+
+ <span class="type">void</span> VolumeTextureData<span class="operator">::</span>handleResults(AsyncLoaderData result)
+ {
+     Q_ASSERT(workerThread<span class="operator">.</span>isRunning());
+     workerThread<span class="operator">.</span>quit();
+     workerThread<span class="operator">.</span>wait();
+
+     <span class="keyword">if</span> (m_isAborting) {
+         m_isAborting <span class="operator">=</span> <span class="keyword">false</span>;
+         initWorker();
+         <span class="keyword">return</span>;
+     }
+
+     <span class="keyword">if</span> (<span class="operator">!</span>result<span class="operator">.</span>success) {
+         <span class="keyword">emit</span> loadFailed(result<span class="operator">.</span>source<span class="operator">,</span> result<span class="operator">.</span>width<span class="operator">,</span> result<span class="operator">.</span>height<span class="operator">,</span> result<span class="operator">.</span>depth<span class="operator">,</span> result<span class="operator">.</span>dataType);
+     }
+
+     m_currentDataSize <span class="operator">=</span> result<span class="operator">.</span>volumeData<span class="operator">.</span>size();
+
+     setSize(<span class="type"><a href="../qtcore/qsize.html" translate="no">QSize</a></span>(m_width<span class="operator">,</span> m_height));
+     QQuick3DTextureData<span class="operator">::</span>setDepth(m_depth);
+     setFormat(Format<span class="operator">::</span>R8);
+     setTextureData(result<span class="operator">.</span>volumeData);
+     updateTextureDimensions();
+
+     setWidth(result<span class="operator">.</span>width);
+     setHeight(result<span class="operator">.</span>height);
+     setDepth(result<span class="operator">.</span>depth);
+     setDataType(result<span class="operator">.</span>dataType);
+     setSource(result<span class="operator">.</span>source);
+
+     <span class="keyword">emit</span> loadSucceeded(result<span class="operator">.</span>source<span class="operator">,</span> result<span class="operator">.</span>width<span class="operator">,</span> result<span class="operator">.</span>height<span class="operator">,</span> result<span class="operator">.</span>depth<span class="operator">,</span> result<span class="operator">.</span>dataType);
+     m_isLoading <span class="operator">=</span> <span class="keyword">false</span>;
+ }
+
+
+ <span class="preprocessor">#include &quot;volumetexturedata.moc&quot;</span>
+</pre>

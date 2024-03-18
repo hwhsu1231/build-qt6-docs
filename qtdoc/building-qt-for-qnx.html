@@ -28,7 +28,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Building Qt for QNX</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -50,6 +50,7 @@
 <li class="level1"><a href="#host-build">Host build</a></li>
 <li class="level1"><a href="#creating-a-toolchain-file-for-qnx">Creating a toolchain file for QNX</a></li>
 <li class="level1"><a href="#configuring-and-building-qt-for-qnx">Configuring and building Qt for QNX</a></li>
+<li class="level1"><a href="#building-applications-for-the-target-device">Building Applications for the Target Device</a></li>
 <li class="level1"><a href="#third-party-libraries">Third party libraries</a></li>
 </ul>
 </div>
@@ -58,21 +59,26 @@
 <!-- $$$building-qt-for-qnx.html-description -->
 <div class="descr" id="details">
 <h2 id="setting-up-qnx-sdp">Setting up QNX SDP</h2>
-<p>Building Qt 6 requires downloading and installing of QNX SDP 7.1 from the <a href="http://www.qnx.com/" translate="no">QNX website</a>.</p>
+<p>Building Qt 6 requires downloading and installing QNX SDP 7.1 from the <a href="http://www.qnx.com/" translate="no">QNX website</a>.</p>
 <div class="admonition note">
 <p><b>Note: </b>A suitable license is required. <a href="mailto://info@qnx.com" translate="no">Contact QNX</a> for more information.</p>
 </div>
-<p>The compiler and other parts of the tool chain are provided in the SDP packages. Initialize your build environment by running the QNX setup script from your SDP installation folder in a terminal, like so:</p>
+<p>The compiler and other parts of the toolchain are provided in the SDP packages. Initialize your build environment by running the QNX setup script from your SDP installation folder in a terminal as follows:</p>
 <pre class="cpp plain" translate="no">
  source qnxsdp-env.sh
 </pre>
 <h2 id="host-build">Host build</h2>
-<p>The cross-compiling Qt requires a host build of Qt being available. During the build, tools such as <code translate="no">moc</code>, <code translate="no">rcc</code>, <code translate="no">qmlcachegen</code>, <code translate="no">qsb</code>, are invoked from there. You can either <a href="https://doc.qt.io/qt-6/build-sources.html" translate="no">build Qt from sources</a> for the host or install host build using online installer. However, it is advisable to ensure that you can build Qt for the desktop target on the host as well. For more detailed information please see <a href="https://www.qt.io/blog/qt-6-build-system" translate="no">Cross-compiling Qt</a>.</p>
+<p>A host build of Qt needs to be available to cross-compile Qt. This is because, during the build, certain tools (such as <code translate="no">moc</code>, <code translate="no">rcc</code>, <code translate="no">qmlcachegen</code>, and <code translate="no">qsb</code>) are invoked from the host build. You have two options:</p>
+<ul>
+<li><a href="build-sources.html" translate="no">Building Qt Sources</a> for the host or</li>
+<li>installing host build using Qt Online Installer.</li>
+</ul>
+<p>However, it is advisable to ensure that you can build Qt for the desktop target on the host as well since the same tools are also needed when compiling for QNX.</p>
 <h2 id="creating-a-toolchain-file-for-qnx">Creating a toolchain file for QNX</h2>
-<p>To cross-compile a project with CMake a toolchain file is needed. This CMake-language file sets the right values for the platform name, compiler/linker, and many other toolchain-specific things. A minimal toolchain file can be found from CMake documentation:</p>
+<p>To cross-compile a project with CMake, you need a toolchain file. This CMake language file sets the correct values for the platform name, compiler/linker, and many other toolchain-specific things. For reference, you can find toolchain files used in CI from source package <a href="https://code.qt.io/cgit/qt/qt5.git/tree/coin/provisioning/common/shared/cmake_toolchain_files" translate="no">coin/provisioning/common/shared/cmake_toolchain_files</a></p>
 <pre class="cpp plain" translate="no">
  set(CMAKE_SYSTEM_NAME QNX)
-
+ set(CMAKE_SYSTEM_PROCESSOR armv7le)
  set(arch gcc_ntoarmv7le)
 
  set(CMAKE_C_COMPILER qcc)
@@ -80,36 +86,70 @@
  set(CMAKE_CXX_COMPILER q++)
  set(CMAKE_CXX_COMPILER_TARGET ${arch})
 
+ set(CMAKE_FIND_ROOT_PATH $ENV{QNX_TARGET};$ENV{QNX_TARGET}/${CMAKE_SYSTEM_PROCESSOR})
+
  set(CMAKE_SYSROOT $ENV{QNX_TARGET})
 </pre>
-<p>The <code translate="no">arch</code> variable can be set to either <code translate="no">gcc_ntoarmv7le</code>, <code translate="no">gcc_ntoaarch64le</code> or <code translate="no">gcc_ntox86_64</code>, depending on your target architecture.</p>
+<p>The example file is for <code translate="no">armv7le</code>. The other possibilities are <code translate="no">aarch64le</code> and <code translate="no">x86_64</code>, depending on your target architecture.</p>
 <h2 id="configuring-and-building-qt-for-qnx">Configuring and building Qt for QNX</h2>
-<p>Assuming the following:</p>
+<p>To configure and build Qt for QNX, you need the following:</p>
 <ul>
-<li>The toolchain file is called qnx.cmake and is located in <code translate="no">$HOME</code>.</li>
-<li>The Qt repository checked out, at minimum the qtbase module, under <code translate="no">$HOME/qt</code>.</li>
-<li>A host build of Qt in <code translate="no">$HOME/qt-host</code>.</li>
-<li>The installation location on the local system will be <code translate="no">$HOME/qnx-install</code>.</li>
+<li>Tools for building Qt, as described in <a href="build-sources.html" translate="no">Building Qt Sources</a>, are in place and functional for your host platform.</li>
+<li>The toolchain file, <code translate="no">$HOME/qnx.cmake</code>.</li>
+<li>The Qt source code checked out or installed under <code translate="no">$HOME/qt</code>.</li>
+<li>There is a host build of Qt in <code translate="no">$HOME/qt-host</code>.</li>
+<li>The installation location on the local system is set to <code translate="no">$HOME/qnx-install</code>.</li>
 </ul>
-<p>After creating and switching to the <code translate="no">build</code> directory run:</p>
+<p>After creating and switching to the <code translate="no">build</code> directory, run the following:</p>
 <pre class="cpp plain" translate="no">
- cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$HOME/qnx.cmake  \
- -DQT_HOST_PATH=$HOME/qt_host \
- -DCMAKE_INSTALL_PREFIX=$HOME/qnx_install \
+ $HOME/qt/configure -nomake examples -nomake tests \
+ -qt-host-path $HOME/qt_host \
+ -extprefix qnx_install \
+ -prefix /qt \
+ -- -DCMAKE_TOOLCHAIN_FILE=$HOME/qnx.cmake  \
  $HOME/qt
 </pre>
-<p>Once configuration completes without errors,build by running:</p>
+<p>Since Qt 6, the configure tool is a wrapper around CMake and in practice, this configure command is equivalent to the following direct CMake call:</p>
+<pre class="cpp plain" translate="no">
+ cmake -GNinja -DQT_BUILD_EXAMPLES=OFF -DQT_BUILD_TESTS=OFF \
+ -DQT_HOST_PATH=$HOME/qt_host \
+ -DCMAKE_STAGING_PREFIX=$HOME/qnx_install \
+ -DCMAKE_INSTALL_PREFIX=/qt \
+ -DCMAKE_TOOLCHAIN_FILE=$HOME/qnx.cmake  \
+ $HOME/qt
+</pre>
+<div class="admonition note">
+<p><b>Note: </b>When building on Windows, PCH (Precompiled Headers) needs to be explicitly disabled, as enabling it causes the QNX compiler to crash. To disable PCH, use the configuration option <code translate="no">-no-pch</code>.</p>
+</div>
+<p>Once the configuration completes without errors, build Qt by running the following:</p>
 <pre class="cpp" translate="no">
  cmake <span class="operator">-</span><span class="operator">-</span>build <span class="operator">.</span> <span class="operator">-</span><span class="operator">-</span>parallel
 </pre>
-<p>Once built, run:</p>
+<div class="admonition note">
+<p><b>Note: </b>QNX compiler may require more memory than the compiler used for host build. Use <code translate="no">--parallel &lt;numOfProcesses&gt;</code> to limit the maximum number of concurrent processes when building.</p>
+</div>
+<p>Once built, run the following:</p>
 <pre class="cpp" translate="no">
  cmake <span class="operator">-</span><span class="operator">-</span>install <span class="operator">.</span>
 </pre>
-<p>Which will install the results to <code translate="no">$HOME/qnx_install</code>.</p>
-<p>You can also configure Qt with the configure tool. Since Qt 6, this tool is a wrapper around CMake.</p>
+<p>This installs the results to <code translate="no">$HOME/qnx_install</code>.</p>
+<h2 id="building-applications-for-the-target-device">Building Applications for the Target Device</h2>
+<p>When you have finished the Qt build and it's installed in the staging location, you can build examples or applications.</p>
+<p>With CMake, use the generated <code translate="no">qt-cmake</code> script in the bin directory of the staging location ($HOME/qnx_install in the example) to configure, then run ninja. For example:</p>
+<pre class="cpp plain" translate="no">
+ $HOME/qnx_install/bin/qt-cmake .
+ cmake --build .
+</pre>
+<p>You can then deploy the resulting application binary to the device. Using the <code translate="no">qt-cmake</code> helper script is convenient because the script ensures the toolchain file that was used for building Qt is loaded, so there is no need to repeatedly specify it for each application.</p>
+<p>If you are using a Qt installation that has not been built on your machine, <code translate="no">qt-cmake</code> needs to know the location of the CMake toolchain file for the target platform.</p>
+<p>In such a case, instruct <code translate="no">qt-cmake</code> to chain load a custom toolchain file by setting the <code translate="no">QT_CHAINLOAD_TOOLCHAIN_FILE</code> variable as follows:</p>
+<pre class="cpp plain" translate="no">
+ $HOME/qnx_install/bin/qt-cmake -DQT_CHAINLOAD_TOOLCHAIN_FILE=$HOME/qnx.cmake .
+</pre>
+<p>When building applications in Qt Creator using Qt installation that has not been built in your machine, the <code translate="no">CMAKE_TOOLCHAIN_FILE</code> variable, pointing to local toolchain file, needs to be added to kit configuration (<b>Edit &gt; Preferences &gt; Kits</b>).</p>
+<p>For more information on connecting and adding kits for QNX devices while using Qt Creator, see <a href="https://doc.qt.io/qtcreator/creator-developing-qnx.html" translate="no">Connecting QNX devices</a>.</p>
 <h2 id="third-party-libraries">Third party libraries</h2>
-<p>Make sure that your system image contains the following additional 3rd-party libraries which are not always included in minimal QNX Neutrino RTOS images:</p>
+<p>Make sure that your system image contains the following additional third-party libraries which are not always included in minimal QNX Neutrino RTOS images:</p>
 <ul>
 <li><code translate="no">libfontconfig</code></li>
 <li><code translate="no">libfreetype</code></li>
@@ -141,9 +181,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

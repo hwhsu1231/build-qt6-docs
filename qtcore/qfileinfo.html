@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qfileinfo.cpp -->
   <meta name="description" content="The QFileInfo class provides system-independent file information.">
-  <title>QFileInfo Class | Qt Core 6.6.0</title>
+  <title>QFileInfo Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QFileInfo</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -232,7 +232,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <pre class="cpp" translate="no">
  <span class="type">void</span> complexFunction()
  {
-     <span class="type">QNtfsPermissionCheckGuard</span> permissionGuard;  <span class="comment">// check is enabled</span>
+     <span class="type"><a href="qntfspermissioncheckguard.html" translate="no">QNtfsPermissionCheckGuard</a></span> permissionGuard;  <span class="comment">// check is enabled</span>
 
      <span class="comment">// do complex things here that need permission check enabled</span>
 
@@ -240,9 +240,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>If you need more fine-grained control, it is possible to manage the permission with the following functions instead:</p>
 <pre class="cpp" translate="no">
- qAreNtfsPermissionChecksEnabled();   <span class="comment">// check status</span>
- qEnableNtfsPermissionChecks();       <span class="comment">// turn checking on</span>
- qDisableNtfsPermissionChecks();      <span class="comment">// turn it off again</span>
+ <a href="qntfspermissioncheckguard.html#qAreNtfsPermissionChecksEnabled" translate="no">qAreNtfsPermissionChecksEnabled</a>();   <span class="comment">// check status</span>
+ <a href="qntfspermissioncheckguard.html#qEnableNtfsPermissionChecks" translate="no">qEnableNtfsPermissionChecks</a>();       <span class="comment">// turn checking on</span>
+ <a href="qntfspermissioncheckguard.html#qDisableNtfsPermissionChecks" translate="no">qDisableNtfsPermissionChecks</a>();      <span class="comment">// turn it off again</span>
 </pre>
 <h3 id="performance-considerations">Performance Considerations</h3>
 <p>Some of QFileInfo's functions query the file system, but for performance reasons, some functions only operate on the file name itself. For example: To return the absolute path of a relative file name, <a href="qfileinfo.html#absolutePath" translate="no">absolutePath</a>() has to query the file system. The <a href="qfileinfo.html#path" translate="no">path</a>() function, however, can work on the file name directly, and so it is faster.</p>
@@ -253,7 +253,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <ul>
 <li>Access permissions might be needed by prompting the user through the <a href="../qtwidgets/qfiledialog.html" translate="no">QFileDialog</a> which implements <a href="https://developer.android.com/training/data-storage/shared/documents-files" translate="no">Android's native file picker</a>.</li>
 <li>Aim to follow the <a href="https://developer.android.com/training/data-storage#scoped-storage" translate="no">Scoped storage</a> guidelines, such as using app specific directories instead of other public external directories. For more information, also see <a href="https://developer.android.com/training/data-storage/use-cases" translate="no">storage best practices</a>.</li>
-<li>Due to the design of Qt APIs (e.g&#x2e; <a href="qfile.html" translate="no">QFile</a>), it's not possible to fully integrate the latter APIs with Android's <a href="https://developer.android.com/reference/android/provider/MediaStore" translate="no">MediaStore</a> APIs.</li>
+<li>Due to the design of Qt APIs (e.g. <a href="qfile.html" translate="no">QFile</a>), it's not possible to fully integrate the latter APIs with Android's <a href="https://developer.android.com/reference/android/provider/MediaStore" translate="no">MediaStore</a> APIs.</li>
 </ul>
 </div>
 <p><b>See also </b><a href="qdir.html" translate="no">QDir</a> and <a href="qfile.html" translate="no">QFile</a>.</p>
@@ -342,7 +342,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  <span class="type">QFileInfo</span> fi(<span class="string">&quot;/tmp/archive.tar.gz&quot;</span>);
  <span class="type"><a href="qstring.html" translate="no">QString</a></span> base <span class="operator">=</span> fi<span class="operator">.</span>baseName();  <span class="comment">// base = &quot;archive&quot;</span>
 </pre>
-<p>The base name of a file is computed equally on all platforms, independent of file naming conventions (e.g&#x2e;, &quot;.bashrc&quot; on Unix has an empty base name, and the suffix is &quot;bashrc&quot;).</p>
+<p>The base name of a file is computed equally on all platforms, independent of file naming conventions (e.g., &quot;.bashrc&quot; on Unix has an empty base name, and the suffix is &quot;bashrc&quot;).</p>
 <p><b>See also </b><a href="qfileinfo.html#fileName" translate="no">fileName</a>(), <a href="qfileinfo.html#suffix" translate="no">suffix</a>(), <a href="qfileinfo.html#completeSuffix" translate="no">completeSuffix</a>(), and <a href="qfileinfo.html#completeBaseName" translate="no">completeBaseName</a>().</p>
 <!-- @@@baseName -->
 <!-- $$$birthTime[overload1]$$$birthTime -->
@@ -360,7 +360,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>If the file birth time is not available, this function returns an invalid <a href="qdatetime.html" translate="no">QDateTime</a>.</p>
 <p>If the file is a symlink, the time of the target file is returned (not the symlink).</p>
 <p>This function was introduced in Qt 6.6.</p>
-<p><b>See also </b><a href="qfileinfo.html#lastModified-1" translate="no">lastModified</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastRead-1" translate="no">lastRead</a>(const QTimeZone &amp;), <a href="qfileinfo.html#metadataChangeTime-1" translate="no">metadataChangeTime</a>(const QTimeZone &amp;), and <a href="qfileinfo.html#fileTime-1" translate="no">fileTime</a>(QFile::FileTime, const QTimeZone &amp;).</p>
+<p><b>See also </b><a href="qfileinfo.html#lastModified-1" translate="no">lastModified</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastRead-1" translate="no">lastRead</a>(const QTimeZone &amp;), <a href="qfileinfo.html#metadataChangeTime-1" translate="no">metadataChangeTime</a>(const QTimeZone &amp;), and fileTime(QFileDevice::FileTime, const QTimeZone &amp;).</p>
 <!-- @@@birthTime -->
 <!-- $$$bundleName[overload1]$$$bundleName -->
 <h3 class="fn" translate="no" id="bundleName"><span class="type"><a href="qstring.html" translate="no">QString</a></span> QFileInfo::<span class="name">bundleName</span>() const</h3>
@@ -380,13 +380,13 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@caching -->
 <!-- $$$canonicalFilePath[overload1]$$$canonicalFilePath -->
 <h3 class="fn" translate="no" id="canonicalFilePath"><span class="type"><a href="qstring.html" translate="no">QString</a></span> QFileInfo::<span class="name">canonicalFilePath</span>() const</h3>
-<p>Returns the canonical path including the file name, i.e&#x2e; an absolute path without symbolic links or redundant &quot;.&quot; or &quot;..&quot; elements.</p>
+<p>Returns the canonical path including the file name, i.e. an absolute path without symbolic links or redundant &quot;.&quot; or &quot;..&quot; elements.</p>
 <p>If the file does not exist, canonicalFilePath() returns an empty string.</p>
 <p><b>See also </b><a href="qfileinfo.html#filePath" translate="no">filePath</a>(), <a href="qfileinfo.html#absoluteFilePath" translate="no">absoluteFilePath</a>(), and <a href="qfileinfo.html#dir" translate="no">dir</a>().</p>
 <!-- @@@canonicalFilePath -->
 <!-- $$$canonicalPath[overload1]$$$canonicalPath -->
 <h3 class="fn" translate="no" id="canonicalPath"><span class="type"><a href="qstring.html" translate="no">QString</a></span> QFileInfo::<span class="name">canonicalPath</span>() const</h3>
-<p>Returns the file's path canonical path (excluding the file name), i.e&#x2e; an absolute path without symbolic links or redundant &quot;.&quot; or &quot;..&quot; elements.</p>
+<p>Returns the file's path canonical path (excluding the file name), i.e. an absolute path without symbolic links or redundant &quot;.&quot; or &quot;..&quot; elements.</p>
 <p>If the file does not exist, canonicalPath() returns an empty string.</p>
 <p><b>See also </b><a href="qfileinfo.html#path" translate="no">path</a>() and <a href="qfileinfo.html#absolutePath" translate="no">absolutePath</a>().</p>
 <!-- @@@canonicalPath -->
@@ -404,7 +404,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$completeSuffix[overload1]$$$completeSuffix -->
 <h3 class="fn" translate="no" id="completeSuffix"><span class="type"><a href="qstring.html" translate="no">QString</a></span> QFileInfo::<span class="name">completeSuffix</span>() const</h3>
 <p>Returns the complete suffix (extension) of the file.</p>
-<p>The complete suffix consists of all characters in the file after (but not including) the first '.'&#x2e;</p>
+<p>The complete suffix consists of all characters in the file after (but not including) the first '.'.</p>
 <p>Example:</p>
 <pre class="cpp" translate="no">
  <span class="type">QFileInfo</span> fi(<span class="string">&quot;/tmp/archive.tar.gz&quot;</span>);
@@ -468,7 +468,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Returns the file time specified by <i translate="no">time</i>.</p>
 <p>If the time cannot be determined, an invalid date time is returned.</p>
 <p>If the file is a symlink, the time of the target file is returned (not the symlink).</p>
-<p>This function overloads <a href="qfileinfo.html#fileTime-1" translate="no">QFileInfo::fileTime</a>(QFile::FileTime, const QTimeZone &amp;), and returns the same as <code translate="no">fileTime(time, QTimeZone::LocalTime)</code>.</p>
+<p>This function overloads QFileInfo::fileTime(QFileDevice::FileTime, const QTimeZone &amp;), and returns the same as <code translate="no">fileTime(time, QTimeZone::LocalTime)</code>.</p>
 <p><b>See also </b><a href="qfileinfo.html#birthTime" translate="no">birthTime</a>(), <a href="qfileinfo.html#lastModified" translate="no">lastModified</a>(), <a href="qfileinfo.html#lastRead" translate="no">lastRead</a>(), and <a href="qfileinfo.html#metadataChangeTime" translate="no">metadataChangeTime</a>().</p>
 <!-- @@@fileTime -->
 <!-- $$$fileTime$$$fileTimeQFile::FileTimeconstQTimeZone& -->
@@ -550,7 +550,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@groupId -->
 <!-- $$$isAbsolute[overload1]$$$isAbsolute -->
 <h3 class="fn" translate="no" id="isAbsolute"><span class="type">bool</span> QFileInfo::<span class="name">isAbsolute</span>() const</h3>
-<p>Returns <code translate="no">true</code> if the file path is absolute, otherwise returns <code translate="no">false</code> (i.e&#x2e; the path is relative).</p>
+<p>Returns <code translate="no">true</code> if the file path is absolute, otherwise returns <code translate="no">false</code> (i.e. the path is relative).</p>
 <div class="admonition note">
 <p><b>Note: </b>Paths starting with a colon (<i>:</i>) are always considered absolute, as they denote a <a href="qresource.html" translate="no">QResource</a>.</p>
 </div>
@@ -618,7 +618,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@isReadable -->
 <!-- $$$isRelative[overload1]$$$isRelative -->
 <h3 class="fn" translate="no" id="isRelative"><span class="type">bool</span> QFileInfo::<span class="name">isRelative</span>() const</h3>
-<p>Returns <code translate="no">true</code> if the file path is relative, otherwise returns <code translate="no">false</code> (i.e&#x2e; the path is absolute). (E.g&#x2e; under Unix a path is absolute if it begins with a &quot;/&quot;).</p>
+<p>Returns <code translate="no">true</code> if the file path is relative, otherwise returns <code translate="no">false</code> (i.e. the path is absolute). (E.g. under Unix a path is absolute if it begins with a &quot;/&quot;).</p>
 <div class="admonition note">
 <p><b>Note: </b>Paths starting with a colon (<i>:</i>) are always considered absolute, as they denote a <a href="qresource.html" translate="no">QResource</a>.</p>
 </div>
@@ -695,7 +695,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>The returned time is in the time zone specified by <i translate="no">tz</i>. For example, you can use <a href="qtimezone.html#Initialization-enum" translate="no">QTimeZone::LocalTime</a> or <a href="qtimezone.html#Initialization-enum" translate="no">QTimeZone::UTC</a> to get the time in the Local time zone or UTC, respectively. Since native file system API typically uses UTC, using <a href="qtimezone.html#Initialization-enum" translate="no">QTimeZone::UTC</a> is often faster, as it does not require any conversions.</p>
 <p>If the file is a symlink, the time of the target file is returned (not the symlink).</p>
 <p>This function was introduced in Qt 6.6.</p>
-<p><b>See also </b><a href="qfileinfo.html#birthTime-1" translate="no">birthTime</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastRead-1" translate="no">lastRead</a>(const QTimeZone &amp;), <a href="qfileinfo.html#metadataChangeTime-1" translate="no">metadataChangeTime</a>(const QTimeZone &amp;), and <a href="qfileinfo.html#fileTime-1" translate="no">fileTime</a>(QFile::FileTime, const QTimeZone &amp;).</p>
+<p><b>See also </b><a href="qfileinfo.html#birthTime-1" translate="no">birthTime</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastRead-1" translate="no">lastRead</a>(const QTimeZone &amp;), <a href="qfileinfo.html#metadataChangeTime-1" translate="no">metadataChangeTime</a>(const QTimeZone &amp;), and fileTime(QFileDevice::FileTime, const QTimeZone &amp;).</p>
 <!-- @@@lastModified -->
 <!-- $$$lastRead[overload1]$$$lastRead -->
 <h3 class="fn" translate="no" id="lastRead"><span class="type"><a href="qdatetime.html" translate="no">QDateTime</a></span> QFileInfo::<span class="name">lastRead</span>() const</h3>
@@ -712,7 +712,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>On platforms where this information is not available, returns the same time as <a href="qfileinfo.html#lastModified" translate="no">lastModified</a>().</p>
 <p>If the file is a symlink, the time of the target file is returned (not the symlink).</p>
 <p>This function was introduced in Qt 6.6.</p>
-<p><b>See also </b><a href="qfileinfo.html#birthTime-1" translate="no">birthTime</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastModified-1" translate="no">lastModified</a>(const QTimeZone &amp;), <a href="qfileinfo.html#metadataChangeTime-1" translate="no">metadataChangeTime</a>(const QTimeZone &amp;), and <a href="qfileinfo.html#fileTime-1" translate="no">fileTime</a>(QFile::FileTime, const QTimeZone &amp;).</p>
+<p><b>See also </b><a href="qfileinfo.html#birthTime-1" translate="no">birthTime</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastModified-1" translate="no">lastModified</a>(const QTimeZone &amp;), <a href="qfileinfo.html#metadataChangeTime-1" translate="no">metadataChangeTime</a>(const QTimeZone &amp;), and fileTime(QFileDevice::FileTime, const QTimeZone &amp;).</p>
 <!-- @@@lastRead -->
 <!-- $$$makeAbsolute[overload1]$$$makeAbsolute -->
 <h3 class="fn" translate="no" id="makeAbsolute"><span class="type">bool</span> QFileInfo::<span class="name">makeAbsolute</span>()</h3>
@@ -733,7 +733,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>The returned time is in the time zone specified by <i translate="no">tz</i>. For example, you can use <a href="qtimezone.html#Initialization-enum" translate="no">QTimeZone::LocalTime</a> or <a href="qtimezone.html#Initialization-enum" translate="no">QTimeZone::UTC</a> to get the time in the Local time zone or UTC, respectively. Since native file system API typically uses UTC, using <a href="qtimezone.html#Initialization-enum" translate="no">QTimeZone::UTC</a> is often faster, as it does not require any conversions.</p>
 <p>If the file is a symlink, the time of the target file is returned (not the symlink).</p>
 <p>This function was introduced in Qt 6.6.</p>
-<p><b>See also </b><a href="qfileinfo.html#birthTime-1" translate="no">birthTime</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastModified-1" translate="no">lastModified</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastRead-1" translate="no">lastRead</a>(const QTimeZone &amp;), and <a href="qfileinfo.html#fileTime-1" translate="no">fileTime</a>(QFile::FileTime time, const QTimeZone &amp;).</p>
+<p><b>See also </b><a href="qfileinfo.html#birthTime-1" translate="no">birthTime</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastModified-1" translate="no">lastModified</a>(const QTimeZone &amp;), <a href="qfileinfo.html#lastRead-1" translate="no">lastRead</a>(const QTimeZone &amp;), and fileTime(QFileDevice::FileTime time, const QTimeZone &amp;).</p>
 <!-- @@@metadataChangeTime -->
 <!-- $$$owner[overload1]$$$owner -->
 <h3 class="fn" translate="no" id="owner"><span class="type"><a href="qstring.html" translate="no">QString</a></span> QFileInfo::<span class="name">owner</span>() const</h3>
@@ -790,7 +790,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@readSymLink -->
 <!-- $$$refresh[overload1]$$$refresh -->
 <h3 class="fn" translate="no" id="refresh"><span class="type">void</span> QFileInfo::<span class="name">refresh</span>()</h3>
-<p>Refreshes the information about the file, i.e&#x2e; reads in information from the file system the next time a cached property is fetched.</p>
+<p>Refreshes the information about the file, i.e. reads in information from the file system the next time a cached property is fetched.</p>
 <!-- @@@refresh -->
 <!-- $$$setCaching[overload1]$$$setCachingbool -->
 <h3 class="fn" translate="no" id="setCaching"><span class="type">void</span> QFileInfo::<span class="name">setCaching</span>(<span class="type">bool</span> <i>enable</i>)</h3>
@@ -802,7 +802,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$setFile[overload1]$$$setFileconstQString& -->
 <h3 class="fn" translate="no" id="setFile"><span class="type">void</span> QFileInfo::<span class="name">setFile</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>file</i>)</h3>
 <p>Sets the file that the <a href="qfileinfo.html" translate="no">QFileInfo</a> provides information about to <i translate="no">file</i>.</p>
-<p>The <i translate="no">file</i> can also include an absolute or relative file path. Absolute paths begin with the directory separator (e.g&#x2e; &quot;/&quot; under Unix) or a drive specification (under Windows). Relative file names begin with a directory name or a file name and specify a path relative to the current directory.</p>
+<p>The <i translate="no">file</i> can also include an absolute or relative file path. Absolute paths begin with the directory separator (e.g. &quot;/&quot; under Unix) or a drive specification (under Windows). Relative file names begin with a directory name or a file name and specify a path relative to the current directory.</p>
 <p>Example:</p>
 <pre class="cpp" translate="no">
  <span class="type">QFileInfo</span> info(<span class="string">&quot;/usr/bin/env&quot;</span>);
@@ -852,13 +852,13 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$suffix[overload1]$$$suffix -->
 <h3 class="fn" translate="no" id="suffix"><span class="type"><a href="qstring.html" translate="no">QString</a></span> QFileInfo::<span class="name">suffix</span>() const</h3>
 <p>Returns the suffix (extension) of the file.</p>
-<p>The suffix consists of all characters in the file after (but not including) the last '.'&#x2e;</p>
+<p>The suffix consists of all characters in the file after (but not including) the last '.'.</p>
 <p>Example:</p>
 <pre class="cpp" translate="no">
  <span class="type">QFileInfo</span> fi(<span class="string">&quot;/tmp/archive.tar.gz&quot;</span>);
  <span class="type"><a href="qstring.html" translate="no">QString</a></span> ext <span class="operator">=</span> fi<span class="operator">.</span>suffix();  <span class="comment">// ext = &quot;gz&quot;</span>
 </pre>
-<p>The suffix of a file is computed equally on all platforms, independent of file naming conventions (e.g&#x2e;, &quot;.bashrc&quot; on Unix has an empty base name, and the suffix is &quot;bashrc&quot;).</p>
+<p>The suffix of a file is computed equally on all platforms, independent of file naming conventions (e.g., &quot;.bashrc&quot; on Unix has an empty base name, and the suffix is &quot;bashrc&quot;).</p>
 <p><b>See also </b><a href="qfileinfo.html#fileName" translate="no">fileName</a>(), <a href="qfileinfo.html#completeSuffix" translate="no">completeSuffix</a>(), <a href="qfileinfo.html#baseName" translate="no">baseName</a>(), and <a href="qfileinfo.html#completeBaseName" translate="no">completeBaseName</a>().</p>
 <!-- @@@suffix -->
 <!-- $$$swap[overload1]$$$swapQFileInfo& -->
@@ -950,9 +950,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

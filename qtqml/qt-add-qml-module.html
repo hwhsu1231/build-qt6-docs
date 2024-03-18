@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qt_add_qml_module.qdoc -->
   <meta name="description" content="Defines a QML module.">
-  <title>qt_add_qml_module | Qt QML 6.6.0</title>
+  <title>qt_add_qml_module | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li>qt_add_qml_module</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -68,28 +68,28 @@
 <h1 class="title">qt_add_qml_module</h1>
 <!-- $$$qt-add-qml-module.html-description -->
 <div class="descr" id="details">
-<span id="qt6-add-qml-module"></span><p>This command was introduced in Qt 6.2&#x2e;</p>
+<span id="qt6-add-qml-module"></span><p>This command was introduced in Qt 6.2.</p>
 <h2 id="synopsis">Synopsis</h2>
 <pre class="cpp plain" translate="no">
  qt_add_qml_module(
      target
      URI uri
      [VERSION version]
-     [PAST_MAJOR_VERSIONS ..&#x2e;]
+     [PAST_MAJOR_VERSIONS ...]
      [STATIC | SHARED]
      [PLUGIN_TARGET plugin_target]
      [OUTPUT_DIRECTORY output_dir]
      [RESOURCE_PREFIX resource_prefix]
      [CLASS_NAME class_name]
      [TYPEINFO typeinfo]
-     [IMPORTS ..&#x2e;]
-     [OPTIONAL_IMPORTS ..&#x2e;]
-     [DEFAULT_IMPORTS ..&#x2e;]
-     [DEPENDENCIES ..&#x2e;]
-     [IMPORT_PATH ..&#x2e;]
-     [SOURCES ..&#x2e;]
-     [QML_FILES ..&#x2e;]
-     [RESOURCES ..&#x2e;]
+     [IMPORTS ...]
+     [OPTIONAL_IMPORTS ...]
+     [DEFAULT_IMPORTS ...]
+     [DEPENDENCIES ...]
+     [IMPORT_PATH ...]
+     [SOURCES ...]
+     [QML_FILES ...]
+     [RESOURCES ...]
      [OUTPUT_TARGETS out_targets_var]
      [DESIGNER_SUPPORTED]
      [FOLLOW_FOREIGN_VERSIONING]
@@ -138,7 +138,7 @@
 <pre class="cpp plain" translate="no">
  qt_add_qml_module(someTarget
      PLUGIN_TARGET someTarget
-     ..&#x2e;
+     ...
  )
 </pre>
 <p>While this arrangement may seem marginally simpler to deploy, a separate backing target should be preferred where possible due to the potentially better load-time performance.</p>
@@ -208,12 +208,15 @@
 <p>If a QML module has <code translate="no">.qml</code> files which provide singleton types, these files need to have their <code translate="no">QT_QML_SINGLETON_TYPE</code> source property set to <code translate="no">TRUE</code>, to ensure that the <code translate="no">singleton</code> command is written into the <a href="qtqml-modules-qmldir.html" translate="no">qmldir</a> file. This must be done in addition to the QML file containing the <code translate="no">pragma Singleton</code> statement.</p>
 <p>See <a href="qt-target-qml-sources.html#qt-target-qml-sources-example" translate="no">qt_target_qml_sources()</a> for an example on how to set the <code translate="no">QT_QML_SINGLETON_TYPE</code> property.</p>
 <span id="qmltc-cmake"></span><h3 id="compiling-qml-to-c-with-qml-type-compiler">Compiling QML to C++ with QML type compiler</h3>
+<div class="admonition note">
+<p><b>Note: </b>The <a href="qtqml-qml-type-compiler.html" translate="no">QML type compiler</a> <code translate="no">qmltc</code> does not guarantee that the generated C++ stays API-, source- or binary-compatible between past or future versions, even patch versions. Furthermore, qmltc-compiled apps using Qt's QML modules will require linking against private Qt API, see also <a href="qtqml-qml-type-compiler.html#compiling-qml-code-with-qmltc" translate="no">Compiling QML code with qmltc</a>.</p>
+</div>
 <p>If a QML module has <code translate="no">.qml</code> files, you can compile them to C++ using <a href="qtqml-qml-type-compiler.html" translate="no">qmltc</a>. Unlike <a href="qt-add-qml-module.html#qmlcachegen-auto" translate="no">bytecode compilation</a>, you have to explicitly enable qmltc via <a href="qt-add-qml-module.html#enable-type-compiler" translate="no">ENABLE_TYPE_COMPILER</a> argument. In which case, <code translate="no">.qml</code> files specified under <code translate="no">QML_FILES</code> would be compiled. Files ending with <code translate="no">.js</code> and <code translate="no">.mjs</code> are ignored as qmltc does not compile JavaScript code. Additionally, files marked with QT_QML_SKIP_TYPE_COMPILER source file property are also skipped.</p>
 <p>By default, qmltc creates lower-case <code translate="no">.h</code> and <code translate="no">.cpp</code> files for a given <code translate="no">.qml</code> file. For example, <code translate="no">Foo.qml</code> ends up being compiled into <code translate="no">foo.h</code> and <code translate="no">foo.cpp</code>.</p>
 <p>The created C++ files are placed into a dedicated <code translate="no">.qmltc/&lt;target&gt;/</code> sub-directory of the <code translate="no">BINARY_DIR</code> of the <code translate="no">target</code>. These files are then automatically added to the target sources and compiled as Qt C++ code along with other source files.</p>
 <p>While processing QML_FILES, the following source file properties are respected:</p>
 <ul>
-<li><code translate="no">QT_QMLTC_FILE_BASENAME</code>: use this source file property to specify a non-default .h and .cpp file name, which might be useful to e.g&#x2e; resolve conflicting file names (imagine you have main.qml that is being compiled, but main.h already exists, so #include &quot;main.h&quot; might not do what you expect it to do). QT_QMLTC_FILE_BASENAME is expected to be a file name (without extension), so any preceding directory is ignored. Unlike in the case of default behavior, the QT_QMLTC_FILE_BASENAME is not lower-cased.</li>
+<li><code translate="no">QT_QMLTC_FILE_BASENAME</code>: use this source file property to specify a non-default .h and .cpp file name, which might be useful to e.g. resolve conflicting file names (imagine you have main.qml that is being compiled, but main.h already exists, so #include &quot;main.h&quot; might not do what you expect it to do). QT_QMLTC_FILE_BASENAME is expected to be a file name (without extension), so any preceding directory is ignored. Unlike in the case of default behavior, the QT_QMLTC_FILE_BASENAME is not lower-cased.</li>
 <li><code translate="no">QT_QML_SKIP_TYPE_COMPILER</code>: use this source file property to specify that a QML file must be ignored by qmltc.</li>
 </ul>
 <h2 id="arguments">Arguments</h2>
@@ -235,7 +238,7 @@
 <pre class="cpp plain" translate="no">
  qt_add_qml_module(someTarget
      RESOURCE_PREFIX /my.company.com/imports
-     ..&#x2e;
+     ...
  )
 </pre>
 <span id="no-resource-target-path"></span><p>When various files are added to the compiled-in resources, they are placed under a path formed by concatenating the <code translate="no">RESOURCE_PREFIX</code> and the target path. For the special case where the backing target is an executable, it may be desirable to place the module's <code translate="no">.qml</code> files and other resources directly under the <code translate="no">RESOURCE_PREFIX</code> instead. This can be achieved by specifying the <code translate="no">NO_RESOURCE_TARGET_PATH</code> option, which may only be used if the backing target is an executable.</p>
@@ -248,7 +251,7 @@
 <p><code translate="no">DEPENDENCIES</code> provides a list of other QML modules that this module depends on, but doesn't necessarily import. It would typically be used for dependencies that only exist at the C++ level, such as a module registering a class to QML which is a subclass of one defined in another module.</p>
 <p>For example, if one would like to subclass <code translate="no">QQuickItem</code> as following:</p>
 <pre class="cpp plain" translate="no">
- class MyItem: public QQuickItem { ..&#x2e; };
+ class MyItem: public QQuickItem { ... };
 </pre>
 <p>then one has to make sure that the module containing <code translate="no">QQuickItem</code>, called <code translate="no">Quick</code>, is declared as a dependency via the <code translate="no">DEPENDENCIES</code> option. Not doing so might result in errors during type compilation with <a href="qtqml-qml-type-compiler.html" translate="no">qmltc</a> or during binding and function compilation to C++ with <a href="qt-add-qml-module.html#qmlcachegen-auto" translate="no">qmlcachegen</a>.</p>
 <div class="admonition note">
@@ -278,8 +281,8 @@
 <p>For static Qt builds, <code translate="no">qmlimportscanner</code> is run at configure time to scan the <code translate="no">.qml</code> files of a QML module and identify the QML imports it uses (see <a href="qt-import-qml-plugins.html#qt6-import-qml-plugins" translate="no">qt_import_qml_plugins()</a>). For non-static Qt builds, if the target is an executable, a similar scan is performed at build time to provide the information needed by deployment scripts (see <a href="qt-deploy-qml-imports.html" translate="no">qt_deploy_qml_imports()</a>). Both scans can be disabled by providing the <code translate="no">NO_IMPORT_SCAN</code> option. Doing so means the project takes on the responsibility of ensuring all required plugins are instantiated and linked for static builds. For non-static builds the project must manually work out and deploy all QML modules used by an executable target.</p>
 <h3 id="arguments-for-qmltc">Arguments for qmltc</h3>
 <span id="enable-type-compiler"></span><p><code translate="no">ENABLE_TYPE_COMPILER</code> can be used to compile <code translate="no">.qml</code> files to C++ source code with <a href="qtqml-qml-type-compiler.html" translate="no">qmltc</a>. Files with the source property <code translate="no">QT_QML_SKIP_TYPE_COMPILER</code> are not compiled to C++.</p>
-<p><code translate="no">TYPE_COMPILER_NAMESPACE</code> argument allows to override the namespace in which <a href="qtqml-qml-type-compiler.html" translate="no">qmltc</a> generates code. By default, the namespace of the generated code follows the module hierarchy as depicted in the URI, e.g&#x2e;, <code translate="no">MyModule</code> for a module with URI <code translate="no">MyModule</code> or <code translate="no">com::example::Module</code> for URI <code translate="no">com.example.MyModule</code>. By specifying the <code translate="no">TYPE_COMPILER_NAMESPACE</code> option, the generated code can be put instead in a custom namespace, where different subnamespaces are to be separated by a &quot;::&quot;, e.g&#x2e; &quot;MyNamespace::MySubnamespace&quot; for the namespace MySubnamespace that is inside the MyNamespace. Apart from the &quot;::&quot;, C++ namespace naming rules apply.</p>
-<p><code translate="no">QMLTC_QMLTC_EXPORT_DIRECTIVE</code> should be used with <code translate="no">QMLTC_EXPORT_FILE_NAME</code> when the classes generated by <a href="qtqml-qml-type-compiler.html" translate="no">qmltc</a> should be exported from the qml library. By default, classes generated by qmltc are not exported from their library. The header defining the export macro for the current library can be specified as an optional argument to <code translate="no">QMLTC_EXPORT_FILE_NAME</code> while the exporting macro name should be specified as an argument to <code translate="no">QMLTC_QMLTC_EXPORT_DIRECTIVE</code>. If no additional include is required or wanted, e.g&#x2e; when the header of the export macro is already indirectly included by a base class, then the <code translate="no">QMLTC_EXPORT_FILE_NAME</code> option can be left out.</p>
+<p><code translate="no">TYPE_COMPILER_NAMESPACE</code> argument allows to override the namespace in which <a href="qtqml-qml-type-compiler.html" translate="no">qmltc</a> generates code. By default, the namespace of the generated code follows the module hierarchy as depicted in the URI, e.g., <code translate="no">MyModule</code> for a module with URI <code translate="no">MyModule</code> or <code translate="no">com::example::Module</code> for URI <code translate="no">com.example.MyModule</code>. By specifying the <code translate="no">TYPE_COMPILER_NAMESPACE</code> option, the generated code can be put instead in a custom namespace, where different subnamespaces are to be separated by a &quot;::&quot;, e.g. &quot;MyNamespace::MySubnamespace&quot; for the namespace MySubnamespace that is inside the MyNamespace. Apart from the &quot;::&quot;, C++ namespace naming rules apply.</p>
+<p><code translate="no">QMLTC_QMLTC_EXPORT_DIRECTIVE</code> should be used with <code translate="no">QMLTC_EXPORT_FILE_NAME</code> when the classes generated by <a href="qtqml-qml-type-compiler.html" translate="no">qmltc</a> should be exported from the qml library. By default, classes generated by qmltc are not exported from their library. The header defining the export macro for the current library can be specified as an optional argument to <code translate="no">QMLTC_EXPORT_FILE_NAME</code> while the exporting macro name should be specified as an argument to <code translate="no">QMLTC_QMLTC_EXPORT_DIRECTIVE</code>. If no additional include is required or wanted, e.g. when the header of the export macro is already indirectly included by a base class, then the <code translate="no">QMLTC_EXPORT_FILE_NAME</code> option can be left out.</p>
 </div>
 <!-- @@@qt-add-qml-module.html -->
         </div>
@@ -289,9 +292,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

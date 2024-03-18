@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qt6-changes.qdoc -->
   <meta name="description" content="Kernel, Text, Painting, and Utility classes are modified.">
-  <title>Changes to Qt GUI | Qt GUI 6.6.0</title>
+  <title>Changes to Qt GUI | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li>Changes to Qt GUI</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -74,7 +74,7 @@
 <p>Existing APIs that expect an <code translate="no">int</code> for a key combination can be called using <a href="../qtcore/qkeycombination.html#toCombined" translate="no">QKeyCombination::toCombined</a>().</p>
 <h2 id="text-classes">Text classes</h2>
 <h3 id="the-qfontdatabase-class">The QFontDatabase class</h3>
-<p>The <a href="qfontdatabase.html" translate="no">QFontDatabase</a> class has now only static member functions. The constructor has been deprecated. Instead of e.g&#x2e;</p>
+<p>The <a href="qfontdatabase.html" translate="no">QFontDatabase</a> class has now only static member functions. The constructor has been deprecated. Instead of e.g.</p>
 <pre class="cpp" translate="no">
  <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstringlist.html" translate="no">QStringList</a></span> fontFamilies <span class="operator">=</span> <span class="type"><a href="qfontdatabase.html" translate="no">QFontDatabase</a></span>()<span class="operator">.</span>families();
 </pre>
@@ -101,7 +101,7 @@
 <h3 id="native-clipboard-integration">Native clipboard integration</h3>
 <p>Qt 5 provided interfaces for integrating platform specific or custom clipboard formats into Qt through <code translate="no">QMacPasteboardMime</code> in <code translate="no">QtMacExtras</code>, and <code translate="no">QWindowsMime</code> from the Windows QPA API. Since Qt 6.6, the equivalent functionality is provided by the classes <a href="qutimimeconverter.html" translate="no">QUtiMimeConverter</a> for macOS, and the <a href="qwindowsmimeconverter.html" translate="no">QWindowsMimeConverter</a> for Windows.</p>
 <p>Porting from QWindowsMime to <a href="qwindowsmimeconverter.html" translate="no">QWindowsMimeConverter</a> requires practically no changes, as the virtual interface is identical. However, in Qt 6 it is no longer needed to register a <a href="qwindowsmimeconverter.html" translate="no">QWindowsMimeConverter</a> implementation; instantiating the type implicitly registers the converter.</p>
-<p>Porting a QMacPasteboardMime to <a href="qutimimeconverter.html" translate="no">QUtiMimeConverter</a> requires renaming some of the virtual functions. Note that the <code translate="no">QMacPasteboardMime</code> API used the outdated term <code translate="no">flavor</code> for the native clipboard format on macOS, whereas the platform now uses <code translate="no">Uniform Type Identifiers</code>, i.e&#x2e; <code translate="no">UTI</code>s, which Qt has adapted for function and parameter names.</p>
+<p>Porting a QMacPasteboardMime to <a href="qutimimeconverter.html" translate="no">QUtiMimeConverter</a> requires renaming some of the virtual functions. Note that the <code translate="no">QMacPasteboardMime</code> API used the outdated term <code translate="no">flavor</code> for the native clipboard format on macOS, whereas the platform now uses <code translate="no">Uniform Type Identifiers</code>, i.e. <code translate="no">UTI</code>s, which Qt has adapted for function and parameter names.</p>
 <p>The <code translate="no">mimeFor</code> and <code translate="no">flavorFor</code> functions are replaced by the <a href="qutimimeconverter.html#mimeForUti" translate="no">mimeForUti</a> and <a href="qutimimeconverter.html#utiForMime" translate="no">utiForMime</a> implementations, respectively. Those should return the name of the mime type or <code translate="no">UTI</code> that the converter can convert the input format to, so a port usually just involves renaming existing overrides. The <code translate="no">convertToMime</code>, <code translate="no">convertFromMime</code>, and <code translate="no">count</code> functions in <a href="qutimimeconverter.html" translate="no">QUtiMimeConverter</a> are identical to their QMacPasteboardMime versions.</p>
 <p>The <code translate="no">canConvert</code>, <code translate="no">converterName</code> functions are no longer needed, they are implied by implementation of the above functions, so overrides of those functions can be removed.</p>
 <p>As with the the <a href="qwindowsmimeconverter.html" translate="no">QWindowsMimeConverter</a>, registration is done by instantiating the type.</p>
@@ -114,9 +114,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
 <!-- waterpump-qml.qdoc -->
-  <meta name="description" content="Interacting with an OPC UA server to build a QML-based HMI for a simple machine.">
-  <title>Qt Quick Waterpump Example | Qt OPC UA 6.6.0</title>
+  <meta name="description" content="Interacting with an OPC UA server to build a QML-based HMI for a simple water pump machine.">
+  <title>Qt Quick Water Pump | Qt OPC UA 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,8 +29,8 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtopcua-index.html" translate="no">Qt OPC UA</a></li>
 <li><a href="qtopcua-examples.html" translate="no">Qt OPC UA Examples</a></li>
-<li>Qt Quick Waterpump Example</li>
-<li id="buildversion"><a href="qtopcua-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li>Qt Quick Water Pump</li>
+<li id="buildversion"><a href="qtopcua-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -50,15 +50,15 @@
 </ul>
 </div>
 <div class="sidebar-content" id="sidebar-content"></div></div>
-<h1 class="title">Qt Quick Waterpump Example</h1>
+<h1 class="title">Qt Quick Water Pump</h1>
 <!-- $$$waterpump/waterpump-qml-brief -->
-<p>Interacting with an OPC UA server to build a QML-based HMI for a simple machine.</p>
+<p>Interacting with an OPC UA server to build a QML-based HMI for a simple water pump machine.</p>
 <!-- @@@waterpump/waterpump-qml -->
 <!-- $$$waterpump/waterpump-qml-description -->
 <div class="descr" id="details">
-<p><i>Qt Quick Waterpump</i> shows how to use Qt OPC UA QML API to interact with an OPC UA server to build a QML based HMI for a simple machine.</p>
-<h4 id="building-the-server">Building the Server</h4>
-<p>Before you can use the waterpump examples, you need to build the simulation server. The simulator server project resides next to the waterpump examples. You can open and build it in QtCreator or from the terminal as usual.</p>
+<p><i>Qt Quick Water Pump</i> example shows how to use Qt OPC UA QML API to interact with an OPC UA server to build a QML based HMI for a simple machine.</p>
+<p class="centerAlign"><img src="images/tankexample.png" alt="" /></p><h4 id="building-the-server">Building the Server</h4>
+<p>Before you can use the Water Pump examples, you need to build the <a href="https://code.qt.io/cgit/qt/qtopcua.git/tree/examples/opcua/waterpump/simulationserver" translate="no">simulation server</a>. The simulation server project resides next to the Water Pump examples. You can open and build it in QtCreator or from the terminal as usual.</p>
 <h4 id="the-simulation">The Simulation</h4>
 <p>The OPC UA server included in this example runs a simulation of a machine containing two tanks, a water pump and a valve. Water can be pumped from the first tank into the second tank and then be flushed from the second tank by opening the valve. Both operations have a user-configurable setpoint which controls how much water is pumped to or flushed from the second tank.</p>
 <p>The following nodes exist on the server:</p>
@@ -74,6 +74,7 @@
 <tr valign="top" class="even"><td >ns=2;s=Machine.Start</td><td >Call this method to start the pump</td></tr>
 <tr valign="top" class="odd"><td >ns=2;s=Machine.Stop</td><td >Call this method to stop the pump</td></tr>
 <tr valign="top" class="even"><td >ns=2;s=Machine.FlushTank2</td><td >Call this method to flush tank 2</td></tr>
+<tr valign="top" class="odd"><td >ns=2;s=Machine.Reset</td><td >Call this method to reset the simulation</td></tr>
 </table></div>
 <h4 id="implementation">Implementation</h4>
 <p>This example uses QML items to read and write values as well as method calls. All operations are asynchronous and handled by QML in the background.</p>
@@ -99,14 +100,15 @@
 <p>For example, the button to flush the second tank is enabled only if the backend is connected to the server, the machine is idle, and the tank level is above the setpoint. On click, the <code translate="no">flushTank2()</code> method is called on the server.</p>
 <pre class="cpp" translate="no">
      <span class="type">Tank2Unit</span> {
-         <span class="name">flushButtonEnabled</span>: <span class="name">connection</span>.<span class="name">connected</span> <span class="operator">&amp;&amp;</span> <span class="name">machine</span>.<span class="name">state</span> <span class="operator">===</span> <span class="name">Machine</span>.<span class="name">MachineState</span>.<span class="name">Idle</span> <span class="operator">&amp;&amp;</span> <span class="name">machine</span>.<span class="name">tank2</span>.<span class="name">percentFilled</span> <span class="operator">&gt;</span> <span class="name">machine</span>.<span class="name">tank2</span>.<span class="name">targetPercent</span>
+         <span class="name">flushButtonEnabled</span>: <span class="name">connection</span>.<span class="name">connected</span> <span class="operator">&amp;&amp;</span> <span class="name">machine</span>.<span class="name">state</span> <span class="operator">===</span> <span class="name">Machine</span>.<span class="name">MachineState</span>.<span class="name">Idle</span>
+                             <span class="operator">&amp;&amp;</span> <span class="name">machine</span>.<span class="name">tank2</span>.<span class="name">percentFilled</span> <span class="operator">&gt;</span> <span class="name">machine</span>.<span class="name">tank2</span>.<span class="name">targetPercent</span>
          <span class="name">percentFilled</span>: <span class="name">machine</span>.<span class="name">tank2</span>.<span class="name">percentFilled</span>
          <span class="name">valveState</span>: <span class="name">machine</span>.<span class="name">tank2valveState</span>
 </pre>
 <h4 id="usage">Usage</h4>
 <p>The server is started automatically by the HMI application. After connecting to the server by clicking the <b translate="no">Connect</b> button, drag the slider to set a setpoint, then click <b translate="no">Start</b> to start pumping water from the first tank to the second tank. After setting a setpoint lower than the current value of the second tank, a click on <b translate="no">Flush</b> opens the valve.</p>
 <p>If there is no water left, click <b translate="no">Reset simulation</b> to refill the first tank.</p>
-<p class="centerAlign"><img src="images/tankexample.jpg" alt="" /></p><p>Files:</p>
+<p>Files:</p>
 <ul>
 <li><a href="qtopcua-waterpump-waterpump-qml-cmakelists-txt.html" translate="no">waterpump/waterpump-qml/CMakeLists.txt</a></li>
 <li><a href="qtopcua-waterpump-waterpump-qml-main-cpp.html" translate="no">waterpump/waterpump-qml/main.cpp</a></li>
@@ -114,6 +116,7 @@
 <li><a href="qtopcua-waterpump-waterpump-qml-waterpump-qml-pro.html" translate="no">waterpump/waterpump-qml/waterpump-qml.pro</a></li>
 </ul>
 </div>
+<p><b>See also </b><a href="qtopcua-waterpump-waterpump-qmlcpp-example.html" translate="no">Waterpump Example</a>.</p>
 <!-- @@@waterpump/waterpump-qml -->
         </div>
        </div>
@@ -122,9 +125,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

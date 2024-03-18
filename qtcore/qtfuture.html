@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qfuture.qdoc -->
   <meta name="description" content="Contains miscellaneous identifiers used by the QFuture class.">
-  <title>QtFuture Namespace | Qt Core 6.6.0</title>
+  <title>QtFuture Namespace | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li>QtFuture Namespace</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -292,7 +292,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@whenAll -->
 <!-- $$$whenAll$$$whenAllFutures&&... -->
 <h3 class="fn" translate="no" id="whenAll-1"><code translate="no">[since 6.3] </code>template &lt;typename OutputSequence, typename Futures&gt; <span class="type"><a href="qfuture.html" translate="no">QFuture</a></span>&lt;<span class="type">OutputSequence</span>&gt; QtFuture::<span class="name">whenAll</span>(<span class="type">Futures</span> &amp;&amp;... <i>futures</i>)</h3>
-<p>Returns a new <a href="qfuture.html" translate="no">QFuture</a> that succeeds when all <i translate="no">futures</i> packaging arbitrary types complete. <code translate="no">OutputSequence</code> is a sequence of completed futures. The type of its entries is <code translate="no">std::variant&lt;Futures..&#x2e;&gt;</code>. For each <code translate="no">QFuture&lt;T&gt;</code> passed to <code translate="no">whenAll()</code>, the entry at the corresponding position in <code translate="no">OutputSequence</code> will be a <code translate="no">std::variant</code> holding that <code translate="no">QFuture&lt;T&gt;</code>, in its completed state. If the type of <code translate="no">OutputSequence</code> is not specified, the resulting futures will be returned in a <a href="qlist.html" translate="no">QList</a> of <code translate="no">std::variant&lt;Futures..&#x2e;&gt;</code>. For example:</p>
+<p>Returns a new <a href="qfuture.html" translate="no">QFuture</a> that succeeds when all <i translate="no">futures</i> packaging arbitrary types complete. <code translate="no">OutputSequence</code> is a sequence of completed futures. The type of its entries is <code translate="no">std::variant&lt;Futures...&gt;</code>. For each <code translate="no">QFuture&lt;T&gt;</code> passed to <code translate="no">whenAll()</code>, the entry at the corresponding position in <code translate="no">OutputSequence</code> will be a <code translate="no">std::variant</code> holding that <code translate="no">QFuture&lt;T&gt;</code>, in its completed state. If the type of <code translate="no">OutputSequence</code> is not specified, the resulting futures will be returned in a <a href="qlist.html" translate="no">QList</a> of <code translate="no">std::variant&lt;Futures...&gt;</code>. For example:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qfuture.html" translate="no">QFuture</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> intFuture <span class="operator">=</span> <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>;
  <span class="type"><a href="qfuture.html" translate="no">QFuture</a></span><span class="operator">&lt;</span><span class="type"><a href="qstring.html" translate="no">QString</a></span><span class="operator">&gt;</span> stringFuture <span class="operator">=</span> <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>;
@@ -356,7 +356,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@whenAny -->
 <!-- $$$whenAny$$$whenAnyFutures&&... -->
 <h3 class="fn" translate="no" id="whenAny-1"><code translate="no">[since 6.3] </code>template &lt;typename Futures&gt; <span class="type"><a href="qfuture.html" translate="no">QFuture</a></span>&lt;<span class="type">std::variant</span>&lt;<span class="type">std::decay_t</span>&lt;<span class="type">Futures</span>&gt;...&gt;&gt; QtFuture::<span class="name">whenAny</span>(<span class="type">Futures</span> &amp;&amp;... <i>futures</i>)</h3>
-<p>Returns a new <a href="qfuture.html" translate="no">QFuture</a> that succeeds when any of the <i translate="no">futures</i> completes. <i translate="no">futures</i> can package arbitrary types. The returned future packages the value of type <code translate="no">std::variant&lt;Futures..&#x2e;&gt;</code> which in turn packages the first completed <a href="qfuture.html" translate="no">QFuture</a> from <i translate="no">futures</i>. You can use <a href="https://en.cppreference.com/w/cpp/utility/variant/index" translate="no">std::variant::index()</a> to find out the index of the future in the sequence of <i translate="no">futures</i> that finished first.</p>
+<p>Returns a new <a href="qfuture.html" translate="no">QFuture</a> that succeeds when any of the <i translate="no">futures</i> completes. <i translate="no">futures</i> can package arbitrary types. The returned future packages the value of type <code translate="no">std::variant&lt;Futures...&gt;</code> which in turn packages the first completed <a href="qfuture.html" translate="no">QFuture</a> from <i translate="no">futures</i>. You can use <a href="https://en.cppreference.com/w/cpp/utility/variant/index" translate="no">std::variant::index()</a> to find out the index of the future in the sequence of <i translate="no">futures</i> that finished first.</p>
 <p>The returned future always completes successfully after the first future from the specified futures completes. It doesn't matter if the first future completes with error or is canceled. You can use <code translate="no">.then()</code> to process the result after the future returned by <code translate="no">whenAny()</code> succeeds:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qfuture.html" translate="no">QFuture</a></span><span class="operator">&lt;</span><span class="type">int</span><span class="operator">&gt;</span> intFuture <span class="operator">=</span> <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>;
@@ -385,9 +385,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

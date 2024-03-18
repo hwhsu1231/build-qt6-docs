@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
 <!-- qtprotobuf.qdoc -->
-  <title>Qt Protobuf 6.6.0</title>
+  <title>Qt Protobuf 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -27,7 +27,7 @@
         <ul>
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li>Qt Protobuf</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -43,13 +43,13 @@
 <li class="level2"><a href="#which-problems-do-protocol-buffers-solve">Which problems do protocol buffers solve?</a></li>
 <li class="level2"><a href="#what-are-the-benefits-of-using-qt-protobuf">What are the benefits of using Qt Protobuf?</a></li>
 <li class="level2"><a href="#incoming-features">Incoming features</a></li>
-<li class="level1"><a href="#using-qt-protobuf">Using Qt Protobuf</a></li>
-<li class="level1"><a href="#cmake-api">CMake API</a></li>
-<li class="level1"><a href="#qml-types-support">QML-types support</a></li>
-<li class="level2"><a href="#protobuf-message-duplicates">Protobuf message duplicates</a></li>
-<li class="level2"><a href="#qml-keywords-handling">QML keywords handling</a></li>
-<li class="level1"><a href="#class-documentation">Class Documentation</a></li>
+<li class="level1"><a href="#using-the-module">Using the Module</a></li>
+<li class="level2"><a href="#qml-api">QML API</a></li>
+<li class="level2"><a href="#c-api">C++ API</a></li>
+<li class="level1"><a href="#articles-and-guides">Articles and Guides</a></li>
+<li class="level1"><a href="#references">References</a></li>
 <li class="level1"><a href="#examples">Examples</a></li>
+<li class="level1"><a href="#licenses-and-attributions">Licenses and Attributions</a></li>
 </ul>
 </div>
 <div class="sidebar-content" id="sidebar-content"></div></div>
@@ -74,147 +74,60 @@
 <li>No need to integrate generated code into project tree manually.</li>
 <li>Convenient serialization and deserialization API.</li>
 <li>Integrated properties mechanism for generated protobuf messages.</li>
-<li>Integrated gRPC-client support (see <a href="../qtgrpc/qtgrpc-index.html" translate="no">QtGrpc module</a>).</li>
-<li>Integrated QML-types support for generated protobuf messages.</li>
-<li>Enabled using Qt Core and Qt GUI types as a part of *.proto schema.</li>
+<li>Integrated gRPC-client support (see <a href="../qtgrpc/qtgrpc-index.html" translate="no">Qt GRPC module</a>).</li>
+<li>Integrated QML-types support for generated protobuf messages. See <a href="qtprotobuf.html" translate="no">Qt Protobuf QML types</a></li>
+<li>Enabled using Qt Core and Qt GUI types as a part of *.proto schema. See <a href="qtprotobufqtcoretypes-module.html" translate="no">Protobuf Qt Core Types Module</a> and <a href="qtprotobufqtguitypes-module.html" translate="no">Protobuf Qt GUI types module</a>.</li>
 </ul>
 <h3 id="incoming-features">Incoming features</h3>
 <ul>
 <li>Enabling gRPC-server support.</li>
 </ul>
-<h2 id="using-qt-protobuf">Using Qt Protobuf</h2>
+<h2 id="using-the-module">Using the Module</h2>
 <p>Google protocol buffers provide a generator called <code translate="no">protoc</code> that supports extensions. <a href="qtprotobufgen-qt-tool.html" translate="no">The qtprotobufgen Tool</a> is an extension for <code translate="no">protoc</code> and requires that you install <code translate="no">protoc</code> on your host system. For more information about the installation, see <a href="https://grpc.io/docs/protoc-installation/" translate="no">Protoc Installation</a>.</p>
-<p>Example of installation for Linux, using <i>apt</i>:</p>
-<pre class="cpp plain" translate="no">
+<ul>
+<li>Example of installation for Linux, using <i>apt</i>:<pre class="cpp plain" translate="no">
  apt install -y protobuf-compiler
  protoc --version  # Ensure compiler version is 3+
 </pre>
-<p>For more information about component API usage, see <i>CMake API</i>.</p>
-<h2 id="cmake-api">CMake API</h2>
+</li>
+<li><a href="protobuf.html" translate="no">Example of installation for Windows using vcpkg</a></li>
+</ul>
+<h3 id="qml-api">QML API</h3>
+<p>The QML types of the module are available through the QML and QML_URI options in the <a href="qt-add-protobuf.html" translate="no">qt_add_protobuf</a> macro. The import name is equal to the <code translate="no">.proto</code> package name or defined by QML_URI option in the <a href="qt-add-protobuf.html" translate="no">qt_add_protobuf</a> macro. To use the types, add the following import statement to your .qml file:</p>
+<pre class="cpp" translate="no">
+ import my<span class="operator">.</span>proto<span class="operator">.</span>package<span class="operator">.</span>uri
+</pre>
+<h3 id="c-api">C++ API</h3>
+<p>Using a Qt module's C++ API requires linking against the module library, either directly or through other dependencies. Several build tools have dedicated support for this, including <a href="https://cmake.org/cmake/help/latest/" translate="no">CMake</a> and <a href="../qtdoc/qtquick-deployment.html#qmake" translate="no">qmake</a>.</p>
+<h4 id="building-with-cmake">Building with CMake</h4>
+<p>Use the <code translate="no">find_package()</code> command to locate the needed module component in the <code translate="no">Qt6</code> package:</p>
+<pre class="cpp" translate="no">
+ find_package(Qt6 REQUIRED COMPONENTS Protobuf)
+ target_link_libraries(mytarget PRIVATE Qt6<span class="operator">::</span>Protobuf)
+</pre>
+<p>For more details, see the <a href="../qtcmake/cmake-manual.html" translate="no">Build with CMake</a> overview.</p>
+<h2 id="articles-and-guides">Articles and Guides</h2>
 <ul>
 <li><a href="cmake-commands-qtprotobuf.html" translate="no">CMake Commands in Qt6 Protobuf</a></li>
+<li><a href="qtprotobufqtcoretypes-module.html" translate="no">Protobuf Qt Core Types</a></li>
+<li><a href="qtprotobufqtguitypes-module.html" translate="no">Protobuf Qt GUI Types</a></li>
+<li><a href="qtprotobufwellknowntypes-module.html" translate="no">Qt Protobuf Well-Known types</a></li>
 </ul>
-<h2 id="qml-types-support">QML-types support</h2>
-<p>With the <a href="qtprotobufgen-qt-tool.html" translate="no">generator plugin</a>, you can register protobuf messages in the QML context. To register the type, use the <code translate="no">QML</code> and <code translate="no">QML_URI</code> generation keys. See API details in <a href="qt-add-protobuf.html" translate="no">qt_add_protobuf</a> command and API usage example <a href="qtprotobufgen-qt-tool.html#qml-extended-protobuf-example" translate="no">QML extended protobuf</a>.</p>
-<p>Registered protobuf messages are available in the QML context, like built-in <a href="../qtcore/qobject.html#Q_GADGET" translate="no">Q_GADGET</a> types. The registration is done via the QML module.</p>
-<h3 id="protobuf-message-duplicates">Protobuf message duplicates</h3>
-<p>You should avoid declaration of protobuf message duplicates in your <code translate="no">*.proto</code> files or do it wisely. In case your application uses several identical protobuf message names declared inside different protobuf packages, they can contradict each other in auto-generated code. In example below, 2 different proto packages <code translate="no">qtprotobufnamespace</code> and <code translate="no">qtprotobufnamespace1.nested</code> use the same proto message <code translate="no">NestedFieldMessage</code>. The file <code translate="no">nested.proto</code>:</p>
-<pre class="cpp plain" translate="no">
- syntax = &quot;proto3&quot;;
-
- package qtprotobufnamespace;
- import &quot;externalpackage.proto&quot;;
-
- message NestedFieldMessage {
-     sint32 testFieldInt = 1;
- }
-</pre>
-<p>The file <code translate="no">nestedspace1.proto</code>:</p>
-<pre class="cpp plain" translate="no">
- syntax = &quot;proto3&quot;;
-
- package qtprotobufnamespace1.nested;
-
- message NestedFieldMessage {
-     message NestedMessage {
-         sint32 field = 1;
-     }
-     NestedMessage nested = 1;
- }
-</pre>
-<p>In case there is no possibility to avoid name duplicates among packages, then put duplicated messages in different QML modules and use a &lt;Qualifier&gt; for each QML module import, see <a href="../qtqml/qtqml-syntax-imports.html#module-namespace-imports" translate="no">Module (Namespace) Imports</a>. Below the example how to add protobuf packages into different QML modules:</p>
-<pre class="cpp plain" translate="no">
- # qtprotobufnamespace QML module
- qt_add_protobuf(nestedtypes_qtprotobuf_qml
-     PROTO_FILES
-         nested.proto
-     QML
-     QML_URI
-         qtprotobufnamespace
-     OUTPUT_DIRECTORY &quot;${CMAKE_CURRENT_BINARY_DIR}/qt_protobuf_gen1&quot;
- )
-
- ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;
-
- # qtprotobufnamespace1.nested QML module
- qt_add_protobuf(nestedspace_qml
-     PROTO_FILES
-         nestedspace1.proto
-     QML
-     QML_URI
-         qtprotobufnamespace1.nested
-     OUTPUT_DIRECTORY &quot;${CMAKE_CURRENT_BINARY_DIR}/qt_protobuf_gen2&quot;
- )
-</pre>
-<p>The &lt;Qualifier&gt; usage example:</p>
-<pre class="cpp plain" translate="no">
- import qtprotobufnamespace as NestedFieldMessages
- import qtprotobufnamespace1.nested as FieldMessages_Nested1
-
- ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;
- ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;
- ..&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;&#x2e;
-
- property NestedFieldMessages.nestedFieldMessage fieldMsg1;
- property FieldMessages_Nested1.nestedFieldMessage fieldMsg2;
-</pre>
-<div class="admonition note">
-<p><b>Note: </b>The usage of duplicates will trigger a warning at compilation time.</p>
-</div>
-<h3 id="qml-keywords-handling">QML keywords handling</h3>
-<p>Pay attention to the keywords that are reserved in QML or JavaScript context, but not reserved in *.proto context. Fields with names that are reserved by QML will be silently extended by <code translate="no">_proto</code> suffix by the <a href="qtprotobufgen-qt-tool.html" translate="no">generator plugin</a>. For example, <code translate="no">id</code>, <code translate="no">property</code>, and <code translate="no">import</code> are reserved keywords. They will be replaced by <code translate="no">id_proto</code>, <code translate="no">property_proto</code>, <code translate="no">import_proto</code>:</p>
-<pre class="cpp plain" translate="no">
- message MessageUpperCaseReserved {
-     sint32 Import = 1;
-     sint32 Property = 2;
-     sint32 Id = 3;
- }
-</pre>
-<p>Generated code output:</p>
-<pre class="cpp" translate="no">
- Q_PROPERTY(<span class="type"><a href="qtprotobuf-module.html" translate="no">QtProtobuf</a></span><span class="operator">::</span>sint32 import_proto READ import_proto <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>)
- Q_PROPERTY(<span class="type"><a href="qtprotobuf-module.html" translate="no">QtProtobuf</a></span><span class="operator">::</span>sint32 property_proto READ property_proto <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>)
- Q_PROPERTY(<span class="type"><a href="qtprotobuf-module.html" translate="no">QtProtobuf</a></span><span class="operator">::</span>sint32 id_proto READ id_proto <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>)
-</pre>
-<p>Also, enum values cannot begin with a lower case letter. The <a href="qtprotobufgen-qt-tool.html" translate="no">generator plugin</a> will capitalize the first letter in code output. See the <code translate="no">*.proto</code> example below:</p>
-<pre class="cpp plain" translate="no">
- enum LowerCaseEnum {
-     enumValue0 = 0;
-     enumValue1 = 1;
-     enumValue2 = 2;
- }
-</pre>
-<p>Generated code output:</p>
-<pre class="cpp" translate="no">
- <span class="keyword">enum</span> LowerCaseEnum {
-     EnumValue0 <span class="operator">=</span> <span class="number">0</span><span class="operator">,</span>
-     EnumValue1 <span class="operator">=</span> <span class="number">1</span><span class="operator">,</span>
-     EnumValue2 <span class="operator">=</span> <span class="number">2</span><span class="operator">,</span>
- };
- Q_ENUM(LowerCaseEnum)
-</pre>
-<p>Also, enum fields cannot begin with an underscore symbol. Such fields will be generated as is, but will be undefined in the QML context, unless the QML engine will allow registering them in the future. See the <code translate="no">*.proto</code> example below:</p>
-<pre class="cpp plain" translate="no">
- enum UnderScoreEnum {
-     _enumUnderscoreValue0 = 0;
-     _EnumUnderscoreValue1 = 1;
- }
-</pre>
-<p>Generated output:</p>
-<pre class="cpp" translate="no">
- <span class="keyword">enum</span> UnderScoreEnum {
-     _enumUnderscoreValue0 <span class="operator">=</span> <span class="number">0</span><span class="operator">,</span>
-     _EnumUnderscoreValue1 <span class="operator">=</span> <span class="number">1</span><span class="operator">,</span>
- };
- Q_ENUM(UnderScoreEnum)
-</pre>
-<p>For more information about the QML properties syntax, check <a href="../qtqml/qtqml-syntax-objectattributes.html#defining-property-attributes" translate="no">Defining Property Attributes</a>.</p>
-<h2 id="class-documentation">Class Documentation</h2>
-<p><a href="qtprotobuf-module.html" translate="no">C++ Classes</a></p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="qtprotobuf-module.html" translate="no">Qt Protobuf C++ Classes</a></li>
+<li><a href="qtprotobuf.html" translate="no">Qt Protobuf QML types</a></li>
+</ul>
 <h2 id="examples">Examples</h2>
 <ul>
 <li><a href="qtprotobuf-examples.html" translate="no">Qt Protobuf Examples</a></li>
 </ul>
+<h2 id="licenses-and-attributions">Licenses and Attributions</h2>
+<p>The Qt Protobuf module is available under commercial licenses from <a href="http://www.qt.io/about-us/" translate="no">The Qt Company</a>. In addition, it is available under free software licenses: The <a href="http://www.gnu.org/licenses/lgpl-3.0.html" translate="no">GNU Lesser General Public License, version 3</a>, or the <a href="http://www.gnu.org/licenses/gpl-2.0.html" translate="no">GNU General Public License, version 2</a>, or the <a href="http://www.gnu.org/licenses/gpl-3.0.html" translate="no">GNU General Public License, version 3</a>. See <a href="../qtdoc/licensing.html" translate="no">Qt Licensing</a> for further details.</p>
+<p>Furthermore, the <code translate="no">qtprotobufgen</code> tool in Qt 6.6.2 may contain third party modules under the following permissive licenses:</p>
+<div class="table"><table class="annotated">
+<tr class="odd topAlign"><td class="tblName" translate="no"><p><a href="qtprotobuf-attribution-protobuf.html">protobuf, version 21.9</a></p></td><td class="tblDescr"><p>BSD 3-clause &quot;New&quot; or &quot;Revised&quot; License</p></td></tr>
+</table></div>
 </div>
 <!-- @@@qtprotobuf-index.html -->
         </div>
@@ -224,9 +137,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

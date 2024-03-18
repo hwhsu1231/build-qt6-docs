@@ -28,117 +28,318 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Coffee Machine</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
 <div class="content">
 <div class="line">
 <div class="content mainContent">
-<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+<ul>
+<li class="level1"><a href="#coffee-machine-example-overview">Coffee Machine example overview</a></li>
+<li class="level2"><a href="#selecting-a-recipe">Selecting a recipe</a></li>
+<li class="level2"><a href="#coffee-customization">Coffee customization</a></li>
+<li class="level2"><a href="#displaying-the-brewing-status">Displaying the brewing status</a></li>
+<li class="level2"><a href="#coffee-is-ready">Coffee is ready</a></li>
+<li class="level1"><a href="#how-it-works">How it works</a></li>
+<li class="level2"><a href="#adapting-to-different-screens">Adapting to different screens</a></li>
+<li class="level2"><a href="#navigating-through-the-app-pages">Navigating through the app pages</a></li>
+<li class="level2"><a href="#implementing-start-page">Implementing start page</a></li>
+<li class="level2"><a href="#implementing-coffee-selection">Implementing coffee selection</a></li>
+<li class="level2"><a href="#implementing-coffee-settings">Implementing coffee settings</a></li>
+<li class="level2"><a href="#implementing-insert-cup">Implementing insert cup</a></li>
+<li class="level2"><a href="#implementing-brewing-coffee">Implementing brewing coffee</a></li>
+<li class="level2"><a href="#implementing-coffee-ready">Implementing coffee ready</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
 <h1 class="title">Coffee Machine</h1>
 <!-- $$$demos/coffee-brief -->
 <p>A Qt Quick application with a state-based custom user interface.</p>
 <!-- @@@demos/coffee -->
 <!-- $$$demos/coffee-description -->
 <div class="descr" id="details">
-<div class="border"><p class="centerAlign"><img src="images/coffee_machine_overview.png" alt="" /></p></div><p>The coffee machine application lets you choose a type of coffee on the left side of the main screen. After selection, the app displays what the coffee blend will contain (ratio coffee/hot milk/milk foam). This can be modified with two sliders. When the brew has been started, the app shows an animated display of the brewing process, then returns to the start screen.</p>
-<p>First the start screen <code translate="no">Animationflowform</code> is displayed, showing a sidebar with several types of coffee, and an empty cup on the right screen.</p>
-<p>Selecting a coffee type - for example, cappuccino - triggers <code translate="no">animation1</code> and <code translate="no">animation2</code> in CoffeeButton.qml. On the right side, you will see the coffee blend you selected.</p>
+<div class="border"><p class="centerAlign"><img src="images/coffee_machine_overview.png" alt="" /></p></div><h4 id="coffee-machine-example-overview">Coffee Machine example overview</h4>
+<p>This app demonstrates a cross platform, multi screen size and responsive way of implementing a typical user interface for product ordering.</p>
+<h5 id="selecting-a-recipe">Selecting a recipe</h5>
+<p class="centerAlign"><img src="images/coffee_machine_selection.png" alt="" /></p><p class="figCaption">The coffee selection</p>
+<p>The coffee machine application lets you choose a type of coffee and indicates how many coffees of that type you have left to order.</p>
+<h5 id="coffee-customization">Coffee customization</h5>
+<div class="border"><p class="centerAlign"><img src="images/coffee_machine_modify.png" alt="" /></p></div><p>Once a recipe is selected, the app displays what ratio the coffee blend will contain of:</p>
+<ul>
+<li>brewed coffee</li>
+<li>hot milk</li>
+<li>milk foam</li>
+<li>sugar</li>
+</ul>
+<p>This can be modified using sliders.</p>
+<h5 id="displaying-the-brewing-status">Displaying the brewing status</h5>
+<p>Once the user has acknowledged that the cup is in the machine the brew starts.</p>
+<p>When the brew has been started, the app shows an animated display of the brewing process.</p>
+<h5 id="coffee-is-ready">Coffee is ready</h5>
+<p>Once the brewing process has ended, the app shows coffee cup with the desired coffee mix in it for a few seconds before returning to the starting page.</p>
+<h4 id="how-it-works">How it works</h4>
+<p>Here we discuss how these features are implemented.</p>
+<h5 id="adapting-to-different-screens">Adapting to different screens</h5>
+<p>The app adapts at runtime to different target device screen types by first setting the root object <a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a> QML type width and height properties to device screen available height and width.</p>
 <pre class="qml" translate="no">
-     <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
-         <span class="name">anchors</span>.fill: <span class="name">parent</span>
-         <span class="name">onClicked</span>: <span class="name">root</span>.<span class="name">clicked</span>()
-         <span class="name">onPressed</span>: {
-             <span class="name">glow</span>.<span class="name">visible</span> <span class="operator">=</span> <span class="number">true</span>
-             <span class="name">animation1</span>.<span class="name">start</span>()
-             <span class="name">animation2</span>.<span class="name">start</span>()
-         }
-     }
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-applicationwindow.html" translate="no">ApplicationWindow</a></span> {
+     <span class="name">visible</span>: <span class="number">true</span>
+     <span class="name">width</span>: <span class="name">Screen</span>.<span class="name">desktopAvailableWidth</span>
+     <span class="name">height</span>: <span class="name">Screen</span>.<span class="name">desktopAvailableHeight</span>
+     <span class="name">title</span>: <span class="name">qsTr</span>(<span class="string">&quot;Coffee&quot;</span>)
 </pre>
-<p>It also triggers cappuccinoButton.onClicked(), which sets the default mix for the coffee type selected:</p>
+<p>From there child objects of the <code translate="no">ApplicationWindow</code> fetch the size of the <code translate="no">ApplicationWindow</code> to determine their own sizes accordingly.</p>
+<p>The app uses <a href="../qtquick/qml-qtquick-layouts-gridlayout.html" translate="no">GridLayout</a> throughout the application page components to easily adapt to changes in screen orientation.</p>
+<h5 id="navigating-through-the-app-pages">Navigating through the app pages</h5>
+<p>The application uses <a href="../qtquickcontrols/qml-qtquick-controls-stackview.html" translate="no">StackView</a> QML type to display different pages of the app. The <code translate="no">StackView</code> handling the different page components is implemented in <code translate="no">ApplicationFlowForm.ui.qml</code>.</p>
+<p>Navigating from one page to next triggers a state change in <code translate="no">ApplicationFlow.qml</code> where the needed property changes are handled by <a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a> QML type:</p>
 <pre class="qml" translate="no">
-     <span class="name">cappuccinoButton</span>.onClicked: {
-         <span class="name">sideBar</span>.<span class="name">currentCoffee</span> <span class="operator">=</span> <span class="name">qsTr</span>(<span class="string">&quot;Cappucino&quot;</span>)
-         <span class="name">sideBar</span>.<span class="name">currentMilk</span> <span class="operator">=</span> <span class="number">7</span>
-         <span class="name">sideBar</span>.<span class="name">currentCoffeeAmount</span> <span class="operator">=</span> <span class="number">3.5</span>
-         <span class="name">sideBar</span>.<span class="name">coffeeSelected</span>()
-     }
+ <span class="name">states</span>: [
+     <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+         <span class="name">name</span>: <span class="string">&quot;Home&quot;</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+             <span class="name">target</span>: <span class="name">toolbar</span>
+             <span class="name">backButton</span>.opacity: <span class="number">0</span>
+             <span class="name">backButton</span>.enabled: <span class="number">false</span>
+             <span class="name">themeButton</span>.opacity: <span class="number">0</span>
+             <span class="name">themeButton</span>.enabled: <span class="number">false</span>
+             <span class="name">logo</span>.sourceSize.width: <span class="number">70</span>
+             <span class="name">logo</span>.sourceSize.height: <span class="number">50</span>
+         }
 </pre>
-<div class="border"><p class="centerAlign"><img src="images/coffee_machine_selection.png" alt="" /></p></div><p class="figCaption">Coffee blend cappuccino</p>
-<p><code translate="no">sideBar.coffeeSelected()</code> <code translate="no">sets</code> applicationFlow.state to &quot;selection&quot;</p>
-<p>If you click &quot;Brew me a cup&quot;, choosingCoffee.brewButtonSelection.onClicked is triggered:</p>
+<p>The animations happening during these state changes are implemented with <a href="../qtquick/qml-qtquick-transition.html" translate="no">Transition</a> and <a href="../qtquick/qml-qtquick-propertyanimation.html" translate="no">PropertyAnimation</a> inside the <code translate="no">StackView</code> component in <code translate="no">ApplicationFLowForm.ui.qml</code>.</p>
+<h5 id="implementing-start-page">Implementing start page</h5>
+<p>The application starts by showing the <code translate="no">Home</code> page to the user as the initial item in the <a href="../qtquickcontrols/qml-qtquick-controls-stackview.html" translate="no">StackView</a>:</p>
 <pre class="qml" translate="no">
-     <span class="name">choosingCoffee</span>.brewButtonSelection.onClicked: {
-         <span class="name">applicationFlow</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;settings&quot;</span>
-         <span class="name">applicationFlow</span>.<span class="name">choosingCoffee</span>.<span class="name">milkSlider</span>.<span class="name">value</span> <span class="operator">=</span> <span class="name">applicationFlow</span>.<span class="name">choosingCoffee</span>.<span class="name">sideBar</span>.<span class="name">currentMilk</span>
-         <span class="name">applicationFlow</span>.<span class="name">choosingCoffee</span>.<span class="name">sugarSlider</span>.<span class="name">value</span> <span class="operator">=</span> <span class="number">2</span>
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-stackview.html" translate="no">StackView</a></span> {
+     <span class="name">id</span>: <span class="name">stack</span>
+     <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+     <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+     <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+     <span class="name">anchors</span>.right: <span class="name">parent</span>.<span class="name">right</span>
+     <span class="name">anchors</span>.topMargin: <span class="name">parent</span>.<span class="name">height</span> <span class="operator">/</span> <span class="number">20</span>
+     <span class="name">initialItem</span>: <span class="name">Home</span> {
+         <span class="name">id</span>: <span class="name">home</span>
+         <span class="name">visible</span>: <span class="number">true</span>
+         <span class="name">state</span>: <span class="name">applicationFlow</span>.<span class="name">mode</span>
      }
-</pre>
-<p>On the right side of the screen, you will see two sliders, one for the amount of milk, and one for sugar. They will have default values, but can be modified by the user.</p>
-<div class="border"><p class="centerAlign"><img src="images/coffee_machine_modify.png" alt="" /></p></div><p>If you click on <code translate="no">Brew</code>, <code translate="no">choosingCoffee.brewButton.onClicked()</code> is triggered, which displays a screen with the message &quot;Please insert cup into tray&quot;.</p>
-<pre class="qml" translate="no">
-     <span class="name">choosingCoffee</span>.brewButton.onClicked: {
-         <span class="name">applicationFlow</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;empty cup&quot;</span>
-     }
-</pre>
-<div class="border"><p class="centerAlign"><img src="images/coffee_machine_emptycup.png" alt="" /></p></div><p>Clicking on <code translate="no">Continue</code> starts the brewing of the coffee type you selected.</p>
-<pre class="qml" translate="no">
-     <span class="name">emptyCup</span>.continueButton.onClicked: {
-         <span class="name">applicationFlow</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;brewing&quot;</span>
-         <span class="name">brewing</span>.<span class="name">coffeeName</span> <span class="operator">=</span> <span class="name">choosingCoffee</span>.<span class="name">sideBar</span>.<span class="name">currentCoffee</span>
-         <span class="name">brewing</span>.<span class="name">start</span>()
-     }
-</pre>
-<p>The brewing process is defined as follows in <code translate="no">Brewing.qml</code>:</p>
-<pre class="qml" translate="no">
- <span class="type">BrewingForm</span> {
-     <span class="name">id</span>: <span class="name">root</span>
-     <span class="keyword">function </span><span class="name">start</span>() {
-         <span class="name">animation</span>.<span class="name">start</span>()
-     }
-
-     signal <span class="type">finished</span>()
-
-     <span class="type"><a href="../qtquick/qml-qtquick-sequentialanimation.html" translate="no">SequentialAnimation</a></span> {
-         <span class="name">id</span>: <span class="name">animation</span>
-         <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> {
-             <span class="name">duration</span>: <span class="number">1500</span>
-         }
-         <span class="type"><a href="../qtquick/qml-qtquick-propertyaction.html" translate="no">PropertyAction</a></span> {
-             <span class="name">target</span>: <span class="name">root</span>
-             <span class="name">property</span>: <span class="string">&quot;state&quot;</span>
-             <span class="name">value</span>: <span class="string">&quot;coffee&quot;</span>
-         }
-         <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> {
-             <span class="name">duration</span>: <span class="number">1500</span>
-         }
-         <span class="type"><a href="../qtquick/qml-qtquick-propertyaction.html" translate="no">PropertyAction</a></span> {
-             <span class="name">target</span>: <span class="name">root</span>
-             <span class="name">property</span>: <span class="string">&quot;state&quot;</span>
-             <span class="name">value</span>: <span class="string">&quot;milk&quot;</span>
-         }
-         <span class="type"><a href="../qtquick/qml-qtquick-pauseanimation.html" translate="no">PauseAnimation</a></span> {
-             <span class="name">duration</span>: <span class="number">1500</span>
-         }
-         <span class="type"><a href="../qtquick/qml-qtquick-scriptaction.html" translate="no">ScriptAction</a></span> {
-             <span class="name">script</span>: <span class="name">root</span>.<span class="name">finished</span>()
-         }
-     }
-
-     Behavior on <span class="name">cup</span>.coffeeAmount {
+     <span class="name">pushEnter</span>: <span class="name">Transition</span> {
          <span class="type"><a href="../qtquick/qml-qtquick-propertyanimation.html" translate="no">PropertyAnimation</a></span> {
-
+             <span class="name">property</span>: <span class="string">&quot;x&quot;</span>
+             <span class="name">from</span>: <span class="name">stack</span>.<span class="name">width</span>
+             <span class="name">to</span>: <span class="number">0</span>
+             <span class="name">duration</span>: <span class="number">400</span>
          }
      }
-
-     Behavior on <span class="name">cup</span>.milkAmount {
-         <span class="type"><a href="../qtquick/qml-qtquick-propertyanimation.html" translate="no">PropertyAnimation</a></span> {
-         }
+</pre>
+<p>The <code translate="no">Home</code> component is structured by placing <a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a> component as the root object with state machine and appropriate property aliases, followed by <a href="../qtquick/qml-qtquick-layouts-gridlayout.html" translate="no">GridLayout</a>. This same kind of structuring will be used in all of the app page components.</p>
+<p>The <code translate="no">Home</code> page displays an image of a coffee cup with Qt logo on top, Coffee Machine as a title, caption with some catchy briefing on what the user can expect and a <code translate="no">getStartedButton</code> button.</p>
+<p>The user can move forward by pressing the <code translate="no">getStartedButton</code>, the button <code translate="no">onClicked</code> function is implemented <code translate="no">ApplicationFlow.qml</code>:</p>
+<pre class="qml" translate="no">
+ <span class="name">home</span>.getStartedbutton.onClicked: {
+     <span class="name">applicationFlow</span>.<span class="name">state</span> <span class="operator">=</span> <span class="string">&quot;Coffee-selection&quot;</span>
+     <span class="name">stack</span>.<span class="name">push</span>(<span class="name">choosingCoffee</span>)
+ }
+</pre>
+<p>This will trigger the state change to &quot;Coffee-selection&quot; in <code translate="no">ApplicationFlow.qml</code> and push the <code translate="no">choosingCoffee</code> component on top of the <code translate="no">Home</code> component in <a href="../qtquickcontrols/qml-qtquick-controls-stackview.html" translate="no">StackView</a>.</p>
+<h5 id="implementing-coffee-selection">Implementing coffee selection</h5>
+<p>On the Coffee Selection page <code translate="no">ChoosingCoffee.qml</code> is displayed, here the user sees 4 different coffee options to choose from. These options are displayed as <code translate="no">CoffeeCards</code> which are located inside the <a href="../qtquick/qml-qtquick-layouts-gridlayout.html" translate="no">GridLayout</a> in <code translate="no">ChoosingCoffee.qml</code>:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtquick/qml-qtquick-layouts-gridlayout.html" translate="no">GridLayout</a></span> {
+     <span class="name">id</span>: <span class="name">cards</span>
+     <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+     <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+     <span class="name">rowSpacing</span>: <span class="number">20</span>
+     <span class="name">columnSpacing</span>: <span class="number">20</span>
+     <span class="type">CoffeeCard</span> {
+         <span class="name">id</span>: <span class="name">cappuccino</span>
+         <span class="name">coffeeName</span>: <span class="string">&quot;Cappuccino&quot;</span>
+         <span class="name">ingredients</span>: <span class="string">&quot;Milk, Espresso, Foam&quot;</span>
+         <span class="name">time</span>: <span class="number">2</span>
+         <span class="name">cupsLeft</span>: <span class="name">applicationFlow</span>.<span class="name">cappuccinos</span>
+         <span class="name">button</span>.onClicked: <span class="name">applicationFlow</span>.<span class="name">cappuccino</span>()
+     }
+     <span class="type">CoffeeCard</span> {
+         <span class="name">id</span>: <span class="name">latte</span>
+         <span class="name">coffeeName</span>: <span class="string">&quot;Latte&quot;</span>
+         <span class="name">ingredients</span>: <span class="string">&quot;Coffee, Foam&quot;</span>
+         <span class="name">time</span>: <span class="number">3</span>
+         <span class="name">cupsLeft</span>: <span class="name">applicationFlow</span>.<span class="name">lattes</span>
+         <span class="name">button</span>.onClicked: <span class="name">applicationFlow</span>.<span class="name">latte</span>()
+     }
+     <span class="type">CoffeeCard</span> {
+         <span class="name">id</span>: <span class="name">espresso</span>
+         <span class="name">coffeeName</span>: <span class="string">&quot;Espresso&quot;</span>
+         <span class="name">ingredients</span>: <span class="string">&quot;Milk, Espresso&quot;</span>
+         <span class="name">time</span>: <span class="number">2</span>
+         <span class="name">cupsLeft</span>: <span class="name">applicationFlow</span>.<span class="name">espressos</span>
+         <span class="name">button</span>.onClicked: <span class="name">applicationFlow</span>.<span class="name">espresso</span>()
+     }
+     <span class="type">CoffeeCard</span> {
+         <span class="name">id</span>: <span class="name">macchiato</span>
+         <span class="name">coffeeName</span>: <span class="string">&quot;Macchiato&quot;</span>
+         <span class="name">ingredients</span>: <span class="string">&quot;Milk foam, Espresso&quot;</span>
+         <span class="name">time</span>: <span class="number">4</span>
+         <span class="name">cupsLeft</span>: <span class="name">applicationFlow</span>.<span class="name">macchiatos</span>
+         <span class="name">button</span>.onClicked: <span class="name">applicationFlow</span>.<span class="name">macchiato</span>()
      }
  }
 </pre>
-<p>After completion, the application returns to the start screen.</p>
+<p>The implementation of the <code translate="no">CoffeeCard</code> is located <code translate="no">CoffeeCard.qml</code>.</p>
+<p>These cards may be displayed in either grid or in a row type of way depending on the available screen width and height properties that the <code translate="no">ApplicationWindow</code> root object follows and passes down to the <code translate="no">ChoosingCoffee.qml</code> and to the <a href="../qtquick/qml-qtquick-layouts-gridlayout.html" translate="no">GridLayout</a> in there through the state machine.</p>
+<p><code translate="no">CoffeeCards</code> vary in their names, brewing times, ingredients and how many cups there are available at the moment.</p>
+<p>On this page the user can also change the application theme for the first time by pressing the little sun looking icon button from the upper right corner of the screen. Pressing the theme button calls <code translate="no">themeButton</code> function in <code translate="no">ApplicationFlow.qml</code>:</p>
+<pre class="qml" translate="no">
+ <span class="keyword">function </span><span class="name">themeButton</span>() {
+     <span class="keyword">if</span> (<span class="name">Colors</span>.<span class="name">currentTheme</span> <span class="operator">==</span> <span class="name">Colors</span>.<span class="name">dark</span>) {
+         <span class="name">Colors</span>.<span class="name">currentTheme</span> <span class="operator">=</span> <span class="name">Colors</span>.<span class="name">light</span>
+     } <span class="keyword">else</span> {
+         <span class="name">Colors</span>.<span class="name">currentTheme</span> <span class="operator">=</span> <span class="name">Colors</span>.<span class="name">dark</span>
+     }
+ }
+</pre>
+<p>The function changes the <code translate="no">currentTheme</code> property of <code translate="no">Colors.qml</code> and colors change throughout the app by property bindings automatically. All the colors used in app are located in <code translate="no">Colors.qml</code>.</p>
+<p>If theme is switched to light theme the theme changing icon button icon turns to represent a half moon.</p>
+<p>Pressing on any of the coffee cards triggers a state change inside <a href="../qtquickcontrols/qml-qtquick-controls-abstractbutton.html" translate="no">AbstractButton</a> in <code translate="no">CoffeeCard.qml</code> which then triggers <a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a> through <a href="../qtquick/qml-qtquick-transition.html" translate="no">Transition</a>:</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-abstractbutton.html" translate="no">AbstractButton</a></span> {
+     <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">-</span> <span class="number">2</span>
+     <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span> <span class="operator">-</span> <span class="number">2</span>
+     <span class="name">anchors</span>.horizontalCenter: <span class="name">parent</span>.<span class="name">horizontalCenter</span>
+     <span class="name">anchors</span>.verticalCenter: <span class="name">parent</span>.<span class="name">verticalCenter</span>
+     <span class="name">id</span>: <span class="name">button</span>
+     <span class="name">hoverEnabled</span>: <span class="number">true</span>
+     <span class="name">checkable</span>: <span class="number">true</span>
+     <span class="name">enabled</span>: (<span class="name">cupsLeft</span> <span class="operator">!=</span> <span class="number">0</span>) ? <span class="number">true</span> : <span class="number">false</span>
+     <span class="name">states</span>: <span class="name">State</span> {
+         <span class="name">name</span>: <span class="string">&quot;pressed&quot;</span>; <span class="name">when</span>: <span class="name">button</span>.<span class="name">pressed</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">coffeeCardRectangle</span>; <span class="name">scale</span>: <span class="number">0.9</span> }
+         <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">coffeeCardCircle</span>; <span class="name">scale</span>: <span class="number">0.9</span> }
+         <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">coffeeCardRectangle</span>; <span class="name">gradient</span>: <span class="name">Colors</span>.<span class="name">invertedGreenBorder</span> }
+         <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> { <span class="name">target</span>: <span class="name">coffeeCardCircle</span>; <span class="name">gradient</span>: <span class="name">Colors</span>.<span class="name">invertedGreenBorder</span> }
+     }
+
+     <span class="name">transitions</span>: <span class="name">Transition</span> {
+         <span class="type"><a href="../qtquick/qml-qtquick-numberanimation.html" translate="no">NumberAnimation</a></span> { <span class="name">properties</span>: <span class="string">&quot;scale&quot;</span>; <span class="name">duration</span>: <span class="number">50</span>; <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">InOutQuad</span> }
+     }
+</pre>
+<p>This will scale the selected coffee card down to smaller size and turns the edges of the card to green giving user the expression that the coffee was indeed selected.</p>
+<p>Every coffee cards <code translate="no">button</code> property alias <code translate="no">onClicked</code> function binds to a function located in <code translate="no">ApplicationFlow.qml</code>. When user presses any of the coffee cards the function with a name correlating with the chosen coffee option gets called. The function will set the state of <code translate="no">ApplicationFlow.qml</code> to <code translate="no">Settings</code> , push a new component to the <a href="../qtquickcontrols/qml-qtquick-controls-stackview.html" translate="no">StackView</a> and set the ingredient properties accordingly.</p>
+<h5 id="implementing-coffee-settings">Implementing coffee settings</h5>
+<p>On this page the user can customize their coffee option to match their preference by adjusting custom <a href="../qtquickcontrols/qml-qtquick-controls-slider.html" translate="no">Slider</a> QML types. Changing the value of sliders will affect the liquid levels seen inside the coffee cup, this is made possible by binding the height of the liquid images inside <code translate="no">Cup.qml</code> to the values of corresponding sliders.</p>
+<p>The values of the sliders will be stored to property variables in <code translate="no">ApplicationFLow.qml</code> through <code translate="no">onValueChanged</code> function.</p>
+<pre class="qml" translate="no">
+ <span class="name">onValueChanged</span>: {
+     <span class="name">applicationFlow</span>.<span class="name">coffeeAmount</span> <span class="operator">=</span> <span class="name">value</span>
+ }
+</pre>
+<p>Clicking on Start button changes the state of <code translate="no">ApplicationFlow.qml</code> to &quot;Insert&quot;, and the app displays the <code translate="no">Insert.qml</code>.</p>
+<h5 id="implementing-insert-cup">Implementing insert cup</h5>
+<p>On this page the user is instructed to insert their cup on to the machine before the brewing process can start.</p>
+<p>Pressing the <code translate="no">Continue</code> button will move app to <code translate="no">Progress</code> page.</p>
+<h5 id="implementing-brewing-coffee">Implementing brewing coffee</h5>
+<p>Progress page displays a coffee cup and progress bar that will both in their own way signal the brewing process in real time.</p>
+<p>The coffee cup here once filled will display the exact same configuration as the user selected on <code translate="no">Settings</code> page, this is made sure by binding the <code translate="no">Cup</code> property variables to the saved corresponding values in <code translate="no">ApplicationFlow.qml</code>.</p>
+<p>The animation for filling the coffee cup happens with state engines <a href="../qtquick/qml-qtquick-transition.html" translate="no">Transition</a> and <a href="../qtquick/qml-qtquick-smoothedanimation.html" translate="no">SmoothedAnimation</a>.</p>
+<pre class="qml" translate="no">
+ <span class="type">Cup</span> {
+     <span class="name">id</span>: <span class="name">cup</span>
+     <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span> <span class="operator">|</span> <span class="name">Qt</span>.<span class="name">AlignTop</span>
+     <span class="name">state</span>: <span class="string">&quot;0&quot;</span>
+     <span class="name">states</span>: [
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;0&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">target</span>: <span class="name">cup</span>
+                 <span class="name">coffeeAmount</span>: <span class="number">0</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">target</span>: <span class="name">cup</span>
+                 <span class="name">milkAmount</span>: <span class="number">0</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">target</span>: <span class="name">cup</span>
+                 <span class="name">foamAmount</span>: <span class="number">0</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">target</span>: <span class="name">cup</span>
+                 <span class="name">sugarAmount</span>: <span class="number">0</span>
+             }
+         },
+         <span class="type"><a href="../qtquick/qml-qtquick-state.html" translate="no">State</a></span> {
+             <span class="name">name</span>: <span class="string">&quot;1&quot;</span>
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">target</span>: <span class="name">cup</span>
+                 <span class="name">coffeeAmount</span>: <span class="name">root</span>.<span class="name">coffeeAmount</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">target</span>: <span class="name">cup</span>
+                 <span class="name">milkAmount</span>: <span class="name">root</span>.<span class="name">milkAmount</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">target</span>: <span class="name">cup</span>
+                 <span class="name">foamAmount</span>: <span class="name">root</span>.<span class="name">foamAmount</span>
+             }
+             <span class="type"><a href="../qtquick/qml-qtquick-propertychanges.html" translate="no">PropertyChanges</a></span> {
+                 <span class="name">target</span>: <span class="name">cup</span>
+                 <span class="name">sugarAmount</span>: <span class="name">root</span>.<span class="name">sugarAmount</span>
+             }
+         }
+     ]
+     <span class="name">transitions</span>: <span class="name">Transition</span> {
+         <span class="name">from</span>: <span class="string">&quot;0&quot;</span>
+         <span class="name">to</span>: <span class="string">&quot;1&quot;</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-smoothedanimation.html" translate="no">SmoothedAnimation</a></span> {
+             <span class="name">target</span>: <span class="name">cup</span>
+             <span class="name">property</span>: <span class="string">&quot;coffeeAmount&quot;</span>
+             <span class="name">velocity</span>: (<span class="name">coffeeAmount</span> <span class="operator">/</span> <span class="name">brewTime</span>) <span class="operator">*</span> <span class="number">1200</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-smoothedanimation.html" translate="no">SmoothedAnimation</a></span> {
+             <span class="name">target</span>: <span class="name">cup</span>
+             <span class="name">property</span>: <span class="string">&quot;milkAmount&quot;</span>
+             <span class="name">velocity</span>: (<span class="name">milkAmount</span> <span class="operator">/</span> <span class="name">brewTime</span>) <span class="operator">*</span> <span class="number">1200</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-smoothedanimation.html" translate="no">SmoothedAnimation</a></span> {
+             <span class="name">target</span>: <span class="name">cup</span>
+             <span class="name">property</span>: <span class="string">&quot;foamAmount&quot;</span>
+             <span class="name">velocity</span>: (<span class="name">foamAmount</span> <span class="operator">/</span> <span class="name">brewTime</span>) <span class="operator">*</span> <span class="number">1200</span>
+         }
+         <span class="type"><a href="../qtquick/qml-qtquick-smoothedanimation.html" translate="no">SmoothedAnimation</a></span> {
+             <span class="name">target</span>: <span class="name">cup</span>
+             <span class="name">property</span>: <span class="string">&quot;sugarAmount&quot;</span>
+             <span class="name">velocity</span>: (<span class="name">sugarAmount</span> <span class="operator">/</span> <span class="name">brewTime</span>) <span class="operator">*</span> <span class="number">1200</span>
+         }
+
+     }
+ }
+</pre>
+<p>The progress bar animation is implemented with <a href="../qtquick/qml-qtquick-behavior.html" translate="no">Behavior</a>.</p>
+<pre class="qml" translate="no">
+ Behavior on <span class="name">greenBar</span>.width {
+     <span class="type"><a href="../qtquick/qml-qtquick-smoothedanimation.html" translate="no">SmoothedAnimation</a></span> {
+         <span class="name">easing</span>.type: <span class="name">Easing</span>.<span class="name">Linear</span>
+         <span class="name">velocity</span>: (<span class="name">contentItem</span>.<span class="name">width</span> <span class="operator">/</span> <span class="name">brewTime</span>) <span class="operator">*</span> <span class="number">1000</span>
+     }
+ }
+</pre>
+<p><a href="../qtqml/qml-qtqml-timer.html" translate="no">Timer</a> will take care of updating the application state once the brewing is done.</p>
+<pre class="qml" translate="no">
+ <span class="type"><a href="../qtqml/qml-qtqml-timer.html" translate="no">Timer</a></span> {
+     <span class="name">id</span>: <span class="name">timer</span>
+     <span class="name">interval</span>: <span class="name">brewTime</span>
+     <span class="name">running</span>: <span class="number">true</span>
+     <span class="name">onTriggered</span>: {
+         <span class="name">applicationFlow</span>.<span class="name">onFinished</span>()
+     }
+ }
+</pre>
+<h5 id="implementing-coffee-ready">Implementing coffee ready</h5>
+<p>Ready page displays a coffee cup filled with whatever configuration the user selected with a &quot;Your coffee is ready&quot; text and a check icon.</p>
+<p>When this page is displayed a <a href="../qtqml/qml-qtqml-timer.html" translate="no">Timer</a> starts running and once the interval set is reached user is directed back to <code translate="no">Home.qml</code>.</p>
 <p><a href="https://code.qt.io/cgit/qt/qtdoc.git/tree/examples/demos/coffee?h=6.6" translate="no">Example project @ code.qt.io</a></p>
 </div>
 <!-- @@@demos/coffee -->
@@ -149,9 +350,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

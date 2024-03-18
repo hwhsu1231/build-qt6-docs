@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- modelview.qdoc -->
   <meta name="description" content="how to display and format data in Qt Quick">
-  <title>Models and Views in Qt Quick | Qt Quick 6.6.0</title>
+  <title>Models and Views in Qt Quick | Qt Quick 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtquick-index.html" translate="no">Qt Quick</a></li>
 <li>Models and Views in Qt Quick</li>
-<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtquick-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -67,7 +67,7 @@
 <p class="centerAlign"><img src="images/modelview-overview.png" alt="" /></p><ul>
 <li><b>Model</b> - contains the data and its structure. There are several QML types for creating models.</li>
 <li><b>View</b> - a container that displays the data. The view might display the data in a list or a grid.</li>
-<li><b>Delegate</b> - dictates how the data should appear in the view. The delegate takes each unit of data in the model and encapsulates it. The data is accessible through the delegate. The delegate can also write data back into editable models (e.g&#x2e; in a <a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a>'s onAccepted Handler).</li>
+<li><b>Delegate</b> - dictates how the data should appear in the view. The delegate takes each unit of data in the model and encapsulates it. The data is accessible through the delegate. The delegate can also write data back into editable models (e.g. in a <a href="../qtquickcontrols/qml-qtquick-controls-textfield.html" translate="no">TextField</a>'s onAccepted Handler).</li>
 </ul>
 <p>To visualize data, bind the view's <code translate="no">model</code> property to a model and the <code translate="no">delegate</code> property to a component or another compatible type.</p>
 <h2 id="displaying-data-with-views">Displaying Data with Views</h2>
@@ -142,7 +142,7 @@
  }
 </pre>
 <p class="centerAlign"><img src="images/listview-decorations.png" alt="" /></p><h3 id="mouse-and-touch-handling">Mouse and Touch Handling</h3>
-<p>The views handle dragging and flicking of their content, however they do not handle touch interaction with the individual delegates. In order for the delegates to react to touch input, e.g&#x2e; to set the <code translate="no">currentIndex</code>, a <a href="qml-qtquick-mousearea.html" translate="no">MouseArea</a> with the appropriate touch handling logic must be provided by the delegate.</p>
+<p>The views handle dragging and flicking of their content, however they do not handle touch interaction with the individual delegates. In order for the delegates to react to touch input, e.g. to set the <code translate="no">currentIndex</code>, a <a href="qml-qtquick-mousearea.html" translate="no">MouseArea</a> with the appropriate touch handling logic must be provided by the delegate.</p>
 <p>Note that if <code translate="no">highlightRangeMode</code> is set to <code translate="no">StrictlyEnforceRange</code> the currentIndex will be affected by dragging/flicking the view, since the view will always ensure that the <code translate="no">currentIndex</code> is within the highlight range specified.</p>
 <h3 id="listview-sections">ListView Sections</h3>
 <p><a href="qml-qtquick-listview.html" translate="no">ListView</a> contents may be grouped into <i>sections</i>, where related list items are labeled according to their sections. Further, the sections may be decorated with <a href="qtquick-modelviewsdata-modelview.html#qml-view-delegate" translate="no">delegates</a>.</p>
@@ -312,7 +312,7 @@
 </pre>
 <p>Context properties are invisible to tooling and prevent the <a href="qtquick-tools-and-utilities.html#qt-quick-compiler" translate="no">Qt Quick Compiler</a> from optimizing your code. They make it harder to reason about the specific data your delegate expects. There is no way to explicitly populate the QML context from QML. If your component expects data to be passed via the QML context, you can only use it in places where the right context is made available via native means. This can be your own C++ code or the specific implementations of surrounding elements. Conversely, required properties can be set in a number of ways from QML or via native means. Therefore, passing data via the QML context reduces the re-usability of your components.</p>
 <p>If there is a naming clash between the model's properties and the delegate's properties, the roles can be accessed with the qualified <i>model</i> name instead. For example, if a <a href="qml-qtquick-text.html" translate="no">Text</a> type had (non-required) <i>type</i> or <i>age</i> properties, the text in the above example would display those property values instead of the <i>type</i> and <i>age</i> values from the model item. In this case, the properties could have been referenced as <code translate="no">model.type</code> and <code translate="no">model.age</code> instead to ensure the delegate displays the property values from the model item. For this to work, you need to require a <code translate="no">model</code> property in your delegate (unless you are using context properties).</p>
-<p>A special <i>index</i> role containing the index of the item in the model is also available to the delegate. Note this index is set to -1 if the item is removed from the model. If you bind to the index role, be sure that the logic accounts for the possibility of index being -1, i.e&#x2e; that the item is no longer valid. (Usually the item will shortly be destroyed, but it is possible to delay delegate destruction in some views via a <code translate="no">delayRemove</code> attached property.)</p>
+<p>A special <i>index</i> role containing the index of the item in the model is also available to the delegate. Note this index is set to -1 if the item is removed from the model. If you bind to the index role, be sure that the logic accounts for the possibility of index being -1, i.e. that the item is no longer valid. (Usually the item will shortly be destroyed, but it is possible to delay delegate destruction in some views via a <code translate="no">delayRemove</code> attached property.)</p>
 <p>Remember that you can use integers or arrays as model:</p>
 <pre class="qml" translate="no">
  <span class="type"><a href="qml-qtquick-repeater.html" translate="no">Repeater</a></span> {
@@ -578,9 +578,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

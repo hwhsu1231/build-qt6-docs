@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qobject.cpp -->
   <meta name="description" content="The QObject class is the base class of all Qt objects.">
-  <title>QObject Class | Qt Core 6.6.0</title>
+  <title>QObject Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QObject</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -202,14 +202,14 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
 <p>QObject is the heart of the Qt <a href="object.html" translate="no">Object Model</a>. The central feature in this model is a very powerful mechanism for seamless object communication called <a href="signalsandslots.html" translate="no">signals and slots</a>. You can connect a signal to a slot with <a href="qobject.html#connect" translate="no">connect</a>() and destroy the connection with <a href="qobject.html#disconnect" translate="no">disconnect</a>(). To avoid never ending notification loops you can temporarily block signals with <a href="qobject.html#blockSignals" translate="no">blockSignals</a>(). The protected functions <a href="qobject.html#connectNotify" translate="no">connectNotify</a>() and <a href="qobject.html#disconnectNotify" translate="no">disconnectNotify</a>() make it possible to track connections.</p>
-<p>QObjects organize themselves in <a href="objecttrees.html" translate="no">object trees</a>. When you create a QObject with another object as parent, the object will automatically add itself to the parent's <a href="qobject.html#children" translate="no">children</a>() list. The parent takes ownership of the object; i.e&#x2e;, it will automatically delete its children in its destructor. You can look for an object by name and optionally type using <a href="qobject.html#findChild" translate="no">findChild</a>() or <a href="qobject.html#findChildren" translate="no">findChildren</a>().</p>
+<p>QObjects organize themselves in <a href="objecttrees.html" translate="no">object trees</a>. When you create a QObject with another object as parent, the object will automatically add itself to the parent's <a href="qobject.html#children" translate="no">children</a>() list. The parent takes ownership of the object; i.e., it will automatically delete its children in its destructor. You can look for an object by name and optionally type using <a href="qobject.html#findChild" translate="no">findChild</a>() or <a href="qobject.html#findChildren" translate="no">findChildren</a>().</p>
 <p>Every object has an <a href="qobject.html#objectName-prop" translate="no">objectName</a>() and its class name can be found via the corresponding <a href="qobject.html#metaObject" translate="no">metaObject</a>() (see <a href="qmetaobject.html#className" translate="no">QMetaObject::className</a>()). You can determine whether the object's class inherits another class in the QObject inheritance hierarchy by using the <a href="qobject.html#inherits" translate="no">inherits</a>() function.</p>
 <p>When an object is deleted, it emits a <a href="qobject.html#destroyed" translate="no">destroyed</a>() signal. You can catch this signal to avoid dangling references to QObjects.</p>
 <p>QObjects can receive events through <a href="qobject.html#event" translate="no">event</a>() and filter the events of other objects. See <a href="qobject.html#installEventFilter" translate="no">installEventFilter</a>() and <a href="qobject.html#eventFilter" translate="no">eventFilter</a>() for details. A convenience handler, <a href="qobject.html#childEvent" translate="no">childEvent</a>(), can be reimplemented to catch child events.</p>
 <p>Last but not least, QObject provides the basic timer support in Qt; see <a href="qtimer.html" translate="no">QTimer</a> for high-level support for timers.</p>
 <p>Notice that the <a href="qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a> macro is mandatory for any object that implements signals, slots or properties. You also need to run the <a href="../qtdoc/moc.html" translate="no">Meta Object Compiler</a> on the source file. We strongly recommend the use of this macro in all subclasses of QObject regardless of whether or not they actually use signals, slots and properties, since failure to do so may lead certain functions to exhibit strange behavior.</p>
 <p>All Qt widgets inherit QObject. The convenience function <a href="qobject.html#isWidgetType" translate="no">isWidgetType</a>() returns whether an object is actually a widget. It is much faster than <a href="qobject.html#qobject_cast" translate="no">qobject_cast</a>&lt;<a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> *&gt;(<i>obj</i>) or <i>obj</i>-&gt;<a href="qobject.html#inherits" translate="no">inherits</a>(&quot;<a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>&quot;).</p>
-<p>Some QObject functions, e.g&#x2e; <a href="qobject.html#children" translate="no">children</a>(), return a <a href="qobject.html#QObjectList-typedef" translate="no">QObjectList</a>. <a href="qobject.html#QObjectList-typedef" translate="no">QObjectList</a> is a typedef for <a href="qlist.html" translate="no">QList</a>&lt;QObject *&gt;.</p>
+<p>Some QObject functions, e.g. <a href="qobject.html#children" translate="no">children</a>(), return a <a href="qobject.html#QObjectList-typedef" translate="no">QObjectList</a>. <a href="qobject.html#QObjectList-typedef" translate="no">QObjectList</a> is a typedef for <a href="qlist.html" translate="no">QList</a>&lt;QObject *&gt;.</p>
 <h3 id="thread-affinity">Thread Affinity</h3>
 <p>A QObject instance is said to have a <i>thread affinity</i>, or that it <i>lives</i> in a certain thread. When a QObject receives a <a href="qt.html#ConnectionType-enum" translate="no">queued signal</a> or a <a href="eventsandfilters.html#sending-events" translate="no">posted event</a>, the slot or event handler will run in the thread that the object lives in.</p>
 <div class="admonition note">
@@ -227,19 +227,19 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>Note: </b>A QObject's member variables <i>do not</i> automatically become its children. The parent-child relationship must be set by either passing a pointer to the child's <a href="qobject.html#QObject" translate="no">constructor</a>, or by calling <a href="qobject.html#setParent" translate="no">setParent</a>(). Without this step, the object's member variables will remain in the old thread when <a href="qobject.html#moveToThread" translate="no">moveToThread</a>() is called.</p>
 </div>
 <span id="no-copy-constructor"></span><h3 id="no-copy-constructor-or-assignment-operator">No Copy Constructor or Assignment Operator</h3>
-<p>QObject has neither a copy constructor nor an assignment operator. This is by design. Actually, they are declared, but in a <code translate="no">private</code> section with the macro <a href="qtclasshelpermacros-proxy.html#Q_DISABLE_COPY" translate="no">Q_DISABLE_COPY</a>(). In fact, all Qt classes derived from QObject (direct or indirect) use this macro to declare their copy constructor and assignment operator to be private. The reasoning is found in the discussion on <a href="object.html#identity-vs-value" translate="no">Identity vs Value</a> on the Qt <a href="object.html" translate="no">Object Model</a> page.</p>
+<p>QObject has neither a copy constructor nor an assignment operator. This is by design. Actually, they are declared, but in a <code translate="no">private</code> section with the macro <a href="qtclasshelpermacros-qtcore-proxy.html#Q_DISABLE_COPY" translate="no">Q_DISABLE_COPY</a>(). In fact, all Qt classes derived from QObject (direct or indirect) use this macro to declare their copy constructor and assignment operator to be private. The reasoning is found in the discussion on <a href="object.html#identity-vs-value" translate="no">Identity vs Value</a> on the Qt <a href="object.html" translate="no">Object Model</a> page.</p>
 <p>The main consequence is that you should use pointers to QObject (or to your QObject subclass) where you might otherwise be tempted to use your QObject subclass as a value. For example, without a copy constructor, you can't use a subclass of QObject as the value to be stored in one of the container classes. You must store pointers.</p>
 <h3 id="auto-connection">Auto-Connection</h3>
 <p>Qt's meta-object system provides a mechanism to automatically connect signals and slots between QObject subclasses and their children. As long as objects are defined with suitable object names, and slots follow a simple naming convention, this connection can be performed at run-time by the <a href="qmetaobject.html#connectSlotsByName" translate="no">QMetaObject::connectSlotsByName</a>() function.</p>
 <p><a href="../qtdoc/uic.html" translate="no">uic</a> generates code that invokes this function to enable auto-connection to be performed between widgets on forms created with <i>Qt Designer</i>. More information about using auto-connection with <i>Qt Designer</i> is given in the <a href="../qtdesigner/designer-using-a-ui-file.html" translate="no">Using a Designer UI File in Your Application</a> section of the <i>Qt Designer</i> manual.</p>
 <h3 id="dynamic-properties">Dynamic Properties</h3>
-<p>From Qt 4.2, dynamic properties can be added to and removed from QObject instances at run-time. Dynamic properties do not need to be declared at compile-time, yet they provide the same advantages as static properties and are manipulated using the same API - using <a href="qobject.html#property" translate="no">property</a>() to read them and <a href="qobject.html#setProperty" translate="no">setProperty</a>() to write them.</p>
-<p>From Qt 4.3, dynamic properties are supported by <a href="../qtdesigner/designer-widget-mode.html#the-property-editor" translate="no">Qt Designer</a>, and both standard Qt widgets and user-created forms can be given dynamic properties.</p>
+<p>Dynamic properties can be added to and removed from QObject instances at run-time. Dynamic properties do not need to be declared at compile-time, yet they provide the same advantages as static properties and are manipulated using the same API - using <a href="qobject.html#property" translate="no">property</a>() to read them and <a href="qobject.html#setProperty" translate="no">setProperty</a>() to write them.</p>
+<p>Dynamic properties are supported by <a href="../qtdesigner/designer-widget-mode.html#the-property-editor" translate="no">Qt Designer</a>, and both standard Qt widgets and user-created forms can be given dynamic properties.</p>
 <h3 id="internationalization-i18n">Internationalization (I18n)</h3>
 <p>All QObject subclasses support Qt's translation features, making it possible to translate an application's user interface into different languages.</p>
 <p>To make user-visible text translatable, it must be wrapped in calls to the <a href="qobject.html#tr" translate="no">tr</a>() function. This is explained in detail in the <a href="../qtdoc/i18n-source-translation.html" translate="no">Writing Source Code for Translation</a> document.</p>
 </div>
-<p><b>See also </b><a href="qmetaobject.html" translate="no">QMetaObject</a>, <a href="qpointer.html" translate="no">QPointer</a>, <a href="qobjectcleanuphandler.html" translate="no">QObjectCleanupHandler</a>, <a href="qtclasshelpermacros-proxy.html#Q_DISABLE_COPY" translate="no">Q_DISABLE_COPY</a>(), and <a href="objecttrees.html" translate="no">Object Trees &amp; Ownership</a>.</p>
+<p><b>See also </b><a href="qmetaobject.html" translate="no">QMetaObject</a>, <a href="qpointer.html" translate="no">QPointer</a>, <a href="qobjectcleanuphandler.html" translate="no">QObjectCleanupHandler</a>, <a href="qtclasshelpermacros-qtcore-proxy.html#Q_DISABLE_COPY" translate="no">Q_DISABLE_COPY</a>(), and <a href="objecttrees.html" translate="no">Object Trees &amp; Ownership</a>.</p>
 <!-- @@@QObject -->
 <div class="prop">
 <h2>Property Documentation</h2>
@@ -281,7 +281,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@~QObject -->
 <!-- $$$blockSignals[overload1]$$$blockSignalsbool -->
 <h3 class="fn" translate="no" id="blockSignals"><code translate="no">[noexcept] </code><span class="type">bool</span> QObject::<span class="name">blockSignals</span>(<span class="type">bool</span> <i>block</i>)</h3>
-<p>If <i translate="no">block</i> is true, signals emitted by this object are blocked (i.e&#x2e;, emitting a signal will not invoke anything connected to it). If <i translate="no">block</i> is false, no such blocking will occur.</p>
+<p>If <i translate="no">block</i> is true, signals emitted by this object are blocked (i.e., emitting a signal will not invoke anything connected to it). If <i translate="no">block</i> is false, no such blocking will occur.</p>
 <p>The return value is the previous value of <a href="qobject.html#signalsBlocked" translate="no">signalsBlocked</a>().</p>
 <p>Note that the <a href="qobject.html#destroyed" translate="no">destroyed</a>() signal will be emitted even if the signals for this object have been blocked.</p>
 <p>Signals emitted while being blocked are not buffered.</p>
@@ -302,7 +302,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <pre class="cpp" translate="no">
  <span class="keyword">typedef</span> <span class="type"><a href="qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span><span class="operator">*</span><span class="operator">&gt;</span> <span class="type"><a href="qobject.html#QObjectList-typedef" translate="no">QObjectList</a></span>;
 </pre>
-<p>The first child added is the <a href="qlist.html#first" translate="no">first</a> object in the list and the last child added is the <a href="qlist.html#last" translate="no">last</a> object in the list, i.e&#x2e; new children are appended at the end.</p>
+<p>The first child added is the <a href="qlist.html#first" translate="no">first</a> object in the list and the last child added is the <a href="qlist.html#last" translate="no">last</a> object in the list, i.e. new children are appended at the end.</p>
 <p>Note that the list order changes when <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> children are <a href="../qtwidgets/qwidget.html#raise" translate="no">raised</a> or <a href="../qtwidgets/qwidget.html#lower" translate="no">lowered</a>. A widget that is raised becomes the last object in the list, and a widget that is lowered becomes the first object in the list.</p>
 <p><b>See also </b><a href="qobject.html#findChild" translate="no">findChild</a>(), <a href="qobject.html#findChildren" translate="no">findChildren</a>(), <a href="qobject.html#parent" translate="no">parent</a>(), and <a href="qobject.html#setParent" translate="no">setParent</a>().</p>
 <!-- @@@children -->
@@ -316,7 +316,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  <span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span><span class="operator">::</span>connect(scrollBar<span class="operator">,</span> SIGNAL(valueChanged(<span class="type">int</span>))<span class="operator">,</span>
                   label<span class="operator">,</span>  SLOT(setNum(<span class="type">int</span>)));
 </pre>
-<p>This example ensures that the label always displays the current scroll bar value. Note that the signal and slots parameters must not contain any variable names, only the type. E.g&#x2e; the following would not work and return false:</p>
+<p>This example ensures that the label always displays the current scroll bar value. Note that the signal and slots parameters must not contain any variable names, only the type. E.g. the following would not work and return false:</p>
 <pre class="cpp" translate="no">
  <span class="comment">// WRONG</span>
  <span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span><span class="operator">::</span>connect(scrollBar<span class="operator">,</span> SIGNAL(valueChanged(<span class="type">int</span> value))<span class="operator">,</span>
@@ -401,7 +401,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  (Make sure <span class="char">'MyType'</span> is registered <span class="keyword">using</span> <a href="qmetatype.html#qRegisterMetaType-3" translate="no">qRegisterMetaType</a>()<span class="operator">.</span>)
 </pre>
 <p>make sure to declare the argument type with <a href="qmetatype.html#Q_DECLARE_METATYPE" translate="no">Q_DECLARE_METATYPE</a></p>
-<p>Overloaded functions can be resolved with help of <a href="qoverload-proxy.html#qOverload" translate="no">qOverload</a>.</p>
+<p>Overloaded functions can be resolved with help of <a href="qoverload-qtcore-proxy.html#qOverload" translate="no">qOverload</a>.</p>
 <p><b>Note:</b> This function is <a href="../qtdoc/threads-reentrancy.html" translate="no">thread-safe</a>.</p>
 <p><b>See also </b><a href="../qtdoc/signalsandslots-syntaxes.html" translate="no">Differences between String-Based and Functor-Based Connections</a>.</p>
 <!-- @@@connect -->
@@ -426,7 +426,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
      });
 </pre>
 <p>The connection will automatically disconnect if the sender is destroyed. However, you should take care that any objects used within the functor are still alive when the signal is emitted.</p>
-<p>Overloaded functions can be resolved with help of <a href="qoverload-proxy.html#qOverload" translate="no">qOverload</a>.</p>
+<p>Overloaded functions can be resolved with help of <a href="qoverload-qtcore-proxy.html#qOverload" translate="no">qOverload</a>.</p>
 <p><b>Note:</b> This function is <a href="../qtdoc/threads-reentrancy.html" translate="no">thread-safe</a>.</p>
 <!-- @@@connect -->
 <!-- $$$connect$$$connectconstQObject*PointerToMemberFunctionconstQObject*FunctorQt::ConnectionType -->
@@ -453,7 +453,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
      }<span class="operator">,</span> <span class="type">Qt</span><span class="operator">::</span>AutoConnection);
 </pre>
 <p>The connection will automatically disconnect if the sender or the context is destroyed. However, you should take care that any objects used within the functor are still alive when the signal is emitted.</p>
-<p>Overloaded functions can be resolved with help of <a href="qoverload-proxy.html#qOverload" translate="no">qOverload</a>.</p>
+<p>Overloaded functions can be resolved with help of <a href="qoverload-qtcore-proxy.html#qOverload" translate="no">qOverload</a>.</p>
 <p><b>Note:</b> This function is <a href="../qtdoc/threads-reentrancy.html" translate="no">thread-safe</a>.</p>
 <!-- @@@connect -->
 <!-- $$$connectNotify[overload1]$$$connectNotifyconstQMetaMethod& -->
@@ -481,8 +481,18 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$deleteLater[overload1]$$$deleteLater -->
 <h3 class="fn" translate="no" id="deleteLater"><code translate="no">[slot] </code><span class="type">void</span> QObject::<span class="name">deleteLater</span>()</h3>
 <p>Schedules this object for deletion.</p>
-<p>The object will be deleted when control returns to the event loop. If the event loop is not running when this function is called (e.g&#x2e; deleteLater() is called on an object before <a href="qcoreapplication.html#exec" translate="no">QCoreApplication::exec</a>()), the object will be deleted once the event loop is started. If deleteLater() is called after the main event loop has stopped, the object will not be deleted. Since Qt 4.8, if deleteLater() is called on an object that lives in a thread with no running event loop, the object will be destroyed when the thread finishes.</p>
-<p>Note that entering and leaving a new event loop (e.g&#x2e;, by opening a modal dialog) will <i>not</i> perform the deferred deletion; for the object to be deleted, the control must return to the event loop from which deleteLater() was called. This does not apply to objects deleted while a previous, nested event loop was still running: the Qt event loop will delete those objects as soon as the new nested event loop starts.</p>
+<p>The object will be deleted when control returns to the event loop. If the event loop is not running when this function is called (e.g. deleteLater() is called on an object before <a href="qcoreapplication.html#exec" translate="no">QCoreApplication::exec</a>()), the object will be deleted once the event loop is started. If deleteLater() is called after the main event loop has stopped, the object will not be deleted. If deleteLater() is called on an object that lives in a thread with no running event loop, the object will be destroyed when the thread finishes.</p>
+<p>Note that entering and leaving a new event loop (e.g., by opening a modal dialog) will <i>not</i> perform the deferred deletion; for the object to be deleted, the control must return to the event loop from which deleteLater() was called. This does not apply to objects deleted while a previous, nested event loop was still running: the Qt event loop will delete those objects as soon as the new nested event loop starts.</p>
+<p>In situations where Qt is not driving the event dispatcher via e.g. <a href="qcoreapplication.html#exec" translate="no">QCoreApplication::exec</a>() or <a href="qeventloop.html#exec" translate="no">QEventLoop::exec</a>(), deferred deletes will not be processed automatically. To ensure deferred deletion in this scenario, the following workaround can be used:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">const</span> <span class="keyword">auto</span> <span class="operator">*</span>eventDispatcher <span class="operator">=</span> <span class="type"><a href="qthread.html" translate="no">QThread</a></span><span class="operator">::</span>currentThread()<span class="operator">-</span><span class="operator">&gt;</span>eventDispatcher();
+ <span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span><span class="operator">::</span>connect(eventDispatcher<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qabstracteventdispatcher.html" translate="no">QAbstractEventDispatcher</a></span><span class="operator">::</span>aboutToBlock<span class="operator">,</span>
+     <span class="type"><a href="qthread.html" translate="no">QThread</a></span><span class="operator">::</span>currentThread()<span class="operator">,</span> <span class="operator">[</span><span class="operator">]</span>{
+         <span class="keyword">if</span> (<span class="type"><a href="qthread.html" translate="no">QThread</a></span><span class="operator">::</span>currentThread()<span class="operator">-</span><span class="operator">&gt;</span>loopLevel() <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span>)
+             <span class="type"><a href="qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>sendPostedEvents(nullptr<span class="operator">,</span> <span class="type"><a href="qevent.html" translate="no">QEvent</a></span><span class="operator">::</span>DeferredDelete);
+     }
+ );
+</pre>
 <div class="admonition note">
 <p><b>Note: </b>It is safe to call this function more than once; when the first deferred deletion event is delivered, any pending events for the object are removed from the event queue.</p>
 </div>
@@ -612,7 +622,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="disconnectNotify"><code translate="no">[virtual protected] </code><span class="type">void</span> QObject::<span class="name">disconnectNotify</span>(const <span class="type"><a href="qmetamethod.html" translate="no">QMetaMethod</a></span> &amp;<i>signal</i>)</h3>
 <p>This virtual function is called when something has been disconnected from <i translate="no">signal</i> in this object.</p>
 <p>See <a href="qobject.html#connectNotify" translate="no">connectNotify</a>() for an example of how to compare <i translate="no">signal</i> with a specific signal.</p>
-<p>If all signals were disconnected from this object (e.g&#x2e;, the signal argument to <a href="qobject.html#disconnect" translate="no">disconnect</a>() was <code translate="no">nullptr</code>), disconnectNotify() is only called once, and the <i translate="no">signal</i> will be an invalid <a href="qmetamethod.html" translate="no">QMetaMethod</a> (<a href="qmetamethod.html#isValid" translate="no">QMetaMethod::isValid</a>() returns <code translate="no">false</code>).</p>
+<p>If all signals were disconnected from this object (e.g., the signal argument to <a href="qobject.html#disconnect" translate="no">disconnect</a>() was <code translate="no">nullptr</code>), disconnectNotify() is only called once, and the <i translate="no">signal</i> will be an invalid <a href="qmetamethod.html" translate="no">QMetaMethod</a> (<a href="qmetamethod.html#isValid" translate="no">QMetaMethod::isValid</a>() returns <code translate="no">false</code>).</p>
 <div class="admonition warning">
 <p><b>Warning: </b>This function violates the object-oriented principle of modularity. However, it might be useful for optimizing access to expensive resources.</p>
 </div>
@@ -678,7 +688,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$eventFilter[overload1]$$$eventFilterQObject*QEvent* -->
 <h3 class="fn" translate="no" id="eventFilter"><code translate="no">[virtual] </code><span class="type">bool</span> QObject::<span class="name">eventFilter</span>(<span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span> *<i>watched</i>, <span class="type"><a href="qevent.html" translate="no">QEvent</a></span> *<i>event</i>)</h3>
 <p>Filters events if this object has been installed as an event filter for the <i translate="no">watched</i> object.</p>
-<p>In your reimplementation of this function, if you want to filter the <i translate="no">event</i> out, i.e&#x2e; stop it being handled further, return true; otherwise return false.</p>
+<p>In your reimplementation of this function, if you want to filter the <i translate="no">event</i> out, i.e. stop it being handled further, return true; otherwise return false.</p>
 <p>Example:</p>
 <pre class="cpp" translate="no">
  <span class="keyword">class</span> MainWindow : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qmainwindow.html" translate="no">QMainWindow</a></span>
@@ -726,8 +736,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@eventFilter -->
 <!-- $$$findChild[overload1]$$$findChildconstQString&Qt::FindChildOptions -->
 <h3 class="fn" translate="no" id="findChild">template &lt;typename T&gt; <span class="type">T</span> QObject::<span class="name">findChild</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>name</i> = QString(), <span class="type"><a href="qt.html#FindChildOption-enum" translate="no">Qt::FindChildOptions</a></span> <i>options</i> = Qt::FindChildrenRecursively) const</h3>
-<p>Returns the child of this object that can be cast into type T and that is called <i translate="no">name</i>, or <code translate="no">nullptr</code> if there is no such object. Omitting the <i translate="no">name</i> argument causes all object names to be matched. The search is performed recursively, unless <i translate="no">options</i> specifies the option FindDirectChildrenOnly.</p>
-<p>If there is more than one child matching the search, the most direct ancestor is returned. If there are several direct ancestors, it is undefined which one will be returned. In that case, <a href="qobject.html#findChildren" translate="no">findChildren</a>() should be used.</p>
+<p>Returns the child of this object that can be cast into type T and that is called <i translate="no">name</i>, or <code translate="no">nullptr</code> if there is no such object. A null <i translate="no">name</i> argument causes all objects to be matched. An empty, non-null <i translate="no">name</i> matches only objects whose <a href="qobject.html#objectName-prop" translate="no">objectName</a> is empty. The search is performed recursively, unless <i translate="no">options</i> specifies the option FindDirectChildrenOnly.</p>
+<p>If there is more than one child matching the search, the most-direct ancestor is returned. If there are several most-direct ancestors, the first child in <a href="qobject.html#children" translate="no">children</a>() will be returned. In that case, it's better to use <a href="qobject.html#findChildren" translate="no">findChildren</a>() to get the complete list of all children.</p>
 <p>This example returns a child <code translate="no">QPushButton</code> of <code translate="no">parentWidget</code> named <code translate="no">&quot;button1&quot;</code>, even if the button isn't a direct child of the parent:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span> <span class="operator">*</span>button <span class="operator">=</span> parentWidget<span class="operator">-</span><span class="operator">&gt;</span>findChild<span class="operator">&lt;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span> <span class="operator">*</span><span class="operator">&gt;</span>(<span class="string">&quot;button1&quot;</span>);
@@ -800,8 +810,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <pre class="cpp" translate="no">
  monitoredObj<span class="operator">-</span><span class="operator">&gt;</span>installEventFilter(filterObj);
 </pre>
-<p>An event filter is an object that receives all events that are sent to this object. The filter can either stop the event or forward it to this object. The event filter <i translate="no">filterObj</i> receives events via its <a href="qobject.html#eventFilter" translate="no">eventFilter</a>() function. The <a href="qobject.html#eventFilter" translate="no">eventFilter</a>() function must return true if the event should be filtered, (i.e&#x2e; stopped); otherwise it must return false.</p>
+<p>An event filter is an object that receives all events that are sent to this object. The filter can either stop the event or forward it to this object. The event filter <i translate="no">filterObj</i> receives events via its <a href="qobject.html#eventFilter" translate="no">eventFilter</a>() function. The <a href="qobject.html#eventFilter" translate="no">eventFilter</a>() function must return true if the event should be filtered, (i.e. stopped); otherwise it must return false.</p>
 <p>If multiple event filters are installed on a single object, the filter that was installed last is activated first.</p>
+<p>If <i translate="no">filterObj</i> has already been installed for this object, this function moves it so it acts as if it was installed last.</p>
 <p>Here's a <code translate="no">KeyPressEater</code> class that eats the key presses of its monitored objects:</p>
 <pre class="cpp" translate="no">
  <span class="keyword">class</span> KeyPressEater : <span class="keyword">public</span> <span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span>
@@ -883,7 +894,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$metaObject[overload1]$$$metaObject -->
 <h3 class="fn" translate="no" id="metaObject"><code translate="no">[virtual] </code>const <span class="type"><a href="qmetaobject.html" translate="no">QMetaObject</a></span> *QObject::<span class="name">metaObject</span>() const</h3>
 <p>Returns a pointer to the meta-object of this object.</p>
-<p>A meta-object contains information about a class that inherits <a href="qobject.html" translate="no">QObject</a>, e.g&#x2e; class name, superclass name, properties, signals and slots. Every <a href="qobject.html" translate="no">QObject</a> subclass that contains the <a href="qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a> macro will have a meta-object.</p>
+<p>A meta-object contains information about a class that inherits <a href="qobject.html" translate="no">QObject</a>, e.g. class name, superclass name, properties, signals and slots. Every <a href="qobject.html" translate="no">QObject</a> subclass that contains the <a href="qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a> macro will have a meta-object.</p>
 <p>The meta-object information is required by the signal/slot connection mechanism and the property system. The <a href="qobject.html#inherits" translate="no">inherits</a>() function also makes use of the meta-object.</p>
 <p>If you have no pointer to an actual object instance but still want to access the meta-object of a class, you can use <a href="qobject.html#staticMetaObject-var" translate="no">staticMetaObject</a>.</p>
 <p>Example:</p>
@@ -950,7 +961,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="removeEventFilter"><span class="type">void</span> QObject::<span class="name">removeEventFilter</span>(<span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span> *<i>obj</i>)</h3>
 <p>Removes an event filter object <i translate="no">obj</i> from this object. The request is ignored if such an event filter has not been installed.</p>
 <p>All event filters for this object are automatically removed when this object is destroyed.</p>
-<p>It is always safe to remove an event filter, even during event filter activation (i.e&#x2e; from the <a href="qobject.html#eventFilter" translate="no">eventFilter</a>() function).</p>
+<p>It is always safe to remove an event filter, even during event filter activation (i.e. from the <a href="qobject.html#eventFilter" translate="no">eventFilter</a>() function).</p>
 <p><b>See also </b><a href="qobject.html#installEventFilter" translate="no">installEventFilter</a>(), <a href="qobject.html#eventFilter" translate="no">eventFilter</a>(), and <a href="qobject.html#event" translate="no">event</a>().</p>
 <!-- @@@removeEventFilter -->
 <!-- $$$sender[overload1]$$$sender -->
@@ -1091,7 +1102,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
      <span class="type"><a href="../qtwidgets/qmenu.html" translate="no">QMenu</a></span> <span class="operator">*</span>fileMenu <span class="operator">=</span> menuBar()<span class="operator">-</span><span class="operator">&gt;</span>addMenu(tr(<span class="string">&quot;&amp;File&quot;</span>));
      ...
 </pre>
-<p>If the same <i translate="no">sourceText</i> is used in different roles within the same context, an additional identifying string may be passed in <i translate="no">disambiguation</i> (<code translate="no">nullptr</code> by default). In Qt 4.4 and earlier, this was the preferred way to pass comments to translators.</p>
+<p>If the same <i translate="no">sourceText</i> is used in different roles within the same context, an additional identifying string may be passed in <i translate="no">disambiguation</i> (<code translate="no">nullptr</code> by default).</p>
 <p>Example:</p>
 <pre class="cpp" translate="no">
  MyWindow<span class="operator">::</span>MyWindow()
@@ -1112,7 +1123,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$staticMetaObject -->
 <h3 class="fn" translate="no" id="staticMetaObject-var">const <span class="type"><a href="qmetaobject.html" translate="no">QMetaObject</a></span> QObject::<span class="name">staticMetaObject</span></h3>
 <p>This variable stores the meta-object for the class.</p>
-<p>A meta-object contains information about a class that inherits <a href="qobject.html" translate="no">QObject</a>, e.g&#x2e; class name, superclass name, properties, signals and slots. Every class that contains the <a href="qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a> macro will also have a meta-object.</p>
+<p>A meta-object contains information about a class that inherits <a href="qobject.html" translate="no">QObject</a>, e.g. class name, superclass name, properties, signals and slots. Every class that contains the <a href="qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a> macro will also have a meta-object.</p>
 <p>The meta-object information is required by the signal/slot connection mechanism and the property system. The <a href="qobject.html#inherits" translate="no">inherits</a>() function also makes use of the meta-object.</p>
 <p>If you have a pointer to an object, you can use <a href="qobject.html#metaObject" translate="no">metaObject</a>() to retrieve the meta-object associated with that object.</p>
 <p>Example:</p>
@@ -1267,11 +1278,14 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>The Q_GADGET macro is a lighter version of the <a href="qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a> macro for classes that do not inherit from <a href="qobject.html" translate="no">QObject</a> but still want to use some of the reflection capabilities offered by <a href="qmetaobject.html" translate="no">QMetaObject</a>. Just like the <a href="qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a> macro, it must appear in the private section of a class definition.</p>
 <p>Q_GADGETs can have <a href="qobject.html#Q_ENUM" translate="no">Q_ENUM</a>, <a href="qobject.html#Q_PROPERTY" translate="no">Q_PROPERTY</a> and <a href="qobject.html#Q_INVOKABLE" translate="no">Q_INVOKABLE</a>, but they cannot have signals or slots.</p>
 <p>Q_GADGET makes a class member, <code translate="no">staticMetaObject</code>, available. <code translate="no">staticMetaObject</code> is of type <a href="qmetaobject.html" translate="no">QMetaObject</a> and provides access to the enums declared with <a href="qobject.html#Q_ENUM" translate="no">Q_ENUM</a>.</p>
+<div class="admonition note">
+<p><b>Note: </b>This macro expansion ends with a <code translate="no">private</code>: access specifier, which makes member declarations immediately after the macro private, too. If you want add public (or protected) members immediately after the macro, you need to use a <code translate="no">public</code>: (or <code translate="no">protected</code>:) access specifier.</p>
+</div>
 <p><b>See also </b><a href="qobject.html#Q_GADGET_EXPORT" translate="no">Q_GADGET_EXPORT</a>.</p>
 <!-- @@@Q_GADGET -->
 <!-- $$$Q_GADGET_EXPORT[overload1]$$$Q_GADGET_EXPORT -->
 <h3 class="fn" translate="no" id="Q_GADGET_EXPORT"><code translate="no">[since 6.3] </code><span class="name">Q_GADGET_EXPORT</span>(<i>EXPORT_MACRO</i>)</h3>
-<p>The Q_GADGET_EXPORT macro works exactly like the <a href="qobject.html#Q_GADGET" translate="no">Q_GADGET</a> macro. However, the <code translate="no">staticMetaObject</code> variable that is made available (see <a href="qobject.html#Q_GADGET" translate="no">Q_GADGET</a>) is declared with the supplied <i translate="no">EXPORT_MACRO</i> qualifier. This is useful if the object needs to be exported from a dynamic library, but the enclosing class as a whole should not be (e.g&#x2e; because it consists of mostly inline functions).</p>
+<p>The Q_GADGET_EXPORT macro works exactly like the <a href="qobject.html#Q_GADGET" translate="no">Q_GADGET</a> macro. However, the <code translate="no">staticMetaObject</code> variable that is made available (see <a href="qobject.html#Q_GADGET" translate="no">Q_GADGET</a>) is declared with the supplied <i translate="no">EXPORT_MACRO</i> qualifier. This is useful if the object needs to be exported from a dynamic library, but the enclosing class as a whole should not be (e.g. because it consists of mostly inline functions).</p>
 <p>For example:</p>
 <pre class="cpp" translate="no">
  <span class="keyword">class</span> Point {
@@ -1280,6 +1294,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
      Q_PROPERTY(<span class="type">int</span> y MEMBER y)
      <span class="operator">~</span><span class="operator">~</span><span class="operator">~</span>
 </pre>
+<div class="admonition note">
+<p><b>Note: </b>This macro expansion ends with a <code translate="no">private</code>: access specifier, which makes member declarations immediately after the macro private, too. If you want add public (or protected) members immediately after the macro, you need to use a <code translate="no">public</code>: (or <code translate="no">protected</code>:) access specifier.</p>
+</div>
 <p>This macro was introduced in Qt 6.3.</p>
 <p><b>See also </b><a href="qobject.html#Q_GADGET" translate="no">Q_GADGET</a> and <a href="../qtdoc/sharedlibrary.html" translate="no">Creating Shared Libraries</a>.</p>
 <!-- @@@Q_GADGET_EXPORT -->
@@ -1368,6 +1385,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <div class="admonition note">
 <p><b>Note: </b>This macro requires the class to be a subclass of <a href="qobject.html" translate="no">QObject</a>. Use <a href="qobject.html#Q_GADGET" translate="no">Q_GADGET</a> or <a href="qobject.html#Q_GADGET_EXPORT" translate="no">Q_GADGET_EXPORT</a> instead of Q_OBJECT to enable the meta object system's support for enums in a class that is not a <a href="qobject.html" translate="no">QObject</a> subclass.</p>
+</div>
+<div class="admonition note">
+<p><b>Note: </b>This macro expansion ends with a <code translate="no">private</code>: access specifier, which makes member declarations immediately after the macro private, too. If you want add public (or protected) members immediately after the macro, you need to use a <code translate="no">public</code>: (or <code translate="no">protected</code>:) access specifier.</p>
 </div>
 <p><b>See also </b><a href="metaobjects.html" translate="no">Meta-Object System</a>, <a href="signalsandslots.html" translate="no">Signals and Slots</a>, and <a href="properties.html" translate="no">Qt's Property System</a>.</p>
 <!-- @@@Q_OBJECT -->
@@ -1472,9 +1492,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

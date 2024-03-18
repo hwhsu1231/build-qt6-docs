@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
 <!-- qdoc-manual-qdocconf.qdoc -->
-  <title>Generic Configuration Variables | QDoc Manual 6.6.0</title>
+  <title>Generic Configuration Variables | QDoc Manual 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -28,7 +28,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qdoc-index.html" translate="no">QDoc Manual</a></li>
 <li>Generic Configuration Variables</li>
-<li id="buildversion"><a href="qdoc-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qdoc-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -188,7 +188,7 @@
 <p>For example:</p>
 <pre class="cpp plain" translate="no">
  exampledirs = ./snippets \
-               ../&#x2e;./&#x2e;./examples/mymodule
+               ../../../examples/mymodule
 
  examplesinstallpath = mymodule
 </pre>
@@ -196,7 +196,7 @@
 <pre class="cpp plain" translate="no">
  /*!
      \example basic/hello
-     ..&#x2e;
+     ...
  */
 </pre>
 <p>Then, the path <code translate="no">mymodule/basic/hello</code> is recorded in the manifest file for this example.</p>
@@ -224,8 +224,8 @@
 <span id="excludefiles-variable"></span><h2 id="excludefiles">excludefiles</h2>
 <p>The <code translate="no">excludefiles</code> variable allows you to specify individual files that should <i>not</i> be processed by QDoc.</p>
 <pre class="cpp plain" translate="no">
- excludefiles += $QT_CORE_SOURCES/../&#x2e;./src/widgets/kernel/qwidget.h \
-                 $QT_CORE_SOURCES/../&#x2e;./src/widgets/kernel/qwidget.cpp
+ excludefiles += $QT_CORE_SOURCES/../../src/widgets/kernel/qwidget.h \
+                 $QT_CORE_SOURCES/../../src/widgets/kernel/qwidget.cpp
 </pre>
 <p>If you include the above in your qdocconf file for qtbase, there will be no class documentation generated for <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>.</p>
 <p>Since Qt 5.6, also simple wildcards ('*' and '?') are recognized by <code translate="no">excludefiles</code>. For example, to exclude all private Qt header files from being parsed, define the following:</p>
@@ -235,11 +235,12 @@
 <p>See also <a href="22-qdoc-configuration-generalvariables.html#excludedirs-variable" translate="no">excludedirs</a>.</p>
 <span id="extraimages-variable"></span><h2 id="extraimages">extraimages</h2>
 <p>The <code translate="no">extraimages</code> variable tells QDoc to incorporate specific images in the generated documentation.</p>
-<p>QDoc will not recognize images used within HTML (or any other markup language). If we want the images to be copied from the directories specified by <a href="22-qdoc-configuration-generalvariables.html#imagedirs" translate="no"><code translate="no">imagedirs</code></a> (the images in question must be located in these directories) to the output directory, we must specify the images using the <code translate="no">extraimages</code> variable.</p>
-<p>The general syntax is <code translate="no">extraimages.<i>format</i> = <i>image</i></code>. The file extension is optional.</p>
-<p>For example, in <a href="21-2-qtgui-qdocconf.html" translate="no">qtgui.qdocconf</a> we use a couple of images within the HTML.postheader variable which value is pure HTML. For that reason, these images are specified using the <code translate="no">extraimages</code> variable:</p>
+<p>QDoc automatically copies an image file from <a href="22-qdoc-configuration-generalvariables.html#imagedirs" translate="no">imagedirs</a> to the output directory if it's referenced by the <a href="09-qdoc-commands-includingimages.html#image-command" translate="no"><code translate="no">\image</code></a> or <a href="09-qdoc-commands-includingimages.html#inlineimage-command" translate="no"><code translate="no">\inlineimage</code></a> command. If you want to copy additional images, you must specify them using the <code translate="no">extraimages</code> variable.</p>
+<p>The general syntax is <code translate="no"><i>format</i>.extraimages = <i>image</i></code>.</p>
+<p>For a contextualized example, refer to the description of the <a href="24-qdoc-configuration-htmlvariables.html#html-postheader-variable" translate="no">HTML.postheader</a> variable.</p>
+<p>Example:</p>
 <pre class="cpp plain" translate="no">
- extraimages.HTML = qt-logo
+ HTML.extraimages = images/qt-logo.png
 </pre>
 <p>See also <a href="22-qdoc-configuration-generalvariables.html#images" translate="no">images</a> and <a href="22-qdoc-configuration-generalvariables.html#imagedirs" translate="no">imagedirs</a>.</p>
 <span id="falsehoods-variable"></span><h2 id="falsehoods">falsehoods</h2>
@@ -417,10 +418,10 @@
 <p>The <code translate="no">macro</code> variable is used to create your own simple QDoc commands. The syntax is <code translate="no">macro.<i>command</i> = <i>definition</i></code>, where the definition is written using QDoc syntax.</p>
 <p>A macro variable can be restricted for use in one type of output generation. By appending <code translate="no">.HTML</code> to the macro name, for example, the macro is only used when generating HTML output.</p>
 <pre class="cpp plain" translate="no">
- macro.gui              = &quot;\\b&quot;
+ macro.key              = &quot;\\b&quot;
  macro.raisedaster.HTML = &quot;&lt;sup&gt;*&lt;/sup&gt;&quot;
 </pre>
-<p>The first macro defines the \gui command to render its argument using a bold font. The second macro defines the \raisedaster command to render a superscript asterisk, but only when generating HTML.</p>
+<p>The first macro defines the \key command to render its argument using a bold font. The second macro defines the \raisedaster command to render a superscript asterisk, but only when generating HTML.</p>
 <p>A macro can also take up to seven parameters:</p>
 <pre class="cpp plain" translate="no">
  macro.hello            = &quot;Hello \1!&quot;
@@ -444,6 +445,7 @@
 </pre>
 <p>This creates a macro \qtminorversion that expands to the minor version based on the QT_VER environment variable.</p>
 <p>A macro that defines a match pattern outputs all capture groups (parentheses) concatenated together, or the exact matched string if the pattern does not contain any capture groups.</p>
+<p>For more information about pre-defined macros, see <a href="qdoc-macros.html" translate="no">Macros</a>.</p>
 <span id="manifestmeta-variable"></span><h2 id="manifestmeta">manifestmeta</h2>
 <p>The <code translate="no">manifestmeta</code> variable specifies additional meta-content for the example manifest files generated by QDoc.</p>
 <p>See the <a href="26-qdoc-configuration-example-manifest-files.html#manifest-meta-content" translate="no">Manifest Meta Content</a> section for more information.</p>
@@ -470,7 +472,7 @@
 </pre>
 <p>By default, the natural language is <code translate="no">en</code> for compatibility with legacy documentation.</p>
 <p>QDoc will add the natural language information to the HTML it generates, using the <code translate="no">lang</code> and <code translate="no">xml:lang</code> attributes.</p>
-<p>See also <a href="22-qdoc-configuration-generalvariables.html#sourceencoding-variable" translate="no">sourceencoding</a>, <a href="22-qdoc-configuration-generalvariables.html#outputencoding-variable" translate="no">outputencoding</a>, <a href="http://www.w3.org/TR/xhtml1/#C_7" translate="no">C.7&#x2e; The lang and xml:lang Attributes</a> and <a href="http://www.w3.org/TR/i18n-html-tech-lang/#ri20040429.113217290" translate="no">Best Practice 13: Using Hans and Hant codes</a>.</p>
+<p>See also <a href="22-qdoc-configuration-generalvariables.html#sourceencoding-variable" translate="no">sourceencoding</a>, <a href="22-qdoc-configuration-generalvariables.html#outputencoding-variable" translate="no">outputencoding</a>, <a href="http://www.w3.org/TR/xhtml1/#C_7" translate="no">C.7. The lang and xml:lang Attributes</a> and <a href="http://www.w3.org/TR/i18n-html-tech-lang/#ri20040429.113217290" translate="no">Best Practice 13: Using Hans and Hant codes</a>.</p>
 <span id="navigation-variable"></span><h2 id="navigation">navigation</h2>
 <p>The <code translate="no">navigation</code> sub-variables, if defined, set the home page, landing page, C++ classes page, and QML types page that are visible in the generated navigation bar for each page.</p>
 <p>In a project with multiple sub-projects (for example, Qt modules), each sub-project typically defines its own landing page while the same home page is used across all sub-projects.</p>
@@ -549,7 +551,7 @@
 </pre>
 <p>Given a QML module name <i>FooBar</i> and the default <a href="22-qdoc-configuration-generalvariables.html#outputprefixes-variable" translate="no">output prefix</a> (&quot;qml-&quot;), the file name of the generated HTML page for a QML type <i>FooWidget</i> would be <code translate="no">qml-foobar-tp-foowidget.html</code>.</p>
 <p>By default, no suffix is used. The output suffix, if defined, is applied to file names for documentation on QML and its module page.</p>
-<p>The <code translate="no">outputsuffixes</code> variable was introduced in QDoc 5.6&#x2e;</p>
+<p>The <code translate="no">outputsuffixes</code> variable was introduced in QDoc 5.6.</p>
 <span id="qhp-variable"></span><h2 id="qhp">qhp</h2>
 <p>The <code translate="no">qhp</code> sub-variables are used to define the information to be written out to Qt Help Project (<code translate="no">qhp</code>) files.</p>
 <p>See the <a href="22-creating-help-project-files.html" translate="no">Creating Help Project Files</a> chapter for information about this process.</p>
@@ -563,7 +565,7 @@
 <p>The <code translate="no">sourcedirs</code> variable specifies the directories containing the <code translate="no">.cpp</code> or <code translate="no">.qdoc</code> files used in the documentation.</p>
 <pre class="cpp plain" translate="no">
  sourcedirs  += .. \
-                ../&#x2e;./&#x2e;./examples/gui/doc/src
+                ../../../examples/gui/doc/src
 </pre>
 <p>When executed, the first thing QDoc will do is to read through the headers specified in the <a href="10-qdoc-commands-tablesandlists.html#header-command" translate="no"><code translate="no">header</code></a> variable, and the ones located in the directories specified in the <code translate="no">headerdir</code> variable (including all subdirectories), building an internal structure of the classes and their functions.</p>
 <p>Then it will read through the sources specified in the <a href="22-qdoc-configuration-generalvariables.html#sources" translate="no"><code translate="no">sources</code></a>, and the ones located in the directories specified in the <a href="22-qdoc-configuration-generalvariables.html#sourcedirs" translate="no"><code translate="no">sourcedirs</code></a> variable (including all subdirectories), merging the documentation with the structure it retrieved from the header files.</p>
@@ -625,7 +627,7 @@
 <span id="version-variable"></span><h2 id="version">version</h2>
 <p>The <code translate="no">version</code> variable specifies the version number of the documented software.</p>
 <pre class="cpp plain" translate="no">
- version = 5.6&#x2e;0
+ version = 5.6.0
 </pre>
 <p>When a version number is specified (using the <code translate="no"><a href="22-qdoc-configuration-generalvariables.html#version" translate="no">version</a></code> or <code translate="no"><a href="22-qdoc-configuration-generalvariables.html#versionsym" translate="no">versionsym</a></code> variables in a <code translate="no">.qdocconf</code> file), it is accessible through the corresponding \version command for use in the documentation.</p>
 <div class="admonition warning">
@@ -637,7 +639,7 @@
 <pre class="cpp plain" translate="no">
  versionsym = QT_VERSION_STR
 </pre>
-<p><a href="../qtcore/qtversion-proxy.html#QT_VERSION_STR" translate="no">QT_VERSION_STR</a> is defined in qglobal.h as follows</p>
+<p><a href="../qtcore/qtversion-qtcore-proxy.html#QT_VERSION_STR" translate="no">QT_VERSION_STR</a> is defined in qglobal.h as follows</p>
 <pre class="cpp plain" translate="no">
  #define QT_VERSION_STR   &quot;5.14.1&quot;
 </pre>
@@ -673,9 +675,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

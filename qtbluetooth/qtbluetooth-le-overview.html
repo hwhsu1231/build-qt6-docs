@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- bluetooth-le-overview.qdoc -->
   <meta name="description" content="The Qt Bluetooth Low Energy API enables communication between Bluetooth Low Energy devices.">
-  <title>Bluetooth Low Energy Overview | Qt Bluetooth 6.6.0</title>
+  <title>Bluetooth Low Energy Overview | Qt Bluetooth 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtbluetooth-index.html" translate="no">Qt Bluetooth</a></li>
 <li>Bluetooth Low Energy Overview</li>
-<li id="buildversion"><a href="qtbluetooth-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtbluetooth-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -129,6 +129,7 @@
              <span class="keyword">delete</span> oldDev;
          }
          setInfo(tr(<span class="string">&quot;Low Energy device found. Scanning more...&quot;</span>));
+         setIcon(IconProgress);
      }
      <span class="comment">//...</span>
  }
@@ -145,13 +146,16 @@
          <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>(<span class="type"><a href="qlowenergycontroller.html" translate="no">QLowEnergyController</a></span><span class="operator">::</span>Error error) {
              Q_UNUSED(error);
              setError(<span class="string">&quot;Cannot connect to remote device.&quot;</span>);
+             setIcon(IconError);
          });
  connect(m_control<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qlowenergycontroller.html" translate="no">QLowEnergyController</a></span><span class="operator">::</span>connected<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>() {
      setInfo(<span class="string">&quot;Controller connected. Search services...&quot;</span>);
+     setIcon(IconProgress);
      m_control<span class="operator">-</span><span class="operator">&gt;</span>discoverServices();
  });
  connect(m_control<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qlowenergycontroller.html" translate="no">QLowEnergyController</a></span><span class="operator">::</span>disconnected<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">[</span><span class="keyword">this</span><span class="operator">]</span>() {
      setError(<span class="string">&quot;LowEnergy controller disconnected&quot;</span>);
+     setIcon(IconError);
  });
 
  <span class="comment">// Connect</span>
@@ -165,6 +169,7 @@
  {
      <span class="keyword">if</span> (gatt <span class="operator">=</span><span class="operator">=</span> <span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span>(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span><span class="operator">::</span>ServiceClassUuid<span class="operator">::</span>HeartRate)) {
          setInfo(<span class="string">&quot;Heart Rate service discovered. Waiting for service scan to be done...&quot;</span>);
+         setIcon(IconProgress);
          m_foundHeartRateService <span class="operator">=</span> <span class="keyword">true</span>;
      }
  }
@@ -182,6 +187,7 @@
          m_service<span class="operator">-</span><span class="operator">&gt;</span>discoverDetails();
      } <span class="keyword">else</span> {
          setError(<span class="string">&quot;Heart Rate Service not found.&quot;</span>);
+         setIcon(IconError);
      }
 </pre>
 <p>During the detail search the service's <a href="qlowenergyservice.html#state" translate="no">state</a>() transitions from <a href="qlowenergyservice.html#ServiceState-enum" translate="no">RemoteService</a> to <a href="qlowenergyservice.html#ServiceState-enum" translate="no">RemoteServiceDiscovering</a> and eventually ends with <a href="qlowenergyservice.html#ServiceState-enum" translate="no">RemoteServiceDiscovered</a>:</p>
@@ -191,15 +197,18 @@
      <span class="keyword">switch</span> (s) {
      <span class="keyword">case</span> <span class="type"><a href="qlowenergyservice.html" translate="no">QLowEnergyService</a></span><span class="operator">::</span>RemoteServiceDiscovering:
          setInfo(tr(<span class="string">&quot;Discovering services...&quot;</span>));
+         setIcon(IconProgress);
          <span class="keyword">break</span>;
      <span class="keyword">case</span> <span class="type"><a href="qlowenergyservice.html" translate="no">QLowEnergyService</a></span><span class="operator">::</span>RemoteServiceDiscovered:
      {
          setInfo(tr(<span class="string">&quot;Service discovered.&quot;</span>));
+         setIcon(IconBluetooth);
 
          <span class="keyword">const</span> <span class="type"><a href="qlowenergycharacteristic.html" translate="no">QLowEnergyCharacteristic</a></span> hrChar <span class="operator">=</span>
                  m_service<span class="operator">-</span><span class="operator">&gt;</span>characteristic(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span>(<span class="type"><a href="qbluetoothuuid.html" translate="no">QBluetoothUuid</a></span><span class="operator">::</span>CharacteristicType<span class="operator">::</span>HeartRateMeasurement));
          <span class="keyword">if</span> (<span class="operator">!</span>hrChar<span class="operator">.</span>isValid()) {
              setError(<span class="string">&quot;HR Data not found.&quot;</span>);
+             setIcon(IconError);
              <span class="keyword">break</span>;
          }
 
@@ -324,9 +333,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

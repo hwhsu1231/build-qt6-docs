@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
 <!-- painterpaths.qdoc -->
-  <meta name="description" content="The Painter Paths example shows how painter paths can be used to beuild complex shapes for rendering.">
-  <title>Painter Paths Example | Qt Widgets 6.6.0</title>
+  <meta name="description" content="The Painter Paths example shows how to use painter paths to build complex shapes for rendering.">
+  <title>Painter Paths Example | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li><a href="examples-painting.html" translate="no">Painting Examples</a></li>
 <li>Painter Paths Example</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -50,7 +50,7 @@
 <div class="sidebar-content" id="sidebar-content"></div></div>
 <h1 class="title">Painter Paths Example</h1>
 <!-- $$$painting/painterpaths-brief -->
-<p>The Painter Paths example shows how painter paths can be used to beuild complex shapes for rendering.</p>
+<p>The Painter Paths example shows how to use painter paths to build complex shapes for rendering.</p>
 <!-- @@@painting/painterpaths -->
 <!-- $$$painting/painterpaths-description -->
 <div class="descr" id="details">
@@ -115,9 +115,9 @@
      rectPath<span class="operator">.</span>closeSubpath();
 </pre>
 <p>We construct a rectangle with sharp corners using the <a href="../qtgui/qpainterpath.html#moveTo" translate="no">QPainterPath::moveTo</a>() and <a href="../qtgui/qpainterpath.html#lineTo" translate="no">QPainterPath::lineTo</a>() functions.</p>
-<p><a href="../qtgui/qpainterpath.html#moveTo" translate="no">QPainterPath::moveTo</a>() moves the current point to the point passed as argument. A painter path is an object composed of a number of graphical building blocks, i.e&#x2e; subpaths. Moving the current point will also start a new subpath (implicitly closing the previously current path when the new one is started). The <a href="../qtgui/qpainterpath.html#lineTo" translate="no">QPainterPath::lineTo</a>() function adds a straight line from the current point to the given end point. After the line is drawn, the current point is updated to be at the end point of the line.</p>
+<p><a href="../qtgui/qpainterpath.html#moveTo" translate="no">QPainterPath::moveTo</a>() moves the current point to the point passed as argument. A painter path is an object composed of a number of graphical building blocks, i.e. subpaths. Moving the current point will also start a new subpath (implicitly closing the previously current path when the new one is started). The <a href="../qtgui/qpainterpath.html#lineTo" translate="no">QPainterPath::lineTo</a>() function adds a straight line from the current point to the given end point. After the line is drawn, the current point is updated to be at the end point of the line.</p>
 <p>We first move the current point starting a new subpath, and we draw three of the rectangle's sides. Then we call the <a href="../qtgui/qpainterpath.html#closeSubpath" translate="no">QPainterPath::closeSubpath</a>() function which draws a line to the beginning of the current subpath. A new subpath is automatically begun when the current subpath is closed. The current point of the new path is (0, 0). We could also have called <a href="../qtgui/qpainterpath.html#lineTo" translate="no">QPainterPath::lineTo</a>() to draw the last line as well, and then explicitly start a new subpath using the <a href="../qtgui/qpainterpath.html#moveTo" translate="no">QPainterPath::moveTo</a>() function.</p>
-<p><a href="../qtgui/qpainterpath.html" translate="no">QPainterPath</a> also provide the <a href="../qtgui/qpainterpath.html#addRect" translate="no">QPainterPath::addRect</a>() convenience function, which adds a given rectangle to the path as a closed subpath. The rectangle is added as a clockwise set of lines. The painter path's current position after the rect has been added is at the top-left corner of the rectangle.</p>
+<p><a href="../qtgui/qpainterpath.html" translate="no">QPainterPath</a> also provides the <a href="../qtgui/qpainterpath.html#addRect" translate="no">QPainterPath::addRect</a>() convenience function, which adds a given rectangle to the path as a closed subpath. The rectangle is added as a clockwise set of lines. The painter path's current position after the rect has been added is at the top-left corner of the rectangle.</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="../qtgui/qpainterpath.html" translate="no">QPainterPath</a></span> roundRectPath;
      roundRectPath<span class="operator">.</span>moveTo(<span class="number">80.0</span><span class="operator">,</span> <span class="number">35.0</span>);
@@ -155,7 +155,7 @@
      polygonPath<span class="operator">.</span>closeSubpath();
 </pre>
 <p>Constructing a polygon is equivalent to constructing a rectangle.</p>
-<p><a href="../qtgui/qpainterpath.html" translate="no">QPainterPath</a> also provide the <a href="../qtgui/qpainterpath.html#addPolygon" translate="no">QPainterPath::addPolygon</a>() convenience function which adds the given polygon to the path as a new subpath. Current position after the polygon has been added is the last point in polygon.</p>
+<p><a href="../qtgui/qpainterpath.html" translate="no">QPainterPath</a> also provides the <a href="../qtgui/qpainterpath.html#addPolygon" translate="no">QPainterPath::addPolygon</a>() convenience function which adds the given polygon to the path as a new subpath. Current position after the polygon has been added is the last point in polygon.</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="../qtgui/qpainterpath.html" translate="no">QPainterPath</a></span> groupPath;
      groupPath<span class="operator">.</span>moveTo(<span class="number">60.0</span><span class="operator">,</span> <span class="number">40.0</span>);
@@ -205,7 +205,7 @@
      renderAreas<span class="operator">.</span>push_back(<span class="keyword">new</span> RenderArea(bezierPath));
      renderAreas<span class="operator">.</span>push_back(<span class="keyword">new</span> RenderArea(starPath));
 </pre>
-<p>Now that we have created all the painter paths that we need, we create a corresponding <code translate="no">RenderArea</code> widget for each. In the end, we make sure that the number of render areas is correct using the <a href="../qtcore/qtassert-proxy.html#Q_ASSERT" translate="no">Q_ASSERT</a>() macro.</p>
+<p>Now that we have created all the painter paths that we need, we create a corresponding <code translate="no">RenderArea</code> widget for each. In the end, we make sure that the number of render areas is correct using the <a href="../qtcore/qtassert-qtcore-proxy.html#Q_ASSERT" translate="no">Q_ASSERT</a>() macro.</p>
 <pre class="cpp" translate="no">
      fillRuleComboBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qcombobox.html" translate="no">QComboBox</a></span>;
      fillRuleComboBox<span class="operator">-</span><span class="operator">&gt;</span>addItem(tr(<span class="string">&quot;Odd Even&quot;</span>)<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>OddEvenFill);
@@ -453,7 +453,7 @@
      painter<span class="operator">.</span>setRenderHint(<span class="type"><a href="../qtgui/qpainter.html" translate="no">QPainter</a></span><span class="operator">::</span>Antialiasing);
 </pre>
 <p>A paint event is a request to repaint all or parts of the widget. The paintEvent() function is an event handler that can be reimplemented to receive the widget's paint events. We reimplement the event handler to render the <code translate="no">RenderArea</code> widget's painter path.</p>
-<p>First, we create a <a href="../qtgui/qpainter.html" translate="no">QPainter</a> for the <code translate="no">RenderArea</code> instance, and set the painter's render hints. The <a href="../qtgui/qpainter.html#RenderHint-enum" translate="no">QPainter::RenderHints</a> are used to specify flags to <a href="../qtgui/qpainter.html" translate="no">QPainter</a> that may, or may not, be respected by any given engine. <a href="../qtgui/qpainter.html#RenderHint-enum" translate="no">QPainter::Antialiasing</a> indicates that the engine should anti-alias the edges of primitives if possible, i.e&#x2e; put additional pixels around the original ones to smooth the edges.</p>
+<p>First, we create a <a href="../qtgui/qpainter.html" translate="no">QPainter</a> for the <code translate="no">RenderArea</code> instance, and set the painter's render hints. The <a href="../qtgui/qpainter.html#RenderHint-enum" translate="no">QPainter::RenderHints</a> are used to specify flags to <a href="../qtgui/qpainter.html" translate="no">QPainter</a> that may, or may not, be respected by any given engine. <a href="../qtgui/qpainter.html#RenderHint-enum" translate="no">QPainter::Antialiasing</a> indicates that the engine should anti-alias the edges of primitives if possible, i.e. put additional pixels around the original ones to smooth the edges.</p>
 <pre class="cpp" translate="no">
      painter<span class="operator">.</span>scale(width() <span class="operator">/</span> <span class="number">100.0</span><span class="operator">,</span> height() <span class="operator">/</span> <span class="number">100.0</span>);
      painter<span class="operator">.</span>translate(<span class="number">50.0</span><span class="operator">,</span> <span class="number">50.0</span>);
@@ -482,9 +482,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qquickimagecapture.cpp -->
   <meta name="description" content="An interface for capturing camera images.">
-  <title>ImageCapture QML Type | Qt Multimedia 6.6.0</title>
+  <title>ImageCapture QML Type | Qt Multimedia 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtmultimedia-index.html" translate="no">Qt Multimedia</a></li>
 <li><a href="qtmultimedia-qmlmodule.html" translate="no">QML Types</a></li>
 <li>ImageCapture</li>
-<li id="buildversion"><a href="qtmultimedia-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtmultimedia-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -63,10 +63,10 @@
 </ul>
 <h2 id="signals">Signals</h2>
 <ul>
-<li class="fn" translate="no"><b><a href="qml-qtmultimedia-imagecapture.html#errorOccurred-signal" translate="no">errorOccurred</a></b>(<i>requestId</i>, <i>error</i>, <i>message</i>)</li>
-<li class="fn" translate="no"><b><a href="qml-qtmultimedia-imagecapture.html#imageCaptured-signal" translate="no">imageCaptured</a></b>(<i>requestId</i>, <i>previewImage</i>)</li>
-<li class="fn" translate="no"><b><a href="qml-qtmultimedia-imagecapture.html#imageMetadataAvailable-signal" translate="no">imageMetadataAvailable</a></b>(<i>requestId</i>, <i>key</i>, <i>value</i>)</li>
-<li class="fn" translate="no"><b><a href="qml-qtmultimedia-imagecapture.html#imageSaved-signal" translate="no">imageSaved</a></b>(<i>requestId</i>, <i>path</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtmultimedia-imagecapture.html#errorOccurred-signal" translate="no">errorOccurred</a></b>(<i>id</i>, <i>error</i>, <i>errorString</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtmultimedia-imagecapture.html#imageCaptured-signal" translate="no">imageCaptured</a></b>(<i>requestId</i>, <i>preview</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtmultimedia-imagecapture.html#imageMetadataAvailable-signal" translate="no">imageMetadataAvailable</a></b>(<i>id</i>, <i>metaData</i>)</li>
+<li class="fn" translate="no"><b><a href="qml-qtmultimedia-imagecapture.html#imageSaved-signal" translate="no">imageSaved</a></b>(<i>id</i>, <i>fileName</i>)</li>
 </ul>
 <h2 id="methods">Methods</h2>
 <ul>
@@ -149,9 +149,9 @@
 <div class="table"><table class="qmlname">
 <tr valign="top" class="odd" id="errorOccurred-signal">
 <td class="tblQmlFuncNode"><p>
-<span class="name">errorOccurred</span>(<i>requestId</i>, <i>error</i>, <i>message</i>)</p></td></tr>
+<span class="name">errorOccurred</span>(<i>id</i>, <i>error</i>, <i>errorString</i>)</p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>This signal is emitted when an error occurs during capture with <i translate="no">requestId</i>. <i translate="no">error</i> is an enumeration of type ImageCapture::Error. A descriptive message is available in <i translate="no">message</i>.</p>
+<div class="qmldoc"><p>This signal is emitted when an error occurs during capture with requested <i translate="no">id</i>. <i translate="no">error</i> is an enumeration of type ImageCapture::Error. A descriptive message is available in <i translate="no">errorString</i>.</p>
 <div class="admonition note"><p><b>Note: </b>The corresponding handler is <code translate="no">onErrorOccurred</code>.</p>
 </div></div></div><!-- @@@errorOccurred -->
 <br/>
@@ -160,9 +160,9 @@
 <div class="table"><table class="qmlname">
 <tr valign="top" class="odd" id="imageCaptured-signal">
 <td class="tblQmlFuncNode"><p>
-<span class="name">imageCaptured</span>(<i>requestId</i>, <i>previewImage</i>)</p></td></tr>
+<span class="name">imageCaptured</span>(<i>requestId</i>, <i>preview</i>)</p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>This signal is emitted when an image with <i translate="no">requestId</i> has been captured but not yet saved to the filesystem. The <i translate="no">previewImage</i> parameter is the captured image.</p>
+<div class="qmldoc"><p>This signal is emitted when an image with requested <i translate="no">id</i> has been captured but not yet saved to the filesystem. The <i translate="no">preview</i> parameter is the captured image.</p>
 <div class="admonition note"><p><b>Note: </b>The corresponding handler is <code translate="no">onImageCaptured</code>.</p>
 </div><p><b>See also </b><a href="qml-qtmultimedia-imagecapture.html#imageSaved-signal" translate="no">imageSaved</a> and <a href="qml-qtmultimedia-imagecapture.html#preview-prop" translate="no">preview</a>.</p>
 </div></div><!-- @@@imageCaptured -->
@@ -172,9 +172,9 @@
 <div class="table"><table class="qmlname">
 <tr valign="top" class="odd" id="imageMetadataAvailable-signal">
 <td class="tblQmlFuncNode"><p>
-<span class="name">imageMetadataAvailable</span>(<i>requestId</i>, <i>key</i>, <i>value</i>)</p></td></tr>
+<span class="name">imageMetadataAvailable</span>(<i>id</i>, <i>metaData</i>)</p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>This signal is emitted when the image with <i translate="no">requestId</i> has new metadata available with the key <i translate="no">key</i> and value <i translate="no">value</i>.</p>
+<div class="qmldoc"><p>This signal is emitted when the image with requested <i translate="no">id</i> has new <i translate="no">metaData</i>.</p>
 <div class="admonition note"><p><b>Note: </b>The corresponding handler is <code translate="no">onImageMetadataAvailable</code>.</p>
 </div><p><b>See also </b><a href="qml-qtmultimedia-imagecapture.html#imageCaptured-signal" translate="no">imageCaptured</a>.</p>
 </div></div><!-- @@@imageMetadataAvailable -->
@@ -184,9 +184,9 @@
 <div class="table"><table class="qmlname">
 <tr valign="top" class="odd" id="imageSaved-signal">
 <td class="tblQmlFuncNode"><p>
-<span class="name">imageSaved</span>(<i>requestId</i>, <i>path</i>)</p></td></tr>
+<span class="name">imageSaved</span>(<i>id</i>, <i>fileName</i>)</p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>This signal is emitted after the image with <i translate="no">requestId</i> has been written to the filesystem. The <i translate="no">path</i> is a local file path, not a URL.</p>
+<div class="qmldoc"><p>This signal is emitted after the image with requested <i translate="no">id</i> has been written to the filesystem. The <i translate="no">fileName</i> is a local file path, not a URL.</p>
 <div class="admonition note"><p><b>Note: </b>The corresponding handler is <code translate="no">onImageSaved</code>.</p>
 </div><p><b>See also </b><a href="qml-qtmultimedia-imagecapture.html#imageCaptured-signal" translate="no">imageCaptured</a>.</p>
 </div></div><!-- @@@imageSaved -->
@@ -235,9 +235,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

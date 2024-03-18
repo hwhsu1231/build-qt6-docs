@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- imagegestures.qdoc -->
   <meta name="description" content="Demonstrates the use of simple gestures in a widget.">
-  <title>Image Gestures Example | Qt Widgets 6.6.0</title>
+  <title>Image Gestures Example | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li>Image Gestures Example</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -140,7 +140,7 @@
  }
 </pre>
 <p>The <a href="qpinchgesture.html" translate="no">QPinchGesture</a> class provides properties to interpret the changing distance between the two touch points as a zoom factor, and the angle delta as a rotation to be applied to the image. The center point between the touch points could be used to drag the image, but in this example we use the pan gesture for that purpose.</p>
-<p>The <code translate="no">scaleFactor()</code> is a relative value representing how much the zoom should change from one event to the next, whereas <code translate="no">totalScaleFactor()</code> provides the amount of zoom that has been expressed since the gesture began. When the touch points are released and another gesture begins, <code translate="no">totalScaleFactor()</code> will begin again at 1.0&#x2e; In this case we store <code translate="no">totalScaleFactor()</code> into the <code translate="no">currentStepScaleFactor</code> variable so that it can be used in <code translate="no">paintEvent()</code> to scale the image. Alternatively it would be possible to simply multiply the stored total scale factor by <code translate="no">scaleFactor()</code> here in the pinch handler.</p>
+<p>The <code translate="no">scaleFactor()</code> is a relative value representing how much the zoom should change from one event to the next, whereas <code translate="no">totalScaleFactor()</code> provides the amount of zoom that has been expressed since the gesture began. When the touch points are released and another gesture begins, <code translate="no">totalScaleFactor()</code> will begin again at 1.0. In this case we store <code translate="no">totalScaleFactor()</code> into the <code translate="no">currentStepScaleFactor</code> variable so that it can be used in <code translate="no">paintEvent()</code> to scale the image. Alternatively it would be possible to simply multiply the stored total scale factor by <code translate="no">scaleFactor()</code> here in the pinch handler.</p>
 <p>In contrast, <code translate="no">rotationAngle()</code> represents the amount of rotation since the pinch gesture began, while <code translate="no">lastRotationAngle()</code> provides the previous value. So it is necessary to subtract in order to get an incremental delta. When the user begins a new pinch gesture, <code translate="no">rotationAngle()</code> will start from zero, and we want the image to begin to rotate from its current angle. This is achieved by adding the delta to the stored <code translate="no">rotationAngle</code> (which will be applied in <code translate="no">paintEvent()</code>). If we simply assigned <code translate="no">totalRotationAngle()</code> to the stored <code translate="no">rotationAngle</code>, a new gesture would cause the image to reset to a right-side-up orientation before beginning to rotate again. But it would be possible to store the rotation angle since the gesture began and add it to <code translate="no">rotationAngle</code> in <code translate="no">paintEvent()</code>, just as we store the amount of zoom since the gesture began.</p>
 <p>The pan and swipe gestures in this example are also handled in separate functions, and use the values of properties from the <a href="qgesture.html" translate="no">QGesture</a> objects passed to them.</p>
 <pre class="cpp" translate="no">
@@ -172,9 +172,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -27,7 +27,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Debugging Techniques</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -58,10 +58,10 @@
 <h3 id="debugging-in-macos-and-xcode">Debugging in macOS and Xcode</h3>
 <h4 id="debugging-with-without-frameworks">Debugging With/Without Frameworks</h4>
 <p>The basic stuff you need to know about debug libraries and frameworks is found at developer.apple.com in: <a href="http://developer.apple.com/technotes/tn2004/tn2124.html#SECDEBUGLIB" translate="no">Apple Technical Note TN2124</a>.</p>
-<p>When you build Qt, frameworks are built by default, and inside the framework you will find both a release and a debug version (e.g&#x2e;, <a href="../qtcore/qtcore-module.html" translate="no">QtCore</a> and QtCore_debug). If you pass the <code translate="no">-no-framework</code> flag when you build Qt, two dylibs are built for each Qt library (e.g&#x2e;, libQtCore.4.dylib and libQtCore_debug.4.dylib).</p>
+<p>When you build Qt, frameworks are built by default, and inside the framework you will find both a release and a debug version (e.g., <a href="../qtcore/qtcore-module.html" translate="no">QtCore</a> and QtCore_debug). If you pass the <code translate="no">-no-framework</code> flag when you build Qt, two dylibs are built for each Qt library (e.g., libQtCore.4.dylib and libQtCore_debug.4.dylib).</p>
 <p>What happens when you link depends on whether you use frameworks or not. We don't see a compelling reason to recommend one over the other.</p>
 <h5 id="with-frameworks">With Frameworks:</h5>
-<p>Since the release and debug libraries are inside the framework, the app is simply linked against the framework. Then when you run in the debugger, you will get either the release version or the debug version, depending on whether you set <code translate="no">DYLD_IMAGE_SUFFIX</code>. If you don't set it, you get the release version by default (i.e&#x2e;, non _debug). If you set <code translate="no">DYLD_IMAGE_SUFFIX=_debug</code>, you get the debug version.</p>
+<p>Since the release and debug libraries are inside the framework, the app is simply linked against the framework. Then when you run in the debugger, you will get either the release version or the debug version, depending on whether you set <code translate="no">DYLD_IMAGE_SUFFIX</code>. If you don't set it, you get the release version by default (i.e., non _debug). If you set <code translate="no">DYLD_IMAGE_SUFFIX=_debug</code>, you get the debug version.</p>
 <h5 id="without-frameworks">Without Frameworks:</h5>
 <p>When you tell <i>qmake</i> to generate a Makefile with the debug config, it will link against the _debug version of the libraries and generate debug symbols for the app. Running this program in GDB will then work like running GDB on other platforms, and you will be able to trace inside Qt.</p>
 <h2 id="command-line-options-recognized-by-qt">Command Line Options Recognized by Qt</h2>
@@ -121,11 +121,11 @@
 <p>The header file <code translate="no">&lt;QtGlobal&gt;</code> contains some debugging macros and <code translate="no">#define</code>s.</p>
 <p>Three important macros are:</p>
 <ul>
-<li><a href="../qtcore/qtassert-proxy.html#Q_ASSERT" translate="no">Q_ASSERT</a>(cond), where <code translate="no">cond</code> is a boolean expression, writes the warning &quot;ASSERT: '<i>cond</i>' in file xyz.cpp, line 234&quot; and exits if <code translate="no">cond</code> is false.</li>
-<li><a href="../qtcore/qtassert-proxy.html#Q_ASSERT_X" translate="no">Q_ASSERT_X</a>(cond, where, what), where <code translate="no">cond</code> is a boolean expression, <code translate="no">where</code> a location, and <code translate="no">what</code> a message, writes the warning: &quot;ASSERT failure in <code translate="no">where</code>: '<code translate="no">what</code>', file xyz.cpp, line 234&quot; and exits if <code translate="no">cond</code> is false.</li>
-<li><a href="../qtcore/qtassert-proxy.html#Q_CHECK_PTR" translate="no">Q_CHECK_PTR</a>(ptr), where <code translate="no">ptr</code> is a pointer. Writes the warning &quot;In file xyz.cpp, line 234: Out of memory&quot; and exits if <code translate="no">ptr</code> is 0.</li>
+<li><a href="../qtcore/qtassert-qtcore-proxy.html#Q_ASSERT" translate="no">Q_ASSERT</a>(cond), where <code translate="no">cond</code> is a boolean expression, writes the warning &quot;ASSERT: '<i>cond</i>' in file xyz.cpp, line 234&quot; and exits if <code translate="no">cond</code> is false.</li>
+<li><a href="../qtcore/qtassert-qtcore-proxy.html#Q_ASSERT_X" translate="no">Q_ASSERT_X</a>(cond, where, what), where <code translate="no">cond</code> is a boolean expression, <code translate="no">where</code> a location, and <code translate="no">what</code> a message, writes the warning: &quot;ASSERT failure in <code translate="no">where</code>: '<code translate="no">what</code>', file xyz.cpp, line 234&quot; and exits if <code translate="no">cond</code> is false.</li>
+<li><a href="../qtcore/qtassert-qtcore-proxy.html#Q_CHECK_PTR" translate="no">Q_CHECK_PTR</a>(ptr), where <code translate="no">ptr</code> is a pointer. Writes the warning &quot;In file xyz.cpp, line 234: Out of memory&quot; and exits if <code translate="no">ptr</code> is 0.</li>
 </ul>
-<p>These macros are useful for detecting program errors, e.g&#x2e; like this:</p>
+<p>These macros are useful for detecting program errors, e.g. like this:</p>
 <pre class="cpp" translate="no">
  <span class="type">char</span> <span class="operator">*</span>alloc(<span class="type">int</span> size)
  {
@@ -135,7 +135,7 @@
      <span class="keyword">return</span> ptr;
  }
 </pre>
-<p><a href="../qtcore/qtassert-proxy.html#Q_ASSERT" translate="no">Q_ASSERT</a>(), <a href="../qtcore/qtassert-proxy.html#Q_ASSERT_X" translate="no">Q_ASSERT_X</a>(), and <a href="../qtcore/qtassert-proxy.html#Q_CHECK_PTR" translate="no">Q_CHECK_PTR</a>() expand to nothing if <code translate="no">QT_NO_DEBUG</code> is defined during compilation. For this reason, the arguments to these macro should not have any side-effects. Here is an incorrect usage of <a href="../qtcore/qtassert-proxy.html#Q_CHECK_PTR" translate="no">Q_CHECK_PTR</a>():</p>
+<p><a href="../qtcore/qtassert-qtcore-proxy.html#Q_ASSERT" translate="no">Q_ASSERT</a>(), <a href="../qtcore/qtassert-qtcore-proxy.html#Q_ASSERT_X" translate="no">Q_ASSERT_X</a>(), and <a href="../qtcore/qtassert-qtcore-proxy.html#Q_CHECK_PTR" translate="no">Q_CHECK_PTR</a>() expand to nothing if <code translate="no">QT_NO_DEBUG</code> is defined during compilation. For this reason, the arguments to these macro should not have any side-effects. Here is an incorrect usage of <a href="../qtcore/qtassert-qtcore-proxy.html#Q_CHECK_PTR" translate="no">Q_CHECK_PTR</a>():</p>
 <pre class="cpp" translate="no">
  <span class="type">char</span> <span class="operator">*</span>alloc(<span class="type">int</span> size)
  {
@@ -144,7 +144,7 @@
      <span class="keyword">return</span> ptr;
  }
 </pre>
-<p>If this code is compiled with <code translate="no">QT_NO_DEBUG</code> defined, the code in the <a href="../qtcore/qtassert-proxy.html#Q_CHECK_PTR" translate="no">Q_CHECK_PTR</a>() expression is not executed and <i>alloc</i> returns an uninitialized pointer.</p>
+<p>If this code is compiled with <code translate="no">QT_NO_DEBUG</code> defined, the code in the <a href="../qtcore/qtassert-qtcore-proxy.html#Q_CHECK_PTR" translate="no">Q_CHECK_PTR</a>() expression is not executed and <i>alloc</i> returns an uninitialized pointer.</p>
 <p>The Qt library contains hundreds of internal checks that will print warning messages when a programming error is detected. We therefore recommend that you use a debug version of Qt when developing Qt-based software.</p>
 <p>Logging and <a href="../qtqml/qml-qtqml-loggingcategory.html" translate="no">categorized logging</a> are also possible in <a href="qtquick-debugging.html" translate="no">QML</a>.</p>
 <h2 id="common-bugs">Common Bugs</h2>
@@ -158,9 +158,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

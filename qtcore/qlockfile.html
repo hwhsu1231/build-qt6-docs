@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qlockfile.cpp -->
   <meta name="description" content="The QLockFile class provides locking between processes using a file.">
-  <title>QLockFile Class | Qt Core 6.6.0</title>
+  <title>QLockFile Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QLockFile</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -85,9 +85,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$QLockFile-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p>A lock file can be used to prevent multiple processes from accessing concurrently the same resource. For instance, a configuration file on disk, or a socket, a port, a region of shared memory..&#x2e;</p>
+<p>A lock file can be used to prevent multiple processes from accessing concurrently the same resource. For instance, a configuration file on disk, or a socket, a port, a region of shared memory...</p>
 <p>Serialization is only guaranteed if all processes that access the shared resource use QLockFile, with the same file path.</p>
-<p>QLockFile supports two use cases: to protect a resource for a short-term operation (e.g&#x2e; verifying if a configuration file has changed before saving new settings), and for long-lived protection of a resource (e.g&#x2e; a document opened by a user in an editor) for an indefinite amount of time.</p>
+<p>QLockFile supports two use cases: to protect a resource for a short-term operation (e.g. verifying if a configuration file has changed before saving new settings), and for long-lived protection of a resource (e.g. a document opened by a user in an editor) for an indefinite amount of time.</p>
 <p>When protecting for a short-term operation, it is acceptable to call <a href="qlockfile.html#lock" translate="no">lock</a>() and wait until any running operation finishes. When protecting a resource over a long time, however, the application should always call <a href="qlockfile.html#setStaleLockTime" translate="no">setStaleLockTime</a>(0ms) and then <a href="qlockfile.html#tryLock" translate="no">tryLock</a>() with a short timeout, in order to warn the user that the resource is locked.</p>
 <p>If the process holding the lock crashes, the lock file stays on disk and can prevent any other process from accessing the shared resource, ever. For this reason, QLockFile tries to detect such a &quot;stale&quot; lock file, based on the process ID written into the file. To cover the situation that the process ID got reused meanwhile, the current process name is compared to the name of the process that corresponds to the process ID from the lock file. If the process names differ, the lock file is considered stale. Additionally, the last modification time of the lock file (30s by default, for the use case of a short-lived operation) is taken into account. If the lock file is found to be stale, it will be deleted.</p>
 <p>For the use case of protecting a resource over a long time, you should therefore call <a href="qlockfile.html#setStaleLockTime" translate="no">setStaleLockTime</a>(0), and when <a href="qlockfile.html#tryLock" translate="no">tryLock</a>() returns <a href="qlockfile.html#LockError-enum" translate="no">LockFailedError</a>, inform the user that the document is locked, possibly using <a href="qlockfile.html#getLockInfo" translate="no">getLockInfo</a>() for more details.</p>
@@ -159,13 +159,13 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="removeStaleLockFile"><span class="type">bool</span> QLockFile::<span class="name">removeStaleLockFile</span>()</h3>
 <p>Attempts to forcefully remove an existing lock file.</p>
 <p>Calling this is not recommended when protecting a short-lived operation: <a href="qlockfile.html" translate="no">QLockFile</a> already takes care of removing lock files after they are older than <a href="qlockfile.html#staleLockTime" translate="no">staleLockTime</a>().</p>
-<p>This method should only be called when protecting a resource for a long time, i.e&#x2e; with <a href="qlockfile.html#staleLockTime" translate="no">staleLockTime</a>(0), and after <a href="qlockfile.html#tryLock" translate="no">tryLock</a>() returned <a href="qlockfile.html#LockError-enum" translate="no">LockFailedError</a>, and the user agreed on removing the lock file.</p>
+<p>This method should only be called when protecting a resource for a long time, i.e. with <a href="qlockfile.html#staleLockTime" translate="no">staleLockTime</a>(0), and after <a href="qlockfile.html#tryLock" translate="no">tryLock</a>() returned <a href="qlockfile.html#LockError-enum" translate="no">LockFailedError</a>, and the user agreed on removing the lock file.</p>
 <p>Returns <code translate="no">true</code> on success, false if the lock file couldn't be removed. This happens on Windows, when the application owning the lock is still running.</p>
 <!-- @@@removeStaleLockFile -->
 <!-- $$$setStaleLockTime[overload1]$$$setStaleLockTimeint -->
 <h3 class="fn" translate="no" id="setStaleLockTime"><span class="type">void</span> QLockFile::<span class="name">setStaleLockTime</span>(<span class="type">int</span> <i>staleLockTime</i>)</h3>
-<p>Sets <i translate="no">staleLockTime</i> to be the time in milliseconds after which a lock file is considered stale. The default value is 30000, i.e&#x2e; 30 seconds. If your application typically keeps the file locked for more than 30 seconds (for instance while saving megabytes of data for 2 minutes), you should set a bigger value using setStaleLockTime().</p>
-<p>The value of <i translate="no">staleLockTime</i> is used by <a href="qlockfile.html#lock" translate="no">lock</a>() and <a href="qlockfile.html#tryLock" translate="no">tryLock</a>() in order to determine when an existing lock file is considered stale, i.e&#x2e; left over by a crashed process. This is useful for the case where the PID got reused meanwhile, so one way to detect a stale lock file is by the fact that it has been around for a long time.</p>
+<p>Sets <i translate="no">staleLockTime</i> to be the time in milliseconds after which a lock file is considered stale. The default value is 30000, i.e. 30 seconds. If your application typically keeps the file locked for more than 30 seconds (for instance while saving megabytes of data for 2 minutes), you should set a bigger value using setStaleLockTime().</p>
+<p>The value of <i translate="no">staleLockTime</i> is used by <a href="qlockfile.html#lock" translate="no">lock</a>() and <a href="qlockfile.html#tryLock" translate="no">tryLock</a>() in order to determine when an existing lock file is considered stale, i.e. left over by a crashed process. This is useful for the case where the PID got reused meanwhile, so one way to detect a stale lock file is by the fact that it has been around for a long time.</p>
 <p>This is an overloaded function, equivalent to calling:</p>
 <pre class="cpp" translate="no">
  setStaleLockTime(std<span class="operator">::</span>chrono<span class="operator">::</span>milliseconds{staleLockTime});
@@ -176,7 +176,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="setStaleLockTime-1"><code translate="no">[since 6.2] </code><span class="type">void</span> QLockFile::<span class="name">setStaleLockTime</span>(<span class="type">std::chrono::milliseconds</span> <i>staleLockTime</i>)</h3>
 <p>Sets the interval after which a lock file is considered stale to <i translate="no">staleLockTime</i>. The default value is 30s.</p>
 <p>If your application typically keeps the file locked for more than 30 seconds (for instance while saving megabytes of data for 2 minutes), you should set a bigger value using setStaleLockTime().</p>
-<p>The value of <a href="qlockfile.html#staleLockTime" translate="no">staleLockTime</a>() is used by <a href="qlockfile.html#lock" translate="no">lock</a>() and <a href="qlockfile.html#tryLock" translate="no">tryLock</a>() in order to determine when an existing lock file is considered stale, i.e&#x2e; left over by a crashed process. This is useful for the case where the PID got reused meanwhile, so one way to detect a stale lock file is by the fact that it has been around for a long time.</p>
+<p>The value of <a href="qlockfile.html#staleLockTime" translate="no">staleLockTime</a>() is used by <a href="qlockfile.html#lock" translate="no">lock</a>() and <a href="qlockfile.html#tryLock" translate="no">tryLock</a>() in order to determine when an existing lock file is considered stale, i.e. left over by a crashed process. This is useful for the case where the PID got reused meanwhile, so one way to detect a stale lock file is by the fact that it has been around for a long time.</p>
 <p>This function was introduced in Qt 6.2.</p>
 <p><b>See also </b><a href="qlockfile.html#staleLockTime" translate="no">staleLockTime</a>().</p>
 <!-- @@@setStaleLockTime -->
@@ -195,7 +195,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$tryLock[overload1]$$$tryLockint -->
 <h3 class="fn" translate="no" id="tryLock"><span class="type">bool</span> QLockFile::<span class="name">tryLock</span>(<span class="type">int</span> <i>timeout</i>)</h3>
 <p>Attempts to create the lock file. This function returns <code translate="no">true</code> if the lock was obtained; otherwise it returns <code translate="no">false</code>. If another process (or another thread) has created the lock file already, this function will wait for at most <i translate="no">timeout</i> milliseconds for the lock file to become available.</p>
-<p>Note: Passing a negative number as the <i translate="no">timeout</i> is equivalent to calling <a href="qlockfile.html#lock" translate="no">lock</a>(), i.e&#x2e; this function will wait forever until the lock file can be locked if <i translate="no">timeout</i> is negative.</p>
+<p>Note: Passing a negative number as the <i translate="no">timeout</i> is equivalent to calling <a href="qlockfile.html#lock" translate="no">lock</a>(), i.e. this function will wait forever until the lock file can be locked if <i translate="no">timeout</i> is negative.</p>
 <p>If the lock was obtained, it must be released with <a href="qlockfile.html#unlock" translate="no">unlock</a>() before another process (or thread) can successfully lock it.</p>
 <p>Calling this function multiple times on the same lock from the same thread without unlocking first is not allowed, this function will <i>always</i> return false when attempting to lock the file recursively.</p>
 <p><b>See also </b><a href="qlockfile.html#lock" translate="no">lock</a>() and <a href="qlockfile.html#unlock" translate="no">unlock</a>().</p>
@@ -223,9 +223,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

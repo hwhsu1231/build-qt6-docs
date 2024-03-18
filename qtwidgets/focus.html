@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- focus.qdoc -->
   <meta name="description" content="Keyboard focus management and handling.">
-  <title>Keyboard Focus in Widgets | Qt Widgets 6.6.0</title>
+  <title>Keyboard Focus in Widgets | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li>Keyboard Focus in Widgets</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -52,10 +52,10 @@
 <h1 class="title">Keyboard Focus in Widgets</h1>
 <!-- $$$focus.html-description -->
 <div class="descr" id="details">
-<p>Qt's widgets handle keyboard focus in the ways that have become customary in GUIs.</p>
+<p>Qt's widgets handle keyboard focus in ways that have become customary in GUIs.</p>
 <p>The basic issue is that the user's key strokes can be directed at any of several windows on the screen, and any of several widgets inside the intended window. When the user presses a key, they expect it to go to the right place, and the software must try to meet this expectation. The system must determine which application the key stroke is directed at, which window within that application, and which widget within that window.</p>
 <h2 id="focus-motion">Focus Motion</h2>
-<p>The customs which have evolved for directing keyboard focus to a particular widget are these:</p>
+<p>The customs that have evolved for directing keyboard focus to a particular widget are these:</p>
 <ol class="1" type="1"><li>The user presses <b translate="no">Tab</b> (or <b translate="no">Shift+Tab</b>).</li>
 <li>The user clicks a widget.</li>
 <li>The user presses a keyboard shortcut.</li>
@@ -68,7 +68,7 @@
 <p>Pressing <b translate="no">Tab</b>, in all window systems in common use today, moves the keyboard focus to the next widget in a circular per-window list. <b translate="no">Tab</b> moves focus along the circular list in one direction, <b translate="no">Shift+Tab</b> in the other. The order in which <b translate="no">Tab</b> presses move from widget to widget is called the tab order.</p>
 <p>You can customize the tab order using <a href="qwidget.html#setTabOrder" translate="no">QWidget::setTabOrder</a>(). (If you don't, <b translate="no">Tab</b> generally moves focus in the order of widget construction.) Qt Designer provides a means of visually changing the tab order.</p>
 <p>Since pressing <b translate="no">Tab</b> is so common, most widgets that can have focus should support tab focus. The major exception is widgets that are rarely used, and where there is some keyboard accelerator or error handler that moves the focus.</p>
-<p>For example, in a data entry dialog, there might be a field that is only necessary in one per cent of all cases. In such a dialog, <b translate="no">Tab</b> could skip this field, and the dialog could use one of these mechanisms:</p>
+<p>For example, in a data entry dialog, there might be a field that is only necessary in one percent of all cases. In such a dialog, <b translate="no">Tab</b> could skip this field, and the dialog could use one of these mechanisms:</p>
 <ol class="1" type="1"><li>If the program can determine whether the field is needed, it can move focus there when the user finishes entry and presses <b translate="no">OK</b>, or when the user presses Enter after finishing the other fields. Alternately, include the field in the tab order but disable it. Enable it if it becomes appropriate in view of what the user has set in the other fields.</li>
 <li>The label for the field can include a keyboard shortcut that moves focus to this field.</li>
 </ol>
@@ -82,7 +82,7 @@
 <p>In Qt, only the <a href="qwidget.html#focusPolicy-prop" translate="no">QWidget::setFocusPolicy</a>() function affects click-to-focus.</p>
 <h3 id="the-user-presses-a-keyboard-shortcut">The User Presses a Keyboard Shortcut</h3>
 <p>It's not unusual for keyboard shortcuts to move the focus. This can happen implicitly by opening modal dialogs, but also explicitly using focus accelerators such as those provided by <a href="qlabel.html#setBuddy" translate="no">QLabel::setBuddy</a>(), <a href="qgroupbox.html" translate="no">QGroupBox</a>, and <a href="qtabbar.html" translate="no">QTabBar</a>.</p>
-<p>Your application can support shortcut focus for all widgets that the user may want to jump to. For example, a tab dialog can have keyboard shortcuts for each of its pages, so the user can press e.g&#x2e; <b translate="no">Alt+P</b> to step to the <u>P</u>rinting page. Keep in mind that it's easy to overdo this, as there are only a few keys, and also important to provide keyboard shortcuts for commands. Refer to the design guidelines for the platform you target, for example Microsoft's <a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/dnacc/guidelines-for-keyboard-user-interface-design" translate="no">guidelines for keyboard user interface design</a> or Apple's <a href="https://developer.apple.com/design/human-interface-guidelines/inputs/focus-and-selection/" translate="no">focus and selection</a> guidelines.</p>
+<p>Your application can support shortcut focus for all widgets that the user may want to jump to. For example, a tab dialog can have keyboard shortcuts for each of its pages, so the user can press e.g. <b translate="no">Alt+P</b> to step to the <u>P</u>rinting page. Keep in mind that it's easy to overdo this, as there are only a few keys, and also important to provide keyboard shortcuts for commands. Refer to the design guidelines for the platform you target, for example Microsoft's <a href="https://learn.microsoft.com/en-us/previous-versions/windows/desktop/dnacc/guidelines-for-keyboard-user-interface-design" translate="no">guidelines for keyboard user interface design</a> or Apple's <a href="https://developer.apple.com/design/human-interface-guidelines/inputs/focus-and-selection/" translate="no">focus and selection</a> guidelines.</p>
 <h3 id="the-user-rotates-the-mouse-wheel">The User Rotates the Mouse Wheel</h3>
 <p>On Microsoft Windows, mouse wheel usage is always handled by the widget that has keyboard focus. On macOS and X11, it's handled by the widget that gets other mouse events.</p>
 <p>The way Qt handles this platform difference is by letting widgets move the keyboard focus when the wheel is used. With the right focus policy on each widget, applications can work idiomatically correctly on Windows, macOS, and X11.</p>
@@ -99,9 +99,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

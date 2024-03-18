@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qdatastream.cpp -->
   <meta name="description" content="The QDataStream class provides serialization of binary data to a QIODevice.">
-  <title>QDataStream Class | Qt Core 6.6.0</title>
+  <title>QDataStream Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QDataStream</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -50,6 +50,7 @@
 <li class="level2"><a href="#reading-and-writing-qt-collection-classes">Reading and Writing Qt Collection Classes</a></li>
 <li class="level2"><a href="#reading-and-writing-other-qt-classes">Reading and Writing Other Qt Classes</a></li>
 <li class="level2"><a href="#using-read-transactions">Using Read Transactions</a></li>
+<li class="level2"><a href="#corruption-and-security">Corruption and Security</a></li>
 </ul>
 </div>
 <div class="sidebar-content" id="sidebar-content"></div></div>
@@ -250,6 +251,10 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
      <span class="keyword">return</span>;     <span class="comment">// wait for more data</span>
 </pre>
 <p>If no full packet is received, this code restores the stream to the initial position, after which you need to wait for more data to arrive.</p>
+<h3 id="corruption-and-security">Corruption and Security</h3>
+<p>QDataStream is not resilient against corrupted data inputs and should therefore not be used for security-sensitive situations, even when using transactions. Transactions will help determine if a valid input can currently be decoded with the data currently available on an asynchronous device, but will assume that the data that is available is correctly formed.</p>
+<p>Additionally, many QDataStream demarshalling operators will allocate memory based on information found in the stream. Those operators perform no verification on whether the requested amount of memory is reasonable or if it is compatible with the amount of data available in the stream (example: demarshalling a <a href="qbytearray.html" translate="no">QByteArray</a> or <a href="qstring.html" translate="no">QString</a> may see the request for allocation of several gigabytes of data).</p>
+<p>QDataStream should not be used on content whose provenance cannot be trusted. Applications should be designed to attempt to decode only streams whose provenance is at least as trustworthy as that of the application itself or its plugins.</p>
 </div>
 <p><b>See also </b><a href="qtextstream.html" translate="no">QTextStream</a> and <a href="qvariant.html" translate="no">QVariant</a>.</p>
 <!-- @@@QDataStream -->
@@ -358,7 +363,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$~QDataStream[overload1]$$$~QDataStream -->
 <h3 class="fn" translate="no" id="dtor.QDataStream"><code translate="no">[noexcept] </code>QDataStream::<span class="name">~QDataStream</span>()</h3>
 <p>Destroys the data stream.</p>
-<p>The destructor will not affect the current I/O device, unless it is an internal I/O device (e.g&#x2e; a <a href="qbuffer.html" translate="no">QBuffer</a>) processing a <a href="qbytearray.html" translate="no">QByteArray</a> passed in the <i>constructor</i>, in which case the internal I/O device is destroyed.</p>
+<p>The destructor will not affect the current I/O device, unless it is an internal I/O device (e.g. a <a href="qbuffer.html" translate="no">QBuffer</a>) processing a <a href="qbytearray.html" translate="no">QByteArray</a> passed in the <i>constructor</i>, in which case the internal I/O device is destroyed.</p>
 <!-- @@@~QDataStream -->
 <!-- $$$abortTransaction[overload1]$$$abortTransaction -->
 <h3 class="fn" translate="no" id="abortTransaction"><span class="type">void</span> QDataStream::<span class="name">abortTransaction</span>()</h3>
@@ -482,7 +487,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="startTransaction"><span class="type">void</span> QDataStream::<span class="name">startTransaction</span>()</h3>
 <p>Starts a new read transaction on the stream.</p>
 <p>Defines a restorable point within the sequence of read operations. For sequential devices, read data will be duplicated internally to allow recovery in case of incomplete reads. For random-access devices, this function saves the current position of the stream. Call <a href="qdatastream.html#commitTransaction" translate="no">commitTransaction</a>(), <a href="qdatastream.html#rollbackTransaction" translate="no">rollbackTransaction</a>(), or <a href="qdatastream.html#abortTransaction" translate="no">abortTransaction</a>() to finish the current transaction.</p>
-<p>Once a transaction is started, subsequent calls to this function will make the transaction recursive. Inner transactions act as agents of the outermost transaction (i.e&#x2e;, report the status of read operations to the outermost transaction, which can restore the position of the stream).</p>
+<p>Once a transaction is started, subsequent calls to this function will make the transaction recursive. Inner transactions act as agents of the outermost transaction (i.e., report the status of read operations to the outermost transaction, which can restore the position of the stream).</p>
 <div class="admonition note">
 <p><b>Note: </b>Restoring to the point of the nested startTransaction() call is not supported.</p>
 </div>
@@ -694,9 +699,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

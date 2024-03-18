@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- virtualassistant.qdoc -->
+  <meta name="description" content="Qt Quick application that presents a 3D model of a virtual assistant with dynamic animations created using QML and timelines.">
+  <title>Qt Quick 3D - Virtual Assistant Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Virtual Assistant Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Virtual Assistant Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2021 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick3D
+ import QtQuick.Layouts
+ import QtQuick3D.Helpers
+ import VirtualAssistant.Constants
+ import Quick3DAssets.VirtualAssistant
+
+ <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+     <span class="name">width</span>: <span class="name">Constants</span>.<span class="name">width</span>
+     <span class="name">height</span>: <span class="name">Constants</span>.<span class="name">height</span>
+
+     <span class="type"><a href="qml-qtquick3d-view3d.html" translate="no">View3D</a></span> {
+         <span class="name">id</span>: <span class="name">view3D</span>
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+         <span class="name">environment</span>: <span class="name">ExtendedSceneEnvironment</span> {
+             <span class="name">backgroundMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">SkyBox</span>
+             <span class="name">lightProbe</span>: <span class="name">Texture</span> { <span class="name">source</span>: <span class="name">Constants</span>.<span class="name">sceneName</span> }
+             <span class="name">antialiasingMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">MSAA</span>
+             <span class="name">antialiasingQuality</span>: <span class="name">SceneEnvironment</span>.<span class="name">VeryHigh</span>
+             <span class="name">fxaaEnabled</span>: <span class="number">true</span>
+             <span class="name">probeExposure</span>: <span class="number">0.6</span>
+             <span class="name">probeOrientation</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="name">settingsPanel</span>.<span class="name">skyboxRotation</span>, <span class="number">0</span>)
+             <span class="name">specularAAEnabled</span>: <span class="number">true</span>
+             <span class="name">tonemapMode</span>: <span class="name">SceneEnvironment</span>.<span class="name">TonemapModeLinear</span>
+             <span class="name">vignetteEnabled</span>: <span class="number">true</span>
+             <span class="name">vignetteRadius</span>: <span class="number">0.15</span>
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">scene</span>
+
+             <span class="type">VirtualAssistant</span> {
+                 <span class="name">id</span>: <span class="name">virtualAssistant</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> {
+             <span class="name">id</span>: <span class="name">cameraNode</span>
+             <span class="type"><a href="qml-qtquick3d-perspectivecamera.html" translate="no">PerspectiveCamera</a></span> {
+                 <span class="name">id</span>: <span class="name">sceneCamera</span>
+                 <span class="name">y</span>: <span class="number">5</span>
+                 <span class="name">z</span>: <span class="number">15</span>
+                 <span class="name">fieldOfView</span>: <span class="name">settingsPanel</span>.<span class="name">cameraFov</span>
+                 <span class="name">clipNear</span>: <span class="number">1.0</span>
+             }
+         }
+
+         <span class="type"><a href="qml-qtquick3d-helpers-orbitcameracontroller.html" translate="no">OrbitCameraController</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">origin</span>: <span class="name">cameraNode</span>
+             <span class="name">camera</span>: <span class="name">sceneCamera</span>
+             <span class="name">enabled</span>: <span class="name">settingsPanel</span>.<span class="name">cameraControllerEnabled</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-mousearea.html" translate="no">MouseArea</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+
+             <span class="type"><a href="../qtqml/qml-qtqml-connections.html" translate="no">Connections</a></span> {
+                 <span class="keyword">function </span><span class="name">onClicked</span>(mouse) {
+                     var result = <span class="name">view3D</span>.<span class="name">pick</span>(<span class="name">mouse</span>.<span class="name">x</span>, <span class="name">mouse</span>.<span class="name">y</span>);
+
+                     <span class="keyword">if</span> (!<span class="name">result</span>.<span class="name">objectHit</span>)
+                         <span class="keyword">return</span>
+
+                     <span class="name">virtualAssistant</span>.<span class="name">animateObject</span>(<span class="name">result</span>.<span class="name">objectHit</span>.<span class="name">objectName</span>)
+                 }
+             }
+         }
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+         <span class="name">id</span>: <span class="name">__materialLibrary__</span>
+         <span class="type"><a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a></span> {
+             <span class="name">id</span>: <span class="name">defaultMaterial</span>
+             <span class="name">objectName</span>: <span class="string">&quot;Default Material&quot;</span>
+             <span class="name">diffuseColor</span>: <span class="string">&quot;#4aee45&quot;</span>
+         }
+     }
+
+     <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbar.html" translate="no">TabBar</a></span> {
+         <span class="name">id</span>: <span class="name">bar</span>
+         <span class="name">anchors</span>.left: <span class="name">parent</span>.<span class="name">left</span>
+         <span class="name">anchors</span>.top: <span class="name">parent</span>.<span class="name">top</span>
+         <span class="name">width</span>: <span class="number">300</span>
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Animations&quot;</span>)
+         }
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-tabbutton.html" translate="no">TabButton</a></span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Settings&quot;</span>)
+         }
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-stacklayout.html" translate="no">StackLayout</a></span> {
+         <span class="name">anchors</span>.top: <span class="name">bar</span>.<span class="name">bottom</span>
+         <span class="name">anchors</span>.bottom: <span class="name">parent</span>.<span class="name">bottom</span>
+         <span class="name">width</span>: <span class="name">bar</span>.<span class="name">width</span>
+
+         <span class="name">currentIndex</span>: <span class="name">bar</span>.<span class="name">currentIndex</span>
+
+         <span class="type">ControlPanel</span> {
+             <span class="name">id</span>: <span class="name">controlPanel</span>
+
+             <span class="type"><a href="../qtqml/qml-qtqml-connections.html" translate="no">Connections</a></span> {
+                 <span class="name">target</span>: <span class="name">controlPanel</span>
+                 <span class="keyword">function </span><span class="name">onClicked</span>(index: <span class="name">int</span>) {
+                     <span class="name">virtualAssistant</span>.<span class="name">runAnimation</span>(<span class="name">index</span>);
+                 }
+             }
+         }
+
+         <span class="type">SettingsPanel</span> {
+             <span class="name">id</span>: <span class="name">settingsPanel</span>
+
+             <span class="name">camera</span>: <span class="name">sceneCamera</span>
+         }
+     }
+ }
+</pre>

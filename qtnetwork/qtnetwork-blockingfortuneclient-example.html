@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- blockingfortuneclient.qdoc -->
   <meta name="description" content="Demonstrates how to create a client for a network service.">
-  <title>Blocking Fortune Client | Qt Network 6.6.0</title>
+  <title>Blocking Fortune Client | Qt Network 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtnetwork-index.html" translate="no">Qt Network</a></li>
 <li><a href="examples-network.html" translate="no">Network Examples</a></li>
 <li>Blocking Fortune Client</li>
-<li id="buildversion"><a href="qtnetwork-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtnetwork-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -47,7 +47,7 @@
 <p class="centerAlign"><img src="images/blockingfortuneclient-example.png" alt="" /></p><p><a href="qtcpsocket.html" translate="no">QTcpSocket</a> supports two general approaches to network programming:</p>
 <ul>
 <li><i>The asynchronous (non-blocking) approach.</i> Operations are scheduled and performed when control returns to Qt's event loop. When the operation is finished, <a href="qtcpsocket.html" translate="no">QTcpSocket</a> emits a signal. For example, <a href="qabstractsocket.html#connectToHost" translate="no">QTcpSocket::connectToHost</a>() returns immediately, and when the connection has been established, <a href="qtcpsocket.html" translate="no">QTcpSocket</a> emits <a href="qabstractsocket.html#connected" translate="no">connected</a>().</li>
-<li><i>The synchronous (blocking) approach.</i> In non-GUI and multithreaded applications, you can call the <code translate="no">waitFor..&#x2e;()</code> functions (e.g&#x2e;, <a href="qabstractsocket.html#waitForConnected" translate="no">QTcpSocket::waitForConnected</a>()) to suspend the calling thread until the operation has completed, instead of connecting to signals.</li>
+<li><i>The synchronous (blocking) approach.</i> In non-GUI and multithreaded applications, you can call the <code translate="no">waitFor...()</code> functions (e.g., <a href="qabstractsocket.html#waitForConnected" translate="no">QTcpSocket::waitForConnected</a>()) to suspend the calling thread until the operation has completed, instead of connecting to signals.</li>
 </ul>
 <p>The implementation is very similar to the <a href="qtnetwork-fortuneclient-example.html" translate="no">Fortune Client</a> example, but instead of having <a href="qtcpsocket.html" translate="no">QTcpSocket</a> as a member of the main class, doing asynchronous networking in the main thread, we will do all network operations in a separate thread and use <a href="qtcpsocket.html" translate="no">QTcpSocket</a>'s blocking API.</p>
 <p>The purpose of this example is to demonstrate a pattern that you can use to simplify your networking code, without losing responsiveness in your user interface. Use of Qt's blocking network API often leads to simpler code, but because of its blocking behavior, it should only be used in non-GUI threads to prevent the user interface from freezing. But contrary to what many think, using threads with <a href="../qtcore/qthread.html" translate="no">QThread</a> does not necessarily add unmanagable complexity to your application.</p>
@@ -115,14 +115,14 @@
              <span class="keyword">return</span>;
          }
 </pre>
-<p>But since we are running in a non-GUI thread, we do not have to worry about blocking the user interface. So instead of entering an event loop, we simply call <a href="qabstractsocket.html#waitForConnected" translate="no">QTcpSocket::waitForConnected</a>(). This function will wait, blocking the calling thread, until <a href="qtcpsocket.html" translate="no">QTcpSocket</a> emits connected() or an error occurs. If connected() is emitted, the function returns true; if the connection failed or timed out (which in this example happens after 5 seconds), false is returned. <a href="qabstractsocket.html#waitForConnected" translate="no">QTcpSocket::waitForConnected</a>(), like the other <code translate="no">waitFor..&#x2e;()</code> functions, is part of <a href="qtcpsocket.html" translate="no">QTcpSocket</a>'s <i>blocking API</i>.</p>
+<p>But since we are running in a non-GUI thread, we do not have to worry about blocking the user interface. So instead of entering an event loop, we simply call <a href="qabstractsocket.html#waitForConnected" translate="no">QTcpSocket::waitForConnected</a>(). This function will wait, blocking the calling thread, until <a href="qtcpsocket.html" translate="no">QTcpSocket</a> emits connected() or an error occurs. If connected() is emitted, the function returns true; if the connection failed or timed out (which in this example happens after 5 seconds), false is returned. <a href="qabstractsocket.html#waitForConnected" translate="no">QTcpSocket::waitForConnected</a>(), like the other <code translate="no">waitFor...()</code> functions, is part of <a href="qtcpsocket.html" translate="no">QTcpSocket</a>'s <i>blocking API</i>.</p>
 <p>After this statement, we have a connected socket to work with.</p>
 <pre class="cpp" translate="no">
          <span class="type"><a href="../qtcore/qdatastream.html" translate="no">QDataStream</a></span> in(<span class="operator">&amp;</span>socket);
          in<span class="operator">.</span>setVersion(<span class="type"><a href="../qtcore/qdatastream.html" translate="no">QDataStream</a></span><span class="operator">::</span>Qt_6_5);
          <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> fortune;
 </pre>
-<p>Now we can create a <a href="../qtcore/qdatastream.html" translate="no">QDataStream</a> object, passing the socket to <a href="../qtcore/qdatastream.html" translate="no">QDataStream</a>'s constructor, and as in the other client examples we set the stream protocol version to <a href="../qtcore/qdatastream.html#Version-enum" translate="no">QDataStream::Qt_4_0</a>.</p>
+<p>Now we can create a <a href="../qtcore/qdatastream.html" translate="no">QDataStream</a> object, passing the socket to <a href="../qtcore/qdatastream.html" translate="no">QDataStream</a>'s constructor, and as in the other client examples we set the stream protocol version to <a href="../qtcore/qdatastream.html#Version-enum" translate="no">QDataStream::Qt_6_5</a>.</p>
 <pre class="cpp" translate="no">
          <span class="keyword">do</span> {
              <span class="keyword">if</span> (<span class="operator">!</span>socket<span class="operator">.</span>waitForReadyRead(Timeout)) {
@@ -170,12 +170,12 @@
 <p>Finishing off the FortuneThread walkthrough, this is the destructor that sets <i>quit</i> to true, wakes up the thread and waits for the thread to exit before returning. This lets the <code translate="no">while</code> loop in run() will finish its current iteration. When run() returns, the thread will terminate and be destroyed.</p>
 <p>Now for the BlockingClient class:</p>
 <pre class="cpp" translate="no">
- <span class="keyword">class</span> BlockingClient : <span class="keyword">public</span> <span class="type">QWidget</span>
+ <span class="keyword">class</span> BlockingClient : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>
  {
      Q_OBJECT
 
  <span class="keyword">public</span>:
-     BlockingClient(<span class="type">QWidget</span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
+     BlockingClient(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
 
  <span class="keyword">private</span> <span class="keyword">slots</span>:
      <span class="type">void</span> requestNewFortune();
@@ -184,14 +184,14 @@
      <span class="type">void</span> enableGetFortuneButton();
 
  <span class="keyword">private</span>:
-     <span class="type">QLabel</span> <span class="operator">*</span>hostLabel;
-     <span class="type">QLabel</span> <span class="operator">*</span>portLabel;
-     <span class="type">QLineEdit</span> <span class="operator">*</span>hostLineEdit;
-     <span class="type">QLineEdit</span> <span class="operator">*</span>portLineEdit;
-     <span class="type">QLabel</span> <span class="operator">*</span>statusLabel;
-     <span class="type">QPushButton</span> <span class="operator">*</span>getFortuneButton;
-     <span class="type">QPushButton</span> <span class="operator">*</span>quitButton;
-     <span class="type">QDialogButtonBox</span> <span class="operator">*</span>buttonBox;
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>hostLabel;
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>portLabel;
+     <span class="type"><a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a></span> <span class="operator">*</span>hostLineEdit;
+     <span class="type"><a href="../qtwidgets/qlineedit.html" translate="no">QLineEdit</a></span> <span class="operator">*</span>portLineEdit;
+     <span class="type"><a href="../qtwidgets/qlabel.html" translate="no">QLabel</a></span> <span class="operator">*</span>statusLabel;
+     <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span> <span class="operator">*</span>getFortuneButton;
+     <span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span> <span class="operator">*</span>quitButton;
+     <span class="type"><a href="../qtwidgets/qdialogbuttonbox.html" translate="no">QDialogButtonBox</a></span> <span class="operator">*</span>buttonBox;
 
      FortuneThread thread;
      <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> currentFortune;
@@ -239,9 +239,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

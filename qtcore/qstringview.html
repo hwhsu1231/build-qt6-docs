@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qstringview.cpp -->
   <meta name="description" content="The QStringView class provides a unified view on UTF-16 strings with a read-only subset of the QString API.">
-  <title>QStringView Class | Qt Core 6.6.0</title>
+  <title>QStringView Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QStringView</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -304,7 +304,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$ -->
 <div class="fngroup">
 <h3 class="fn fngroupitem" translate="no" id="compare-3"><code translate="no">[constexpr noexcept] </code><span class="type">int</span> QStringView::<span class="name">compare</span>(<span class="type"><a href="qchar.html" translate="no">QChar</a></span> <i>ch</i>) const</h3><h3 class="fn fngroupitem" translate="no" id="compare-4"><code translate="no">[noexcept] </code><span class="type">int</span> QStringView::<span class="name">compare</span>(<span class="type"><a href="qchar.html" translate="no">QChar</a></span> <i>ch</i>, <span class="type"><a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitivity</a></span> <i>cs</i>) const</h3><h3 class="fn fngroupitem" translate="no" id="compare-1"><code translate="no">[noexcept] </code><span class="type">int</span> QStringView::<span class="name">compare</span>(<span class="type"><a href="qlatin1stringview.html" translate="no">QLatin1StringView</a></span> <i>l1</i>, <span class="type"><a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitivity</a></span> <i>cs</i> = Qt::CaseSensitive) const</h3></div>
-<p>Returns an integer that compares to zero as this string view compares to the Latin-1 string viewed by <i translate="no">l1</i>, or the character <i translate="no">ch</i>, respectively.</p>
+<p>Compares this string view to the Latin-1 string view <i translate="no">l1</i>, or the character <i translate="no">ch</i>. Returns a negative integer if this string view is less than <i translate="no">l1</i> or <i translate="no">ch</i>, a positive integer if it is greater than <i translate="no">l1</i> or <i translate="no">ch</i>, and zero if they are equal.</p>
 <p>If <i translate="no">cs</i> is <a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitive</a> (the default), the comparison is case-sensitive; otherwise the comparison is case-insensitive.</p>
 <p><b>See also </b><a href="qstringview.html#operator-eq-eq" translate="no">operator==</a>(), <a href="qstringview.html#operator-lt" translate="no">operator&lt;</a>(), and <a href="qstringview.html#operator-gt" translate="no">operator&gt;</a>().</p>
 <!-- @@@ -->
@@ -380,7 +380,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>This is because the template arguments of <a href="qstringtokenizer.html" translate="no">QStringTokenizer</a> have a very subtle dependency on the specific <a href="qstringview.html#tokenize" translate="no">tokenize</a>() overload from which they are returned, and they don't usually correspond to the type used for the separator.</p>
 <p>This function was introduced in Qt 6.0.</p>
 <div class="admonition note">
-<p><b>Note: </b>This function does not throw any exception when &quot;noexcept(qTokenize(std::declval&lt;const QStringView&amp;&gt;(), std::forward&lt;Needle&gt;(needle), flags..&#x2e;))&quot; is true.</p>
+<p><b>Note: </b>This function does not throw any exception when &quot;noexcept(qTokenize(std::declval&lt;const QStringView&amp;&gt;(), std::forward&lt;Needle&gt;(needle), flags...))&quot; is true.</p>
 </div>
 <p><b>See also </b><a href="qstringtokenizer.html" translate="no">QStringTokenizer</a> and <a href="qstringtokenizer.html#qTokenize" translate="no">qTokenize</a>().</p>
 <!-- @@@ -->
@@ -491,13 +491,13 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@chopped -->
 <!-- $$$compare[overload1]$$$compareQStringViewQt::CaseSensitivity -->
 <h3 class="fn" translate="no" id="compare"><code translate="no">[noexcept] </code><span class="type">int</span> QStringView::<span class="name">compare</span>(<span class="type"><a href="qstringview.html#QStringView" translate="no">QStringView</a></span> <i>str</i>, <span class="type"><a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitivity</a></span> <i>cs</i> = Qt::CaseSensitive) const</h3>
-<p>Returns an integer that compares to zero as this string view compares to the string view <i translate="no">str</i>.</p>
+<p>Compares this string view with string view <i translate="no">str</i> and returns a negative integer if this string view is less than <i translate="no">str</i>, a positive integer if it is greater than <i translate="no">str</i>, and zero if they are equal.</p>
 <p>If <i translate="no">cs</i> is <a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitive</a> (the default), the comparison is case-sensitive; otherwise the comparison is case-insensitive.</p>
 <p><b>See also </b><a href="qstringview.html#operator-eq-eq" translate="no">operator==</a>(), <a href="qstringview.html#operator-lt" translate="no">operator&lt;</a>(), and <a href="qstringview.html#operator-gt" translate="no">operator&gt;</a>().</p>
 <!-- @@@compare -->
 <!-- $$$compare$$$compareQUtf8StringViewQt::CaseSensitivity -->
 <h3 class="fn" translate="no" id="compare-2"><code translate="no">[noexcept, since 6.5] </code><span class="type">int</span> QStringView::<span class="name">compare</span>(<span class="type"><a href="qutf8stringview.html" translate="no">QUtf8StringView</a></span> <i>str</i>, <span class="type"><a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitivity</a></span> <i>cs</i> = Qt::CaseSensitive) const</h3>
-<p>Returns an integer that compares to zero as this string view compares to the string view <i translate="no">str</i>.</p>
+<p>Compares this string view with <a href="qutf8stringview.html" translate="no">QUtf8StringView</a> <i translate="no">str</i> and returns a negative integer if this string view is less than <i translate="no">str</i>, a positive integer if it is greater than <i translate="no">str</i>, and zero if they are equal.</p>
 <p>If <i translate="no">cs</i> is <a href="qt.html#CaseSensitivity-enum" translate="no">Qt::CaseSensitive</a> (the default), the comparison is case-sensitive; otherwise the comparison is case-insensitive.</p>
 <p>This function was introduced in Qt 6.5.</p>
 <p><b>See also </b><a href="qstringview.html#operator-eq-eq" translate="no">operator==</a>(), <a href="qstringview.html#operator-lt" translate="no">operator&lt;</a>(), and <a href="qstringview.html#operator-gt" translate="no">operator&gt;</a>().</p>
@@ -773,7 +773,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$toDouble[overload1]$$$toDoublebool* -->
 <h3 class="fn" translate="no" id="toDouble"><code translate="no">[since 6.0] </code><span class="type">double</span> QStringView::<span class="name">toDouble</span>(<span class="type">bool</span> *<i>ok</i> = nullptr) const</h3>
 <p>Returns the string view converted to a <code translate="no">double</code> value.</p>
-<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g&#x2e; underflow).</p>
+<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g. underflow).</p>
 <p>If <i translate="no">ok</i> is not <code translate="no">nullptr</code>, failure is reported by setting *<i translate="no">ok</i> to <code translate="no">false</code>, and success by setting *<i translate="no">ok</i> to <code translate="no">true</code>.</p>
 <p>The string conversion will always happen in the 'C' locale. For locale dependent conversion use <a href="qlocale.html#toDouble" translate="no">QLocale::toDouble</a>()</p>
 <p>For historic reasons, this function does not handle thousands group separators. If you need to convert such numbers, use <a href="qlocale.html#toDouble" translate="no">QLocale::toDouble</a>().</p>
@@ -783,7 +783,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$toFloat[overload1]$$$toFloatbool* -->
 <h3 class="fn" translate="no" id="toFloat"><code translate="no">[since 6.0] </code><span class="type">float</span> QStringView::<span class="name">toFloat</span>(<span class="type">bool</span> *<i>ok</i> = nullptr) const</h3>
 <p>Returns the string view converted to a <code translate="no">float</code> value.</p>
-<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g&#x2e; underflow).</p>
+<p>Returns an infinity if the conversion overflows or 0.0 if the conversion fails for other reasons (e.g. underflow).</p>
 <p>If <i translate="no">ok</i> is not <code translate="no">nullptr</code>, failure is reported by setting *<i translate="no">ok</i> to <code translate="no">false</code>, and success by setting *<i translate="no">ok</i> to <code translate="no">true</code>.</p>
 <p>The string conversion will always happen in the 'C' locale. For locale dependent conversion use <a href="qlocale.html#toFloat" translate="no">QLocale::toFloat</a>()</p>
 <p>This function was introduced in Qt 6.0.</p>
@@ -904,7 +904,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$toWCharArray[overload1]$$$toWCharArraywchar_t* -->
 <h3 class="fn" translate="no" id="toWCharArray"><span class="type">qsizetype</span> QStringView::<span class="name">toWCharArray</span>(<span class="type">wchar_t</span> *<i>array</i>) const</h3>
 <p>Transcribes this string view into the given <i translate="no">array</i>.</p>
-<p>The caller is responsible for ensuring <i translate="no">array</i> is large enough to hold the <code translate="no">wchar_t</code> encoding of this string view (allocating the array with the same length as the string view is always sufficient). The array is encoded in UTF-16 on platforms where <code translate="no">wchar_t</code> is 2 bytes wide (e.g&#x2e; Windows); otherwise (Unix systems), <code translate="no">wchar_t</code> is assumed to be 4 bytes wide and the data is written in UCS-4.</p>
+<p>The caller is responsible for ensuring <i translate="no">array</i> is large enough to hold the <code translate="no">wchar_t</code> encoding of this string view (allocating the array with the same length as the string view is always sufficient). The array is encoded in UTF-16 on platforms where <code translate="no">wchar_t</code> is 2 bytes wide (e.g. Windows); otherwise (Unix systems), <code translate="no">wchar_t</code> is assumed to be 4 bytes wide and the data is written in UCS-4.</p>
 <div class="admonition note">
 <p><b>Note: </b>This function writes no null terminator to the end of <i translate="no">array</i>.</p>
 </div>
@@ -961,9 +961,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

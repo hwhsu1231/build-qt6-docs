@@ -28,7 +28,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Platform Notes - iOS</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -133,99 +133,141 @@
      PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 </pre>
 <h3 id="icons">Icons</h3>
-<p>Icons need to be set in the <code translate="no">Info.plist</code> file and then copied to the application bundle. Xcode has special support for icons, but when using Qt, it is usually better to set them in the .pro file or the CMakeLists.txt file.</p>
-<p>To support all resolutions and devices, several images should be created. A detailed list of what is required is available at <a href="https://developer.apple.com/library/content/qa/qa1686/_index.html" translate="no">Icon files</a>. The filename is not important, but the actual pixel size is. Just a few icons are required. However, to support both iPhone and iPad, the following images are required:</p>
+<p>Starting with Xcode 13, icons need to be added to an asset catalog's icon set, which is usually called <code translate="no">AppIcon</code>. Xcode will then take care of updating the <code translate="no">Info.plist</code> file with the correct keys and values, as well as copy any necessary icon files directly into the application bundle.</p>
+<p>Starting with Xcode 14, only one 1024x1024 pixel-sized image is required. Xcode takes care of generating all the necessary icons from it. It is also possible to specify the images manually in the asset catalog.</p>
+<p>A detailed list of the icons that can be specified is available at <a href="https://developer.apple.com/library/content/qa/qa1686/_index.html" translate="no">Icon files</a>.</p>
+<p>The filename is not important, but the actual pixel size is. To support a universal iOS application, the following images are required:</p>
 <ul>
-<li>AppIcon29x29.png: 29 x 29</li>
-<li>AppIcon29x29@2x.png: 58 x 58</li>
-<li>AppIcon29x29@2x~ipad.png: 58 x 58</li>
-<li>AppIcon29x29~ipad.png: 29 x 29</li>
-<li>AppIcon40x40@2x.png: 80 x 80</li>
-<li>AppIcon40x40@2x~ipad.png: 80 x 80</li>
-<li>AppIcon40x40~ipad.png: 40 x 40</li>
-<li>AppIcon50x50@2x~ipad.png: 100 x 100</li>
-<li>AppIcon50x50~ipad.png: 50 x 50</li>
-<li>AppIcon57x57.png: 57 x 57</li>
-<li>AppIcon57x57@2x.png: 114 x 114</li>
-<li>AppIcon60x60@2x.png: 120 x 120</li>
-<li>AppIcon72x72@2x~ipad.png: 144 x 144</li>
-<li>AppIcon72x72~ipad.png: 72 x 72</li>
-<li>AppIcon76x76@2x~ipad.png: 152 x 152</li>
-<li>AppIcon76x76~ipad.png: 76 x 76</li>
+<li>AppIcon60x60@2x.png: 120 x 120 (for iPhone)</li>
+<li>AppIcon76x76@2x~ipad.png: 152 x 152 (for iPad)</li>
+<li>AppIcon167x167.png: 167x167 (for iPad Pro)</li>
+<li>AppIcon1024x1024.png: 1024 x 1024 (for App Store)</li>
 </ul>
-<p>These files should be copied to the application bundle by adding the following code snippet to the project .pro file:</p>
-<pre class="cpp plain" translate="no">
- ios {
-     ios_icon.files = $$files($$PWD/ios/AppIcon*.png)
-     QMAKE_BUNDLE_DATA += ios_icon
- }
-</pre>
-<p>With CMake:</p>
-<pre class="cpp plain" translate="no">
- qt_add_executable(app)
- file(GLOB_RECURSE app_icons CONFIGURE_DEPENDS &quot;ios/AppIcon*.png&quot;)
- if(IOS AND app_icons)
-     target_sources(app PRIVATE ${app_icons})
-     set_source_files_properties(
-         ${app_icons}
-         PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
- endif()
-</pre>
-<p>For the icons to be used, the filenames must also be listed in the <code translate="no">Info.plist</code> file. The best way is to list all icon files using the <code translate="no">CFBundleIconFiles</code> key. The iPad specific version can be given using the <code translate="no">CFBundleIcons~ipad</code> key, by adding the following code snippet to <code translate="no">Info.plist</code>:</p>
-<pre class="cpp plain" translate="no">
- &lt;key&gt;CFBundleIcons&lt;/key&gt;
- &lt;dict&gt;
-     &lt;key&gt;CFBundlePrimaryIcon&lt;/key&gt;
-     &lt;dict&gt;
-         &lt;key&gt;CFBundleIconFiles&lt;/key&gt;
-         &lt;array&gt;
-             &lt;string&gt;AppIcon29x29.png&lt;/string&gt;
-             &lt;string&gt;AppIcon29x29@2x.png&lt;/string&gt;
-             &lt;string&gt;AppIcon40x40@2x.png&lt;/string&gt;
-             &lt;string&gt;AppIcon57x57.png&lt;/string&gt;
-             &lt;string&gt;AppIcon57x57@2x.png&lt;/string&gt;
-             &lt;string&gt;AppIcon60x60@2x.png&lt;/string&gt;
-         &lt;/array&gt;
-     &lt;/dict&gt;
- &lt;/dict&gt;
- &lt;key&gt;CFBundleIcons~ipad&lt;/key&gt;
- &lt;dict&gt;
-     &lt;key&gt;CFBundlePrimaryIcon&lt;/key&gt;
-     &lt;dict&gt;
-         &lt;key&gt;CFBundleIconFiles&lt;/key&gt;
-         &lt;array&gt;
-             &lt;string&gt;AppIcon29x29.png&lt;/string&gt;
-             &lt;string&gt;AppIcon29x29@2x.png&lt;/string&gt;
-             &lt;string&gt;AppIcon40x40@2x.png&lt;/string&gt;
-             &lt;string&gt;AppIcon57x57.png&lt;/string&gt;
-             &lt;string&gt;AppIcon57x57@2x.png&lt;/string&gt;
-             &lt;string&gt;AppIcon60x60@2x.png&lt;/string&gt;
-             &lt;string&gt;AppIcon29x29~ipad.png&lt;/string&gt;
-             &lt;string&gt;AppIcon29x29@2x~ipad.png&lt;/string&gt;
-             &lt;string&gt;AppIcon40x40~ipad.png&lt;/string&gt;
-             &lt;string&gt;AppIcon40x40@2x~ipad.png&lt;/string&gt;
-             &lt;string&gt;AppIcon50x50~ipad.png&lt;/string&gt;
-             &lt;string&gt;AppIcon50x50@2x~ipad.png&lt;/string&gt;
-             &lt;string&gt;AppIcon72x72~ipad.png&lt;/string&gt;
-             &lt;string&gt;AppIcon72x72@2x~ipad.png&lt;/string&gt;
-             &lt;string&gt;AppIcon76x76~ipad.png&lt;/string&gt;
-             &lt;string&gt;AppIcon76x76@2x~ipad.png&lt;/string&gt;
-         &lt;/array&gt;
-     &lt;/dict&gt;
- &lt;/dict&gt;
-</pre>
-<p>This ensures that the appropriate files are copied to the right place and the correct icons are used as required by the Apple App Store. Ad-hoc distributions should also include the following filenames in the application bundle to visualize the application in iTunes:</p>
+<p>Ad-hoc distributions should also include the following filenames in the application bundle to visualize the application in iTunes:</p>
 <ul>
 <li>iTunesArtwork 512x512</li>
 <li>iTunesArtwork@2x 1024x1024</li>
 </ul>
+<p>The easiest way to add the icons is to follow Xcode's documentation at <a href="https://help.apple.com/xcode/mac/current/#/dev10510b1f7" translate="no">Create asset catalogs and sets</a>.</p>
+<p>When building a project with CMake, it should also specify the following Xcode attribute to ensure app icons are generated by Xcode.</p>
+<pre class="cpp plain" translate="no">
+ set_target_properties(app_target_name PROPERTIES
+     XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)
+</pre>
+<p>Below is an example of how an <code translate="no">Assets.xcassets/AppIcon.appiconset/Contents.json</code> file for Xcode 14 might look like:</p>
+<pre class="cpp" translate="no">
+ {
+   &quot;images&quot; : [
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;2x&quot;,
+       &quot;size&quot; : &quot;20x20&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;3x&quot;,
+       &quot;size&quot; : &quot;20x20&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;2x&quot;,
+       &quot;size&quot; : &quot;29x29&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;3x&quot;,
+       &quot;size&quot; : &quot;29x29&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;2x&quot;,
+       &quot;size&quot; : &quot;38x38&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;3x&quot;,
+       &quot;size&quot; : &quot;38x38&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;2x&quot;,
+       &quot;size&quot; : &quot;40x40&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;3x&quot;,
+       &quot;size&quot; : &quot;40x40&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;2x&quot;,
+       &quot;size&quot; : &quot;60x60&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;3x&quot;,
+       &quot;size&quot; : &quot;60x60&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;2x&quot;,
+       &quot;size&quot; : &quot;64x64&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;3x&quot;,
+       &quot;size&quot; : &quot;64x64&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;2x&quot;,
+       &quot;size&quot; : &quot;68x68&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;2x&quot;,
+       &quot;size&quot; : &quot;76x76&quot;
+     },
+     {
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;scale&quot; : &quot;2x&quot;,
+       &quot;size&quot; : &quot;83.5x83.5&quot;
+     },
+     {
+       &quot;filename&quot; : &quot;AppIcon1024x1024.png&quot;,
+       &quot;idiom&quot; : &quot;universal&quot;,
+       &quot;platform&quot; : &quot;ios&quot;,
+       &quot;size&quot; : &quot;1024x1024&quot;
+     }
+   ],
+   &quot;info&quot; : {
+     &quot;author&quot; : &quot;xcode&quot;,
+     &quot;version&quot; : 1
+   }
+ }
+</pre>
 <h3 id="launch-screens-and-launch-images">Launch Screens and Launch Images</h3>
 <h4 id="launch-screens">Launch Screens</h4>
 <p>Every iOS app must provide a launch screen to be displayed while the app launches. A launch screen is an interface builder <code translate="no">.xib</code> file, also called a storyboard file. For more information, see <a href="https://developer.apple.com/documentation/xcode/specifying-your-apps-launch-screen" translate="no">Specifying Your App's Launch Screen</a>.</p>
-<p>Support for launch screens has been introduced in iOS 9.0&#x2e;</p>
+<p>Support for launch screens has been introduced in iOS 9.0.</p>
 <p>Both qmake and CMake generate a default launch screen called <code translate="no">LaunchScreen.storyboard</code>.</p>
 <p>To specify a custom launch screen, it must be copied to the application bundle, and the <code translate="no">UILaunchStoryboardName</code> key must be set to the name of the launch screen in the <code translate="no">Info.plist</code> file.</p>
-<p>Qt supports custom launch screens with CMake since Qt 6.4, and with qmake since Qt 6.0&#x2e;</p>
+<p>Qt supports custom launch screens with CMake since Qt 6.4, and with qmake since Qt 6.0.</p>
 <p>Assuming that the launch file is called <code translate="no">Launch.storyboard</code>, it can be added to <code translate="no">Info.plist</code> as follows:</p>
 <pre class="cpp plain" translate="no">
  &lt;key&gt;UILaunchStoryboardName&lt;/key&gt;
@@ -248,7 +290,7 @@
 <h4 id="launch-images">Launch Images</h4>
 <p>It's also possible to specify launch images (PNG files) instead of launch screen.</p>
 <div class="admonition note">
-<p><b>Note: </b>Using launch images is not recommended, because support for them has been deprecated since iOS 13.0&#x2e; Consider switching to launch screens instead.</p>
+<p><b>Note: </b>Using launch images is not recommended, because support for them has been deprecated since iOS 13.0. Consider switching to launch screens instead.</p>
 </div>
 <p>Launch images must be copied to the application bundle and their names must be set in the <code translate="no">Info.plist</code> file using the <code translate="no">UILaunchImages</code> key.</p>
 <p>The following images must be prepared:</p>
@@ -348,7 +390,7 @@
  endif()
 </pre>
 <div class="admonition note">
-<p><b>Note: </b>Earlier iOS versions supported specifying a single launch image using the <code translate="no">UILaunchImageFile</code> key in <code translate="no">Info.plist</code>, but support for it has been deprecated since iOS 10.0&#x2e;</p>
+<p><b>Note: </b>Earlier iOS versions supported specifying a single launch image using the <code translate="no">UILaunchImageFile</code> key in <code translate="no">Info.plist</code>, but support for it has been deprecated since iOS 10.0.</p>
 </div>
 <h3 id="native-image-picker">Native Image Picker</h3>
 <p>If your <code translate="no">Info.plist</code> file contains an entry for <code translate="no">NSPhotoLibraryUsageDescription</code>, qmake will automatically include an extra plugin which enables access to the native image picker. If the directory in your <a href="../qtwidgets/qfiledialog.html" translate="no">QFileDialog</a> is set to:</p>
@@ -398,7 +440,7 @@
 <p>Due to an issue in <a href="https://gitlab.kitware.com/cmake/cmake/-/issues/23734" translate="no">CMake</a>, trying to create a product archive with an iOS application may fail.</p>
 <p>This can happen both when trying to create the archive in Xcode using the Product -&gt; Archive menu item, or from the command line using <code translate="no">xcodebuild -archivePath</code>.</p>
 <p>The error message might reference undefined symbols or non-existent file paths.</p>
-<p>To work around the issue, make sure to manually rebuild the project before trying to create an archive.</p>
+<p>To work around the issue, make sure to build a <code translate="no">Release</code> version of the project before trying to create an archive.</p>
 </div>
 <!-- @@@ios-platform-notes.html -->
         </div>
@@ -408,9 +450,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qquick3dcustommaterial.cpp -->
   <meta name="description" content="Base component for creating custom materials used to shade models.">
-  <title>CustomMaterial QML Type | Qt Quick 3D 6.6.0</title>
+  <title>CustomMaterial QML Type | Qt Quick 3D 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -166,7 +166,7 @@
 <p>The dynamic properties of the CustomMaterial can be changed and animated using QML and Qt Quick facilities, and the values are exposed to the shaders automatically. This in practice is very similar <a href="../qtquick/qml-qtquick-shadereffect.html" translate="no">ShaderEffect</a>. The following list shows how properties are mapped:</p>
 <ul>
 <li>bool, int, real -&gt; bool, int, float</li>
-<li><a href="../qtgui/qcolor.html" translate="no">QColor</a>, <a href="../qtqml/qml-qtqml-qt.html#rgba-method" translate="no">color</a> -&gt; vec4, and the color gets converted to linear, assuming sRGB space for the color value specified in QML. The built-in Qt colors, such as <code translate="no">&quot;green&quot;</code> are in sRGB color space as well, and the same conversion is performed for all color properties of <a href="qml-qtquick3d-defaultmaterial.html" translate="no">DefaultMaterial</a> and <a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a>, so this behavior of CustomMaterial matches those. Unlike Qt Quick, for Qt Quick 3D linearizing is essential as there will typically be tonemapping performed on the 3D scene.</li>
+<li><a href="../qtgui/qcolor.html" translate="no">QColor</a>, <a href="../qtqml/qml-qtqml-qt.html#rgba-method" translate="no">color</a> -&gt; vec4, and the color gets converted to linear, assuming sRGB space for the color value specified in QML. The built-in Qt colors, such as <code translate="no">&quot;green&quot;</code> are in sRGB color space as well, and the same conversion is performed for all color properties of DefaultMaterial and <a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a>, so this behavior of CustomMaterial matches those. Unlike Qt Quick, for Qt Quick 3D linearizing is essential as there will typically be tonemapping performed on the 3D scene.</li>
 <li><a href="../qtcore/qrect.html" translate="no">QRect</a>, <a href="../qtcore/qrectf.html" translate="no">QRectF</a>, <a href="../qtqml/qml-qtqml-qt.html#rect-method" translate="no">rect</a> -&gt; vec4</li>
 <li><a href="../qtcore/qpoint.html" translate="no">QPoint</a>, <a href="../qtcore/qpointf.html" translate="no">QPointF</a>, <a href="../qtqml/qml-qtqml-qt.html#point-method" translate="no">point</a>, <a href="../qtcore/qsize.html" translate="no">QSize</a>, <a href="../qtcore/qsizef.html" translate="no">QSizeF</a>, <a href="../qtqml/qml-qtqml-qt.html#size-method" translate="no">size</a> -&gt; vec2</li>
 <li><a href="../qtgui/qvector2d.html" translate="no">QVector2D</a>, <a href="../qtqml/qml-qtqml-qt.html#vector2d-method" translate="no">vector2d</a> -&gt; vec2</li>
@@ -289,7 +289,7 @@
 <p>Another scenario is when there is no custom <code translate="no">SPECULAR_LIGHT</code> function provided, or when there is a light probe set in the <a href="qml-qtquick3d-sceneenvironment.html" translate="no">SceneEnvironment</a>. The metalness, roughness, and other values that affect the specular contribution calculation can be set in <code translate="no">MAIN</code> to their desired custom values.</p>
 <p>The function can write to the following special variables. The values written to these will typically be either hardcoded or be calculated based on QML properties mapped to uniforms. The semantics are identical to <a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a>.</p>
 <ul>
-<li>vec4 <code translate="no">BASE_COLOR</code> - The base color and material alpha value. Corresponds to the <a href="qml-qtquick3d-principledmaterial.html#baseColor-prop" translate="no">built-in materials' color property</a>. When light processor functions are not implemented, it can be convenient to set a custom base color in <code translate="no">MAIN</code> because that is then taken into account in the default lighting calculations. The default value is <code translate="no">vec4(1.0)</code>, meaning white with an alpha of 1.0&#x2e; The alpha value effects the final alpha of the fragment. The final alpha value is the object (model) opacity multiplied by the base color alpha. When specifying the value directly in shader code, not relying on uniform values exposed from <b>color</b> properties in QML, be aware that it is up to the shader to perform the sRGB to linear conversion, if needed. For example, assuming a <code translate="no">vec3 color</code> and <code translate="no">float alpha</code> this can be achieved like the following:<pre class="cpp plain" translate="no">
+<li>vec4 <code translate="no">BASE_COLOR</code> - The base color and material alpha value. Corresponds to the <a href="qml-qtquick3d-principledmaterial.html#baseColor-prop" translate="no">built-in materials' color property</a>. When light processor functions are not implemented, it can be convenient to set a custom base color in <code translate="no">MAIN</code> because that is then taken into account in the default lighting calculations. The default value is <code translate="no">vec4(1.0)</code>, meaning white with an alpha of 1.0. The alpha value effects the final alpha of the fragment. The final alpha value is the object (model) opacity multiplied by the base color alpha. When specifying the value directly in shader code, not relying on uniform values exposed from <b>color</b> properties in QML, be aware that it is up to the shader to perform the sRGB to linear conversion, if needed. For example, assuming a <code translate="no">vec3 color</code> and <code translate="no">float alpha</code> this can be achieved like the following:<pre class="cpp plain" translate="no">
  float C1 = 0.305306011;
  vec3 C2 = vec3(0.682171111, 0.682171111, 0.682171111);
  vec3 C3 = vec3(0.012522878, 0.012522878, 0.012522878);
@@ -297,10 +297,10 @@
 </pre>
 </li>
 <li>vec3 <code translate="no">EMISSIVE_COLOR</code> - The color of self-illumination. Corresponds to the built-in materials' emissive color which is combined by <a href="qml-qtquick3d-principledmaterial.html#emissiveFactor-prop" translate="no">built-in materials's emissiveFactor property</a> and <a href="qml-qtquick3d-principledmaterial.html#emissiveMap-prop" translate="no">built-in materials's emissiveMap property</a>. The default value is <code translate="no">vec3(0.0)</code>. When specifying the value directly in shader code, not relying on uniform values exposed from <b>color</b> properties in QML, be aware that it is up to the shader to perform the sRGB to linear conversion, if needed.</li>
-<li>float <code translate="no">METALNESS</code> Metalness amount in range 0.0 - 1.0&#x2e; The default value is 0. Must be set to a non-zero value to have effect.</li>
-<li>float <code translate="no">ROUGHNESS</code> Roughness value in range 0.0 - 1.0&#x2e; The default value is 0.</li>
+<li>float <code translate="no">METALNESS</code> Metalness amount in range 0.0 - 1.0. The default value is 0. Must be set to a non-zero value to have effect.</li>
+<li>float <code translate="no">ROUGHNESS</code> Roughness value in range 0.0 - 1.0. The default value is 0.</li>
 <li>float <code translate="no">FRESNEL_POWER</code> Specifies the fresnel power. A typical value, and also the default, is <code translate="no">5.0</code> as that is what a <a href="qml-qtquick3d-principledmaterial.html" translate="no">PrincipledMaterial</a> would use.</li>
-<li>float <code translate="no">SPECULAR_AMOUNT</code> Specular amount in range 0.0 - 1.0&#x2e; The default value is <code translate="no">0.5</code>, matching <a href="qml-qtquick3d-principledmaterial.html#specularAmount-prop" translate="no">PrincipledMaterial::specularAmount</a>. Must be set to a non-zero value to have effect.</li>
+<li>float <code translate="no">SPECULAR_AMOUNT</code> Specular amount in range 0.0 - 1.0. The default value is <code translate="no">0.5</code>, matching <a href="qml-qtquick3d-principledmaterial.html#specularAmount-prop" translate="no">PrincipledMaterial::specularAmount</a>. Must be set to a non-zero value to have effect.</li>
 <li>vec3 <code translate="no">NORMAL</code> - The normal that comes from the vertex shader in world space. While this property has the same initial value as <code translate="no">VAR_WORLD_NORMAL</code>, only changing the value of <code translate="no">NORMAL</code> will have an effect on lighting.</li>
 <li>vec3 <code translate="no">TANGENT</code> - The tanget that comes from the vertex shader in world space. This value is potentially adjusted for double-sidedness.</li>
 <li>vec3 <code translate="no">BINORMAL</code> - The binormal that comes from the vertex shader in world space. This value is potentially adjusted for double-sidedness.</li>
@@ -420,7 +420,7 @@
 <p>The function can read the following special variables, in addition to the matrix (such as, <code translate="no">MODEL_MATRIX</code>) and vector (such as, <code translate="no">CAMERA_POSITION</code>) uniforms from the table above:</p>
 <ul>
 <li>vec3 <code translate="no">LIGHT_COLOR</code> Specular light color.</li>
-<li>float <code translate="no">LIGHT_ATTENUATION</code> Light attenuation. For directional lights the value is 1.0&#x2e; For spot lights the value is the same as <code translate="no">LIGHT_ATTENUATION * SPOT_FACTOR</code> of <code translate="no">void SPOT_LIGHT()</code>.</li>
+<li>float <code translate="no">LIGHT_ATTENUATION</code> Light attenuation. For directional lights the value is 1.0. For spot lights the value is the same as <code translate="no">LIGHT_ATTENUATION * SPOT_FACTOR</code> of <code translate="no">void SPOT_LIGHT()</code>.</li>
 <li>float <code translate="no">SHADOW_CONTRIB</code> Shadow contribution, or 1.0 if not shadowed at all or not reciving shadows.</li>
 <li>vec3 <code translate="no">FRESNEL_CONTRIB</code> Fresnel contribution from built in Fresnel calculation.</li>
 <li>vec3 <code translate="no">TO_LIGHT_DIR</code> Vector pointing towards the light source.</li>
@@ -523,7 +523,7 @@
  };
  void MAIN()
  {
-     ..&#x2e;
+     ...
      vec4 tex = texture(uSheenMap, UV0);
      SHARED.sheenColor = tex.rgb;
      SHARED.sheenIntensity = tex.a;
@@ -532,7 +532,7 @@
  }
  void SPECULAR_LIGHT()
  {
-     SHARED.outSheenColor += ..&#x2e;;
+     SHARED.outSheenColor += ...;
  }
  void POST_PROCESS()
  {
@@ -638,7 +638,7 @@
  }
 </pre>
 </li>
-<li><code translate="no">SCREEN_MIP_TEXTURE</code> - Identical to <code translate="no">SCREEN_TEXTURE</code> in most ways, the difference being that this texture has mipmaps generated. This can be an expensive feature performance-wise, depending on the screen size, and due to having to generate the mipmaps every time the scene is rendered. Therefore, prefer using <code translate="no">SCREEN_TEXTURE</code> always, unless a technique relying on the texture mip levels (e.g&#x2e; using <code translate="no">textureLod</code> in the shader) is implemented by the custom material.</li>
+<li><code translate="no">SCREEN_MIP_TEXTURE</code> - Identical to <code translate="no">SCREEN_TEXTURE</code> in most ways, the difference being that this texture has mipmaps generated. This can be an expensive feature performance-wise, depending on the screen size, and due to having to generate the mipmaps every time the scene is rendered. Therefore, prefer using <code translate="no">SCREEN_TEXTURE</code> always, unless a technique relying on the texture mip levels (e.g. using <code translate="no">textureLod</code> in the shader) is implemented by the custom material.</li>
 <li><code translate="no">DEPTH_TEXTURE</code> - When present, a texture (sampler2D) with the (non-linearized) depth buffer contents is exposed to the shader under this name. Only opaque objects are included. For example, a fragment shader could contain the following:<pre class="cpp plain" translate="no">
  ivec2 dtSize = textureSize(DEPTH_TEXTURE, 0);
  vec2 dtUV = (FRAGCOORD.xy) / vec2(dtSize);
@@ -725,7 +725,7 @@
 <td class="tblQmlPropNode"><p>
 <span class="name">lineWidth</span> : <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span></p></td></tr>
 </table></div></div>
-<div class="qmldoc"><p>This property determines the width of the lines rendered, when the geometry is using a primitive type of lines or line strips. The default value is 1.0&#x2e; This property is not relevant when rendering other types of geometry, such as, triangle meshes.</p>
+<div class="qmldoc"><p>This property determines the width of the lines rendered, when the geometry is using a primitive type of lines or line strips. The default value is 1.0. This property is not relevant when rendering other types of geometry, such as, triangle meshes.</p>
 <div class="admonition warning">
 <p><b>Warning: </b>Line widths other than 1 may not be suported at run time, depending on the underlying graphics API. When that is the case, the request to change the width is ignored. For example, none of the following can be expected to support wide lines: Direct3D, Metal, OpenGL with core profile contexts.</p>
 </div>
@@ -795,9 +795,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

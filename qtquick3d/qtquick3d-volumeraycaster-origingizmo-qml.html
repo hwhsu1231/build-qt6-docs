@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- volumeraycaster.qdoc -->
+  <meta name="description" content="Demonstrates how to do volumetric rendering in Qt Quick 3D.">
+  <title>Qt Quick 3D - Volumetric Rendering Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Volumetric Rendering Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Volumetric Rendering Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+ import QtQuick
+ import QtQuick3D
+
+ <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+     required property <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> <span class="name">targetNode</span>
+
+     enum Axis {
+         PositiveZ = 0,
+         NegativeZ = 1,
+         PositiveY = 2,
+         NegativeY = 3,
+         PositiveX = 4,
+         NegativeX = 5
+     }
+
+     <span class="comment">// These are the 24 different rotations a rotation aligned on axes can have.</span>
+     <span class="comment">// They are ordered in groups of 4 where the +Z,-Z,+Y,-Y,+X,-X axis is pointing</span>
+     <span class="comment">// towards the screen (+Z). Inside this group the rotations are ordered to</span>
+     <span class="comment">// rotate counter-clockwise.</span>
+     readonly property list&lt;<span class="type"><a href="../qtquick/qml-quaternion.html" translate="no">quaternion</a></span>&gt; <span class="name">rotations</span>: [
+         <span class="comment">// +Z</span>
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="name">Math</span>.<span class="name">SQRT1_2</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>),
+         <span class="comment">// -Z</span>
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="name">Math</span>.<span class="name">SQRT1_2</span>, -<span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>, -<span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>),
+         <span class="comment">// +Y</span>
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(-<span class="number">0.5</span>, -<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="name">Math</span>.<span class="name">SQRT1_2</span>, -<span class="name">Math</span>.<span class="name">SQRT1_2</span>),
+         <span class="comment">// -Y</span>
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0.5</span>, -<span class="number">0.5</span>, <span class="number">0.5</span>, -<span class="number">0.5</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>, -<span class="name">Math</span>.<span class="name">SQRT1_2</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(-<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>, -<span class="number">0.5</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(-<span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="comment">// +X</span>
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(-<span class="number">0.5</span>, -<span class="number">0.5</span>, <span class="number">0.5</span>, -<span class="number">0.5</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(-<span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(-<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>),
+         <span class="comment">// -X</span>
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>, -<span class="name">Math</span>.<span class="name">SQRT1_2</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0.5</span>, -<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>, <span class="name">Math</span>.<span class="name">SQRT1_2</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>, -<span class="number">0.5</span>),
+     ]
+
+     readonly property list&lt;<span class="type"><a href="../qtquick/qml-quaternion.html" translate="no">quaternion</a></span>&gt; <span class="name">xRotationGoals</span> : [
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(-<span class="number">0</span>, -<span class="number">1</span>, -<span class="number">0</span>, -<span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(-<span class="number">0</span>, -<span class="number">1</span>, -<span class="number">0</span>, -<span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(-<span class="number">0</span>, <span class="number">1</span>, -<span class="number">0</span>, -<span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+     ]
+
+     readonly property list&lt;<span class="type"><a href="../qtquick/qml-quaternion.html" translate="no">quaternion</a></span>&gt;  <span class="name">yRotationGoals</span> : [
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+     ]
+
+     readonly property list&lt;<span class="type"><a href="../qtquick/qml-quaternion.html" translate="no">quaternion</a></span>&gt;  <span class="name">zRotationGoals</span> : [
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>),
+         <span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>),
+     ]
+
+     <span class="comment">// This function works by using a rotation to rotate x,y,z normal vectors</span>
+     <span class="comment">// and see what axis-aligned rotation gives the closest distance to the</span>
+     <span class="comment">// rotated normal vectors.</span>
+     <span class="keyword">function </span><span class="name">findClosestRotation</span>(rotation, startI, stopI) {
+         let rotationConjugated = <span class="name">rotation</span>.<span class="name">conjugated</span>();
+         let xRotated = <span class="name">rotation</span>.<span class="name">times</span>(<span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>)).<span class="name">times</span>(<span class="name">rotationConjugated</span>);
+         let yRotated = <span class="name">rotation</span>.<span class="name">times</span>(<span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)).<span class="name">times</span>(<span class="name">rotationConjugated</span>);
+         let zRotated = <span class="name">rotation</span>.<span class="name">times</span>(<span class="name">Qt</span>.<span class="name">quaternion</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)).<span class="name">times</span>(<span class="name">rotationConjugated</span>);
+
+         var closestIndex = <span class="number">0</span>;
+         var closestDistance = <span class="number">123456789</span>; <span class="comment">// big number</span>
+
+         <span class="keyword">for</span> (var i = startI; <span class="name">i</span> <span class="operator">&lt;</span> <span class="name">stopI</span> ; i++) {
+             let distance = <span class="name">xRotated</span>.<span class="name">minus</span>(<span class="name">xRotationGoals</span>[<span class="name">i</span>]).<span class="name">length</span>() <span class="operator">+</span>
+                            <span class="name">yRotated</span>.<span class="name">minus</span>(<span class="name">yRotationGoals</span>[<span class="name">i</span>]).<span class="name">length</span>() <span class="operator">+</span>
+                            <span class="name">zRotated</span>.<span class="name">minus</span>(<span class="name">zRotationGoals</span>[<span class="name">i</span>]).<span class="name">length</span>();
+             <span class="keyword">if</span> (<span class="name">distance</span> <span class="operator">&lt;=</span> <span class="name">closestDistance</span>) {
+                 <span class="name">closestDistance</span> <span class="operator">=</span> <span class="name">distance</span>;
+                 <span class="name">closestIndex</span> <span class="operator">=</span> <span class="name">i</span>;
+             }
+         }
+
+         <span class="keyword">return</span> <span class="name">closestIndex</span>;
+     }
+
+     <span class="keyword">function </span><span class="name">quaternionAlign</span>(rotation) {
+         let closestIndex = <span class="name">findClosestRotation</span>(<span class="name">rotation</span>, <span class="number">0</span>, <span class="number">24</span>);
+         <span class="keyword">return</span> <span class="name">rotations</span>[<span class="name">closestIndex</span>];
+     }
+
+     <span class="keyword">function </span><span class="name">quaternionForAxis</span>(axis, rotation) {
+         let closestIndex = <span class="name">findClosestRotation</span>(<span class="name">rotation</span>, <span class="name">axis</span><span class="operator">*</span><span class="number">4</span>, (<span class="name">axis</span> <span class="operator">+</span> <span class="number">1</span>)<span class="operator">*</span><span class="number">4</span>);
+         <span class="keyword">return</span> <span class="name">rotations</span>[<span class="name">closestIndex</span>];
+     }
+
+     <span class="keyword">function </span><span class="name">quaternionRotateLeft</span>(rotation) {
+         let closestIndex = <span class="name">findClosestRotation</span>(<span class="name">rotation</span>, <span class="number">0</span>, <span class="number">24</span>);
+         let offset = (<span class="number">4</span> <span class="operator">+</span> <span class="name">closestIndex</span> <span class="operator">-</span> <span class="number">1</span>) <span class="operator">%</span> <span class="number">4</span>;
+         let group = <span class="name">Math</span>.<span class="name">floor</span>(<span class="name">closestIndex</span> <span class="operator">/</span> <span class="number">4</span>);
+         <span class="keyword">return</span> <span class="name">rotations</span>[<span class="name">offset</span> <span class="operator">+</span> <span class="name">group</span> <span class="operator">*</span> <span class="number">4</span>];
+     }
+
+     <span class="keyword">function </span><span class="name">quaternionRotateRight</span>(rotation) {
+         let closestIndex = <span class="name">findClosestRotation</span>(<span class="name">rotation</span>, <span class="number">0</span>, <span class="number">24</span>);
+         let offset = (<span class="name">closestIndex</span> <span class="operator">+</span> <span class="number">1</span>) <span class="operator">%</span> <span class="number">4</span>;
+         let group = <span class="name">Math</span>.<span class="name">floor</span>(<span class="name">closestIndex</span> <span class="operator">/</span> <span class="number">4</span>);
+         <span class="keyword">return</span> <span class="name">rotations</span>[<span class="name">offset</span> <span class="operator">+</span> <span class="name">group</span> <span class="operator">*</span> <span class="number">4</span>];
+     }
+
+     signal <span class="type">axisClicked</span>(int axis)
+     signal <span class="type">ballMoved</span>(vector2d velocity)
+
+     <span class="type"><a href="../qtqml/qml-qtqml-qtobject.html" translate="no">QtObject</a></span> {
+         <span class="name">id</span>: <span class="name">stylePalette</span>
+         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">white</span>: <span class="string">&quot;#fdf6e3&quot;</span>
+         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">black</span>: <span class="string">&quot;#002b36&quot;</span>
+         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">red</span>: <span class="string">&quot;#dc322f&quot;</span>
+         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">green</span>: <span class="string">&quot;#859900&quot;</span>
+         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">blue</span>: <span class="string">&quot;#268bd2&quot;</span>
+         property <span class="type"><a href="../qtquick/qml-color.html" translate="no">color</a></span> <span class="name">background</span>: <span class="string">&quot;#99002b36&quot;</span>
+     }
+
+     component LineRectangle : <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         property <span class="type"><a href="../qtquick/qml-vector2d.html" translate="no">vector2d</a></span> <span class="name">startPoint</span>: <span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="number">0</span>, <span class="number">0</span>)
+         property <span class="type"><a href="../qtquick/qml-vector2d.html" translate="no">vector2d</a></span> <span class="name">endPoint</span>: <span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="number">0</span>, <span class="number">0</span>)
+         property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">lineWidth</span>: <span class="number">5</span>
+         <span class="name">transformOrigin</span>: <span class="name">Item</span>.<span class="name">Left</span>
+         <span class="name">height</span>: <span class="name">lineWidth</span>
+
+         readonly property <span class="type"><a href="../qtquick/qml-vector2d.html" translate="no">vector2d</a></span> <span class="name">offset</span>: <span class="name">startPoint</span>.<span class="name">plus</span>(<span class="name">endPoint</span>).<span class="name">times</span>(<span class="number">0.5</span>);
+
+         <span class="name">width</span>: <span class="name">startPoint</span>.<span class="name">minus</span>(<span class="name">endPoint</span>).<span class="name">length</span>()
+         <span class="name">rotation</span>: <span class="name">Math</span>.<span class="name">atan2</span>(<span class="name">endPoint</span>.<span class="name">y</span> <span class="operator">-</span> <span class="name">startPoint</span>.<span class="name">y</span>, <span class="name">endPoint</span>.<span class="name">x</span> <span class="operator">-</span> <span class="name">startPoint</span>.<span class="name">x</span>) <span class="operator">*</span> <span class="number">180</span> <span class="operator">/</span> <span class="name">Math</span>.<span class="name">PI</span>
+     }
+
+     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+         <span class="name">id</span>: <span class="name">ballBackground</span>
+         <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+         <span class="name">width</span>: <span class="name">parent</span>.<span class="name">width</span> <span class="operator">&gt;</span> <span class="name">parent</span>.<span class="name">height</span> ? <span class="name">parent</span>.<span class="name">height</span> : <span class="name">parent</span>.<span class="name">width</span>
+         <span class="name">height</span>: <span class="name">width</span>
+         <span class="name">radius</span>: <span class="name">width</span> <span class="operator">/</span> <span class="number">2</span>
+         <span class="name">color</span>: <span class="name">ballBackgroundHoverHandler</span>.<span class="name">hovered</span> ? <span class="name">stylePalette</span>.<span class="name">background</span> : <span class="string">&quot;transparent&quot;</span>
+
+         readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">subBallWidth</span>: <span class="name">width</span> <span class="operator">/</span> <span class="number">5</span>
+         readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">subBallHalfWidth</span>: <span class="name">subBallWidth</span> <span class="operator">*</span> <span class="number">0.5</span>
+         readonly property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">subBallOffset</span>: <span class="name">radius</span> <span class="operator">-</span> <span class="name">subBallWidth</span> <span class="operator">/</span> <span class="number">2</span>
+
+         <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+             <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+
+             component SubBall : <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+                 <span class="name">id</span>: <span class="name">subBallRoot</span>
+                 required property <span class="type"><a href="qml-qtquick3d-node.html" translate="no">Node</a></span> <span class="name">targetNode</span>
+                 required property <span class="type"><a href="../qtqml/qml-real.html" translate="no">real</a></span> <span class="name">offset</span>
+
+                 property <span class="type">alias</span> <span class="name">labelText</span>: <span class="name">label</span>.<span class="name">text</span>
+                 property <span class="type">alias</span> <span class="name">labelColor</span>: <span class="name">label</span>.<span class="name">color</span>
+                 property <span class="type">alias</span> <span class="name">labelVisible</span>: <span class="name">label</span>.<span class="name">visible</span>
+                 property <span class="type">alias</span> <span class="name">hovered</span>: <span class="name">subBallHoverHandler</span>.<span class="name">hovered</span>
+                 property <span class="type"><a href="../qtqml/qml-var.html" translate="no">var</a></span> <span class="name">initialPosition</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 readonly property <span class="type"><a href="../qtquick/qml-vector3d.html" translate="no">vector3d</a></span> <span class="name">position</span>: <span class="name">quaternionVectorMultiply</span>(<span class="name">targetNode</span>.<span class="name">rotation</span>, <span class="name">initialPosition</span>)
+
+                 signal <span class="type">tapped</span>()
+
+                 <span class="keyword">function </span><span class="name">quaternionVectorMultiply</span>(q, v) {
+                     var qv = <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="name">q</span>.<span class="name">x</span>, <span class="name">q</span>.<span class="name">y</span>, <span class="name">q</span>.<span class="name">z</span>)
+                     var uv = <span class="name">qv</span>.<span class="name">crossProduct</span>(<span class="name">v</span>)
+                     var uuv = <span class="name">qv</span>.<span class="name">crossProduct</span>(<span class="name">uv</span>)
+                     <span class="name">uv</span> <span class="operator">=</span> <span class="name">uv</span>.<span class="name">times</span>(<span class="number">2.0</span> <span class="operator">*</span> <span class="name">q</span>.<span class="name">scalar</span>)
+                     <span class="name">uuv</span> <span class="operator">=</span> <span class="name">uuv</span>.<span class="name">times</span>(<span class="number">2.0</span>)
+                     <span class="keyword">return</span> <span class="name">v</span>.<span class="name">plus</span>(<span class="name">uv</span>).<span class="name">plus</span>(<span class="name">uuv</span>)
+                 }
+
+                 <span class="name">height</span>: <span class="name">width</span>
+                 <span class="name">radius</span>: <span class="name">width</span> <span class="operator">/</span> <span class="number">2</span>
+                 <span class="name">x</span>: <span class="name">offset</span> <span class="operator">*</span> <span class="name">position</span>.<span class="name">x</span> <span class="operator">-</span> <span class="name">width</span> <span class="operator">/</span> <span class="number">2</span>
+                 <span class="name">y</span>: <span class="name">offset</span> <span class="operator">*</span> -<span class="name">position</span>.<span class="name">y</span> <span class="operator">-</span> <span class="name">height</span> <span class="operator">/</span> <span class="number">2</span>
+                 <span class="name">z</span>: <span class="name">position</span>.<span class="name">z</span>
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-hoverhandler.html" translate="no">HoverHandler</a></span> {
+                     <span class="name">id</span>: <span class="name">subBallHoverHandler</span>
+                 }
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandler</a></span> {
+                     <span class="name">acceptedButtons</span>: <span class="name">Qt</span>.<span class="name">LeftButton</span>
+                     <span class="name">onTapped</span>: (<span class="keyword"></span>eventPoint, button)=&gt;{
+                         <span class="name">subBallRoot</span>.<span class="name">tapped</span>()
+                         <span class="comment">//eventPoint.accepted = true</span>
+                     }
+                 }
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
+                     <span class="name">id</span>: <span class="name">label</span>
+                     <span class="name">anchors</span>.centerIn: <span class="name">parent</span>
+                 }
+             }
+
+             <span class="type">SubBall</span> {
+                 <span class="name">id</span>: <span class="name">positiveX</span>
+                 <span class="name">targetNode</span>: <span class="name">root</span>.<span class="name">targetNode</span>
+                 <span class="name">width</span>: <span class="name">ballBackground</span>.<span class="name">subBallWidth</span>
+                 <span class="name">offset</span>: <span class="name">ballBackground</span>.<span class="name">subBallOffset</span>
+                 <span class="name">labelText</span>: <span class="string">&quot;X&quot;</span>
+                 <span class="name">labelColor</span>: <span class="name">hovered</span> ? <span class="name">stylePalette</span>.<span class="name">white</span> : <span class="name">stylePalette</span>.<span class="name">black</span>
+                 <span class="name">color</span>: <span class="name">stylePalette</span>.<span class="name">red</span>
+                 <span class="name">initialPosition</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">onTapped</span>: {
+                     <span class="name">root</span>.<span class="name">axisClicked</span>(<span class="name">OriginGizmo</span>.<span class="name">Axis</span>.<span class="name">PositiveX</span>)
+                 }
+             }
+
+             <span class="type">LineRectangle</span> {
+                 <span class="name">endPoint</span>: <span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="name">positiveX</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">ballBackground</span>.<span class="name">subBallHalfWidth</span>, <span class="name">positiveX</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">ballBackground</span>.<span class="name">subBallHalfWidth</span>)
+                 <span class="name">color</span>: <span class="name">stylePalette</span>.<span class="name">red</span>
+                 <span class="name">z</span>: <span class="name">positiveX</span>.<span class="name">z</span> <span class="operator">-</span> <span class="number">0.001</span>
+             }
+
+             <span class="type">SubBall</span> {
+                 <span class="name">id</span>: <span class="name">positiveY</span>
+                 <span class="name">targetNode</span>: <span class="name">root</span>.<span class="name">targetNode</span>
+                 <span class="name">width</span>: <span class="name">ballBackground</span>.<span class="name">subBallWidth</span>
+                 <span class="name">offset</span>: <span class="name">ballBackground</span>.<span class="name">subBallOffset</span>
+                 <span class="name">labelText</span>: <span class="string">&quot;Y&quot;</span>
+                 <span class="name">labelColor</span>: <span class="name">hovered</span> ? <span class="name">stylePalette</span>.<span class="name">white</span> : <span class="name">stylePalette</span>.<span class="name">black</span>
+                 <span class="name">color</span>: <span class="name">stylePalette</span>.<span class="name">green</span>
+                 <span class="name">initialPosition</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>)
+                 <span class="name">onTapped</span>: {
+                     <span class="name">root</span>.<span class="name">axisClicked</span>(<span class="name">OriginGizmo</span>.<span class="name">Axis</span>.<span class="name">PositiveY</span>)
+                 }
+             }
+
+             <span class="type">LineRectangle</span> {
+                 <span class="name">endPoint</span>: <span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="name">positiveY</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">ballBackground</span>.<span class="name">subBallHalfWidth</span>, <span class="name">positiveY</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">ballBackground</span>.<span class="name">subBallHalfWidth</span>)
+                 <span class="name">color</span>: <span class="name">stylePalette</span>.<span class="name">green</span>
+                 <span class="name">z</span>: <span class="name">positiveY</span>.<span class="name">z</span> <span class="operator">-</span> <span class="number">0.001</span>
+             }
+
+             <span class="type">SubBall</span> {
+                 <span class="name">id</span>: <span class="name">positiveZ</span>
+                 <span class="name">targetNode</span>: <span class="name">root</span>.<span class="name">targetNode</span>
+                 <span class="name">width</span>: <span class="name">ballBackground</span>.<span class="name">subBallWidth</span>
+                 <span class="name">offset</span>: <span class="name">ballBackground</span>.<span class="name">subBallOffset</span>
+                 <span class="name">labelText</span>: <span class="string">&quot;Z&quot;</span>
+                 <span class="name">labelColor</span>: <span class="name">hovered</span> ? <span class="name">stylePalette</span>.<span class="name">white</span> : <span class="name">stylePalette</span>.<span class="name">black</span>
+                 <span class="name">color</span>: <span class="name">stylePalette</span>.<span class="name">blue</span>
+                 <span class="name">initialPosition</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)
+                 <span class="name">onTapped</span>: {
+                     <span class="name">root</span>.<span class="name">axisClicked</span>(<span class="name">OriginGizmo</span>.<span class="name">Axis</span>.<span class="name">PositiveZ</span>)
+                 }
+             }
+
+             <span class="type">LineRectangle</span> {
+                 <span class="name">endPoint</span>: <span class="name">Qt</span>.<span class="name">vector2d</span>(<span class="name">positiveZ</span>.<span class="name">x</span> <span class="operator">+</span> <span class="name">ballBackground</span>.<span class="name">subBallHalfWidth</span>, <span class="name">positiveZ</span>.<span class="name">y</span> <span class="operator">+</span> <span class="name">ballBackground</span>.<span class="name">subBallHalfWidth</span>)
+                 <span class="name">color</span>: <span class="name">stylePalette</span>.<span class="name">blue</span>
+                 <span class="name">z</span>: <span class="name">positiveZ</span>.<span class="name">z</span> <span class="operator">-</span> <span class="number">0.001</span>
+             }
+
+             <span class="type">SubBall</span> {
+                 <span class="name">targetNode</span>: <span class="name">root</span>.<span class="name">targetNode</span>
+                 <span class="name">width</span>: <span class="name">ballBackground</span>.<span class="name">subBallWidth</span>
+                 <span class="name">offset</span>: <span class="name">ballBackground</span>.<span class="name">subBallOffset</span>
+                 <span class="name">labelText</span>: <span class="string">&quot;-X&quot;</span>
+                 <span class="name">labelColor</span>: <span class="name">stylePalette</span>.<span class="name">white</span>
+                 <span class="name">labelVisible</span>: <span class="name">hovered</span>
+                 <span class="name">color</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="name">stylePalette</span>.<span class="name">red</span>.<span class="name">r</span>, <span class="name">stylePalette</span>.<span class="name">red</span>.<span class="name">g</span>, <span class="name">stylePalette</span>.<span class="name">red</span>.<span class="name">b</span>, <span class="name">z</span> <span class="operator">+</span> <span class="number">1</span> <span class="operator">*</span> <span class="number">0.5</span>)
+                 <span class="name">border</span>.color: <span class="name">stylePalette</span>.<span class="name">red</span>
+                 <span class="name">border</span>.width: <span class="number">2</span>
+                 <span class="name">initialPosition</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(-<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>)
+                 <span class="name">onTapped</span>: {
+                     <span class="name">root</span>.<span class="name">axisClicked</span>(<span class="name">OriginGizmo</span>.<span class="name">Axis</span>.<span class="name">NegativeX</span>)
+                 }
+             }
+
+             <span class="type">SubBall</span> {
+                 <span class="name">targetNode</span>: <span class="name">root</span>.<span class="name">targetNode</span>
+                 <span class="name">width</span>: <span class="name">ballBackground</span>.<span class="name">subBallWidth</span>
+                 <span class="name">offset</span>: <span class="name">ballBackground</span>.<span class="name">subBallOffset</span>
+                 <span class="name">labelText</span>: <span class="string">&quot;-Y&quot;</span>
+                 <span class="name">labelColor</span>: <span class="name">stylePalette</span>.<span class="name">white</span>
+                 <span class="name">labelVisible</span>: <span class="name">hovered</span>
+                 <span class="name">color</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="name">stylePalette</span>.<span class="name">green</span>.<span class="name">r</span>, <span class="name">stylePalette</span>.<span class="name">green</span>.<span class="name">g</span>, <span class="name">stylePalette</span>.<span class="name">green</span>.<span class="name">b</span>, <span class="name">z</span> <span class="operator">+</span> <span class="number">1</span> <span class="operator">*</span> <span class="number">0.5</span>)
+                 <span class="name">border</span>.color: <span class="name">stylePalette</span>.<span class="name">green</span>
+                 <span class="name">border</span>.width: <span class="number">2</span>
+                 <span class="name">initialPosition</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>)
+                 <span class="name">onTapped</span>: {
+                     <span class="name">root</span>.<span class="name">axisClicked</span>(<span class="name">OriginGizmo</span>.<span class="name">Axis</span>.<span class="name">NegativeY</span>)
+                 }
+             }
+
+             <span class="type">SubBall</span> {
+                 <span class="name">targetNode</span>: <span class="name">root</span>.<span class="name">targetNode</span>
+                 <span class="name">width</span>: <span class="name">ballBackground</span>.<span class="name">subBallWidth</span>
+                 <span class="name">offset</span>: <span class="name">ballBackground</span>.<span class="name">subBallOffset</span>
+                 <span class="name">labelText</span>: <span class="string">&quot;-Z&quot;</span>
+                 <span class="name">labelColor</span>: <span class="name">stylePalette</span>.<span class="name">white</span>
+                 <span class="name">labelVisible</span>: <span class="name">hovered</span>
+                 <span class="name">color</span>: <span class="name">Qt</span>.<span class="name">rgba</span>(<span class="name">stylePalette</span>.<span class="name">blue</span>.<span class="name">r</span>, <span class="name">stylePalette</span>.<span class="name">blue</span>.<span class="name">g</span>, <span class="name">stylePalette</span>.<span class="name">blue</span>.<span class="name">b</span>, <span class="name">z</span> <span class="operator">+</span> <span class="number">1</span> <span class="operator">*</span> <span class="number">0.5</span>)
+                 <span class="name">border</span>.color: <span class="name">stylePalette</span>.<span class="name">blue</span>
+                 <span class="name">border</span>.width: <span class="number">2</span>
+                 <span class="name">initialPosition</span>: <span class="name">Qt</span>.<span class="name">vector3d</span>(<span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>)
+                 <span class="name">onTapped</span>: {
+                     <span class="name">root</span>.<span class="name">axisClicked</span>(<span class="name">OriginGizmo</span>.<span class="name">Axis</span>.<span class="name">NegativeZ</span>)
+                 }
+             }
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-hoverhandler.html" translate="no">HoverHandler</a></span> {
+             <span class="name">id</span>: <span class="name">ballBackgroundHoverHandler</span>
+             <span class="name">acceptedDevices</span>: <span class="name">PointerDevice</span>.<span class="name">Mouse</span>
+             <span class="name">cursorShape</span>: <span class="name">Qt</span>.<span class="name">PointingHandCursor</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-draghandler.html" translate="no">DragHandler</a></span> {
+             <span class="name">id</span>: <span class="name">dragHandler</span>
+             <span class="name">target</span>: <span class="number">null</span>
+             <span class="name">enabled</span>: <span class="name">ballBackground</span>.<span class="name">visible</span>
+             <span class="name">onCentroidChanged</span>: {
+                 <span class="keyword">if</span> (<span class="name">centroid</span>.<span class="name">velocity</span>.<span class="name">x</span> <span class="operator">&gt;</span> <span class="number">0</span> <span class="operator">&amp;&amp;</span> <span class="name">centroid</span>.<span class="name">velocity</span>.<span class="name">y</span> <span class="operator">&gt;</span> <span class="number">0</span>) {
+                     <span class="name">root</span>.<span class="name">ballMoved</span>(<span class="name">centroid</span>.<span class="name">velocity</span>)
+                 }
+             }
+         }
+     }
+ }
+</pre>

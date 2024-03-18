@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qsslsocket.cpp -->
   <meta name="description" content="The QSslSocket class provides an SSL encrypted socket for both clients and servers.">
-  <title>QSslSocket Class | Qt Network 6.6.0</title>
+  <title>QSslSocket Class | Qt Network 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtnetwork-index.html" translate="no">Qt Network</a></li>
 <li><a href="qtnetwork-module.html" translate="no">C++ Classes</a></li>
 <li>QSslSocket</li>
-<li id="buildversion"><a href="qtnetwork-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtnetwork-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -181,7 +181,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <!-- $$$QSslSocket-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p>QSslSocket establishes a secure, encrypted TCP connection you can use for transmitting encrypted data. It can operate in both client and server mode, and it supports modern TLS protocols, including TLS 1.3&#x2e; By default, QSslSocket uses only TLS protocols which are considered to be secure (<a href="qssl.html#SslProtocol-enum" translate="no">QSsl::SecureProtocols</a>), but you can change the TLS protocol by calling <a href="qsslsocket.html#setProtocol" translate="no">setProtocol</a>() as long as you do it before the handshake has started.</p>
+<p>QSslSocket establishes a secure, encrypted TCP connection you can use for transmitting encrypted data. It can operate in both client and server mode, and it supports modern TLS protocols, including TLS 1.3. By default, QSslSocket uses only TLS protocols which are considered to be secure (<a href="qssl.html#SslProtocol-enum" translate="no">QSsl::SecureProtocols</a>), but you can change the TLS protocol by calling <a href="qsslsocket.html#setProtocol" translate="no">setProtocol</a>() as long as you do it before the handshake has started.</p>
 <p>SSL encryption operates on top of the existing TCP stream after the socket enters the ConnectedState. There are two simple ways to establish a secure connection using QSslSocket: With an immediate SSL handshake, or with a delayed SSL handshake occurring after the connection has been established in unencrypted mode.</p>
 <p>The most common way to use QSslSocket is to construct an object and start a secure connection by calling <a href="qsslsocket.html#connectToHostEncrypted" translate="no">connectToHostEncrypted</a>(). This method starts an immediate SSL handshake once the connection has been established.</p>
 <pre class="cpp" translate="no">
@@ -191,7 +191,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
  socket<span class="operator">-</span><span class="operator">&gt;</span>connectToHostEncrypted(<span class="string">&quot;imap.example.com&quot;</span><span class="operator">,</span> <span class="number">993</span>);
 </pre>
 <p>As with a plain <a href="qtcpsocket.html" translate="no">QTcpSocket</a>, QSslSocket enters the HostLookupState, ConnectingState, and finally the ConnectedState, if the connection is successful. The handshake then starts automatically, and if it succeeds, the <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>() signal is emitted to indicate the socket has entered the encrypted state and is ready for use.</p>
-<p>Note that data can be written to the socket immediately after the return from <a href="qsslsocket.html#connectToHostEncrypted" translate="no">connectToHostEncrypted</a>() (i.e&#x2e;, before the <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>() signal is emitted). The data is queued in QSslSocket until after the <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>() signal is emitted.</p>
+<p>Note that data can be written to the socket immediately after the return from <a href="qsslsocket.html#connectToHostEncrypted" translate="no">connectToHostEncrypted</a>() (i.e., before the <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>() signal is emitted). The data is queued in QSslSocket until after the <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>() signal is emitted.</p>
 <p>An example of using the delayed SSL handshake to secure an existing connection is the case where an SSL server secures an incoming connection. Suppose you create an SSL server class as a subclass of <a href="qtcpserver.html" translate="no">QTcpServer</a>. You would override <a href="qtcpserver.html#incomingConnection" translate="no">QTcpServer::incomingConnection</a>() with something like the example below, which first constructs an instance of QSslSocket and then calls <a href="qsslsocket.html#setSocketDescriptor" translate="no">setSocketDescriptor</a>() to set the new socket's descriptor to the existing one passed in. It then initiates the SSL handshake by calling <a href="qsslsocket.html#startServerEncryption" translate="no">startServerEncryption</a>().</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> SslServer<span class="operator">::</span>incomingConnection(qintptr socketDescriptor)
@@ -224,7 +224,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <p>QSslSocket provides an extensive, easy-to-use API for handling cryptographic ciphers, private keys, and local, peer, and Certification Authority (CA) certificates. It also provides an API for handling errors that occur during the handshake phase.</p>
 <p>The following features can also be customized:</p>
 <ul>
-<li>The socket's cryptographic cipher suite can be customized before the handshake phase with <a href="qsslconfiguration.html#setCiphers" translate="no">QSslConfiguration::setCiphers</a>() and QSslConfiguration::setDefaultCiphers().</li>
+<li>The socket's cryptographic cipher suite can be customized before the handshake phase with <a href="qsslconfiguration.html#setCiphers" translate="no">QSslConfiguration::setCiphers</a>().</li>
 <li>The socket's local certificate and private key can be customized before the handshake phase with <a href="qsslsocket.html#setLocalCertificate" translate="no">setLocalCertificate</a>() and <a href="qsslsocket.html#setPrivateKey" translate="no">setPrivateKey</a>().</li>
 <li>The CA certificate database can be extended and customized with <a href="qsslconfiguration.html#addCaCertificate" translate="no">QSslConfiguration::addCaCertificate</a>(), <a href="qsslconfiguration.html#addCaCertificates" translate="no">QSslConfiguration::addCaCertificates</a>().</li>
 </ul>
@@ -316,7 +316,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <!-- @@@atEnd -->
 <!-- $$$availableBackends[overload1]$$$availableBackends -->
 <h3 class="fn" translate="no" id="availableBackends"><code translate="no">[static, since 6.1] </code><span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span>&lt;<span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span>&gt; QSslSocket::<span class="name">availableBackends</span>()</h3>
-<p>Returns the names of the currently available backends. These names are in lower case, e.g&#x2e; &quot;openssl&quot;, &quot;securetransport&quot;, &quot;schannel&quot; (similar to the already existing feature names for TLS backends in Qt).</p>
+<p>Returns the names of the currently available backends. These names are in lower case, e.g. &quot;openssl&quot;, &quot;securetransport&quot;, &quot;schannel&quot; (similar to the already existing feature names for TLS backends in Qt).</p>
 <p>This function was introduced in Qt 6.1.</p>
 <p><b>See also </b><a href="qsslsocket.html#activeBackend" translate="no">activeBackend</a>().</p>
 <!-- @@@availableBackends -->
@@ -397,7 +397,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <!-- $$$ignoreSslErrors[overload1]$$$ignoreSslErrors -->
 <h3 class="fn" translate="no" id="ignoreSslErrors"><code translate="no">[slot] </code><span class="type">void</span> QSslSocket::<span class="name">ignoreSslErrors</span>()</h3>
 <p>This slot tells <a href="qsslsocket.html" translate="no">QSslSocket</a> to ignore errors during <a href="qsslsocket.html" translate="no">QSslSocket</a>'s handshake phase and continue connecting. If you want to continue with the connection even if errors occur during the handshake phase, then you must call this slot, either from a slot connected to <a href="qsslsocket.html#sslErrors" translate="no">sslErrors</a>(), or before the handshake phase. If you don't call this slot, either in response to errors or before the handshake, the connection will be dropped after the <a href="qsslsocket.html#sslErrors" translate="no">sslErrors</a>() signal has been emitted.</p>
-<p>If there are no errors during the SSL handshake phase (i.e&#x2e;, the identity of the peer is established with no problems), <a href="qsslsocket.html" translate="no">QSslSocket</a> will not emit the <a href="qsslsocket.html#sslErrors" translate="no">sslErrors</a>() signal, and it is unnecessary to call this function.</p>
+<p>If there are no errors during the SSL handshake phase (i.e., the identity of the peer is established with no problems), <a href="qsslsocket.html" translate="no">QSslSocket</a> will not emit the <a href="qsslsocket.html#sslErrors" translate="no">sslErrors</a>() signal, and it is unnecessary to call this function.</p>
 <div class="admonition warning">
 <p><b>Warning: </b>Be sure to always let the user inspect the errors reported by the <a href="qsslsocket.html#sslErrors" translate="no">sslErrors</a>() signal, and only call this method upon confirmation from the user that proceeding is ok. If there are unexpected errors, the connection should be aborted. Calling this method without inspecting the actual errors will most likely pose a security risk for your application. Use it with great care!</p>
 </div>
@@ -480,7 +480,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <h3 class="fn" translate="no" id="newSessionTicketReceived"><code translate="no">[signal] </code><span class="type">void</span> QSslSocket::<span class="name">newSessionTicketReceived</span>()</h3>
 <p>If TLS 1.3 protocol was negotiated during a handshake, <a href="qsslsocket.html" translate="no">QSslSocket</a> emits this signal after receiving NewSessionTicket message. Session and session ticket's lifetime hint are updated in the socket's configuration. The session can be used for session resumption (and a shortened handshake) in future TLS connections.</p>
 <div class="admonition note">
-<p><b>Note: </b>This functionality enabled only with OpenSSL backend and requires OpenSSL v 1.1&#x2e;1 or above.</p>
+<p><b>Note: </b>This functionality enabled only with OpenSSL backend and requires OpenSSL v 1.1.1 or above.</p>
 </div>
 <p><b>See also </b><a href="qsslsocket.html#sslConfiguration" translate="no">QSslSocket::sslConfiguration</a>(), <a href="qsslconfiguration.html#sessionTicket" translate="no">QSslConfiguration::sessionTicket</a>(), and <a href="qsslconfiguration.html#sessionTicketLifeTimeHint" translate="no">QSslConfiguration::sessionTicketLifeTimeHint</a>().</p>
 <!-- @@@newSessionTicketReceived -->
@@ -491,7 +491,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <!-- @@@ocspResponses -->
 <!-- $$$peerCertificate[overload1]$$$peerCertificate -->
 <h3 class="fn" translate="no" id="peerCertificate"><span class="type"><a href="qsslcertificate.html" translate="no">QSslCertificate</a></span> QSslSocket::<span class="name">peerCertificate</span>() const</h3>
-<p>Returns the peer's digital certificate (i.e&#x2e;, the immediate certificate of the host you are connected to), or a null certificate, if the peer has not assigned a certificate.</p>
+<p>Returns the peer's digital certificate (i.e., the immediate certificate of the host you are connected to), or a null certificate, if the peer has not assigned a certificate.</p>
 <p>The peer certificate is checked automatically during the handshake phase, so this function is normally used to fetch the certificate for display or for connection diagnostic purposes. It contains information about the peer, including its host name, the certificate issuer, and the peer's public key.</p>
 <p>Because the peer certificate is set during the handshake phase, it is safe to access the peer certificate from a slot connected to the <a href="qsslsocket.html#sslErrors" translate="no">sslErrors</a>() signal or the <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>() signal.</p>
 <p>If a null certificate is returned, it can mean the SSL handshake failed, or it can mean the host you are connected to doesn't have a certificate, or it can mean there is no connection.</p>
@@ -521,7 +521,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <!-- @@@peerVerifyError -->
 <!-- $$$peerVerifyMode[overload1]$$$peerVerifyMode -->
 <h3 class="fn" translate="no" id="peerVerifyMode"><span class="type"><a href="qsslsocket.html#PeerVerifyMode-enum" translate="no">QSslSocket::PeerVerifyMode</a></span> QSslSocket::<span class="name">peerVerifyMode</span>() const</h3>
-<p>Returns the socket's verify mode. This mode decides whether <a href="qsslsocket.html" translate="no">QSslSocket</a> should request a certificate from the peer (i.e&#x2e;, the client requests a certificate from the server, or a server requesting a certificate from the client), and whether it should require that this certificate is valid.</p>
+<p>Returns the socket's verify mode. This mode decides whether <a href="qsslsocket.html" translate="no">QSslSocket</a> should request a certificate from the peer (i.e., the client requests a certificate from the server, or a server requesting a certificate from the client), and whether it should require that this certificate is valid.</p>
 <p>The default mode is <a href="qsslsocket.html#PeerVerifyMode-enum" translate="no">AutoVerifyPeer</a>, which tells <a href="qsslsocket.html" translate="no">QSslSocket</a> to use <a href="qsslsocket.html#PeerVerifyMode-enum" translate="no">VerifyPeer</a> for clients and <a href="qsslsocket.html#PeerVerifyMode-enum" translate="no">QueryPeer</a> for servers.</p>
 <p><b>See also </b><a href="qsslsocket.html#setPeerVerifyMode" translate="no">setPeerVerifyMode</a>(), <a href="qsslsocket.html#peerVerifyDepth" translate="no">peerVerifyDepth</a>(), and <a href="qsslsocket.html#mode" translate="no">mode</a>().</p>
 <!-- @@@peerVerifyMode -->
@@ -577,7 +577,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <h3 class="fn" translate="no" id="setActiveBackend"><code translate="no">[static, since 6.1] </code><span class="type">bool</span> QSslSocket::<span class="name">setActiveBackend</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>backendName</i>)</h3>
 <p>Returns true if a backend with name <i translate="no">backendName</i> was set as active backend. <i translate="no">backendName</i> must be one of names returned by <a href="qsslsocket.html#availableBackends" translate="no">availableBackends</a>().</p>
 <div class="admonition note">
-<p><b>Note: </b>An application cannot mix different backends simultaneously. This implies that a non-default backend must be selected prior to any use of <a href="qsslsocket.html" translate="no">QSslSocket</a> or related classes, e.g&#x2e; <a href="qsslcertificate.html" translate="no">QSslCertificate</a> or <a href="qsslkey.html" translate="no">QSslKey</a>.</p>
+<p><b>Note: </b>An application cannot mix different backends simultaneously. This implies that a non-default backend must be selected prior to any use of <a href="qsslsocket.html" translate="no">QSslSocket</a> or related classes, e.g. <a href="qsslcertificate.html" translate="no">QSslCertificate</a> or <a href="qsslkey.html" translate="no">QSslKey</a>.</p>
 </div>
 <p>This function was introduced in Qt 6.1.</p>
 <p><b>See also </b><a href="qsslsocket.html#activeBackend" translate="no">activeBackend</a>() and <a href="qsslsocket.html#availableBackends" translate="no">availableBackends</a>().</p>
@@ -609,7 +609,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <!-- @@@setPeerVerifyDepth -->
 <!-- $$$setPeerVerifyMode[overload1]$$$setPeerVerifyModeQSslSocket::PeerVerifyMode -->
 <h3 class="fn" translate="no" id="setPeerVerifyMode"><span class="type">void</span> QSslSocket::<span class="name">setPeerVerifyMode</span>(<span class="type"><a href="qsslsocket.html#PeerVerifyMode-enum" translate="no">QSslSocket::PeerVerifyMode</a></span> <i>mode</i>)</h3>
-<p>Sets the socket's verify mode to <i translate="no">mode</i>. This mode decides whether <a href="qsslsocket.html" translate="no">QSslSocket</a> should request a certificate from the peer (i.e&#x2e;, the client requests a certificate from the server, or a server requesting a certificate from the client), and whether it should require that this certificate is valid.</p>
+<p>Sets the socket's verify mode to <i translate="no">mode</i>. This mode decides whether <a href="qsslsocket.html" translate="no">QSslSocket</a> should request a certificate from the peer (i.e., the client requests a certificate from the server, or a server requesting a certificate from the client), and whether it should require that this certificate is valid.</p>
 <p>The default mode is <a href="qsslsocket.html#PeerVerifyMode-enum" translate="no">AutoVerifyPeer</a>, which tells <a href="qsslsocket.html" translate="no">QSslSocket</a> to use <a href="qsslsocket.html#PeerVerifyMode-enum" translate="no">VerifyPeer</a> for clients and <a href="qsslsocket.html#PeerVerifyMode-enum" translate="no">QueryPeer</a> for servers.</p>
 <p>Setting this mode after encryption has started has no effect on the current connection.</p>
 <p><b>See also </b><a href="qsslsocket.html#peerVerifyMode" translate="no">peerVerifyMode</a>(), <a href="qsslsocket.html#setPeerVerifyDepth" translate="no">setPeerVerifyDepth</a>(), and <a href="qsslsocket.html#mode" translate="no">mode</a>().</p>
@@ -760,7 +760,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <!-- @@@waitForDisconnected -->
 <!-- $$$waitForEncrypted[overload1]$$$waitForEncryptedint -->
 <h3 class="fn" translate="no" id="waitForEncrypted"><span class="type">bool</span> QSslSocket::<span class="name">waitForEncrypted</span>(<span class="type">int</span> <i>msecs</i> = 30000)</h3>
-<p>Waits until the socket has completed the SSL handshake and has emitted <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>(), or <i translate="no">msecs</i> milliseconds, whichever comes first. If <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>() has been emitted, this function returns true; otherwise (e.g&#x2e;, the socket is disconnected, or the SSL handshake fails), false is returned.</p>
+<p>Waits until the socket has completed the SSL handshake and has emitted <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>(), or <i translate="no">msecs</i> milliseconds, whichever comes first. If <a href="qsslsocket.html#encrypted" translate="no">encrypted</a>() has been emitted, this function returns true; otherwise (e.g., the socket is disconnected, or the SSL handshake fails), false is returned.</p>
 <p>The following example waits up to one second for the socket to be encrypted:</p>
 <pre class="cpp" translate="no">
  socket<span class="operator">-</span><span class="operator">&gt;</span>connectToHostEncrypted(<span class="string">&quot;imap&quot;</span><span class="operator">,</span> <span class="number">993</span>);
@@ -872,9 +872,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

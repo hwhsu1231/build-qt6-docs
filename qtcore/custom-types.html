@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- custom-types.qdoc -->
   <meta name="description" content="How to create and register new types with Qt.">
-  <title>Creating Custom Qt Types | Qt Core 6.6.0</title>
+  <title>Creating Custom Qt Types | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li>Creating Custom Qt Types</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -90,12 +90,21 @@
 <pre class="cpp" translate="no">
  Q_DECLARE_METATYPE(Message);
 </pre>
-<p>This now makes it possible for <code translate="no">Message</code> values to be stored in <a href="qvariant.html" translate="no">QVariant</a> objects and retrieved later. See the <a href="qtcore-tools-customtype-example.html" translate="no">Custom Type Example</a> for code that demonstrates this.</p>
+<p>This now makes it possible for <code translate="no">Message</code> values to be stored in <a href="qvariant.html" translate="no">QVariant</a> objects and retrieved later:</p>
+<pre class="cpp" translate="no">
+ <span class="type"><a href="qvariant.html" translate="no">QVariant</a></span> stored;
+ stored<span class="operator">.</span>setValue(message);
+     ...
+ Message retrieved <span class="operator">=</span> qvariant_cast<span class="operator">&lt;</span>Message<span class="operator">&gt;</span>(stored);
+ <a href="qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Retrieved:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> retrieved;
+ retrieved <span class="operator">=</span> qvariant_cast<span class="operator">&lt;</span>Message<span class="operator">&gt;</span>(stored);
+ <a href="qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Retrieved:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> retrieved;
+</pre>
 <p>The <a href="qmetatype.html#Q_DECLARE_METATYPE" translate="no">Q_DECLARE_METATYPE</a>() macro also makes it possible for these values to be used as arguments to signals, but <i>only in direct signal-slot connections</i>. To make the custom type generally usable with the signals and slots mechanism, we need to perform some extra work.</p>
 <h2 id="creating-and-destroying-custom-objects">Creating and Destroying Custom Objects</h2>
 <p>Although the declaration in the previous section makes the type available for use in direct signal-slot connections, it cannot be used for queued signal-slot connections, such as those that are made between objects in different threads. This is because the meta-object system does not know how to handle creation and destruction of objects of the custom type at run-time.</p>
 <p>To enable creation of objects at run-time, call the <a href="qmetatype.html#qRegisterMetaType-3" translate="no">qRegisterMetaType</a>() template function to register it with the meta-object system. This also makes the type available for queued signal-slot communication as long as you call it before you make the first connection that uses the type.</p>
-<p>The <a href="qtcore-threads-queuedcustomtype-example.html" translate="no">Queued Custom Type Example</a> declares a <code translate="no">Block</code> class which is registered in the <code translate="no">main.cpp</code> file:</p>
+<p>The <a href="qtcore-threads-queuedcustomtype-example.html" translate="no">Queued Custom Type</a> example declares a <code translate="no">Block</code> class which is registered in the <code translate="no">main.cpp</code> file:</p>
 <pre class="cpp" translate="no">
  <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span>argv<span class="operator">[</span><span class="operator">]</span>)
  {
@@ -126,19 +135,18 @@
 <h2 id="making-the-type-printable">Making the Type Printable</h2>
 <p>It is often quite useful to make a custom type printable for debugging purposes, as in the following code:</p>
 <pre class="cpp" translate="no">
-     Message message(body<span class="operator">,</span> headers);
-     <a href="qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Original:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> message;
+ Message message(body<span class="operator">,</span> headers);
+ <a href="qtlogging.html#qDebug" translate="no">qDebug</a>() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Original:&quot;</span> <span class="operator">&lt;</span><span class="operator">&lt;</span> message;
 </pre>
 <p>This is achieved by creating a streaming operator for the type, which is often defined in the header file for that type:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qdebug.html" translate="no">QDebug</a></span> <span class="keyword">operator</span><span class="operator">&lt;</span><span class="operator">&lt;</span>(<span class="type"><a href="qdebug.html" translate="no">QDebug</a></span> dbg<span class="operator">,</span> <span class="keyword">const</span> Message <span class="operator">&amp;</span>message);
 </pre>
-<p>The implementation for the <code translate="no">Message</code> type in the <a href="qtcore-tools-customtype-example.html" translate="no">Custom Type Example</a> goes to some effort to make the printable representation as readable as possible:</p>
+<p>The implementation for the <code translate="no">Message</code> type here goes to some effort to make the printable representation as readable as possible:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qdebug.html" translate="no">QDebug</a></span> <span class="keyword">operator</span><span class="operator">&lt;</span><span class="operator">&lt;</span>(<span class="type"><a href="qdebug.html" translate="no">QDebug</a></span> dbg<span class="operator">,</span> <span class="keyword">const</span> Message <span class="operator">&amp;</span>message)
  {
-     <span class="type"><a href="qdebugstatesaver.html" translate="no">QDebugStateSaver</a></span> saver(dbg);
-     <span class="type"><a href="qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qstringview.html" translate="no">QStringView</a></span><span class="operator">&gt;</span> pieces <span class="operator">=</span> message<span class="operator">.</span>body()<span class="operator">.</span>split(u<span class="string">&quot;\r\n&quot;</span><span class="operator">,</span> <span class="type"><a href="qt.html" translate="no">Qt</a></span><span class="operator">::</span>SkipEmptyParts);
+     <span class="keyword">const</span> <span class="type"><a href="qlist.html" translate="no">QList</a></span><span class="operator">&lt;</span><span class="type"><a href="qstringview.html" translate="no">QStringView</a></span><span class="operator">&gt;</span> pieces <span class="operator">=</span> message<span class="operator">.</span>body()<span class="operator">.</span>split(u<span class="string">&quot;\r\n&quot;</span><span class="operator">,</span> <span class="type"><a href="qt.html" translate="no">Qt</a></span><span class="operator">::</span>SkipEmptyParts);
      <span class="keyword">if</span> (pieces<span class="operator">.</span>isEmpty())
          dbg<span class="operator">.</span>nospace() <span class="operator">&lt;</span><span class="operator">&lt;</span> <span class="string">&quot;Message()&quot;</span>;
      <span class="keyword">else</span> <span class="keyword">if</span> (pieces<span class="operator">.</span>size() <span class="operator">=</span><span class="operator">=</span> <span class="number">1</span>)
@@ -151,7 +159,7 @@
 <p>The output sent to the debug stream can, of course, be made as simple or as complicated as you like. Note that the value returned by this function is the <a href="qdebug.html" translate="no">QDebug</a> object itself, though this is often obtained by calling the <a href="qdebug.html#maybeSpace" translate="no">maybeSpace</a>() member function of <a href="qdebug.html" translate="no">QDebug</a> that pads out the stream with space characters to make it more readable.</p>
 <h2 id="further-reading">Further Reading</h2>
 <p>The <a href="qmetatype.html#Q_DECLARE_METATYPE" translate="no">Q_DECLARE_METATYPE</a>() macro and <a href="qmetatype.html#qRegisterMetaType-3" translate="no">qRegisterMetaType</a>() function documentation contain more detailed information about their uses and limitations.</p>
-<p>The <a href="qtcore-tools-customtype-example.html" translate="no">Custom Type</a> and <a href="qtcore-threads-queuedcustomtype-example.html" translate="no">Queued Custom Type</a> examples show how to implement a custom type with the features outlined in this document.</p>
+<p>The <a href="qtcore-threads-queuedcustomtype-example.html" translate="no">Queued Custom Type</a> example shows how to implement a custom type with the features outlined in this document.</p>
 <p>The <a href="../qtdoc/debug.html" translate="no">Debugging Techniques</a> document provides an overview of the debugging mechanisms discussed above.</p>
 </div>
 <!-- @@@custom-types.html -->
@@ -162,9 +170,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

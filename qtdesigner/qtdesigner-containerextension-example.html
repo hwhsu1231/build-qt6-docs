@@ -30,7 +30,7 @@
 <li><a href="qtdesigner-manual.html" translate="no">Qt Designer Manual</a></li>
 <li><a href="examples-designer.html" translate="no">Qt Designer Examples</a></li>
 <li>Container Extension Example</li>
-<li id="buildversion"><a href="qtdesigner-manual.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtdesigner-manual.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -62,7 +62,7 @@
 <div class="descr" id="details">
 <p>The Container Extension example shows how to create a custom multi-page plugin for <i>Qt Designer</i> using the <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> class.</p>
 <p class="centerAlign"><img src="images/containerextension-example.webp" alt="" /></p><p>To provide a custom widget that can be used with <i>Qt Designer</i>, we need to supply a self-contained implementation. In this example we use a custom multi-page widget designed to show the container extension feature.</p>
-<p>An extension is an object which modifies the behavior of <i>Qt Designer</i>. The <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> enables <i>Qt Designer</i> to manage and manipulate a custom multi-page widget, i.e&#x2e; adding and deleting pages to the widget.</p>
+<p>An extension is an object which modifies the behavior of <i>Qt Designer</i>. The <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> enables <i>Qt Designer</i> to manage and manipulate a custom multi-page widget, i.e. adding and deleting pages to the widget.</p>
 <p>There are four available types of extensions in <i>Qt Designer</i>:</p>
 <ul>
 <li><a href="qdesignermembersheetextension.html" translate="no">QDesignerMemberSheetExtension</a> provides an extension that allows you to manipulate a widget's member functions which is displayed when configuring connections using Qt Designer's mode for editing signals and slots.</li>
@@ -186,7 +186,7 @@
 </pre>
 <p>The plugin class provides <i>Qt Designer</i> with basic information about our plugin, such as its class name and its include file. Furthermore it knows how to create instances of the <code translate="no">MultiPageWidget</code> widget. <code translate="no">MultiPageWidgetPlugin</code> also defines the <a href="qdesignercustomwidgetinterface.html#initialize" translate="no">initialize</a>() function which is called after the plugin is loaded into <i>Qt Designer</i>. The function's <a href="qdesignerformeditorinterface.html" translate="no">QDesignerFormEditorInterface</a> parameter provides the plugin with a gateway to all of <i>Qt Designer</i>'s API's.</p>
 <p>In the case of a multipage widget such as ours, we must also implement two private slots, currentIndexChanged() and pageTitleChanged(), to be able to update <i>Qt Designer</i>'s property editor whenever the user views another page or changes one of the page titles. To be able to give each page their own title, we have chosen to use the <a href="../qtwidgets/qwidget.html#windowTitle-prop" translate="no">QWidget::windowTitle</a> property to store the page title (for more information see the MultiPageWidget class implementation in <i>containerextension/multipagewidget.cpp</i>. Note that currently there is no way of adding a custom property (for example, a page title) to the pages without using a predefined property as placeholder.</p>
-<p>The <code translate="no">MultiPageWidgetPlugin</code> class inherits from both <a href="../qtcore/qobject.html" translate="no">QObject</a> and <a href="qdesignercustomwidgetinterface.html" translate="no">QDesignerCustomWidgetInterface</a>. It is important to remember, when using multiple inheritance, to ensure that all the interfaces (i.e&#x2e; the classes that doesn't inherit <a href="../qtcore/qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a>) are made known to the meta object system using the <a href="../qtcore/qobject.html#Q_INTERFACES" translate="no">Q_INTERFACES</a>() macro. This enables <i>Qt Designer</i> to use <a href="../qtcore/qobject.html#qobject_cast-1" translate="no">qobject_cast</a>() to query for supported interfaces using nothing but a <a href="../qtcore/qobject.html" translate="no">QObject</a> pointer.</p>
+<p>The <code translate="no">MultiPageWidgetPlugin</code> class inherits from both <a href="../qtcore/qobject.html" translate="no">QObject</a> and <a href="qdesignercustomwidgetinterface.html" translate="no">QDesignerCustomWidgetInterface</a>. It is important to remember, when using multiple inheritance, to ensure that all the interfaces (i.e. the classes that doesn't inherit <a href="../qtcore/qobject.html#Q_OBJECT" translate="no">Q_OBJECT</a>) are made known to the meta object system using the <a href="../qtcore/qobject.html#Q_INTERFACES" translate="no">Q_INTERFACES</a>() macro. This enables <i>Qt Designer</i> to use <a href="../qtcore/qobject.html#qobject_cast-1" translate="no">qobject_cast</a>() to query for supported interfaces using nothing but a <a href="../qtcore/qobject.html" translate="no">QObject</a> pointer.</p>
 <p>To ensure that Qt recognizes the widget as a plugin, export relevant information about the widget by adding the <code translate="no">Q_PLUGIN_METADATA()</code> macro:</p>
 <pre class="cpp" translate="no">
      Q_PLUGIN_METADATA(IID <span class="string">&quot;org.qt-project.Qt.QDesignerCustomWidget&quot;</span>)
@@ -255,7 +255,7 @@
  }
 </pre>
 <p>In addition to create and return the widget, we connect our custom container widget's currentIndexChanged() signal to the plugin's currentIndexChanged() slot to ensure that <i>Qt Designer</i>'s property editor is updated whenever the user views another page. We also connect the widget's pageTitleChanged() signal to the plugin's pageTitleChanged() slot.</p>
-<p>The currentIndexChanged() slot is called whenever our custom widget's currentIndexChanged() <i>signal</i> is emitted, i.e&#x2e; whenever the user views another page:</p>
+<p>The currentIndexChanged() slot is called whenever our custom widget's currentIndexChanged() <i>signal</i> is emitted, i.e. whenever the user views another page:</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> MultiPageWidgetPlugin<span class="operator">::</span>currentIndexChanged(<span class="type">int</span> index)
  {
@@ -509,7 +509,7 @@
 </pre>
 <p>The main detail to observe is that your custom multi-page widget must implement functionality corresponding to the <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a>'s member functions since the <a href="qdesignercontainerextension.html" translate="no">QDesignerContainerExtension</a> class only is intended to provide Qt Designer access to your custom multi-page widget's functionality.</p>
 <p>In addition, we declare the <code translate="no">currentIndex</code> and <code translate="no">pageTitle</code> properties, and their associated set and get functions. By declaring these attributes as properties, we allow <i>Qt Designer</i> to manage them in the same way it manages the properties the MultiPageWidget widget inherits from <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> and <a href="../qtcore/qobject.html" translate="no">QObject</a>, for example featuring the property editor.</p>
-<p>Note the <code translate="no">STORED</code> attribute in the declaration of the <code translate="no">pageTitle</code> property: The <code translate="no">STORED</code> attribute indicates persistence, i.e&#x2e; it declares whether the property's value must be remembered when storing an object's state. As mentioned above, we have chosen to store the page title using the <a href="../qtwidgets/qwidget.html#windowTitle-prop" translate="no">QWidget::windowTitle</a> property to be able to give each page their own title. For that reason the <code translate="no">pageTitle</code> property is a &quot;fake&quot; property, provided for editing purposes, and doesn't need to be stored.</p>
+<p>Note the <code translate="no">STORED</code> attribute in the declaration of the <code translate="no">pageTitle</code> property: The <code translate="no">STORED</code> attribute indicates persistence, i.e. it declares whether the property's value must be remembered when storing an object's state. As mentioned above, we have chosen to store the page title using the <a href="../qtwidgets/qwidget.html#windowTitle-prop" translate="no">QWidget::windowTitle</a> property to be able to give each page their own title. For that reason the <code translate="no">pageTitle</code> property is a &quot;fake&quot; property, provided for editing purposes, and doesn't need to be stored.</p>
 <p>We must also implement and emit the currentIndexChanged() and pageTitleChanged() signals to ensure that <i>Qt Designer</i>'s property editor is updated whenever the user views another page or changes one of the page titles.</p>
 <p>See the MultiPageWidget class implementation in <i>containerextension/multipagewidget.cpp</i> for more details.</p>
 <p><a href="https://code.qt.io/cgit/qt/qttools.git/tree/examples/designer/containerextension?h=6.6" translate="no">Example project @ code.qt.io</a></p>
@@ -522,9 +522,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

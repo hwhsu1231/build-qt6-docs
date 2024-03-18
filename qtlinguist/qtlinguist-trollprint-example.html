@@ -30,7 +30,7 @@
 <li><a href="qtlinguist-index.html" translate="no">Qt Linguist Manual</a></li>
 <li><a href="examples-linguist.html" translate="no">Qt Linguist Examples</a></li>
 <li>Troll Print Example</li>
-<li id="buildversion"><a href="qtlinguist-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtlinguist-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -55,7 +55,7 @@
 <div class="descr" id="details">
 <p>Troll Print is an example application that lets the user choose printer settings. It comes in two versions: English and Portuguese.</p>
 <p class="centerAlign"><img src="images/linguist-trollprint_10_en.png" alt="" /></p><p>We've included a translation file, <code translate="no">trollprint_pt.ts</code>, which contains some Portuguese translations for this example.</p>
-<p>We will consider two releases of the same application: Troll Print 1.0 and 1.1&#x2e; We will learn to reuse the translations created for one release in a subsequent release. (In this tutorial, you need to edit some source files. It's probably best to copy all the files to a new temporary directory and work from there.)</p>
+<p>We will consider two releases of the same application: Troll Print 1.0 and 1.1. We will learn to reuse the translations created for one release in a subsequent release. (In this tutorial, you need to edit some source files. It's probably best to copy all the files to a new temporary directory and work from there.)</p>
 <p>See the <a href="qtlinguist-index.html" translate="no">Qt Linguist Manual</a> for more information about translating Qt application.</p>
 <h4 id="line-by-line-walkthrough">Line by Line Walkthrough</h4>
 <p>The <code translate="no">PrintPanel</code> class is defined in <code translate="no">printpanel.h</code>.</p>
@@ -75,7 +75,7 @@
      label-&gt;setAlignment(Qt::AlignCenter);
  */</span>
 </pre>
-<p>Some of the code is commented out in Troll Print 1.0; you will uncomment it later, for Troll Print 1.1&#x2e;</p>
+<p>Some of the code is commented out in Troll Print 1.0; you will uncomment it later, for Troll Print 1.1.</p>
 <pre class="cpp" translate="no">
      twoSidedGroupBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QGroupBox</span>(tr(<span class="string">&quot;2-sided&quot;</span>));
      twoSidedEnabledRadio <span class="operator">=</span> <span class="keyword">new</span> <span class="type">QRadioButton</span>(tr(<span class="string">&quot;Enabled&quot;</span>));
@@ -89,7 +89,7 @@
 <p>Notice the two occurrences of <code translate="no">tr(&quot;Enabled&quot;)</code> and of <code translate="no">tr(&quot;Disabled&quot;)</code> in PrintPanel. Since both &quot;Enabled&quot;s and &quot;Disabled&quot;s appear in the same context <i>Qt Linguist</i> will only display one occurrence of each and will use the same translations for the duplicates that it doesn't display. Whilst this is a useful timesaver, in some languages, such as Portuguese, the second occurrence requires a separate translation. We will see how <i>Qt Linguist</i> can be made to display all the occurrences for separate translation shortly.</p>
 <p>The header file for <code translate="no">MainWindow</code>, <code translate="no">mainwindow.h</code>, contains no surprises. In the implementation, <code translate="no">mainwindow.cpp</code>, we have some user-visible source texts that must be marked for translation.</p>
 <pre class="cpp" translate="no">
-     setWindowTitle(tr(<span class="string">&quot;Troll Print 1.0&quot;</span>));
+     setWindowTitle(tr(<span class="string">&quot;Troll Print %1&quot;</span>)<span class="operator">.</span>arg(<span class="string">&quot;1.0&quot;</span>));
 </pre>
 <p>We must translate the window title.</p>
 <pre class="cpp" translate="no">
@@ -128,7 +128,7 @@
 <p>The <code translate="no">main()</code> function in <code translate="no">main.cpp</code> is the same as the one in the <a href="qtlinguist-arrowpad-example.html" translate="no">Arrow Pad</a> example. In particular, it chooses a translation file based on the current locale.</p>
 <h4 id="running-troll-print-1-0-in-english-and-in-portuguese">Running Troll Print 1.0 in English and in Portuguese</h4>
 <p>We will use the translations in the <code translate="no">trollprint_pt.ts</code> file that is provided.</p>
-<p>Set the <code translate="no">LANG</code> environment variable to <code translate="no">pt</code>, and then run <code translate="no">trollprint</code>. You should still see the English version. Now run <code translate="no">lrelease</code>, e.g&#x2e; <code translate="no">lrelease trollprint.pro</code>, and then run the example again. Now you should see the Portuguese edition (Troll Imprimir 1.0):</p>
+<p>Set the <code translate="no">LANG</code> environment variable to <code translate="no">pt</code>, and then run <code translate="no">trollprint</code>. You should still see the English version. Now run <code translate="no">lrelease</code>, e.g. <code translate="no">lrelease trollprint.pro</code>, and then run the example again. Now you should see the Portuguese edition (Troll Imprimir 1.0):</p>
 <p class="centerAlign"><img src="images/linguist-trollprint_10_pt_bad.png" alt="" /></p><p>Whilst the translation has appeared correctly, it is in fact wrong. In good Portuguese, the second occurrence of &quot;Enabled&quot; should be &quot;Ativadas&quot;, not &quot;Ativado&quot; and the ending for the second translation of &quot;Disabled&quot; must change similarly too.</p>
 <p>If you open <code translate="no">trollprint_pt.ts</code> using <i>Qt Linguist</i>, you will see that there is just one occurrence of &quot;Enabled&quot; and of &quot;Disabled&quot; in the translation source file, even though there are two of each in the source code. This is because <i>Qt Linguist</i> tries to minimize the translator's work by using the same translation for duplicate source texts. In cases such as this where an identical translation is wrong, the programmer must disambiguate the duplicate occurrences. This is easily achieved by using the two argument form of <code translate="no">tr()</code>.</p>
 <p>We can easily determine which file must be changed because the translator's &quot;context&quot; is in fact the class name for the class where the texts that must be changed appears. In this case the file is <code translate="no">printpanel.cpp</code>, where there are four lines to change. Add the second argument &quot;two-sided&quot; in the appropriate <code translate="no">tr()</code> calls to the first pair of radio buttons:</p>
@@ -158,7 +158,7 @@
     ...
  */</span>
 </pre>
-<p>Try adding these comments to some source files, particularly to dialog classes, describing the navigation necessary to reach the dialogs. You could also add them to the example files, e.g&#x2e; <code translate="no">mainwindow.cpp</code> and <code translate="no">printpanel.cpp</code> are appropriate files. Run <code translate="no">lupdate</code> and then start <i>Qt Linguist</i> and load in <code translate="no">trollprint_pt.ts</code>. You should see the comments in the <b translate="no">Source text and comments</b> area as you browse through the list of source texts.</p>
+<p>Try adding these comments to some source files, particularly to dialog classes, describing the navigation necessary to reach the dialogs. You could also add them to the example files, e.g. <code translate="no">mainwindow.cpp</code> and <code translate="no">printpanel.cpp</code> are appropriate files. Run <code translate="no">lupdate</code> and then start <i>Qt Linguist</i> and load in <code translate="no">trollprint_pt.ts</code>. You should see the comments in the <b translate="no">Source text and comments</b> area as you browse through the list of source texts.</p>
 <p>Sometimes, particularly with large programs, it can be difficult for the translator to find their translations and check that they're correct. Comments that provide good navigation information can save them time:</p>
 <pre class="cpp" translate="no">
  <span class="comment">/*
@@ -183,23 +183,14 @@
 <p>(Of course the version number and copyright year would be consts or #defines in a real application.)</p>
 <p>Once finished, run <code translate="no">lupdate</code>, then open <code translate="no">trollprint_pt.ts</code> in <i>Qt Linguist</i>. The following items are of special interest:</p>
 <ul>
-<li><code translate="no">MainWindow</code><ul>
-<li>Troll Print 1.0 - marked &quot;(obs.)&quot;, obsolete</li>
-<li>About Troll Print 1.0 - marked &quot;(obs.)&quot;, obsolete</li>
-<li>Troll Print 1.0&#x2e; Copyright 1999 Software, Inc. - marked obsolete</li>
-<li>Troll Print 1.1 - automatically translated as &quot;Troll Imprimir 1.1&quot;</li>
-<li>About Troll Print 1.1 - automatically translated as &quot;Troll Imprimir 1.1&quot;</li>
-<li>Troll Print 1.1&#x2e; Copyright 1999-2000 Software, Inc. - automatically translated as &quot;Troll Imprimir 1.1&#x2e; Copyright 1999-2000 Software, Inc.&quot;</li>
-</ul>
-</li>
 <li><code translate="no">PrintPanel</code><ul>
 <li>2-sided - marked &quot;(obs.)&quot;, obsolete</li>
-<li>&lt;b&gt;TROLL PRINT&lt;/b&gt; - unmarked, i.e&#x2e; untranslated</li>
-<li>Two-sided - unmarked, i.e&#x2e; untranslated.</li>
+<li>&lt;b&gt;TROLL PRINT&lt;/b&gt; - unmarked, i.e. untranslated</li>
+<li>Two-sided - unmarked, i.e. untranslated.</li>
 </ul>
 </li>
 </ul>
-<p>Notice that <code translate="no">lupdate</code> works hard behind the scenes to make revisions easier, and it's pretty smart with numbers.</p>
+<p>In order to make revisions easier, instead of tr(&quot;Troll Print 1.0&quot;) you can use tr(&quot;Troll Print %1&quot;).arg(&quot;1.0&quot;) or such to avoid having to update the string on every release.</p>
 <p>Go over the translations in <code translate="no">MainWindow</code> and mark these as &quot;done&quot;. Translate &quot;&lt;b&gt;TROLL PRINT&lt;/b&gt;&quot; as &quot;&lt;b&gt;TROLL IMPRIMIR&lt;/b&gt;&quot;. When you're translating &quot;Two-sided&quot;, press the <b translate="no">Guess Again</b> button to translate &quot;Two-sided&quot;, but change the &quot;2&quot; into &quot;Dois&quot;.</p>
 <p>Save and quit, then run <code translate="no">lrelease</code>. The Portuguese version should look like this:</p>
 <p class="centerAlign"><img src="images/linguist-trollprint_11_pt.png" alt="" /></p><p>Choose <b translate="no">Ajuda|Sobre</b> (<b translate="no">Help|About</b>) to see the about box.</p>
@@ -215,9 +206,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

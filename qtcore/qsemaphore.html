@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qsemaphore.cpp -->
   <meta name="description" content="The QSemaphore class provides a general counting semaphore.">
-  <title>QSemaphore Class | Qt Core 6.6.0</title>
+  <title>QSemaphore Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QSemaphore</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -98,10 +98,10 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  sem<span class="operator">.</span>tryAcquire(<span class="number">1</span>);      <span class="comment">// sem.available() == 9, returns true</span>
  sem<span class="operator">.</span>tryAcquire(<span class="number">250</span>);    <span class="comment">// sem.available() == 9, returns false</span>
 </pre>
-<p>A typical application of semaphores is for controlling access to a circular buffer shared by a producer thread and a consumer thread. The <a href="qtcore-threads-semaphores-example.html" translate="no">Semaphores Example</a> shows how to use QSemaphore to solve that problem.</p>
+<p>A typical application of semaphores is for controlling access to a circular buffer shared by a producer thread and a consumer thread. The <a href="qtcore-threads-semaphores-example.html" translate="no">Producer and Consumer using Semaphores</a> example shows how to use QSemaphore to solve that problem.</p>
 <p>A non-computing example of a semaphore would be dining at a restaurant. A semaphore is initialized with the number of chairs in the restaurant. As people arrive, they want a seat. As seats are filled, <a href="qsemaphore.html#available" translate="no">available</a>() is decremented. As people leave, the <a href="qsemaphore.html#available" translate="no">available</a>() is incremented, allowing more people to enter. If a party of 10 people want to be seated, but there are only 9 seats, those 10 people will wait, but a party of 4 people would be seated (taking the available seats to 5, making the party of 10 people wait longer).</p>
 </div>
-<p><b>See also </b><a href="qsemaphorereleaser.html" translate="no">QSemaphoreReleaser</a>, <a href="qmutex.html" translate="no">QMutex</a>, <a href="qwaitcondition.html" translate="no">QWaitCondition</a>, <a href="qthread.html" translate="no">QThread</a>, and <a href="qtcore-threads-semaphores-example.html" translate="no">Semaphores Example</a>.</p>
+<p><b>See also </b><a href="qsemaphorereleaser.html" translate="no">QSemaphoreReleaser</a>, <a href="qmutex.html" translate="no">QMutex</a>, <a href="qwaitcondition.html" translate="no">QWaitCondition</a>, <a href="qthread.html" translate="no">QThread</a>, and <a href="qtcore-threads-semaphores-example.html" translate="no">Producer and Consumer using Semaphores</a>.</p>
 <!-- @@@QSemaphore -->
 <div class="func">
 <h2>Member Function Documentation</h2>
@@ -154,7 +154,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$tryAcquire$$$tryAcquireintint -->
 <h3 class="fn" translate="no" id="tryAcquire-1"><span class="type">bool</span> QSemaphore::<span class="name">tryAcquire</span>(<span class="type">int</span> <i>n</i>, <span class="type">int</span> <i>timeout</i>)</h3>
 <p>Tries to acquire <code translate="no">n</code> resources guarded by the semaphore and returns <code translate="no">true</code> on success. If <a href="qsemaphore.html#available" translate="no">available</a>() &lt; <i translate="no">n</i>, this call will wait for at most <i translate="no">timeout</i> milliseconds for resources to become available.</p>
-<p>Note: Passing a negative number as the <i translate="no">timeout</i> is equivalent to calling <a href="qsemaphore.html#acquire" translate="no">acquire</a>(), i.e&#x2e; this function will wait forever for resources to become available if <i translate="no">timeout</i> is negative.</p>
+<p>Note: Passing a negative number as the <i translate="no">timeout</i> is equivalent to calling <a href="qsemaphore.html#acquire" translate="no">acquire</a>(), i.e. this function will wait forever for resources to become available if <i translate="no">timeout</i> is negative.</p>
 <p>Example:</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="qsemaphore.html#QSemaphore" translate="no">QSemaphore</a></span> sem(<span class="number">5</span>);            <span class="comment">// sem.available() == 5</span>
@@ -209,9 +209,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

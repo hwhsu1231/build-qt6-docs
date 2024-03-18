@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qrhi.cpp -->
   <meta name="description" content="Vertex, index, or uniform (constant) buffer resource.">
-  <title>QRhiBuffer Class | Qt GUI 6.6.0</title>
+  <title>QRhiBuffer Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QRhiBuffer</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -95,7 +95,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <div class="admonition note">
 <p><b>Note: </b>This is a RHI API with limited compatibility guarantees, see <a href="qrhi.html" translate="no">QRhi</a> for details.</p>
 </div>
-<p>A QRhiBuffer encapsulates zero, one, or more native buffer objects (such as a <code translate="no">VkBuffer</code> or <code translate="no">MTLBuffer</code>). With some graphics APIs and backends certain types of buffers may not use a native buffer object at all (e.g&#x2e; OpenGL if uniform buffer objects are not used), but this is transparent to the user of the QRhiBuffer API. Similarly, the fact that some types of buffers may use two or three native buffers underneath, in order to allow efficient per-frame content update without stalling the GPU pipeline, is mostly invisible to the applications and libraries.</p>
+<p>A QRhiBuffer encapsulates zero, one, or more native buffer objects (such as a <code translate="no">VkBuffer</code> or <code translate="no">MTLBuffer</code>). With some graphics APIs and backends certain types of buffers may not use a native buffer object at all (e.g. OpenGL if uniform buffer objects are not used), but this is transparent to the user of the QRhiBuffer API. Similarly, the fact that some types of buffers may use two or three native buffers underneath, in order to allow efficient per-frame content update without stalling the GPU pipeline, is mostly invisible to the applications and libraries.</p>
 <p>A QRhiBuffer instance is always created by calling <a href="qrhi.html#newBuffer" translate="no">the QRhi's newBuffer() function</a>. This creates no native graphics resources. To do that, call <a href="qrhibuffer.html#create" translate="no">create</a>() after setting the appropriate options, such as the type, usage flags, size, although in most cases these are already set based on the arguments passed to <a href="qrhi.html#newBuffer" translate="no">newBuffer</a>().</p>
 <h4 id="example-usage">Example usage</h4>
 <p>To create a uniform buffer for a shader where the GLSL uniform block contains a single <code translate="no">mat4</code> member, and update the contents:</p>
@@ -130,7 +130,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
  commandBuffer<span class="operator">-</span><span class="operator">&gt;</span>resourceUpdate(batch); <span class="comment">// or, alternatively, pass 'batch' to a beginPass() call</span>
 </pre>
 <h4 id="common-patterns">Common patterns</h4>
-<p>A call to <a href="qrhibuffer.html#create" translate="no">create</a>() destroys any existing native resources if <a href="qrhibuffer.html#create" translate="no">create</a>() was successfully called before. If those native resources are still in use by an in-flight frame (i.e&#x2e;, there's a chance they are still read by the GPU), the destroying of those resources is deferred automatically. Thus a very common and convenient pattern to safely increase the size of an already initialized buffer is the following. In practice this drops and creates a whole new set of native resources underneath, so it is not necessarily a cheap operation, but is more convenient and still faster than the alternatives, because by not destroying the <code translate="no">buf</code> object itself, all references to it stay valid in other data structures (e.g&#x2e;, in any <a href="qrhishaderresourcebinding.html" translate="no">QRhiShaderResourceBinding</a> the QRhiBuffer is referenced from).</p>
+<p>A call to <a href="qrhibuffer.html#create" translate="no">create</a>() destroys any existing native resources if <a href="qrhibuffer.html#create" translate="no">create</a>() was successfully called before. If those native resources are still in use by an in-flight frame (i.e., there's a chance they are still read by the GPU), the destroying of those resources is deferred automatically. Thus a very common and convenient pattern to safely increase the size of an already initialized buffer is the following. In practice this drops and creates a whole new set of native resources underneath, so it is not necessarily a cheap operation, but is more convenient and still faster than the alternatives, because by not destroying the <code translate="no">buf</code> object itself, all references to it stay valid in other data structures (e.g., in any <a href="qrhishaderresourcebinding.html" translate="no">QRhiShaderResourceBinding</a> the QRhiBuffer is referenced from).</p>
 <pre class="cpp" translate="no">
  <span class="keyword">if</span> (buf<span class="operator">-</span><span class="operator">&gt;</span>size() <span class="operator">&lt;</span> newSize) {
      buf<span class="operator">-</span><span class="operator">&gt;</span>setSize(newSize);
@@ -272,9 +272,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

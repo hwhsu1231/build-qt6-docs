@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qurl.cpp -->
   <meta name="description" content="The QUrl class provides a convenient interface for working with URLs.">
-  <title>QUrl Class | Qt Core 6.6.0</title>
+  <title>QUrl Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QUrl</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -232,7 +232,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::PrettyDecoded</code></td><td class="topAlign tblval"><code translate="no">0x000000</code></td><td class="topAlign">The component is returned in a &quot;pretty form&quot;, with most percent-encoded characters decoded. The exact behavior of PrettyDecoded varies from component to component and may also change from Qt release to Qt release. This is the default.</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::EncodeSpaces</code></td><td class="topAlign tblval"><code translate="no">0x100000</code></td><td class="topAlign">Leave space characters in their encoded form (&quot;%20&quot;).</td></tr>
-<tr><td class="topAlign"><code translate="no">QUrl::EncodeUnicode</code></td><td class="topAlign tblval"><code translate="no">0x200000</code></td><td class="topAlign">Leave non-US-ASCII characters encoded in their UTF-8 percent-encoded form (e.g&#x2e;, &quot;%C3%A9&quot; for the U+00E9 codepoint, LATIN SMALL LETTER E WITH ACUTE).</td></tr>
+<tr><td class="topAlign"><code translate="no">QUrl::EncodeUnicode</code></td><td class="topAlign tblval"><code translate="no">0x200000</code></td><td class="topAlign">Leave non-US-ASCII characters encoded in their UTF-8 percent-encoded form (e.g., &quot;%C3%A9&quot; for the U+00E9 codepoint, LATIN SMALL LETTER E WITH ACUTE).</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::EncodeDelimiters</code></td><td class="topAlign tblval"><code translate="no">0x400000 | 0x800000</code></td><td class="topAlign">Leave certain delimiters in their encoded form, as would appear in the URL when the full URL is represented as text. The delimiters are affected by this option change from component to component. This flag has no effect in <a href="qurl.html#toString" translate="no">toString</a>() or <a href="qurl.html#toEncoded" translate="no">toEncoded</a>().</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::EncodeReserved</code></td><td class="topAlign tblval"><code translate="no">0x1000000</code></td><td class="topAlign">Leave US-ASCII characters not permitted in the URL by the specification in their encoded form. This is the default on <a href="qurl.html#toString" translate="no">toString</a>() and <a href="qurl.html#toEncoded" translate="no">toEncoded</a>().</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::DecodeReserved</code></td><td class="topAlign tblval"><code translate="no">0x2000000</code></td><td class="topAlign">Decode the US-ASCII characters that the URL specification does not allow to appear in the URL. This is the default on the getters of individual components.</td></tr>
@@ -273,7 +273,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>In TolerantMode, the parser has the following behaviour:</p>
 <ul>
 <li>Spaces and &quot;%20&quot;: unencoded space characters will be accepted and will be treated as equivalent to &quot;%20&quot;.</li>
-<li>Single &quot;%&quot; characters: Any occurrences of a percent character &quot;%&quot; not followed by exactly two hexadecimal characters (e.g&#x2e;, &quot;13% coverage.html&quot;) will be replaced by &quot;%25&quot;. Note that one lone &quot;%&quot; character will trigger the correction mode for all percent characters.</li>
+<li>Single &quot;%&quot; characters: Any occurrences of a percent character &quot;%&quot; not followed by exactly two hexadecimal characters (e.g., &quot;13% coverage.html&quot;) will be replaced by &quot;%25&quot;. Note that one lone &quot;%&quot; character will trigger the correction mode for all percent characters.</li>
 <li>Reserved and unreserved characters: An encoded URL should only contain a few characters as literals; all other characters should be percent-encoded. In TolerantMode, these characters will be accepted if they are found in the URL: space / double-quote / &quot;&lt;&quot; / &quot;&gt;&quot; / &quot;&quot; / &quot;^&quot; / &quot;`&quot; / &quot;{&quot; / &quot;|&quot; / &quot;}&quot; Those same characters can be decoded again by passing <a href="qurl.html#ComponentFormattingOption-enum" translate="no">QUrl::DecodeReserved</a> to <a href="qurl.html#toString" translate="no">toString</a>() or <a href="qurl.html#toEncoded" translate="no">toEncoded</a>(). In the getters of individual components, those characters are often returned in decoded form.</li>
 </ul>
 <p>When in StrictMode, if a parsing error is found, <a href="qurl.html#isValid" translate="no">isValid</a>() will return <code translate="no">false</code> and <a href="qurl.html#errorString" translate="no">errorString</a>() will return a message describing the error. If more than one error is detected, it is undefined which error gets reported.</p>
@@ -293,7 +293,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::RemovePath</code></td><td class="topAlign tblval"><code translate="no">0x20</code></td><td class="topAlign">The URL's path is removed, leaving only the scheme, host address, and port (if present).</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::RemoveQuery</code></td><td class="topAlign tblval"><code translate="no">0x40</code></td><td class="topAlign">The query part of the URL (following a '?' character) is removed.</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::RemoveFragment</code></td><td class="topAlign tblval"><code translate="no">0x80</code></td><td class="topAlign">&nbsp;</td></tr>
-<tr><td class="topAlign"><code translate="no">QUrl::RemoveFilename</code></td><td class="topAlign tblval"><code translate="no">0x800</code></td><td class="topAlign">The filename (i.e&#x2e; everything after the last '/' in the path) is removed. The trailing '/' is kept, unless StripTrailingSlash is set. Only valid if RemovePath is not set.</td></tr>
+<tr><td class="topAlign"><code translate="no">QUrl::RemoveFilename</code></td><td class="topAlign tblval"><code translate="no">0x800</code></td><td class="topAlign">The filename (i.e. everything after the last '/' in the path) is removed. The trailing '/' is kept, unless StripTrailingSlash is set. Only valid if RemovePath is not set.</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::PreferLocalFile</code></td><td class="topAlign tblval"><code translate="no">0x200</code></td><td class="topAlign">If the URL is a local file according to <a href="qurl.html#isLocalFile" translate="no">isLocalFile</a>() and contains no query or fragment, a local file path is returned.</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::StripTrailingSlash</code></td><td class="topAlign tblval"><code translate="no">0x400</code></td><td class="topAlign">The trailing slash is removed from the path, if one is present.</td></tr>
 <tr><td class="topAlign"><code translate="no">QUrl::NormalizePathSegments</code></td><td class="topAlign tblval"><code translate="no">0x1000</code></td><td class="topAlign">Modifies the path to remove redundant directory separators, and to resolve &quot;.&quot;s and &quot;..&quot;s (as far as possible). For non-local paths, adjacent slashes are preserved.</td></tr>
@@ -485,12 +485,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@fromUserInput -->
 <!-- $$$hasFragment[overload1]$$$hasFragment -->
 <h3 class="fn" translate="no" id="hasFragment"><span class="type">bool</span> QUrl::<span class="name">hasFragment</span>() const</h3>
-<p>Returns <code translate="no">true</code> if this URL contains a fragment (i.e&#x2e;, if # was seen on it).</p>
+<p>Returns <code translate="no">true</code> if this URL contains a fragment (i.e., if # was seen on it).</p>
 <p><b>See also </b><a href="qurl.html#fragment" translate="no">fragment</a>() and <a href="qurl.html#setFragment" translate="no">setFragment</a>().</p>
 <!-- @@@hasFragment -->
 <!-- $$$hasQuery[overload1]$$$hasQuery -->
 <h3 class="fn" translate="no" id="hasQuery"><span class="type">bool</span> QUrl::<span class="name">hasQuery</span>() const</h3>
-<p>Returns <code translate="no">true</code> if this URL contains a Query (i.e&#x2e;, if ? was seen on it).</p>
+<p>Returns <code translate="no">true</code> if this URL contains a Query (i.e., if ? was seen on it).</p>
 <p><b>See also </b><a href="qurl.html#setQuery" translate="no">setQuery</a>(), <a href="qurl.html#query" translate="no">query</a>(), and <a href="qurl.html#hasFragment" translate="no">hasFragment</a>().</p>
 <!-- @@@hasQuery -->
 <!-- $$$host[overload1]$$$hostComponentFormattingOptions -->
@@ -524,7 +524,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$isRelative[overload1]$$$isRelative -->
 <h3 class="fn" translate="no" id="isRelative"><span class="type">bool</span> QUrl::<span class="name">isRelative</span>() const</h3>
 <p>Returns <code translate="no">true</code> if the URL is relative; otherwise returns <code translate="no">false</code>. A URL is relative reference if its scheme is undefined; this function is therefore equivalent to calling <a href="qurl.html#scheme" translate="no">scheme</a>().<a href="qurl.html#isEmpty" translate="no">isEmpty</a>().</p>
-<p>Relative references are defined in RFC 3986 section 4.2&#x2e;</p>
+<p>Relative references are defined in RFC 3986 section 4.2.</p>
 <p><b>See also </b><a href="qurl.html#relative-urls-vs-relative-paths" translate="no">Relative URLs vs Relative Paths</a>.</p>
 <!-- @@@isRelative -->
 <!-- $$$isValid[overload1]$$$isValid -->
@@ -609,7 +609,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  <a href="qtlogging.html#qDebug" translate="no">qDebug</a>(baseUrl<span class="operator">.</span>resolved(relativeUrl)<span class="operator">.</span>toString());
  <span class="comment">// prints &quot;http://qt.digia.com/Product/Library/&quot;</span>
 </pre>
-<p>Calling resolved() with &quot;..&quot; returns a <a href="qurl.html" translate="no">QUrl</a> whose directory is one level higher than the original. Similarly, calling resolved() with &quot;../&#x2e;.&quot; removes two levels from the path. If <i translate="no">relative</i> is &quot;/&quot;, the path becomes &quot;/&quot;.</p>
+<p>Calling resolved() with &quot;..&quot; returns a <a href="qurl.html" translate="no">QUrl</a> whose directory is one level higher than the original. Similarly, calling resolved() with &quot;../..&quot; removes two levels from the path. If <i translate="no">relative</i> is &quot;/&quot;, the path becomes &quot;/&quot;.</p>
 <p><b>See also </b><a href="qurl.html#isRelative" translate="no">isRelative</a>().</p>
 <!-- @@@resolved -->
 <!-- $$$scheme[overload1]$$$scheme -->
@@ -871,9 +871,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qcborstreamreader.cpp -->
   <meta name="description" content="The QCborStreamReader class is a simple CBOR stream decoder, operating on either a QByteArray or QIODevice.">
-  <title>QCborStreamReader Class | Qt Core 6.6.0</title>
+  <title>QCborStreamReader Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QCborStreamReader</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -197,9 +197,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 id="dealing-with-invalid-or-incomplete-cbor-streams">Dealing with invalid or incomplete CBOR streams</h3>
 <p>QCborStreamReader is capable of detecting corrupt input on its own. The library it uses has been extensively tested against invalid input of any kind and is quite able to report errors. If any is detected, QCborStreamReader will set <a href="qcborstreamreader.html#lastError" translate="no">lastError</a>() to a value besides <a href="qcborerror.html#Code-enum" translate="no">QCborError::NoError</a>, indicating which situation was detected.</p>
 <p>Most errors detected by QCborStreamReader during normal item parsing are not recoverable. The code using QCborStreamReader may opt to handle the data that was properly decoded or it can opt to discard the entire data.</p>
-<p>The only recoverable error is <a href="qcborerror.html#Code-enum" translate="no">QCborError::EndOfFile</a>, which indicates that more data is required in order to complete the parsing. This situation is useful when data is being read from an asynchronous source, such as a pipe (<a href="qprocess.html" translate="no">QProcess</a>) or a socket (<a href="../qtnetwork/qtcpsocket.html" translate="no">QTcpSocket</a>, <a href="../qtnetwork/qudpsocket.html" translate="no">QUdpSocket</a>, <a href="../qtnetwork/qnetworkreply.html" translate="no">QNetworkReply</a>, etc.)&#x2e; When more data arrives, the surrounding code needs to call either <a href="qcborstreamreader.html#addData" translate="no">addData</a>(), if parsing from a <a href="qbytearray.html" translate="no">QByteArray</a>, or <a href="qcborstreamreader.html#reparse" translate="no">reparse</a>(), if it is instead reading directly a the QIDOevice that now has more data available (see <a href="qcborstreamreader.html#setDevice" translate="no">setDevice</a>()).</p>
+<p>The only recoverable error is <a href="qcborerror.html#Code-enum" translate="no">QCborError::EndOfFile</a>, which indicates that more data is required in order to complete the parsing. This situation is useful when data is being read from an asynchronous source, such as a pipe (<a href="qprocess.html" translate="no">QProcess</a>) or a socket (<a href="../qtnetwork/qtcpsocket.html" translate="no">QTcpSocket</a>, <a href="../qtnetwork/qudpsocket.html" translate="no">QUdpSocket</a>, <a href="../qtnetwork/qnetworkreply.html" translate="no">QNetworkReply</a>, etc.). When more data arrives, the surrounding code needs to call either <a href="qcborstreamreader.html#addData" translate="no">addData</a>(), if parsing from a <a href="qbytearray.html" translate="no">QByteArray</a>, or <a href="qcborstreamreader.html#reparse" translate="no">reparse</a>(), if it is instead reading directly a the QIDOevice that now has more data available (see <a href="qcborstreamreader.html#setDevice" translate="no">setDevice</a>()).</p>
 </div>
-<p><b>See also </b><a href="qcborstreamwriter.html" translate="no">QCborStreamWriter</a>, <a href="qcborvalue.html" translate="no">QCborValue</a>, <a href="qxmlstreamreader.html" translate="no">QXmlStreamReader</a>, <a href="qtcore-serialization-cbordump-example.html" translate="no">Parsing and displaying CBOR data</a>, <a href="qtcore-serialization-convert-example.html" translate="no">Convert Example</a>, and <a href="qtcore-serialization-savegame-example.html" translate="no">JSON Save Game Example</a>.</p>
+<p><b>See also </b><a href="qcborstreamwriter.html" translate="no">QCborStreamWriter</a>, <a href="qcborvalue.html" translate="no">QCborValue</a>, <a href="qxmlstreamreader.html" translate="no">QXmlStreamReader</a>, <a href="qtcore-serialization-cbordump-example.html" translate="no">Parsing and displaying CBOR data</a>, <a href="qtcore-serialization-convert-example.html" translate="no">Serialization Converter</a>, and <a href="qtcore-serialization-savegame-example.html" translate="no">Saving and Loading a Game</a>.</p>
 <!-- @@@QCborStreamReader -->
 <div class="types">
 <h2>Member Type Documentation</h2>
@@ -585,7 +585,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$reset[overload1]$$$reset -->
 <h3 class="fn" translate="no" id="reset"><span class="type">void</span> QCborStreamReader::<span class="name">reset</span>()</h3>
 <p>Resets the source back to the beginning and clears the decoder state. If the source data was a <a href="qbytearray.html" translate="no">QByteArray</a>, <a href="qcborstreamreader.html" translate="no">QCborStreamReader</a> will restart from the beginning of the array.</p>
-<p>If the source data is a <a href="qiodevice.html" translate="no">QIODevice</a>, this function will call <a href="qiodevice.html#reset" translate="no">QIODevice::reset</a>(), which will seek to byte position 0. If the CBOR stream is not found at the beginning of the device (e.g&#x2e;, beginning of a file), then this function will likely do the wrong thing. Instead, position the <a href="qiodevice.html" translate="no">QIODevice</a> to the right offset and call <a href="qcborstreamreader.html#setDevice" translate="no">setDevice</a>().</p>
+<p>If the source data is a <a href="qiodevice.html" translate="no">QIODevice</a>, this function will call <a href="qiodevice.html#reset" translate="no">QIODevice::reset</a>(), which will seek to byte position 0. If the CBOR stream is not found at the beginning of the device (e.g., beginning of a file), then this function will likely do the wrong thing. Instead, position the <a href="qiodevice.html" translate="no">QIODevice</a> to the right offset and call <a href="qcborstreamreader.html#setDevice" translate="no">setDevice</a>().</p>
 <p><b>See also </b><a href="qcborstreamreader.html#clear" translate="no">clear</a>() and <a href="qcborstreamreader.html#setDevice" translate="no">setDevice</a>().</p>
 <!-- @@@reset -->
 <!-- $$$setDevice[overload1]$$$setDeviceQIODevice* -->
@@ -663,9 +663,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qproperty.cpp -->
   <meta name="description" content="The QProperty class is a template class that enables automatic property bindings.">
-  <title>QProperty Class | Qt Core 6.6.0</title>
+  <title>QProperty Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QProperty</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -95,10 +95,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h2 id="details">Detailed Description</h2>
 <p>QProperty&lt;T&gt; is one of the classes implementing <a href="bindableproperties.html" translate="no">Qt Bindable Properties</a>. It is a container that holds an instance of T. You can assign a value to it and you can read it via the <a href="qproperty.html#value" translate="no">value</a>() function or the T conversion operator. You can also tie the property to an expression that computes the value dynamically, the binding expression. It is represented as a C++ lambda and can be used to express relationships between different properties in your application.</p>
 <div class="admonition note">
-<p><b>Note: </b>In the case of QML it is important that <a href="qproperty.html" translate="no">QProperty</a> needs to be exposed in <a href="qobject.html#Q_PROPERTY" translate="no">Q_PROPERTY</a> with the BINDABLE keyword. As a result the QML engine, uses it as the bindable interface to set up the property binding. In turn, the binding can be then interacted with C++ via the normal API like:</p>
+<p><b>Note: </b>For QML, it's important to expose the <a href="qproperty.html" translate="no">QProperty</a> in <a href="qobject.html#Q_PROPERTY" translate="no">Q_PROPERTY</a> with the BINDABLE keyword. As a result, the QML engine uses it as the bindable interface to set up the property binding. In turn, the binding can then be interacted with C++ via the normal API: QProperty&lt;T&gt;::onValueChanged, <a href="qproperty.html#takeBinding" translate="no">QProperty::takeBinding</a> and QBindable::hasBinding If the property is BINDABLE, the engine will use the change-tracking inherent to the C++ property system for getting notified about changes, and it won't rely on signals being emitted.</p>
 </div>
-<p>QProperty&lt;T&gt;::onValueChanged, <a href="qproperty.html#takeBinding" translate="no">QProperty::takeBinding</a> and QBindable::hasBinding</p>
-<p>If the property is BINDABLE, then the engine will use the change-tracking inherent to the C++ property system for getting notified about changes; and won't rely on signals being emitted.</p>
 </div>
 <!-- @@@QProperty -->
 <div class="func">
@@ -142,7 +140,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Subscribes the given functor <i translate="no">f</i> as a callback that is called whenever the value of the property changes.</p>
 <p>The callback <i translate="no">f</i> is expected to be a type that has a plain call operator <code translate="no">()</code> without any parameters. This means that you can provide a C++ lambda expression, a std::function or even a custom struct with a call operator.</p>
 <p>The returned property change handler object keeps track of the subscription. When it goes out of scope, the callback is unsubscribed.</p>
-<p>This method is in some cases easier to use than <a href="qproperty.html#onValueChanged" translate="no">onValueChanged</a>(), as the returned object is not a template. It can therefore more easily be stored, e.g&#x2e; as a member in a class.</p>
+<p>This method is in some cases easier to use than <a href="qproperty.html#onValueChanged" translate="no">onValueChanged</a>(), as the returned object is not a template. It can therefore more easily be stored, e.g. as a member in a class.</p>
 <p><b>See also </b><a href="qproperty.html#onValueChanged" translate="no">onValueChanged</a>() and <a href="qproperty.html#subscribe" translate="no">subscribe</a>().</p>
 <!-- @@@addNotifier -->
 <!-- $$$binding[overload1]$$$binding -->
@@ -218,9 +216,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

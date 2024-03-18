@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- number.qdoc -->
   <meta name="description" content="The Number object provides represents a number value.">
-  <title>Number QML Type | Qt QML 6.6.0</title>
+  <title>Number QML Type | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li><a href="qtqml-qmlmodule.html" translate="no">QML Types</a></li>
 <li>Number</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -76,14 +76,15 @@
 <div class="qmldoc"><p>Returns a Number by parsing <i translate="no">number</i> using the conventions of the supplied <i translate="no">locale</i>.</p>
 <p>If <i translate="no">locale</i> is not supplied the default locale will be used.</p>
 <p>For example, using the German locale:</p>
-<pre class="cpp" translate="no">
- var german <span class="operator">=</span> <span class="type"><a href="qml-qtqml-qt.html" translate="no">Qt</a></span><span class="operator">.</span>locale(<span class="string">&quot;de_DE&quot;</span>);
+<pre class="qml" translate="no">
+ var german = Qt.locale(&quot;de_DE&quot;);
  var d;
- d <span class="operator">=</span> Number<span class="operator">.</span>fromLocaleString(german<span class="operator">,</span> <span class="string">&quot;1234,56&quot;</span>)   <span class="comment">// d == 1234.56</span>
- d <span class="operator">=</span> Number<span class="operator">.</span>fromLocaleString(german<span class="operator">,</span> <span class="string">&quot;1.234,56&quot;</span>) <span class="comment">// d == 1234.56</span>
- d <span class="operator">=</span> Number<span class="operator">.</span>fromLocaleString(german<span class="operator">,</span> <span class="string">&quot;1234.56&quot;</span>)  <span class="comment">// throws exception</span>
- d <span class="operator">=</span> Number<span class="operator">.</span>fromLocaleString(german<span class="operator">,</span> <span class="string">&quot;1.234&quot;</span>)    <span class="comment">// d == 1234.0</span>
+ d = Number.fromLocaleString(german, &quot;1234,56&quot;)   // d == 1234.56
+ d = Number.fromLocaleString(german, &quot;1.234,56&quot;) // d == 1234.56
+ d = Number.fromLocaleString(german, &quot;1234.56&quot;)  // throws exception
+ d = Number.fromLocaleString(german, &quot;1.234&quot;)    // d == 1234.0
 </pre>
+<p><b>See also </b><a href="qml-qtqml-locale.html" translate="no">Locale</a>.</p>
 </div></div><!-- @@@fromLocaleString -->
 <br/>
 <!-- $$$toLocaleCurrencyString[overload1]$$$toLocaleCurrencyString -->
@@ -107,9 +108,9 @@
 <div class="qmldoc"><p>Converts the Number to a string suitable for the specified <i translate="no">locale</i> in the specified <i translate="no">format</i>, with the specified <i translate="no">precision</i>.</p>
 <p>Valid formats are:</p>
 <ul>
-<li>'f' Decimal floating point, e.g&#x2e; 248.65</li>
-<li>'e' Scientific notation using e character, e.g&#x2e; 2.4865e+2</li>
-<li>'E' Scientific notation using E character, e.g&#x2e; 2.4865E+2</li>
+<li>'f' Decimal floating point, e.g. 248.65</li>
+<li>'e' Scientific notation using e character, e.g. 2.4865e+2</li>
+<li>'E' Scientific notation using E character, e.g. 2.4865E+2</li>
 <li>'g' Use the shorter of e or f</li>
 <li>'G' Use the shorter of E or f</li>
 </ul>
@@ -117,19 +118,27 @@
 <p>If the format is not specified 'f' will be used.</p>
 <p>If <i translate="no">locale</i> is not specified, the default locale will be used.</p>
 <p>The following example shows a number formatted for the German locale:</p>
-<pre class="cpp" translate="no">
+<pre class="qml" translate="no">
  import QtQuick 2.0
 
  <span class="type"><a href="../qtquick/qml-qtquick-text.html" translate="no">Text</a></span> {
      <span class="name">text</span>: <span class="string">&quot;The value is: &quot;</span> <span class="operator">+</span>  <span class="name">Number</span>(<span class="number">4742378.423</span>).<span class="name">toLocaleString</span>(<span class="name">Qt</span>.<span class="name">locale</span>(<span class="string">&quot;de_DE&quot;</span>))
  }
 </pre>
-<p>You can apply toLocaleString() directly to constants, provided the decimal is included in the constant, e.g&#x2e;</p>
-<pre class="cpp" translate="no">
- <span class="number">123.0.toLocaleString</span>(<span class="type"><a href="qml-qtqml-qt.html" translate="no">Qt</a></span><span class="operator">.</span>locale(<span class="string">&quot;de_DE&quot;</span>)) <span class="comment">// OK</span>
- <span class="number">123..toLocaleString</span>(<span class="type"><a href="qml-qtqml-qt.html" translate="no">Qt</a></span><span class="operator">.</span>locale(<span class="string">&quot;de_DE&quot;</span>))  <span class="comment">// OK</span>
- <span class="number">123.toLocaleString</span>(<span class="type"><a href="qml-qtqml-qt.html" translate="no">Qt</a></span><span class="operator">.</span>locale(<span class="string">&quot;de_DE&quot;</span>))   <span class="comment">// fails</span>
+<p>You can customize individual fields of the <i translate="no">locale</i> to tightly control the output:</p>
+<pre class="qml" translate="no">
+ let locale = Qt.locale(&quot;de_DE&quot;);
+ let a = Number(1000).toLocaleString(locale)); // a == 1.000,00
+ locale.numberOptions = Locale.OmitGroupSeparator;
+ let b = Number(1000).toLocaleString(locale)); // b == 1000,00
 </pre>
+<p>You can apply toLocaleString() directly to constants, provided the decimal is included in the constant, e.g.</p>
+<pre class="qml" translate="no">
+ 123.0.toLocaleString(Qt.locale(&quot;de_DE&quot;)) // OK
+ 123..toLocaleString(Qt.locale(&quot;de_DE&quot;))  // OK
+ 123.toLocaleString(Qt.locale(&quot;de_DE&quot;))   // fails
+</pre>
+<p><b>See also </b><a href="qml-qtqml-locale.html" translate="no">Locale</a>.</p>
 </div></div><!-- @@@toLocaleString -->
 <br/>
         </div>
@@ -139,9 +148,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- echoplugin.qdoc -->
   <meta name="description" content="This example shows how to create a Qt plugin.">
-  <title>Echo Plugin Example | Qt Widgets 6.6.0</title>
+  <title>Echo Plugin Example | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li>Echo Plugin Example</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -58,7 +58,7 @@
 <!-- $$$tools/echoplugin-description -->
 <div class="descr" id="details">
 <p class="centerAlign"><img src="images/echopluginexample.png" alt="" /></p><p>There are two kinds of plugins in Qt: plugins that extend Qt itself and plugins that extend applications written in Qt. In this example, we show the procedure of implementing plugins that extend applications. When you create a plugin you declare an interface, which is a class with only pure virtual functions. This interface is inherited by the class that implements the plugin. The class is stored in a shared library and can therefore be loaded by applications at run-time. When loaded, the plugin is dynamically cast to the interface using Qt's <a href="../qtcore/metaobjects.html" translate="no">meta-object system</a>. The plugin <a href="../qtdoc/plugins-howto.html" translate="no">overview document</a> gives a high-level introduction to plugins.</p>
-<p>We have implemented a plugin, the <code translate="no">EchoPlugin</code>, which implements the <code translate="no">EchoInterface</code>. The interface consists of <code translate="no">echo()</code>, which takes a <a href="../qtcore/qstring.html" translate="no">QString</a> as argument. The <code translate="no">EchoPlugin</code> returns the string unaltered (i.e&#x2e;, it works as the familiar echo command found in both Unix and Windows).</p>
+<p>We have implemented a plugin, the <code translate="no">EchoPlugin</code>, which implements the <code translate="no">EchoInterface</code>. The interface consists of <code translate="no">echo()</code>, which takes a <a href="../qtcore/qstring.html" translate="no">QString</a> as argument. The <code translate="no">EchoPlugin</code> returns the string unaltered (i.e., it works as the familiar echo command found in both Unix and Windows).</p>
 <p>We test the plugin in <code translate="no">EchoWindow</code>: when you push the <a href="qpushbutton.html" translate="no">QPushButton</a> (as seen in the image above), the application sends the text in the <a href="qlineedit.html" translate="no">QLineEdit</a> to the plugin, which echoes it back to the application. The answer from the plugin is displayed in the <a href="qlabel.html" translate="no">QLabel</a>.</p>
 <h4 id="echowindow-class-definition">EchoWindow Class Definition</h4>
 <p>The <code translate="no">EchoWindow</code> class lets us test the <code translate="no">EchoPlugin</code> through a GUI.</p>
@@ -166,7 +166,7 @@
      <span class="keyword">return</span> <span class="keyword">false</span>;
  }
 </pre>
-<p>Access to plugins at run-time is provided by <a href="../qtcore/qpluginloader.html" translate="no">QPluginLoader</a>. You supply it with the filename of the shared library the plugin is stored in and call <a href="../qtcore/qpluginloader.html#instance" translate="no">instance</a>(), which loads and returns the root component of the plugin (i.e&#x2e;, it resolves the type of the plugin and creates a <a href="../qtcore/qobject.html" translate="no">QObject</a> instance of it). If the plugin was not successfully loaded, it will be null, so we return false. If it was loaded correctly, we can cast the plugin to our <code translate="no">EchoInterface</code> and return true. In the case that the plugin loaded does not implement the <code translate="no">EchoInterface</code>, <code translate="no">instance()</code> will return null, but this cannot happen in our example. Notice that the location of the plugin is not the same for all platforms.</p>
+<p>Access to plugins at run-time is provided by <a href="../qtcore/qpluginloader.html" translate="no">QPluginLoader</a>. You supply it with the filename of the shared library the plugin is stored in and call <a href="../qtcore/qpluginloader.html#instance" translate="no">instance</a>(), which loads and returns the root component of the plugin (i.e., it resolves the type of the plugin and creates a <a href="../qtcore/qobject.html" translate="no">QObject</a> instance of it). If the plugin was not successfully loaded, it will be null, so we return false. If it was loaded correctly, we can cast the plugin to our <code translate="no">EchoInterface</code> and return true. In the case that the plugin loaded does not implement the <code translate="no">EchoInterface</code>, <code translate="no">instance()</code> will return null, but this cannot happen in our example. Notice that the location of the plugin is not the same for all platforms.</p>
 <h4 id="echointerface-class-definition">EchoInterface Class Definition</h4>
 <p>The <code translate="no">EchoInterface</code> defines the functions that the plugin will provide. An interface is a class that only consists of pure virtual functions. If non virtual functions were present in the class you would get misleading compile errors in the moc files.</p>
 <pre class="cpp" translate="no">
@@ -251,9 +251,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

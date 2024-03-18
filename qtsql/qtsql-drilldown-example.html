@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- drilldown.qdoc -->
   <meta name="description" content="The Drill Down example shows how to read data from a database as well as submit changes, using the QSqlRelationalTableModel and QDataWidgetMapper classes.">
-  <title>Drill Down Example | Qt SQL 6.6.0</title>
+  <title>Drill Down Example | Qt SQL 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtsql-index.html" translate="no">Qt SQL</a></li>
 <li>Drill Down Example</li>
-<li id="buildversion"><a href="qtsql-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtsql-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -63,7 +63,7 @@
 <li><code translate="no">View</code> is the main application widget allowing the user to browse through the various items.</li>
 <li><code translate="no">InformationWindow</code> displays the requested information, allowing the users to alter it and submit their changes to the database.</li>
 </ul>
-<p>We will first take a look at the <code translate="no">InformationWindow</code> class to see how you can read and modify data from a database. Then we will review the main application widget, i.e&#x2e;, the <code translate="no">View</code> class, and the associated <code translate="no">ImageItem</code> class.</p>
+<p>We will first take a look at the <code translate="no">InformationWindow</code> class to see how you can read and modify data from a database. Then we will review the main application widget, i.e., the <code translate="no">View</code> class, and the associated <code translate="no">ImageItem</code> class.</p>
 <h4 id="informationwindow-class-definition">InformationWindow Class Definition</h4>
 <p>The <code translate="no">InformationWindow</code> class is a custom widget inheriting <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a>:</p>
 <pre class="cpp" translate="no">
@@ -81,7 +81,7 @@
      <span class="type">void</span> imageChanged(<span class="type">int</span> id<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>fileName);
 </pre>
 <p>When we create an information window, we pass the associated item ID, a parent, and a pointer to the database, to the constructor. We will use the database pointer to populate our window with data, while passing the parent parameter on to the base class. The ID is stored for future reference.</p>
-<p>Once a window is created, we will use the public <code translate="no">id()</code> function to locate it whenever information for the given location is requested. We will also use the ID to update the main application widget when the users submit their changes to the database, i.e&#x2e;, we will emit a signal carrying the ID and file name as parameters whenever the users changes the associated image.</p>
+<p>Once a window is created, we will use the public <code translate="no">id()</code> function to locate it whenever information for the given location is requested. We will also use the ID to update the main application widget when the users submit their changes to the database, i.e., we will emit a signal carrying the ID and file name as parameters whenever the users changes the associated image.</p>
 <pre class="cpp" translate="no">
  <span class="keyword">private</span> <span class="keyword">slots</span>:
      <span class="type">void</span> revert();
@@ -183,7 +183,7 @@
      <span class="keyword">return</span> itemId;
  }
 </pre>
-<p>When a window is created, it is not deleted until the main application exits (i.e&#x2e;, if the user closes the information window, it is only hidden). For this reason we do not want to create more than one <code translate="no">InformationWindow</code> object for each item, and we provide the public <code translate="no">id()</code> function to be able to determine whether a window already exists for a given location when the user requests information about it.</p>
+<p>When a window is created, it is not deleted until the main application exits (i.e., if the user closes the information window, it is only hidden). For this reason we do not want to create more than one <code translate="no">InformationWindow</code> object for each item, and we provide the public <code translate="no">id()</code> function to be able to determine whether a window already exists for a given location when the user requests information about it.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> InformationWindow<span class="operator">::</span>revert()
  {
@@ -210,7 +210,7 @@
  }
 </pre>
 <p>Likewise, the <code translate="no">submit()</code> slot is triggered whenever the users decide to submit their changes by pressing the <b translate="no">Submit</b> button.</p>
-<p>We use <a href="../qtwidgets/qdatawidgetmapper.html" translate="no">QDataWidgetMapper</a>'s <a href="../qtwidgets/qdatawidgetmapper.html#submit" translate="no">submit</a>() slot to submit all changes from the mapped widgets to the model, i.e&#x2e; to the database. For every mapped section, the item delegate will then read the current value from the widget and set it in the model. Finally, the <i>model</i>'s <a href="../qtcore/qabstractitemmodel.html#submit" translate="no">submit</a>() function is invoked to let the model know that it should submit whatever it has cached to the permanent storage.</p>
+<p>We use <a href="../qtwidgets/qdatawidgetmapper.html" translate="no">QDataWidgetMapper</a>'s <a href="../qtwidgets/qdatawidgetmapper.html#submit" translate="no">submit</a>() slot to submit all changes from the mapped widgets to the model, i.e. to the database. For every mapped section, the item delegate will then read the current value from the widget and set it in the model. Finally, the <i>model</i>'s <a href="../qtcore/qabstractitemmodel.html#submit" translate="no">submit</a>() function is invoked to let the model know that it should submit whatever it has cached to the permanent storage.</p>
 <p>Note that before any data is submitted, we check if the user has chosen another image file using the previously stored <code translate="no">displayedImage</code> variable as reference. If the current and stored file names differ, we store the new file name and emit the <code translate="no">imageChanged()</code> signal.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> InformationWindow<span class="operator">::</span>createButtons()
@@ -225,8 +225,8 @@
      connect(revertButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>InformationWindow<span class="operator">::</span>revert);
      connect(submitButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>InformationWindow<span class="operator">::</span>submit);
 </pre>
-<p>The <code translate="no">createButtons()</code> function is provided for convenience, i.e&#x2e;, to simplify the constructor.</p>
-<p>We make the <b translate="no">Close</b> button the default button, i.e&#x2e;, the button that is pressed when the user presses <b translate="no">Enter</b>, and connect its <a href="../qtwidgets/qabstractbutton.html#clicked" translate="no">clicked</a>() signal to the widget's <a href="../qtwidgets/qwidget.html#close" translate="no">close</a>() slot. As mentioned above closing the window only hides the widget; it is not deleted. We also connect the <b translate="no">Submit</b> and <b translate="no">Revert</b> buttons to the corresponding <code translate="no">submit()</code> and <code translate="no">revert()</code> slots.</p>
+<p>The <code translate="no">createButtons()</code> function is provided for convenience, i.e., to simplify the constructor.</p>
+<p>We make the <b translate="no">Close</b> button the default button, i.e., the button that is pressed when the user presses <b translate="no">Enter</b>, and connect its <a href="../qtwidgets/qabstractbutton.html#clicked" translate="no">clicked</a>() signal to the widget's <a href="../qtwidgets/qwidget.html#close" translate="no">close</a>() slot. As mentioned above closing the window only hides the widget; it is not deleted. We also connect the <b translate="no">Submit</b> and <b translate="no">Revert</b> buttons to the corresponding <code translate="no">submit()</code> and <code translate="no">revert()</code> slots.</p>
 <pre class="cpp" translate="no">
      buttonBox <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qdialogbuttonbox.html" translate="no">QDialogButtonBox</a></span>(<span class="keyword">this</span>);
      buttonBox<span class="operator">-</span><span class="operator">&gt;</span>addButton(submitButton<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qdialogbuttonbox.html" translate="no">QDialogButtonBox</a></span><span class="operator">::</span>AcceptRole);
@@ -235,7 +235,7 @@
  }
 </pre>
 <p>The <a href="../qtwidgets/qdialogbuttonbox.html" translate="no">QDialogButtonBox</a> class is a widget that presents buttons in a layout that is appropriate to the current widget style. Dialogs like our information window, typically present buttons in a layout that conforms to the interface guidelines for that platform. Invariably, different platforms have different layouts for their dialogs. <a href="../qtwidgets/qdialogbuttonbox.html" translate="no">QDialogButtonBox</a> allows us to add buttons, automatically using the appropriate layout for the user's desktop environment.</p>
-<p>Most buttons for a dialog follow certain roles. We give the <b translate="no">Submit</b> and <b translate="no">Revert</b> buttons the <a href="../qtwidgets/qdialogbuttonbox.html#ButtonRole-enum" translate="no">reset</a> role, i.e&#x2e;, indicating that pressing the button resets the fields to the default values (in our case the information contained in the database). The <a href="../qtwidgets/qdialogbuttonbox.html#ButtonRole-enum" translate="no">reject</a> role indicates that clicking the button causes the dialog to be rejected. On the other hand, since we only hide the information window, any changes that the user has made will be preserved until the user explicitly reverts or submits them.</p>
+<p>Most buttons for a dialog follow certain roles. We give the <b translate="no">Submit</b> and <b translate="no">Revert</b> buttons the <a href="../qtwidgets/qdialogbuttonbox.html#ButtonRole-enum" translate="no">reset</a> role, i.e., indicating that pressing the button resets the fields to the default values (in our case the information contained in the database). The <a href="../qtwidgets/qdialogbuttonbox.html#ButtonRole-enum" translate="no">reject</a> role indicates that clicking the button causes the dialog to be rejected. On the other hand, since we only hide the information window, any changes that the user has made will be preserved until the user explicitly reverts or submits them.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> InformationWindow<span class="operator">::</span>enableButtons(<span class="type">bool</span> enable)
  {
@@ -291,7 +291,7 @@
      itemTable<span class="operator">-</span><span class="operator">&gt;</span>select();
 </pre>
 <p>The reason is that once we have a model with the item details, we can create a relation to the available image files using <a href="qsqlrelationaltablemodel.html" translate="no">QSqlRelationalTableModel</a>'s <a href="qsqlrelationaltablemodel.html#setRelation" translate="no">setRelation</a>() function. This function creates a foreign key for the given model column. The key is specified by the provided <a href="qsqlrelation.html" translate="no">QSqlRelation</a> object constructed by the name of the table the key refers to, the field the key is mapping to and the field that should be presented to the user.</p>
-<p>Note that setting the table only specifies which table the model operates on, i.e&#x2e;, we must explicitly call the model's <a href="qsqlrelationaltablemodel.html#select" translate="no">select</a>() function to populate our model.</p>
+<p>Note that setting the table only specifies which table the model operates on, i.e., we must explicitly call the model's <a href="qsqlrelationaltablemodel.html#select" translate="no">select</a>() function to populate our model.</p>
 <pre class="cpp" translate="no">
      scene <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qgraphicsscene.html" translate="no">QGraphicsScene</a></span>(<span class="keyword">this</span>);
      scene<span class="operator">-</span><span class="operator">&gt;</span>setSceneRect(<span class="number">0</span><span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> <span class="number">465</span><span class="operator">,</span> <span class="number">365</span>);
@@ -308,7 +308,7 @@
      setBackgroundBrush(gradient);
  }
 </pre>
-<p>Then we create the contents of our view, i.e&#x2e;, the scene and its items. The labels are regular <a href="../qtwidgets/qgraphicstextitem.html" translate="no">QGraphicsTextItem</a> objects, whereas the images are instances of the <code translate="no">ImageItem</code> class, derived from <a href="../qtwidgets/qgraphicspixmapitem.html" translate="no">QGraphicsPixmapItem</a>. We will get back to this shortly when reviewing the <code translate="no">addItems()</code> function.</p>
+<p>Then we create the contents of our view, i.e., the scene and its items. The labels are regular <a href="../qtwidgets/qgraphicstextitem.html" translate="no">QGraphicsTextItem</a> objects, whereas the images are instances of the <code translate="no">ImageItem</code> class, derived from <a href="../qtwidgets/qgraphicspixmapitem.html" translate="no">QGraphicsPixmapItem</a>. We will get back to this shortly when reviewing the <code translate="no">addItems()</code> function.</p>
 <p>Finally, we set the main application widget's size constraints and window title.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> View<span class="operator">::</span>addItems()
@@ -449,7 +449,7 @@
 <p>The animation is implemented using the <a href="../qtcore/qtimeline.html" translate="no">QTimeLine</a> class together with the event handlers and the private <code translate="no">setFrame()</code> slot: The image item will expand when the mouse cursor hovers over it, returning back to its original size when the cursor leaves its borders.</p>
 <p>Finally, we store the item ID that this particular record is associated with as well as a z-value. In the <a href="../qtwidgets/graphicsview.html" translate="no">Graphics View Framework</a>, an item's z-value determines its position in the item stack. An item of high z-value will be drawn on top of an item with a lower z-value if they share the same parent item. We also provide an <code translate="no">updateItemPosition()</code> function to refresh the view when required.</p>
 <h4 id="imageitem-class-implementation">ImageItem Class Implementation</h4>
-<p>The <code translate="no">ImageItem</code> class is really only a <a href="../qtwidgets/qgraphicspixmapitem.html" translate="no">QGraphicsPixmapItem</a> with some additional features, i.e&#x2e;, we can pass most of the constructor's arguments (the pixmap, parent and scene) on to the base class constructor:</p>
+<p>The <code translate="no">ImageItem</code> class is really only a <a href="../qtwidgets/qgraphicspixmapitem.html" translate="no">QGraphicsPixmapItem</a> with some additional features, i.e., we can pass most of the constructor's arguments (the pixmap, parent and scene) on to the base class constructor:</p>
 <pre class="cpp" translate="no">
  ImageItem<span class="operator">::</span>ImageItem(<span class="type">int</span> id<span class="operator">,</span> <span class="keyword">const</span> <span class="type">QPixmap</span> <span class="operator">&amp;</span>pixmap<span class="operator">,</span> <span class="type"><a href="../qtwidgets/qgraphicsitem.html" translate="no">QGraphicsItem</a></span> <span class="operator">*</span>parent)
      : <span class="type"><a href="../qtwidgets/qgraphicspixmapitem.html" translate="no">QGraphicsPixmapItem</a></span>(pixmap<span class="operator">,</span> parent)
@@ -537,9 +537,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

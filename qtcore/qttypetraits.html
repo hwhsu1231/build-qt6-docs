@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- qttypetraits.qdoc -->
+  <meta name="description" content="Functionality for type traits and transformations.">
+  <title>&lt;QtTypeTraits&gt; - Qt Type Traits | Qt Core 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
+<li>&lt;QtTypeTraits&gt; - Qt Type Traits</li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<div class="sidebar">
+<div class="toc">
+<h3 id="toc">Contents</h3>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title" translate="no">&lt;QtTypeTraits&gt; - Qt Type Traits</h1>
+<!-- $$$<QtTypeTraits>-brief -->
+<p>Functionality for type traits and transformations. <a href="#details">More...</a></p>
+<!-- @@@<QtTypeTraits> -->
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign">  <span class="preprocessor">#include &lt;QtTypeTraits&gt;</span></td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign"> Qt 6.5</td></tr>
+</table></div>
+<ul>
+<li><a href="qttypetraits-obsolete.html">Deprecated members</a></li>
+</ul>
+<h2 id="functions">Functions</h2>
+<div class="table"><table class="alignedsummary" translate="no">
+<tr><td class="memItemLeft rightAlign topAlign"> T </td><td class="memItemRight bottomAlign"><b><a href="qttypetraits.html#qExchange" translate="no">qExchange</a></b>(T &amp;<i>obj</i>, U &amp;&amp;<i>newValue</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::underlying_type_t&lt;Enum&gt; </td><td class="memItemRight bottomAlign"><b><a href="qttypetraits.html#qToUnderlying" translate="no">qToUnderlying</a></b>(Enum <i>e</i>)</td></tr>
+</table></div>
+<!-- $$$<QtTypeTraits>-description -->
+<div class="descr">
+<h2 id="details">Detailed Description</h2>
+</div>
+<!-- @@@<QtTypeTraits> -->
+<div class="func">
+<h2>Function Documentation</h2>
+<!-- $$$qExchange[overload1]$$$qExchangeT&U&& -->
+<h3 class="fn" translate="no" id="qExchange"><code translate="no">[constexpr noexcept(...)] </code>template &lt;typename T, typename U&gt; <span class="type">T</span> <span class="name">qExchange</span>(<span class="type">T</span> &amp;<i>obj</i>, <span class="type">U</span> &amp;&amp;<i>newValue</i>)</h3>
+<p>Replaces the value of <i translate="no">obj</i> with <i translate="no">newValue</i> and returns the old value of <i translate="no">obj</i>.</p>
+<p>This is Qt's implementation of std::exchange(). It differs from std::exchange() only in that it is <code translate="no">constexpr</code> already before C++20 and noexcept already before C++23.</p>
+<p>We strongly advise to use std::exchange() when you don't need the C++20 or C++23 variants.</p>
+<p>Here is how to use qExchange() to implement move constructors:</p>
+<pre class="cpp" translate="no">
+ MyClass(MyClass <span class="operator">&amp;</span><span class="operator">&amp;</span>other)
+   : m_pointer{qExchange(other<span class="operator">.</span>m_pointer<span class="operator">,</span> nullptr)}<span class="operator">,</span>
+     m_int{qExchange(other<span class="operator">.</span>m_int<span class="operator">,</span> <span class="number">0</span>)}<span class="operator">,</span>
+     m_vector{std<span class="operator">::</span>move(other<span class="operator">.</span>m_vector)}<span class="operator">,</span>
+     <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
+</pre>
+<p>For members of class type, we can use std::move(), as their move-constructor will do the right thing. But for scalar types such as raw pointers or integer type, move is the same as copy, which, particularly for pointers, is not what we expect. So, we cannot use std::move() for such types, but we can use std::exchange()/qExchange() to make sure the source object's member is already reset by the time we get to the initialization of our next data member, which might come in handy if the constructor exits with an exception.</p>
+<p>Here is how to use qExchange() to write a loop that consumes the collection it iterates over:</p>
+<pre class="cpp" translate="no">
+ <span class="keyword">for</span> (<span class="keyword">auto</span> <span class="operator">&amp;</span>e : qExchange(collection<span class="operator">,</span> {})
+     doSomethingWith(e);
+</pre>
+<p>Which is equivalent to the following, much more verbose code:</p>
+<pre class="cpp" translate="no">
+ {
+     <span class="keyword">auto</span> tmp <span class="operator">=</span> std<span class="operator">::</span>move(collection);
+     collection <span class="operator">=</span> {};                    <span class="comment">// or collection.clear()</span>
+     <span class="keyword">for</span> (<span class="keyword">auto</span> <span class="operator">&amp;</span>e : tmp)
+         doSomethingWith(e);
+ }                                       <span class="comment">// destroys 'tmp'</span>
+</pre>
+<p>This is perfectly safe, as the for-loop keeps the result of qExchange() alive for as long as the loop runs, saving the declaration of a temporary variable. Be aware, though, that qExchange() returns a non-const object, so Qt containers may detach.</p>
+<div class="admonition note">
+<p><b>Note: </b>This function does not throw any exception when &quot;std::conjunction_v&lt;std::is_nothrow_move_constructible&lt;T&gt;,
+                            std::is_nothrow_assignable&lt;T &amp;, U&gt;&gt;&quot; is true.</p>
+</div>
+<!-- @@@qExchange -->
+<!-- $$$qToUnderlying[overload1]$$$qToUnderlyingEnum -->
+<h3 class="fn" translate="no" id="qToUnderlying"><code translate="no">[constexpr noexcept, since 6.2] </code>template &lt;typename Enum&gt; <span class="type">std::underlying_type_t</span>&lt;<span class="type">Enum</span>&gt; <span class="name">qToUnderlying</span>(<span class="type">Enum</span> <i>e</i>)</h3>
+<p>Converts the enumerator <i translate="no">e</i> to the equivalent value expressed in its enumeration's underlying type.</p>
+<p>This function was introduced in Qt 6.2.</p>
+<!-- @@@qToUnderlying -->
+</div>
+        </div>
+       </div>
+   </div>
+   </div>
+</div>
+<div class="footer">
+   <p>
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
+   Documentation contributions included herein are the copyrights of
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
+   worldwide. All other trademarks are property of their respective owners. </p>
+</div>
+</body>
+</html>

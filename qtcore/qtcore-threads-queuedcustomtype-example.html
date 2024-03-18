@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
 <!-- queuedcustomtype.qdoc -->
-  <meta name="description" content="Demonstrates multi-thread programming using Qt.">
-  <title>Queued Custom Type Example | Qt Core 6.6.0</title>
+  <meta name="description" content="The Queued Custom Type example shows how to send custom types between threads with queued signals and slots.">
+  <title>Queued Custom Type | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -28,8 +28,8 @@
         <ul>
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
-<li>Queued Custom Type Example</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li>Queued Custom Type</li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -49,18 +49,17 @@
 </ul>
 </div>
 <div class="sidebar-content" id="sidebar-content"></div></div>
-<h1 class="title">Queued Custom Type Example</h1>
+<h1 class="title">Queued Custom Type</h1>
 <!-- $$$threads/queuedcustomtype-brief -->
-<p>Demonstrates multi-thread programming using Qt.</p>
+<p>The Queued Custom Type example shows how to send custom types between threads with queued signals and slots.</p>
 <!-- @@@threads/queuedcustomtype -->
 <!-- $$$threads/queuedcustomtype-description -->
 <div class="descr" id="details">
 <p class="centerAlign"><img src="images/queuedcustomtype-example.png" alt="" /></p><p>Contents:</p>
 <h4 id="overview">Overview</h4>
-<p>In the <a href="qtcore-tools-customtype-example.html" translate="no">Custom Type Example</a>, we showed how to integrate custom types with the meta-object system, enabling them to be stored in <a href="qvariant.html" translate="no">QVariant</a> objects, written out in debugging information and used in signal-slot communication.</p>
-<p>In this example, we create a new value class, <code translate="no">Block</code>, and register it with the meta-object system to enable us to send instances of it between threads using queued signals and slots.</p>
+<p>In this example, we create a value class, <code translate="no">Block</code>, and register it with the meta-object system to enable us to send instances of it between threads using queued signals and slots.</p>
 <h4 id="the-block-class">The Block Class</h4>
-<p>The <code translate="no">Block</code> class is similar to the <code translate="no">Message</code> class described in the <a href="qtcore-tools-customtype-example.html" translate="no">Custom Type Example</a>. It provides the default constructor, copy constructor and destructor in the public section of the class that the meta-object system requires. It describes a colored rectangle.</p>
+<p>The <code translate="no">Block</code> class provides the default constructor, copy constructor, and a destructor in the public section of the class as required by the meta-object system. The class describes a colored rectangle.</p>
 <pre class="cpp" translate="no">
  <span class="keyword">class</span> Block
  {
@@ -127,7 +126,7 @@
      connect(loadButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span>
              <span class="keyword">this</span><span class="operator">,</span> <span class="type">QOverload</span><span class="operator">&lt;</span><span class="operator">&gt;</span><span class="operator">::</span>of(<span class="operator">&amp;</span>Window<span class="operator">::</span>loadImage));
      connect(resetButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span>
-             thread<span class="operator">,</span> <span class="operator">&amp;</span>RenderThread<span class="operator">::</span>stopProcess);
+             thread<span class="operator">,</span> <span class="operator">&amp;</span>RenderThread<span class="operator">::</span>requestInterruption);
      connect(thread<span class="operator">,</span> <span class="operator">&amp;</span>RenderThread<span class="operator">::</span>finished<span class="operator">,</span>
              <span class="keyword">this</span><span class="operator">,</span> <span class="operator">&amp;</span>Window<span class="operator">::</span>resetUi);
      connect(thread<span class="operator">,</span> <span class="operator">&amp;</span>RenderThread<span class="operator">::</span>sendBlock<span class="operator">,</span>
@@ -171,16 +170,11 @@
  <span class="keyword">signals</span>:
      <span class="type">void</span> sendBlock(<span class="keyword">const</span> Block <span class="operator">&amp;</span>block);
 
- <span class="keyword">public</span> <span class="keyword">slots</span>:
-     <span class="type">void</span> stopProcess();
-
  <span class="keyword">protected</span>:
      <span class="type">void</span> run();
 
  <span class="keyword">private</span>:
-     <span class="type">bool</span> m_abort;
      <span class="type"><a href="../qtgui/qimage.html" translate="no">QImage</a></span> m_image;
-     <span class="type"><a href="qmutex.html" translate="no">QMutex</a></span> mutex;
  };
 </pre>
 <p>The constructor and destructor are not quoted here. These take care of setting up the thread's internal state and cleaning up when it is destroyed.</p>
@@ -192,23 +186,22 @@
          <span class="keyword">return</span>;
 
      m_image <span class="operator">=</span> image;
-     m_abort <span class="operator">=</span> <span class="keyword">false</span>;
      start();
  }
 
  <span class="type">void</span> RenderThread<span class="operator">::</span>run()
  {
-     <span class="type">int</span> size <span class="operator">=</span> qMax(m_image<span class="operator">.</span>width()<span class="operator">/</span><span class="number">20</span><span class="operator">,</span> m_image<span class="operator">.</span>height()<span class="operator">/</span><span class="number">20</span>);
+     <span class="keyword">const</span> <span class="type">int</span> size <span class="operator">=</span> qMax(m_image<span class="operator">.</span>width()<span class="operator">/</span><span class="number">20</span><span class="operator">,</span> m_image<span class="operator">.</span>height()<span class="operator">/</span><span class="number">20</span>);
      <span class="keyword">for</span> (<span class="type">int</span> s <span class="operator">=</span> size; s <span class="operator">&gt;</span> <span class="number">0</span>; <span class="operator">-</span><span class="operator">-</span>s) {
          <span class="keyword">for</span> (<span class="type">int</span> c <span class="operator">=</span> <span class="number">0</span>; c <span class="operator">&lt;</span> <span class="number">400</span>; <span class="operator">+</span><span class="operator">+</span>c) {
 </pre>
 <p>Ignoring the details of the way the image is processed, we see that the signal containing a block is emitted in the usual way:</p>
 <pre class="cpp" translate="no">
      ...
-             Block block(<span class="type"><a href="qrect.html" translate="no">QRect</a></span>(x1<span class="operator">,</span> y1<span class="operator">,</span> x2 <span class="operator">-</span> x1 <span class="operator">+</span> <span class="number">1</span><span class="operator">,</span> y2 <span class="operator">-</span> y1 <span class="operator">+</span> <span class="number">1</span>)<span class="operator">,</span>
+             <span class="keyword">const</span> Block block(<span class="type"><a href="qrect.html" translate="no">QRect</a></span>(x1<span class="operator">,</span> y1<span class="operator">,</span> x2 <span class="operator">-</span> x1 <span class="operator">+</span> <span class="number">1</span><span class="operator">,</span> y2 <span class="operator">-</span> y1 <span class="operator">+</span> <span class="number">1</span>)<span class="operator">,</span>
                          <span class="type"><a href="../qtgui/qcolor.html" translate="no">QColor</a></span>(red<span class="operator">/</span>n<span class="operator">,</span> green<span class="operator">/</span>n<span class="operator">,</span> blue<span class="operator">/</span>n));
              <span class="keyword">emit</span> sendBlock(block);
-             <span class="keyword">if</span> (m_abort)
+             <span class="keyword">if</span> (isInterruptionRequested())
                  <span class="keyword">return</span>;
              msleep(<span class="number">10</span>);
          }
@@ -234,7 +227,7 @@
 <p>This call is placed here to ensure that the type is registered before any signal-slot connections are made that use it.</p>
 <p>The rest of the <code translate="no">main()</code> function is concerned with setting a seed for the pseudo-random number generator, creating and showing the window, and setting a default image. See the source code for the implementation of the <code translate="no">createImage()</code> function.</p>
 <h4 id="further-reading">Further Reading</h4>
-<p>This example showed how a custom type can be registered with the meta-object system so that it can be used with signal-slot connections between threads. For ordinary communication involving direct signals and slots, it is enough to simply declare the type in the way described in the <a href="qtcore-tools-customtype-example.html" translate="no">Custom Type Example</a>.</p>
+<p>This example showed how a custom type can be registered with the meta-object system so that it can be used with signal-slot connections between threads.</p>
 <p>In practice, both the <a href="qmetatype.html#Q_DECLARE_METATYPE" translate="no">Q_DECLARE_METATYPE</a>() macro and the <a href="qmetatype.html#qRegisterMetaType-3" translate="no">qRegisterMetaType</a>() template function can be used to register custom types, but <a href="qmetatype.html#qRegisterMetaType-3" translate="no">qRegisterMetaType</a>() is only required if you need to perform signal-slot communication or need to create and destroy objects of the custom type at run-time.</p>
 <p>More information on using custom types with Qt can be found in the <a href="custom-types.html" translate="no">Creating Custom Qt Types</a> document.</p>
 <p><a href="https://code.qt.io/cgit/qt/qtbase.git/tree/examples/corelib/threads/queuedcustomtype?h=6.6" translate="no">Example project @ code.qt.io</a></p>
@@ -247,9 +240,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

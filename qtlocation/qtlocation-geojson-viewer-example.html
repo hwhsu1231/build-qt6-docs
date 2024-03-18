@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- geojson_viewer.qdoc -->
   <meta name="description" content="The GeoJson viewer example demonstrates how to manipulate MapItems, handle user input and I/O to and from a GeoJson file.">
-  <title>GeoJson Viewer (C++/QML) | Qt Location 6.6.0</title>
+  <title>GeoJson Viewer (C++/QML) | Qt Location 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtlocation-index.html" translate="no">Qt Location</a></li>
 <li><a href="qtlocation-examples.html" translate="no">Qt Location Examples</a></li>
 <li>GeoJson Viewer (C++/QML)</li>
-<li id="buildversion"><a href="qtlocation-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtlocation-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -59,11 +59,11 @@
 <div class="descr" id="details">
 <p class="centerAlign"><img src="images/geojson_viewer.png" alt="" /></p><p>The example displays a map with various MapItems. The MapItems are either imported from a GeoJson file, using the <a href="qgeojson.html" translate="no">QGeoJson</a> API of <a href="qtlocation-module.html" translate="no">QtLocation</a> or drawn by the user using <a href="../qtquick/qml-qtquick-taphandler.html" translate="no">TapHandlers</a>.</p>
 <p>Examples for GeoJson files can be found in the directory data within the example directory. They are read and written using the <a href="qgeojson.html#importGeoJson" translate="no">importGeoJson</a> and <a href="qgeojson.html#exportGeoJson" translate="no">exportGeoJson</a> functions.</p>
-<p>To draw a MapItem, right click on an empty part of the map and select an item type of your choice in the appearing menu. The next clicks will define the chosen item. The example allows to draw <a href="qml-qtlocation-mapcircle.html" translate="no">MapCircles</a>, <a href="qml-qtlocation-maprectangle.html" translate="no">MapRectangles</a>, <a href="qml-qtlocation-mappolygon.html" translate="no">MapPolygons</a> and <a href="qml-qtlocation-mappolyline.html" translate="no">MapPolylines</a>. Items that are fully defined by two points, i.e&#x2e; circles and rectangles, are drawn with two clicks of the left mouse button. Items that are defined by multiple points, i.e&#x2e; polygons and polylines, are created by an arbitrary amount of left button clicks and completed with the right mouse button. Items drawn this way are saved as points, polygons and polylines to fit the GeoJson specification, see <a href="https://geojson.org/" translate="no">https://geojson.org/</a>.</p>
+<p>To draw a MapItem, right click on an empty part of the map and select an item type of your choice in the appearing menu. The next clicks will define the chosen item. The example allows to draw <a href="qml-qtlocation-mapcircle.html" translate="no">MapCircles</a>, <a href="qml-qtlocation-maprectangle.html" translate="no">MapRectangles</a>, <a href="qml-qtlocation-mappolygon.html" translate="no">MapPolygons</a> and <a href="qml-qtlocation-mappolyline.html" translate="no">MapPolylines</a>. Items that are fully defined by two points, i.e. circles and rectangles, are drawn with two clicks of the left mouse button. Items that are defined by multiple points, i.e. polygons and polylines, are created by an arbitrary amount of left button clicks and completed with the right mouse button. Items drawn this way are saved as points, polygons and polylines to fit the GeoJson specification, see <a href="https://geojson.org/" translate="no">https://geojson.org/</a>.</p>
 <h4 id="running-the-example">Running the Example</h4>
 <p>To run the example from <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the example from <b translate="no">Examples</b>. For more information, visit <a href="https://doc.qt.io/qtcreator/creator-build-example-application.html" translate="no">Building and Running an Example</a>.</p>
 <h4 id="creating-a-mapview">Creating a MapView</h4>
-<p>First we create a base map on which all items can be placed on. We take advantage of a <a href="qml-qtlocation-mapview.html" translate="no">MapView</a> element that combines a basic <a href="qml-qtlocation-map.html" translate="no">Map</a> with input handling (mouse wheel, drag, etc.)&#x2e; The underlying <a href="qml-qtlocation-map.html" translate="no">Map</a> can be accessed with <a href="qml-qtlocation-mapview.html#map-prop" translate="no">map</a> property. If you miss a property in <a href="qml-qtlocation-mapview.html" translate="no">MapView</a> it can be most likely accessed with <a href="qml-qtlocation-mapview.html#map-prop" translate="no">MapView.map</a>.</p>
+<p>First we create a base map on which all items can be placed on. We take advantage of a <a href="qml-qtlocation-mapview.html" translate="no">MapView</a> element that combines a basic <a href="qml-qtlocation-map.html" translate="no">Map</a> with input handling (mouse wheel, drag, etc.). The underlying <a href="qml-qtlocation-map.html" translate="no">Map</a> can be accessed with <a href="qml-qtlocation-mapview.html#map-prop" translate="no">map</a> property. If you miss a property in <a href="qml-qtlocation-mapview.html" translate="no">MapView</a> it can be most likely accessed with <a href="qml-qtlocation-mapview.html#map-prop" translate="no">MapView.map</a>.</p>
 <pre class="qml" translate="no">
  <span class="type"><a href="qml-qtlocation-mapview.html" translate="no">MapView</a></span> {
      <span class="name">id</span>: <span class="name">view</span>
@@ -237,7 +237,7 @@
      }
  }
 </pre>
-<p>Adding the item to the <a href="qml-qtlocation-map.html" translate="no">Map</a> is sufficient to display the item. However, in order to further use the item (e.g&#x2e; saving it to a file), it has has to be registered with the model. This is done after editing is finished:</p>
+<p>Adding the item to the <a href="qml-qtlocation-map.html" translate="no">Map</a> is sufficient to display the item. However, in order to further use the item (e.g. saving it to a file), it has has to be registered with the model. This is done after editing is finished:</p>
 <pre class="qml" translate="no">
  <span class="keyword">function </span><span class="name">finishGeoItem</span>()
  {
@@ -302,9 +302,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qtaxserver.qdoc -->
   <meta name="description" content="A Windows-only static library for turning a Qt binary into a COM server.">
-  <title>Building ActiveX servers in Qt | Active Qt 6.6.0</title>
+  <title>Building ActiveX servers in Qt | Active Qt 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="activeqt-index.html" translate="no">Active Qt</a></li>
 <li>Building ActiveX servers in Qt</li>
-<li id="buildversion"><a href="activeqt-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="activeqt-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -101,7 +101,7 @@
 <li>Register the server. This step may require administrative privileges and can be skipped by setting the <code translate="no">qaxserver_no_register</code> configuration.</li>
 </ul>
 <p>To skip the post-processing step, also set the <code translate="no">qaxserver_no_postlink</code> configuration.</p>
-<p>Additionally you can specify a version number using the <code translate="no">VERSION</code> variable, e.g&#x2e;</p>
+<p>Additionally you can specify a version number using the <code translate="no">VERSION</code> variable, e.g.</p>
 <pre class="cpp" translate="no">
  TEMPLATE = lib
  VERSION = 2.5
@@ -111,7 +111,7 @@
 <h3 id="out-of-process-vs-in-process">Out-of-Process vs. In-Process</h3>
 <p>Whether your COM server should run as a stand-alone executable or as a shared library in the client process depends mainly on the type of COM objects you want to provide in the server.</p>
 <p>An executable server has the advantage of being able to run as a stand-alone application, but adds considerable overhead to the communication between the COM client and the COM object. If the control has a programming error only the server process running the control will crash, and the client application will probably continue to run. Not all COM clients support executable servers.</p>
-<p>An in-process server is usually smaller and has faster startup time. The communication between client and server is done directly through virtual function calls and does not introduce the overhead required for remote procedure calls. However, if the server crashes the client application is likely to crash as well, and not every functionality is available for in-process servers (i.e&#x2e; register in the COM's running-object-table).</p>
+<p>An in-process server is usually smaller and has faster startup time. The communication between client and server is done directly through virtual function calls and does not introduce the overhead required for remote procedure calls. However, if the server crashes the client application is likely to crash as well, and not every functionality is available for in-process servers (i.e. register in the COM's running-object-table).</p>
 <p>Both server types can use Qt either as a shared library, or statically linked into the server binary.</p>
 <h3 id="typical-errors-during-the-post-build-steps">Typical Errors During the Post-Build Steps</h3>
 <p>For the ActiveQt specific post-processing steps to work the server has to meet some requirements:</p>
@@ -122,16 +122,16 @@
 </ul>
 <p>If those requirements are not met one ore more of the following errors are likely to occur:</p>
 <h4 id="the-server-executable-crashes">The Server Executable Crashes</h4>
-<p>To generate the IDL the widgets exposed as ActiveX controls need to be instantiated (the constructor is called). At this point, nothing else but a <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> object exists. Your widget constructor must not rely on any other objects to be created, e.g&#x2e; it should check for null-pointers.</p>
+<p>To generate the IDL the widgets exposed as ActiveX controls need to be instantiated (the constructor is called). At this point, nothing else but a <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> object exists. Your widget constructor must not rely on any other objects to be created, e.g. it should check for null-pointers.</p>
 <p>To debug your server run it with -dumpidl outputfile and check where it crashes.</p>
 <p>Note that no functions of the control are called.</p>
 <h4 id="the-server-executable-is-not-a-valid-win32-application">The Server Executable Is Not a Valid Win32 Application</h4>
 <p>Attaching the type library corrupted the server binary. This is a bug in Windows and happens only with release builds.</p>
 <p>The first linking step has to link a dummy type library into the executable that can later be replaced by idc. Add a resource file with a type library to your project as demonstrated in the examples.</p>
 <h4 id="unable-to-locate-dll">&quot;Unable to locate DLL&quot;</h4>
-<p>The build system needs to run the server executable to generate the interface definition, and to register the server. If a dynamic link library the server links against is not in the path this might fail (e.g&#x2e; Visual Studio calls the server using the environment settings specified in the &quot;Directories&quot; option). Make sure that all DLLs and plugins required by your server are located in a directory that is listed in the path as printed in the error message box (see also <a href="../qtdoc/windows-deployment.html#the-windows-deployment-tool" translate="no">The Windows Deployment Tool</a>).</p>
-<h4 id="cannot-open-file">&quot;Cannot open file ..&#x2e;&quot;</h4>
-<p>The ActiveX server could not shut down properly when the last client stopped using it. It usually takes about two seconds for the application to terminate, but you might have to use the task manager to kill the process (e.g&#x2e; when a client doesn't release the controls properly).</p>
+<p>The build system needs to run the server executable to generate the interface definition, and to register the server. If a dynamic link library the server links against is not in the path this might fail (e.g. Visual Studio calls the server using the environment settings specified in the &quot;Directories&quot; option). Make sure that all DLLs and plugins required by your server are located in a directory that is listed in the path as printed in the error message box (see also <a href="../qtdoc/windows-deployment.html#the-windows-deployment-tool" translate="no">The Windows Deployment Tool</a>).</p>
+<h4 id="cannot-open-file">&quot;Cannot open file ...&quot;</h4>
+<p>The ActiveX server could not shut down properly when the last client stopped using it. It usually takes about two seconds for the application to terminate, but you might have to use the task manager to kill the process (e.g. when a client doesn't release the controls properly).</p>
 <h4 id="the-control-cannot-be-instantiated">The Control Cannot be Instantiated</h4>
 <p>In this case, it may help to register the server as Administrator.</p>
 <h2 id="implementing-controls">Implementing Controls</h2>
@@ -190,7 +190,7 @@
 <tr valign="top" class="even"><td ><a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></td><td >DATE</td></tr>
 <tr valign="top" class="odd"><td ><a href="../qtcore/qtime.html" translate="no">QTime</a></td><td >DATE</td></tr>
 <tr valign="top" class="even"><td ><a href="../qtgui/qfont.html" translate="no">QFont</a></td><td >IFontDisp*</td></tr>
-<tr valign="top" class="odd"><td ><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></td><td >IPictureDisp* <!--  COM cannot marshal IPictureDisp across process boundaries, so <a href="../qtgui/qpixmap.html" translate="no">QPixmap</a> properties cannot be called for out-of-process servers. You can however marshal the image data via e.g&#x2e; temporary files. See the Microsoft <a href="http://support.microsoft.com/default.aspx?scid=kb;[LN];Q150034" translate="no">KB article Q150034</a> for more information.-->
+<tr valign="top" class="odd"><td ><a href="../qtgui/qpixmap.html" translate="no">QPixmap</a></td><td >IPictureDisp* <!--  COM cannot marshal IPictureDisp across process boundaries, so <a href="../qtgui/qpixmap.html" translate="no">QPixmap</a> properties cannot be called for out-of-process servers. You can however marshal the image data via e.g. temporary files. See the Microsoft <a href="http://support.microsoft.com/default.aspx?scid=kb;[LN];Q150034" translate="no">KB article Q150034</a> for more information.-->
 </td></tr>
 <tr valign="top" class="even"><td ><a href="../qtcore/qvariant.html" translate="no">QVariant</a></td><td >VARIANT</td></tr>
 <tr valign="top" class="odd"><td ><a href="../qtcore/qvariant.html#QVariantList-typedef" translate="no">QVariantList</a> (same as <a href="../qtcore/qlist.html" translate="no">QList</a>&lt;<a href="../qtcore/qvariant.html" translate="no">QVariant</a>&gt;)</td><td >SAFEARRAY(VARIANT)</td></tr>
@@ -306,7 +306,7 @@
 <p>The unique identifiers have not been passed as strings into the <a href="qaxfactory.html#QAXFACTORY_EXPORT" translate="no">QAXFACTORY_EXPORT</a>(), <a href="qaxfactory.html#QAXFACTORY_BEGIN" translate="no">QAXFACTORY_BEGIN</a>() or QAXFACTORY_DEFAULT() macro.</p>
 <h4 id="unresolved-external-symbol-ucm-instantiate">&quot;Unresolved external symbol _ucm_instantiate&quot;</h4>
 <p>The server does not export an implementation of a <a href="qaxfactory.html" translate="no">QAxFactory</a>. Use the <a href="qaxfactory.html#QAXFACTORY_EXPORT" translate="no">QAXFACTORY_EXPORT</a>() macro in one of the project's implementation files to instantiate and export a factory, or use the <a href="qaxfactory.html#QAXCLASS" translate="no">QAXCLASS</a>() or QAXFACTORY_DEFAULT() macro to use the default factory.</p>
-<h4 id="ucm-initialize-already-defined-in">&quot;_ucm_initialize already defined in ..&#x2e;&quot;</h4>
+<h4 id="ucm-initialize-already-defined-in">&quot;_ucm_initialize already defined in ...&quot;</h4>
 <p>The server exports more than one implementation of a <a href="qaxfactory.html" translate="no">QAxFactory</a>, or exports the same implementation twice. If you use the default factory, the <a href="qaxfactory.html#QAXFACTORY_BEGIN" translate="no">QAXFACTORY_BEGIN</a>() or QAXFACTORY_DEFAULT() macro must only be used once in the project. Use a custom <a href="qaxfactory.html" translate="no">QAxFactory</a> implementation and the <a href="qaxfactory.html#QAXFACTORY_EXPORT" translate="no">QAXFACTORY_EXPORT</a>() macro if the server provides multiple ActiveX controls.</p>
 <h3 id="distributing-qaxserver-binaries">Distributing QAxServer Binaries</h3>
 <p>ActiveX servers written with Qt can use Qt either as a shared library, or have Qt linked statically into the binary. Both ways will produce rather large packages (either the server binary itself becomes large, or you have to ship the Qt DLL).</p>
@@ -328,7 +328,7 @@
 </pre>
 <h4 id="distributing-servers-over-the-internet">Distributing Servers over the Internet</h4>
 <p>If you want to use controls in your server in web-pages you need to make the server available to the browser used to view your page, and you need to specify the location of the server package in your page.</p>
-<p>To specify the location of a server, use the CODEBASE attribute in the OBJECT tag of your web-site. The value can point to the server file itself, to an INF file listing other files the server requires (e.g&#x2e; the Qt DLL), or a compressed CAB archive.</p>
+<p>To specify the location of a server, use the CODEBASE attribute in the OBJECT tag of your web-site. The value can point to the server file itself, to an INF file listing other files the server requires (e.g. the Qt DLL), or a compressed CAB archive.</p>
 <p>INF and CAB files are documented in almost every book available about ActiveX and COM programming as well as in the MSDN library and various other Online resources. The examples include INF files that can be used to build CAB archives:</p>
 <pre class="cpp" translate="no">
  [version]
@@ -347,7 +347,7 @@
 </pre>
 <p>The INF files assume a static build of Qt, so no dependencies to other DLLs are listed in the INF files. To distribute an ActiveX server depending on DLLs you must add the dependencies, and provide the library files with the archive.</p>
 <h2 id="using-the-controls">Using the Controls</h2>
-<p>To use the ActiveX controls, e.g&#x2e; to embed them in a web page, use the <code translate="no">&lt;object&gt;</code> HTML tag.</p>
+<p>To use the ActiveX controls, e.g. to embed them in a web page, use the <code translate="no">&lt;object&gt;</code> HTML tag.</p>
 <pre class="cpp" translate="no">
  <span class="operator">&lt;</span>object ID<span class="operator">=</span><span class="string">&quot;MyActiveX1&quot;</span> CLASSID<span class="operator">=</span><span class="string">&quot;CLSID:ad90301a-849e-4e8b-9a91-0a6dc5f6461f&quot;</span><span class="operator">&gt;</span>
     <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
@@ -383,15 +383,17 @@
 </ul>
 <h3 id="typical-runtime-errors">Typical Runtime Errors</h3>
 <h4 id="the-server-does-not-respond">The Server Does Not Respond</h4>
-<p>If the system is unable to start the server (check with the task manager whether the server runs a process), make sure that no DLL the server depends on is missing from the system path (e.g&#x2e; the Qt DLL!). Use a dependency walker to view all dependencies of the server binary.</p>
-<p>If the server runs (e.g&#x2e; the task manager lists a process), see the following section for information on debugging your server.</p>
+<p>If the system is unable to start the server (check with the task manager whether the server runs a process), make sure that no DLL the server depends on is missing from the system path (e.g. the Qt DLL!). Use a dependency walker to view all dependencies of the server binary.</p>
+<p>If the server runs (e.g. the task manager lists a process), see the following section for information on debugging your server.</p>
 <h4 id="the-object-cannot-be-created">The Object Cannot Be Created</h4>
-<p>If the server could be built and registered correctly during the build process, but the object cannot be initiliazed e.g&#x2e; by the OLE/COM Object Viewer application, make sure that no DLL the server depends on is missing from the system path (e.g&#x2e; the Qt DLL). Use a dependency walker to view all dependencies of the server binary.</p>
+<p>If the server could be built and registered correctly during the build process, but the object cannot be initiliazed e.g. by the OLE/COM Object Viewer application, make sure that no DLL the server depends on is missing from the system path (e.g. the Qt DLL). Use a dependency walker to view all dependencies of the server binary.</p>
 <p>If the server runs, see the following section for information on debugging your server.</p>
 <h4 id="crashes-when-unloading-and-reloading-com-servers">Crashes when unloading and reloading COM servers</h4>
 <p>If ActiveQt COM servers utilize Qt modules beyond those found in Qt Base, it is necessary to activate the COM server as an out-of-process COM server. Attempting to activate an in-process COM server that includes modules such as Qt Quick may result in a crash after unloading the COM server.</p>
+<h4 id="crash-or-unexpected-behavior-during-outgoing-com-calls">Crash or unexpected behavior during outgoing COM calls</h4>
+<p>Be aware that an out-of-process COM server will be processing its message queue while it is performing an outgoing call to the client. This can lead to unexpected behavior or crash if the client is at the same time calling the server. In this situation, the incoming call will be executed in the server before the outgoing call returns. In particular, if the client closes an ActiveX control while the control is calling back into the client, this can lead to crash. Such reentrancy problems can be mitigated using message filters (IMessageFilter and CoRegisterMessageFilter).</p>
 <h3 id="debugging-runtime-errors">Debugging Runtime Errors</h3>
-<p>To debug an in-process server in Visual Studio, set the server project as the active project, and specify a client &quot;executable for debug session&quot; in the project settings (e.g&#x2e; use the ActiveX Test Container). You can set breakpoints in your code, and also step into ActiveQt and Qt code if you installed the debug version.</p>
+<p>To debug an in-process server in Visual Studio, set the server project as the active project, and specify a client &quot;executable for debug session&quot; in the project settings (e.g. use the ActiveX Test Container). You can set breakpoints in your code, and also step into ActiveQt and Qt code if you installed the debug version.</p>
 <p>To debug an executable server, run the application in a debugger and start with the command line parameter <code translate="no">-activex</code>. Then start your client and create an instance of your ActiveX control. COM will use the existing process for the next client trying to create an ActiveX control.</p>
 <h2 id="class-information-and-tuning">Class Information and Tuning</h2>
 <p>To provide attributes for each COM class, use the <a href="../qtcore/qobject.html#Q_CLASSINFO" translate="no">Q_CLASSINFO</a> macro, which is part of Qt's meta object system.</p>
@@ -437,7 +439,7 @@
 </pre>
 <h3 id="developing-licensed-components">Developing Licensed Components</h3>
 <p>If you develop components you might want to control who is able to instantiate those components. Since the server binary can be shipped to and registered on any client machine it is possible for anybody to use those components in his own software.</p>
-<p>Licensing components can be done using a variety of techniques, e.g&#x2e; the code creating the control can provide a license key, or the machine on which the control is supposed to run needs to be licensed.</p>
+<p>Licensing components can be done using a variety of techniques, e.g. the code creating the control can provide a license key, or the machine on which the control is supposed to run needs to be licensed.</p>
 <p>To mark a Qt class as licensed specify a &quot;LicenseKey&quot; using the <a href="../qtcore/qobject.html#Q_CLASSINFO" translate="no">Q_CLASSINFO</a>() macro.</p>
 <pre class="cpp" translate="no">
  <span class="keyword">class</span> MyLicensedControl : <span class="keyword">public</span> <span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span>
@@ -481,7 +483,7 @@
      <span class="keyword">return</span> S_OK;
  }
 </pre>
-<p>Since <code translate="no">ISomeCOMInterface</code> is a subclass of <code translate="no">IUnknown</code> you will have to implement the <code translate="no">QueryInterface()</code>, <code translate="no">AddRef()</code>, and <code translate="no">Release()</code> functions. Use the QAXAGG_IUNKNOWN macro in your class definition to do that. If you implement the <code translate="no">IUnknown</code> functions manually, delegate the calls to the interface pointer returned by the <a href="qaxaggregated.html#controllingUnknown" translate="no">QAxAggregated::controllingUnknown</a>() function, e.g&#x2e;</p>
+<p>Since <code translate="no">ISomeCOMInterface</code> is a subclass of <code translate="no">IUnknown</code> you will have to implement the <code translate="no">QueryInterface()</code>, <code translate="no">AddRef()</code>, and <code translate="no">Release()</code> functions. Use the QAXAGG_IUNKNOWN macro in your class definition to do that. If you implement the <code translate="no">IUnknown</code> functions manually, delegate the calls to the interface pointer returned by the <a href="qaxaggregated.html#controllingUnknown" translate="no">QAxAggregated::controllingUnknown</a>() function, e.g.</p>
 <pre class="cpp" translate="no">
  HRESULT AxImpl<span class="operator">::</span>QueryInterface(REFIID iid<span class="operator">,</span> <span class="type">void</span> <span class="operator">*</span><span class="operator">*</span>iface)
  {
@@ -515,9 +517,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- elasticnodes.qdoc -->
   <meta name="description" content="Demonstrates how to interact with graphical items in a scene.">
-  <title>Elastic Nodes Example | Qt Widgets 6.6.0</title>
+  <title>Elastic Nodes Example | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li>Elastic Nodes Example</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -134,7 +134,7 @@
          <span class="keyword">return</span>;
      }
 </pre>
-<p>There are two ways to move a node. The <code translate="no">calculateForces()</code> function implements the elastic effect that pulls and pushes on nodes in the grid. In addition, the user can directly move one node around with the mouse. Because we do not want the two approaches to operate at the same time on the same node, we start <code translate="no">calculateForces()</code> by checking if this <code translate="no">Node</code> is the current mouse grabber item (i.e&#x2e;, <a href="qgraphicsscene.html#mouseGrabberItem" translate="no">QGraphicsScene::mouseGrabberItem</a>()). Because we need to find all neighboring (but not necessarily connected) nodes, we also make sure the item is part of a scene in the first place.</p>
+<p>There are two ways to move a node. The <code translate="no">calculateForces()</code> function implements the elastic effect that pulls and pushes on nodes in the grid. In addition, the user can directly move one node around with the mouse. Because we do not want the two approaches to operate at the same time on the same node, we start <code translate="no">calculateForces()</code> by checking if this <code translate="no">Node</code> is the current mouse grabber item (i.e., <a href="qgraphicsscene.html#mouseGrabberItem" translate="no">QGraphicsScene::mouseGrabberItem</a>()). Because we need to find all neighboring (but not necessarily connected) nodes, we also make sure the item is part of a scene in the first place.</p>
 <pre class="cpp" translate="no">
      <span class="comment">// Sum up all forces pushing this item away</span>
      <span class="type"><a href="../qtcore/qttypes.html#qreal-typedef" translate="no">qreal</a></span> xvel <span class="operator">=</span> <span class="number">0</span>;
@@ -176,7 +176,7 @@
      <span class="keyword">if</span> (qAbs(xvel) <span class="operator">&lt;</span> <span class="number">0.1</span> <span class="operator">&amp;</span><span class="operator">&amp;</span> qAbs(yvel) <span class="operator">&lt;</span> <span class="number">0.1</span>)
          xvel <span class="operator">=</span> yvel <span class="operator">=</span> <span class="number">0</span>;
 </pre>
-<p>In theory, the sum of pushing and pulling forces should stabilize to precisely 0. In practice, however, they never do. To circumvent errors in numerical precision, we simply force the sum of forces to be 0 when they are less than 0.1&#x2e;</p>
+<p>In theory, the sum of pushing and pulling forces should stabilize to precisely 0. In practice, however, they never do. To circumvent errors in numerical precision, we simply force the sum of forces to be 0 when they are less than 0.1.</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="../qtcore/qrectf.html" translate="no">QRectF</a></span> sceneRect <span class="operator">=</span> scene()<span class="operator">-</span><span class="operator">&gt;</span>sceneRect();
      newPos <span class="operator">=</span> pos() <span class="operator">+</span> <span class="type"><a href="../qtcore/qpointf.html" translate="no">QPointF</a></span>(xvel<span class="operator">,</span> yvel);
@@ -212,7 +212,7 @@
      <span class="keyword">return</span> path;
  }
 </pre>
-<p>The shape is a simple ellipse. This ensures that you must click inside the node's elliptic shape in order to drag it around. You can test this effect by running the example, and zooming far in so that the nodes are very large. Without reimplementing <a href="qgraphicsitem.html#shape" translate="no">shape</a>(), the item's hit area would be identical to its bounding rectangle (i.e&#x2e;, rectangular).</p>
+<p>The shape is a simple ellipse. This ensures that you must click inside the node's elliptic shape in order to drag it around. You can test this effect by running the example, and zooming far in so that the nodes are very large. Without reimplementing <a href="qgraphicsitem.html#shape" translate="no">shape</a>(), the item's hit area would be identical to its bounding rectangle (i.e., rectangular).</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> Node<span class="operator">::</span>paint(<span class="type"><a href="../qtgui/qpainter.html" translate="no">QPainter</a></span> <span class="operator">*</span>painter<span class="operator">,</span> <span class="keyword">const</span> <span class="type"><a href="qstyleoptiongraphicsitem.html" translate="no">QStyleOptionGraphicsItem</a></span> <span class="operator">*</span>option<span class="operator">,</span> <span class="type"><a href="qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>)
  {
@@ -255,7 +255,7 @@
      <span class="keyword">return</span> <span class="type"><a href="qgraphicsitem.html" translate="no">QGraphicsItem</a></span><span class="operator">::</span>itemChange(change<span class="operator">,</span> value);
  }
 </pre>
-<p>We reimplement <a href="qgraphicsitem.html#itemChange" translate="no">itemChange</a>() to adjust the position of all connected edges, and to notify the scene that an item has moved (i.e&#x2e;, &quot;something has happened&quot;). This will trigger new force calculations.</p>
+<p>We reimplement <a href="qgraphicsitem.html#itemChange" translate="no">itemChange</a>() to adjust the position of all connected edges, and to notify the scene that an item has moved (i.e., &quot;something has happened&quot;). This will trigger new force calculations.</p>
 <p>This notification is the only reason why the nodes need to keep a pointer back to the <code translate="no">GraphWidget</code>. Another approach could be to provide such notification using a signal; in such case, <code translate="no">Node</code> would need to inherit from <a href="qgraphicsobject.html" translate="no">QGraphicsObject</a>.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> Node<span class="operator">::</span>mousePressEvent(<span class="type"><a href="qgraphicsscenemouseevent.html" translate="no">QGraphicsSceneMouseEvent</a></span> <span class="operator">*</span>event)
@@ -270,7 +270,7 @@
      <span class="type"><a href="qgraphicsitem.html" translate="no">QGraphicsItem</a></span><span class="operator">::</span>mouseReleaseEvent(event);
  }
 </pre>
-<p>Because we have set the <a href="qgraphicsitem.html#GraphicsItemFlag-enum" translate="no">ItemIsMovable</a> flag, we don't need to implement the logic that moves the node according to mouse input; this is already provided for us. We still need to reimplement the mouse press and release handlers, though, to update the nodes' visual appearance (i.e&#x2e;, sunken or raised).</p>
+<p>Because we have set the <a href="qgraphicsitem.html#GraphicsItemFlag-enum" translate="no">ItemIsMovable</a> flag, we don't need to implement the logic that moves the node according to mouse input; this is already provided for us. We still need to reimplement the mouse press and release handlers, though, to update the nodes' visual appearance (i.e., sunken or raised).</p>
 <h4 id="edge-class-definition">Edge Class Definition</h4>
 <p>The <code translate="no">Edge</code> class represents the arrow-lines between the nodes in this example. The class is very simple: it maintains a source- and destination node pointer, and provides an <code translate="no">adjust()</code> function that makes sure the line starts at the position of the source, and ends at the position of the destination. The edges are the only items that change continuously as forces pull and push on the nodes.</p>
 <p>Let's take a look at the class declaration:</p>
@@ -315,7 +315,7 @@
  }
 </pre>
 <p>The <code translate="no">Edge</code> constructor initializes its <code translate="no">arrowSize</code> data member to 10 units; this determines the size of the arrow which is drawn in <a href="qgraphicsitem.html#paint" translate="no">paint</a>().</p>
-<p>In the constructor body, we call <a href="qgraphicsitem.html#setAcceptedMouseButtons" translate="no">setAcceptedMouseButtons</a>(0). This ensures that the edge items are not considered for mouse input at all (i.e&#x2e;, you cannot click the edges). Then, the source and destination pointers are updated, this edge is registered with each node, and we call <code translate="no">adjust()</code> to update this edge's start and end position.</p>
+<p>In the constructor body, we call <a href="qgraphicsitem.html#setAcceptedMouseButtons" translate="no">setAcceptedMouseButtons</a>(0). This ensures that the edge items are not considered for mouse input at all (i.e., you cannot click the edges). Then, the source and destination pointers are updated, this edge is registered with each node, and we call <code translate="no">adjust()</code> to update this edge's start and end position.</p>
 <pre class="cpp" translate="no">
  Node <span class="operator">*</span>Edge<span class="operator">::</span>sourceNode() <span class="keyword">const</span>
  {
@@ -350,7 +350,7 @@
 </pre>
 <p>In <code translate="no">adjust()</code>, we define two points: <code translate="no">sourcePoint</code>, and <code translate="no">destPoint</code>, pointing at the source and destination nodes' origins respectively. Each point is calculated using <a href="graphicsview.html#the-graphics-view-coordinate-system" translate="no">local coordinates</a>.</p>
 <p>We want the tip of the edge's arrows to point to the exact outline of the nodes, as opposed to the center of the nodes. To find this point, we first decompose the vector pointing from the center of the source to the center of the destination node into X and Y, and then normalize the components by dividing by the length of the vector. This gives us an X and Y unit delta that, when multiplied by the radius of the node (which is 10), gives us the offset that must be added to one point of the edge, and subtracted from the other.</p>
-<p>If the length of the vector is less than 20 (i.e&#x2e;, if two nodes overlap), then we fix the source and destination pointer at the center of the source node. In practice this case is very hard to reproduce manually, as the forces between the two nodes is then at its maximum.</p>
+<p>If the length of the vector is less than 20 (i.e., if two nodes overlap), then we fix the source and destination pointer at the center of the source node. In practice this case is very hard to reproduce manually, as the forces between the two nodes is then at its maximum.</p>
 <p>It's important to notice that we call <a href="qgraphicsitem.html#prepareGeometryChange" translate="no">prepareGeometryChange</a>() in this function. The reason is that the variables <code translate="no">sourcePoint</code> and <code translate="no">destPoint</code> are used directly when painting, and they are returned from the <a href="qgraphicsitem.html#boundingRect" translate="no">boundingRect</a>() reimplementation. We must always call <a href="qgraphicsitem.html#prepareGeometryChange" translate="no">prepareGeometryChange</a>() before changing what <a href="qgraphicsitem.html#boundingRect" translate="no">boundingRect</a>() returns, and before these variables can be used by <a href="qgraphicsitem.html#paint" translate="no">paint</a>(), to keep Graphics View's internal bookkeeping clean. It's safest to call this function once, immediately before any such variable is modified.</p>
 <pre class="cpp" translate="no">
  <span class="type"><a href="../qtcore/qrectf.html" translate="no">QRectF</a></span> Edge<span class="operator">::</span>boundingRect() <span class="keyword">const</span>
@@ -542,7 +542,7 @@
      }
  }
 </pre>
-<p>This is <code translate="no">GraphWidget</code>'s key event handler. The arrow keys move the center node around, the '+' and '-' keys zoom in and out by calling <code translate="no">scaleView()</code>, and the enter and space keys randomize the positions of the nodes. All other key events (e.g&#x2e;, page up and page down) are handled by <a href="qgraphicsview.html" translate="no">QGraphicsView</a>'s default implementation.</p>
+<p>This is <code translate="no">GraphWidget</code>'s key event handler. The arrow keys move the center node around, the '+' and '-' keys zoom in and out by calling <code translate="no">scaleView()</code>, and the enter and space keys randomize the positions of the nodes. All other key events (e.g., page up and page down) are handled by <a href="qgraphicsview.html" translate="no">QGraphicsView</a>'s default implementation.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> GraphWidget<span class="operator">::</span>timerEvent(<span class="type"><a href="../qtcore/qtimerevent.html" translate="no">QTimerEvent</a></span> <span class="operator">*</span>event)
  {
@@ -570,7 +570,7 @@
      }
  }
 </pre>
-<p>The timer event handler's job is to run the whole force calculation machinery as a smooth animation. Each time the timer is triggered, the handler will find all nodes in the scene, and call <code translate="no">Node::calculateForces()</code> on each node, one at a time. Then, in a final step it will call <code translate="no">Node::advance()</code> to move all nodes to their new positions. By checking the return value of <code translate="no">advance()</code>, we can decide if the grid stabilized (i.e&#x2e;, no nodes moved). If so, we can stop the timer.</p>
+<p>The timer event handler's job is to run the whole force calculation machinery as a smooth animation. Each time the timer is triggered, the handler will find all nodes in the scene, and call <code translate="no">Node::calculateForces()</code> on each node, one at a time. Then, in a final step it will call <code translate="no">Node::advance()</code> to move all nodes to their new positions. By checking the return value of <code translate="no">advance()</code>, we can decide if the grid stabilized (i.e., no nodes moved). If so, we can stop the timer.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> GraphWidget<span class="operator">::</span>wheelEvent(<span class="type"><a href="../qtgui/qwheelevent.html" translate="no">QWheelEvent</a></span> <span class="operator">*</span>event)
  {
@@ -628,7 +628,7 @@
      scale(scaleFactor<span class="operator">,</span> scaleFactor);
  }
 </pre>
-<p>The <code translate="no">scaleView()</code> helper function checks that the scale factor stays within certain limits (i.e&#x2e;, you cannot zoom too far in nor too far out), and then applies this scale to the view.</p>
+<p>The <code translate="no">scaleView()</code> helper function checks that the scale factor stays within certain limits (i.e., you cannot zoom too far in nor too far out), and then applies this scale to the view.</p>
 <h4 id="the-main-function">The main() Function</h4>
 <p>In contrast to the complexity of the rest of this example, the <code translate="no">main()</code> function is very simple: We create a <a href="qapplication.html" translate="no">QApplication</a> instance, then create and show an instance of <code translate="no">GraphWidget</code>. Because all nodes in the grid are moved initially, the <code translate="no">GraphWidget</code> timer will start immediately after control has returned to the event loop.</p>
 <p><a href="https://code.qt.io/cgit/qt/qtbase.git/tree/examples/widgets/graphicsview/elasticnodes?h=6.6" translate="no">Example project @ code.qt.io</a></p>
@@ -641,9 +641,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

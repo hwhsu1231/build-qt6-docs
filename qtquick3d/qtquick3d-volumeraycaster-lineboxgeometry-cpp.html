@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- volumeraycaster.qdoc -->
+  <meta name="description" content="Demonstrates how to do volumetric rendering in Qt Quick 3D.">
+  <title>Qt Quick 3D - Volumetric Rendering Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Volumetric Rendering Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Volumetric Rendering Example</h1>
+<pre class="cpp" translate="no">
+ <span class="comment">// Copyright (C) 2023 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ <span class="preprocessor">#include &quot;lineboxgeometry.h&quot;</span>
+ <span class="preprocessor">#include &lt;QRandomGenerator&gt;</span>
+ <span class="preprocessor">#include &lt;QVector3D&gt;</span>
+ <span class="preprocessor">#include &lt;array&gt;</span>
+
+ LineBoxGeometry<span class="operator">::</span>LineBoxGeometry()
+ {
+     constexpr <span class="type">int</span> kStride <span class="operator">=</span> <span class="keyword">sizeof</span>(QVector3D);
+
+     <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> vertexData(<span class="number">24</span> <span class="operator">*</span> kStride<span class="operator">,</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>Initialization<span class="operator">::</span>Uninitialized);
+     QVector3D <span class="operator">*</span>p <span class="operator">=</span> <span class="keyword">reinterpret_cast</span><span class="operator">&lt;</span>QVector3D <span class="operator">*</span><span class="operator">&gt;</span>(vertexData<span class="operator">.</span>data());
+
+     std<span class="operator">::</span>array<span class="operator">&lt;</span>QVector3D<span class="operator">,</span> <span class="number">8</span><span class="operator">&gt;</span> pts;
+     pts<span class="operator">[</span><span class="number">0</span><span class="operator">]</span> <span class="operator">=</span> QVector3D(<span class="operator">-</span><span class="number">50</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50</span>);
+     pts<span class="operator">[</span><span class="number">1</span><span class="operator">]</span> <span class="operator">=</span> QVector3D(<span class="operator">-</span><span class="number">50</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50</span>);
+     pts<span class="operator">[</span><span class="number">2</span><span class="operator">]</span> <span class="operator">=</span> QVector3D(<span class="operator">-</span><span class="number">50</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50</span>);
+     pts<span class="operator">[</span><span class="number">3</span><span class="operator">]</span> <span class="operator">=</span> QVector3D(<span class="operator">-</span><span class="number">50</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50</span>);
+     pts<span class="operator">[</span><span class="number">4</span><span class="operator">]</span> <span class="operator">=</span> QVector3D(<span class="operator">+</span><span class="number">50</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50</span>);
+     pts<span class="operator">[</span><span class="number">5</span><span class="operator">]</span> <span class="operator">=</span> QVector3D(<span class="operator">+</span><span class="number">50</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50</span>);
+     pts<span class="operator">[</span><span class="number">6</span><span class="operator">]</span> <span class="operator">=</span> QVector3D(<span class="operator">+</span><span class="number">50</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50</span>);
+     pts<span class="operator">[</span><span class="number">7</span><span class="operator">]</span> <span class="operator">=</span> QVector3D(<span class="operator">+</span><span class="number">50</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50</span>);
+     <span class="comment">// left side</span>
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">1</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">1</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">2</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">2</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">3</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">3</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="comment">// right side</span>
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">4</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">5</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">5</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">6</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">6</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">7</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">7</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">4</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="comment">// across</span>
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">0</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">4</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">1</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">5</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">2</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">6</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">3</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+     <span class="operator">*</span>p <span class="operator">=</span> pts<span class="operator">[</span><span class="number">7</span><span class="operator">]</span>;
+     p<span class="operator">+</span><span class="operator">+</span>;
+
+     setVertexData(vertexData);
+     setStride(kStride);
+     setBounds(QVector3D(<span class="operator">-</span><span class="number">50.0f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50.0f</span><span class="operator">,</span> <span class="operator">-</span><span class="number">50.0f</span>)<span class="operator">,</span> QVector3D(<span class="operator">+</span><span class="number">50.0f</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50.0f</span><span class="operator">,</span> <span class="operator">+</span><span class="number">50.0f</span>));
+
+     setPrimitiveType(QQuick3DGeometry<span class="operator">::</span>PrimitiveType<span class="operator">::</span>Lines);
+
+     addAttribute(QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>PositionSemantic<span class="operator">,</span> <span class="number">0</span><span class="operator">,</span> QQuick3DGeometry<span class="operator">::</span>Attribute<span class="operator">::</span>F32Type);
+ }
+</pre>

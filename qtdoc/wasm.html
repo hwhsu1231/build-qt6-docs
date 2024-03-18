@@ -28,7 +28,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Qt for WebAssembly</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -55,6 +55,7 @@
 <li class="level2"><a href="#mobile">Mobile</a></li>
 <li class="level1"><a href="#supported-qt-modules">Supported Qt Modules</a></li>
 <li class="level1"><a href="#developing-with-qt-for-webassembly">Developing with Qt for WebAssembly</a></li>
+<li class="level2"><a href="#building-with-cmake">Building with CMake</a></li>
 <li class="level2"><a href="#opengl-and-webgl">OpenGL and WebGL</a></li>
 <li class="level2"><a href="#multithreading">Multithreading</a></li>
 <li class="level2"><a href="#simd">SIMD</a></li>
@@ -100,16 +101,16 @@
 <p>Each minor version of Qt targets a specific Emcsripten version, which remains unchanged in patch releases. Qt's binary packages are built using the target Emscripten version. Applications should use the same version since Emscripten does not guarantee <a href="https://github.com/emscripten-core/emscripten/blob/main/ChangeLog.md" translate="no">ABI compatibility</a> between versions.</p>
 <p>The Emcsripten versions are:</p>
 <ul>
-<li>Qt 6.2: 2.0&#x2e;14</li>
-<li>Qt 6.3: 3.0&#x2e;0</li>
-<li>Qt 6.4: 3.1&#x2e;14</li>
-<li>Qt 6.5: 3.1&#x2e;25</li>
-<li>Qt 6.6: 3.1&#x2e;37</li>
+<li>Qt 6.2: 2.0.14</li>
+<li>Qt 6.3: 3.0.0</li>
+<li>Qt 6.4: 3.1.14</li>
+<li>Qt 6.5: 3.1.25</li>
+<li>Qt 6.6: 3.1.37</li>
 </ul>
 <p>Use <code translate="no">emsdk</code> to install specific <code translate="no">Emscripten</code> versions. For example, to install it for Qt 6.6 enter:</p>
 <ul>
-<li>./emsdk install 3.1&#x2e;37</li>
-<li>./emsdk activate 3.1&#x2e;37</li>
+<li>./emsdk install 3.1.37</li>
+<li>./emsdk activate 3.1.37</li>
 </ul>
 <p>On Windows, Emscripten is in your path after installation. On macOS or Linux you need to add it to your path, like this:</p>
 <pre class="cpp plain" translate="no">
@@ -273,6 +274,16 @@
 <li><a href="../qtnetwork/qtnetwork-programming.html" translate="no">Qt Sockets</a></li>
 </ul>
 <h2 id="developing-with-qt-for-webassembly">Developing with Qt for WebAssembly</h2>
+<h3 id="building-with-cmake">Building with CMake</h3>
+<p>If there is a need for Emscripten-specific configuration in CMake, the following code can be utilized:</p>
+<pre class="cpp plain" translate="no">
+ if(EMSCRIPTEN)
+     # WebAssembly specific code
+ else()
+     # other platforms
+ endif()
+</pre>
+<p>This code allows for the accommodation of Emscripten-specific configurations while ensuring compatibility with other platforms.</p>
 <h3 id="opengl-and-webgl">OpenGL and WebGL</h3>
 <p>Qt requires WebGL, also for applications which do not use OpenGL directly. All relevant browsers support WebGL, but note that some browsers blacklist certain older GPUs. The Qt loader will detect this and display an error message.</p>
 <p>Qt detects WebGL as OpenGL ES, with the following version mapping:</p>
@@ -293,7 +304,7 @@
 </pre>
 <p>to your project's <code translate="no">CMakeLists.txt</code>.</p>
 <h3 id="multithreading">Multithreading</h3>
-<p>Qt for WebAssembly supports multithreading using Emscripten's <a href="https://emscripten.org/docs/porting/pthreads.html" translate="no">Pthreads support</a>, where each thread is backed by a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API" translate="no">web worker</a>. Enable multithreading by installing the &quot;WebAssembly (multi-threaded)&quot; component from the Qt Maintenance Tool, or by building Qt from source and passing the &quot;-feature-thread&quot; flag to configure.</p>
+<p>Qt for WebAssembly supports multithreading using Emscripten's <a href="https://emscripten.org/docs/porting/pthreads.html" translate="no">Pthreads support</a>, where each thread is backed by a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API" translate="no">web worker</a>. Enable multithreading by installing the &quot;WebAssembly (multi-threaded)&quot; component from Qt Maintenance Tool, or by building Qt from source and passing the &quot;-feature-thread&quot; flag to configure.</p>
 <p>Existing threading code can generally be reused, but may need to be modified to work around <a href="https://emscripten.org/docs/porting/pthreads.html#special-considerations" translate="no">specifics</a> of the pthread implementation. Some Emscripten and Qt features are not supported, this includes the <a href="https://emscripten.org/docs/porting/pthreads.html#proxying" translate="no">thread proxying</a> feature and the Qt Quick threaded render loop.</p>
 <p>Be aware that it is especially important to <a href="https://emscripten.org/docs/porting/pthreads.html#blocking-on-the-main-browser-thread" translate="no">not block the main thread</a> on Qt for WebAssembly, since the main thread might be required to service requests from secondary threads. For example, all timers in Qt are scheduled on the main thread, and will not fire if the main thread is blocked. Another example is that creating a new web worker (for a thread) can only be done from the main thread.</p>
 <p>Emscripten provides some mitigations for this. Short-term waits such as acquiring a mutex lock is supported by busy-waiting and processing events while waiting for the lock. Longer waits on the main thread should be avoided. In particular, the common practice of calling <a href="../qtcore/qthread.html#wait" translate="no">QThread::wait</a>() or pthread_join() to wait for a secondary thread will not work, unless the application can guarantee that the thread (and web worker) has already been started, and will be able to complete without assistance from the main thread at the time that the wait() or join() call is made.</p>
@@ -337,8 +348,8 @@
 <li><a href="https://doc.qt.io/qt-5/qfiledialog.html#saveFileContent" translate="no">QFileDialog::saveFileContent()</a> saves a file to the local file system via file download}</li>
 </ul>
 <h3 id="clipboard-access">Clipboard Access</h3>
-<p>Qt supports copying and pasting text to the system clipboard, with some differences due to the web sandbox. In general clipboard access require user permission, which can be obtained by handling an input event (e.g&#x2e; CTRL+c), or by using the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API" translate="no">Clipboard API</a>.</p>
-<p>Browsers that support the Clipboard API are preferred. Note that a requirement for this API is that the web page is served over a secure connection (e.g&#x2e; https), and that some browsers my require changing configuration flags.</p>
+<p>Qt supports copying and pasting text to the system clipboard, with some differences due to the web sandbox. In general clipboard access require user permission, which can be obtained by handling an input event (e.g. CTRL+c), or by using the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API" translate="no">Clipboard API</a>.</p>
+<p>Browsers that support the Clipboard API are preferred. Note that a requirement for this API is that the web page is served over a secure connection (e.g. https), and that some browsers my require changing configuration flags.</p>
 <p>See <a href="https:..." translate="no">caniuse</a> for which browsers currently support the Clipboard API. The following versions are known to work:</p>
 <ul>
 <li>Chrome version 66 and Safari version 13.1 support the Clipboard API</li>
@@ -356,7 +367,7 @@
 <h3 id="application-startup-and-the-event-loop">Application Startup and the Event Loop</h3>
 <p>Qt for WebAssembly supports the standard Qt startup approach, where the application creates a <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> object and calls the exec function:</p>
 <pre class="cpp" translate="no">
- <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argc)
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
  {
      <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span> app(argc<span class="operator">,</span> argv);
 
@@ -373,7 +384,7 @@
  <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span> <span class="operator">*</span>g_app <span class="operator">=</span> nullptr;
  AppWindow <span class="operator">*</span>g_appWindow <span class="operator">=</span> nullptr;
 
- <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argc)
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
  {
      g_app <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qapplication.html" translate="no">QApplication</a></span>(argc<span class="operator">,</span> argv);
      g_appWindow <span class="operator">=</span> <span class="keyword">new</span> AppWindow();
@@ -453,7 +464,7 @@
 <ul>
 <li>Make sure to distribute release builds. Debug builds contain debug symbols and are much bigger.</li>
 <li>Enable compression on a server. The most common algorithms like <code translate="no">gzip</code> and Brotli work well on Wasm binaries and can drastically reduce their size.</li>
-<li>Try compiler and linker flags that may results in generating smaller binaries (i.e&#x2e; '-os', '-oz'). Results will vary depending on the particular application.</li>
+<li>Try compiler and linker flags that may results in generating smaller binaries (i.e. '-os', '-oz'). Results will vary depending on the particular application.</li>
 <li>Disable unsued features when compiling Qt for WebAssembly from source (see below).</li>
 </ul>
 <h5 id="opting-out-of-features">Opting out of features</h5>
@@ -498,7 +509,7 @@
 </ul>
 <p>Dynamic linking support is currently in developer preview. The implementation is suitable for prototyping and evaluation, but is not suitable for production use. Current limitations and restrictions include:</p>
 <ul>
-<li>The Emscripten SDK must be patched. Use emsdk 3.1&#x2e;37, and apply this <a href="https://github.com/emscripten-core/emscripten/pull/18418/commits/e9f86cebc3eb18f52e03ec67730f3edaa91d4564" translate="no">patch</a>.</li>
+<li>The Emscripten SDK must be patched. Use emsdk 3.1.37, and apply this <a href="https://github.com/emscripten-core/emscripten/pull/18418/commits/e9f86cebc3eb18f52e03ec67730f3edaa91d4564" translate="no">patch</a>.</li>
 <li>The Chrome browser is not supported, due it not supporting synchronous loading of wasm files larger than 4K.</li>
 <li>Multithreading is not supported.</li>
 <li>Asyncify is not supported.</li>
@@ -540,6 +551,7 @@
  target_link_options(&lt;your target&gt; PRIVATE -s MAXIMUM_MEMORY=1GB)
 </pre>
 </li>
+<li>To use QtWebsockets, the subprotocol might need to be set to 'mqtt' for using <a href="../qtmqtt/qtmqtt-module.html" translate="no">QtMqtt</a>. Use <a href="../qtwebsockets/qwebsockethandshakeoptions.html" translate="no">QWebSocketHandshakeOptions</a> when you open the <a href="../qtwebsockets/qwebsocket.html" translate="no">QWebSocket</a>.</li>
 </ul>
 <h2 id="other-topics">Other Topics</h2>
 <h3 id="qt-configure-options-reference">Qt Configure Options Reference</h3>
@@ -589,9 +601,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

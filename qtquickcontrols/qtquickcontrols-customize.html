@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qtquickcontrols-customize.qdoc -->
   <meta name="description" content="A set of UI controls to create user interfaces in Qt Quick">
-  <title>Customizing Qt Quick Controls | Qt Quick Controls 6.6.0</title>
+  <title>Customizing Qt Quick Controls | Qt Quick Controls 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtquickcontrols-index.html" translate="no">Qt Quick Controls</a></li>
 <li>Customizing Qt Quick Controls</li>
-<li id="buildversion"><a href="qtquickcontrols-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtquickcontrols-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -171,7 +171,7 @@
 </pre>
 <p>If you're using <a href="qtquickcontrols-styles.html#compile-time-style-selection" translate="no">compile-time style selection</a>, the qmldir should also import the fallback style:</p>
 <pre class="cpp plain" translate="no">
- # ..&#x2e;
+ # ...
  import QtQuick.Controls.Basic auto
 </pre>
 <p>This can also be done for <a href="qtquickcontrols-styles.html#run-time-style-selection" translate="no">run-time style selection</a> instead of using, for example, <a href="qquickstyle.html#setFallbackStyle" translate="no">QQuickStyle::setFallbackStyle</a>().</p>
@@ -1182,15 +1182,45 @@
          <span class="name">implicitWidth</span>: <span class="number">200</span>
          <span class="name">implicitHeight</span>: <span class="number">4</span>
 
+         <span class="comment">// Progress indicator for determinate state.</span>
          <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
              <span class="name">width</span>: <span class="name">control</span>.<span class="name">visualPosition</span> <span class="operator">*</span> <span class="name">parent</span>.<span class="name">width</span>
              <span class="name">height</span>: <span class="name">parent</span>.<span class="name">height</span>
              <span class="name">radius</span>: <span class="number">2</span>
              <span class="name">color</span>: <span class="string">&quot;#17a81a&quot;</span>
+             <span class="name">visible</span>: !<span class="name">control</span>.<span class="name">indeterminate</span>
+         }
+
+         <span class="comment">// Scrolling animation for indeterminate state.</span>
+         <span class="type"><a href="../qtquick/qml-qtquick-item.html" translate="no">Item</a></span> {
+             <span class="name">anchors</span>.fill: <span class="name">parent</span>
+             <span class="name">visible</span>: <span class="name">control</span>.<span class="name">indeterminate</span>
+             <span class="name">clip</span>: <span class="number">true</span>
+
+             <span class="type"><a href="../qtquick/qml-qtquick-row.html" translate="no">Row</a></span> {
+                 <span class="name">spacing</span>: <span class="number">20</span>
+
+                 <span class="type"><a href="../qtquick/qml-qtquick-repeater.html" translate="no">Repeater</a></span> {
+                     <span class="name">model</span>: <span class="name">control</span>.<span class="name">width</span> <span class="operator">/</span> <span class="number">40</span> <span class="operator">+</span> <span class="number">1</span>
+
+                     <span class="type"><a href="../qtquick/qml-qtquick-rectangle.html" translate="no">Rectangle</a></span> {
+                         <span class="name">color</span>: <span class="string">&quot;#17a81a&quot;</span>
+                         <span class="name">width</span>: <span class="number">20</span>
+                         <span class="name">height</span>: <span class="name">control</span>.<span class="name">height</span>
+                     }
+                 }
+                 XAnimator on <span class="name">x</span> {
+                     <span class="name">from</span>: <span class="number">0</span>
+                     <span class="name">to</span>: -<span class="number">40</span>
+                     <span class="name">loops</span>: <span class="name">Animation</span>.<span class="name">Infinite</span>
+                     <span class="name">running</span>: <span class="name">control</span>.<span class="name">indeterminate</span>
+                 }
+             }
          }
      }
  }
 </pre>
+<p>Above, the content item is also animated to represent an <a href="qml-qtquick-controls-progressbar.html#indeterminate-prop" translate="no">indeterminate</a> progress bar state.</p>
 <h3 id="customizing-radiobutton">Customizing RadioButton</h3>
 <p><a href="qml-qtquick-controls-radiobutton.html" translate="no">RadioButton</a> consists of three visual items: <a href="qml-qtquick-controls-control.html#background-prop" translate="no">background</a>, <a href="qml-qtquick-controls-control.html#contentItem-prop" translate="no">content item</a> and <a href="qml-qtquick-controls-abstractbutton.html#indicator-prop" translate="no">indicator</a>.</p>
 <p class="centerAlign"><img src="images/qtquickcontrols-radiobutton-custom.png" alt="" /></p><pre class="qml" translate="no">
@@ -2021,9 +2051,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

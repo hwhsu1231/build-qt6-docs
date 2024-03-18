@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qabstractanimation.cpp -->
   <meta name="description" content="The QAbstractAnimation class is the base of all animations.">
-  <title>QAbstractAnimation Class | Qt Core 6.6.0</title>
+  <title>QAbstractAnimation Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QAbstractAnimation</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -160,8 +160,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="Direction-enum">enum QAbstractAnimation::<span class="name">Direction</span></h3>
 <p>This enum describes the direction of the animation when in <a href="qabstractanimation.html#State-enum" translate="no">Running</a> state.</p>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
-<tr><td class="topAlign"><code translate="no">QAbstractAnimation::Forward</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">The current time of the animation increases with time (i.e&#x2e;, moves from 0 and towards the end / duration).</td></tr>
-<tr><td class="topAlign"><code translate="no">QAbstractAnimation::Backward</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">The current time of the animation decreases with time (i.e&#x2e;, moves from the end / duration and towards 0).</td></tr>
+<tr><td class="topAlign"><code translate="no">QAbstractAnimation::Forward</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">The current time of the animation increases with time (i.e., moves from 0 and towards the end / duration).</td></tr>
+<tr><td class="topAlign"><code translate="no">QAbstractAnimation::Backward</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">The current time of the animation decreases with time (i.e., moves from the end / duration and towards 0).</td></tr>
 </table></div>
 <p><b>See also </b><a href="qabstractanimation.html#direction-prop" translate="no">direction</a>.</p>
 <!-- @@@Direction -->
@@ -170,7 +170,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>This enum describes the state of the animation.</p>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
 <tr><td class="topAlign"><code translate="no">QAbstractAnimation::Stopped</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">The animation is not running. This is the initial state of <a href="qabstractanimation.html" translate="no">QAbstractAnimation</a>, and the state <a href="qabstractanimation.html" translate="no">QAbstractAnimation</a> reenters when finished. The current time remain unchanged until either <a href="qabstractanimation.html#currentTime-prop" translate="no">setCurrentTime</a>() is called, or the animation is started by calling <a href="qabstractanimation.html#start" translate="no">start</a>().</td></tr>
-<tr><td class="topAlign"><code translate="no">QAbstractAnimation::Paused</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">The animation is paused (i.e&#x2e;, temporarily suspended). Calling <a href="qabstractanimation.html#resume" translate="no">resume</a>() will resume animation activity.</td></tr>
+<tr><td class="topAlign"><code translate="no">QAbstractAnimation::Paused</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">The animation is paused (i.e., temporarily suspended). Calling <a href="qabstractanimation.html#resume" translate="no">resume</a>() will resume animation activity.</td></tr>
 <tr><td class="topAlign"><code translate="no">QAbstractAnimation::Running</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign">The animation is running. While control is in the event loop, <a href="qabstractanimation.html" translate="no">QAbstractAnimation</a> will update its current time at regular intervals, calling <a href="qabstractanimation.html#updateCurrentTime" translate="no">updateCurrentTime</a>() when appropriate.</td></tr>
 </table></div>
 <p><b>See also </b><a href="qabstractanimation.html#state-prop" translate="no">state</a>() and <a href="qabstractanimation.html#stateChanged" translate="no">stateChanged</a>().</p>
@@ -259,7 +259,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$duration -->
 <h3 class="fn" translate="no" id="duration"><code translate="no">[pure virtual] </code><span class="type">int</span> QAbstractAnimation::<span class="name">duration</span>() const</h3>
 <p>This pure virtual function returns the duration of the animation, and defines for how long <a href="qabstractanimation.html" translate="no">QAbstractAnimation</a> should update the current time. This duration is local, and does not include the loop count.</p>
-<p>A return value of -1 indicates that the animation has no defined duration; the animation should run forever until stopped. This is useful for animations that are not time driven, or where you cannot easily predict its duration (e.g&#x2e;, event driven audio playback in a game).</p>
+<p>A return value of -1 indicates that the animation has no defined duration; the animation should run forever until stopped. This is useful for animations that are not time driven, or where you cannot easily predict its duration (e.g., event driven audio playback in a game).</p>
 <p>If the animation is a parallel <a href="qanimationgroup.html" translate="no">QAnimationGroup</a>, the duration will be the longest duration of all its animations. If the animation is a sequential <a href="qanimationgroup.html" translate="no">QAnimationGroup</a>, the duration will be the sum of the duration of all its animations.</p>
 <div class="admonition note"><p><b>Note: </b>Getter function for property duration. </p>
 </div><p><b>See also </b><a href="qabstractanimation.html#loopCount-prop" translate="no">loopCount</a>.</p>
@@ -310,7 +310,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$stop[overload1]$$$stop -->
 <h3 class="fn" translate="no" id="stop"><code translate="no">[slot] </code><span class="type">void</span> QAbstractAnimation::<span class="name">stop</span>()</h3>
 <p>Stops the animation. When the animation is stopped, it emits the <a href="qabstractanimation.html#stateChanged" translate="no">stateChanged</a>() signal, and <a href="qabstractanimation.html#state-prop" translate="no">state</a>() returns Stopped. The current time is not changed.</p>
-<p>If the animation stops by itself after reaching the end (i.e&#x2e;, <a href="qabstractanimation.html#currentLoopTime" translate="no">currentLoopTime</a>() == <a href="qabstractanimation.html#duration" translate="no">duration</a>() and <a href="qabstractanimation.html#currentLoop-prop" translate="no">currentLoop</a>() &gt; <a href="qabstractanimation.html#loopCount-prop" translate="no">loopCount</a>() - 1), the <a href="qabstractanimation.html#finished" translate="no">finished</a>() signal is emitted.</p>
+<p>If the animation stops by itself after reaching the end (i.e., <a href="qabstractanimation.html#currentLoopTime" translate="no">currentLoopTime</a>() == <a href="qabstractanimation.html#duration" translate="no">duration</a>() and <a href="qabstractanimation.html#currentLoop-prop" translate="no">currentLoop</a>() &gt; <a href="qabstractanimation.html#loopCount-prop" translate="no">loopCount</a>() - 1), the <a href="qabstractanimation.html#finished" translate="no">finished</a>() signal is emitted.</p>
 <p><b>See also </b><a href="qabstractanimation.html#start" translate="no">start</a>() and <a href="qabstractanimation.html#state-prop" translate="no">state</a>().</p>
 <!-- @@@stop -->
 <!-- $$$totalDuration[overload1]$$$totalDuration -->
@@ -341,9 +341,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

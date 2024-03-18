@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qregularexpression.cpp -->
   <meta name="description" content="The QRegularExpression class provides pattern matching using regular expressions.">
-  <title>QRegularExpression Class | Qt Core 6.6.0</title>
+  <title>QRegularExpression Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QRegularExpression</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -132,12 +132,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$QRegularExpression-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p>Regular expressions, or <i>regexps</i>, are a very powerful tool to handle strings and texts. This is useful in many contexts, e.g&#x2e;,</p>
+<p>Regular expressions, or <i>regexps</i>, are a very powerful tool to handle strings and texts. This is useful in many contexts, e.g.,</p>
 <div class="table"><table class="generic">
- <tr valign="top" class="odd"><td >Validation</td><td >A regexp can test whether a substring meets some criteria, e.g&#x2e; is an integer or contains no whitespace.</td></tr>
-<tr valign="top" class="even"><td >Searching</td><td >A regexp provides more powerful pattern matching than simple substring matching, e.g&#x2e;, match one of the words <i>mail</i>, <i>letter</i> or <i>correspondence</i>, but none of the words <i>email</i>, <i>mailman</i>, <i>mailer</i>, <i>letterbox</i>, etc.</td></tr>
-<tr valign="top" class="odd"><td >Search and Replace</td><td >A regexp can replace all occurrences of a substring with a different substring, e.g&#x2e;, replace all occurrences of <i>&amp;</i> with <i>&amp;amp;</i> except where the <i>&amp;</i> is already followed by an <i>amp;</i>.</td></tr>
-<tr valign="top" class="even"><td >String Splitting</td><td >A regexp can be used to identify where a string should be split apart, e.g&#x2e; splitting tab-delimited strings.</td></tr>
+ <tr valign="top" class="odd"><td >Validation</td><td >A regexp can test whether a substring meets some criteria, e.g. is an integer or contains no whitespace.</td></tr>
+<tr valign="top" class="even"><td >Searching</td><td >A regexp provides more powerful pattern matching than simple substring matching, e.g., match one of the words <i>mail</i>, <i>letter</i> or <i>correspondence</i>, but none of the words <i>email</i>, <i>mailman</i>, <i>mailer</i>, <i>letterbox</i>, etc.</td></tr>
+<tr valign="top" class="odd"><td >Search and Replace</td><td >A regexp can replace all occurrences of a substring with a different substring, e.g., replace all occurrences of <i>&amp;</i> with <i>&amp;amp;</i> except where the <i>&amp;</i> is already followed by an <i>amp;</i>.</td></tr>
+<tr valign="top" class="even"><td >String Splitting</td><td >A regexp can be used to identify where a string should be split apart, e.g. splitting tab-delimited strings.</td></tr>
 </table></div>
 <p>This document is by no means a complete reference to pattern matching using regular expressions, and the following parts will require the reader to have some basic knowledge about Perl-like regular expressions and their pattern syntax.</p>
 <p>Good references about regular expressions include:</p>
@@ -165,7 +165,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  <span class="comment">// matches a backslash</span>
  <span class="type"><a href="qregularexpression.html#QRegularExpression" translate="no">QRegularExpression</a></span> re2(<span class="string">&quot;\\\\&quot;</span>);
 </pre>
-<p>Alternatively, you can use a <a href="https://en.cppreference.com/w/cpp/language/string_literal" translate="no">raw string literal</a>, in which case you don't need to escape backslashes in the pattern, all characters between <code translate="no">R&quot;(..&#x2e;)&quot;</code> are considered raw characters. As you can see in the following example, this simplifies writing patterns:</p>
+<p>Alternatively, you can use a <a href="https://en.cppreference.com/w/cpp/language/string_literal" translate="no">raw string literal</a>, in which case you don't need to escape backslashes in the pattern, all characters between <code translate="no">R&quot;(...)&quot;</code> are considered raw characters. As you can see in the following example, this simplifies writing patterns:</p>
 <pre class="cpp" translate="no">
  <span class="comment">// matches two digits followed by a space and a word</span>
  <span class="type"><a href="qregularexpression.html#QRegularExpression" translate="no">QRegularExpression</a></span> re(R<span class="string">&quot;(\d\d \w+)&quot;</span>);
@@ -398,8 +398,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
 <tr><td class="topAlign"><code translate="no">QRegularExpression::NoMatchOption</code></td><td class="topAlign tblval"><code translate="no">0x0000</code></td><td class="topAlign">No match options are set.</td></tr>
 <tr><td class="topAlign"><code translate="no">QRegularExpression::AnchoredMatchOption</code></td><td class="topAlign tblval"><code translate="no">AnchorAtOffsetMatchOption</code></td><td class="topAlign">Use AnchorAtOffsetMatchOption instead.</td></tr>
-<tr><td class="topAlign"><code translate="no">QRegularExpression::AnchorAtOffsetMatchOption</code></td><td class="topAlign tblval"><code translate="no">0x0001</code></td><td class="topAlign">The match is constrained to start exactly at the offset passed to <a href="qregularexpression.html#match" translate="no">match</a>() in order to be successful, even if the pattern string does not contain any metacharacter that anchors the match at that point. Note that passing this option does not anchor the end of the match to the end of the subject; if you want to fully anchor a regular expression, use <a href="qregularexpression.html#anchoredPattern" translate="no">anchoredPattern</a>(). This enum value has been introduced in Qt 6.0&#x2e;</td></tr>
-<tr><td class="topAlign"><code translate="no">QRegularExpression::DontCheckSubjectStringMatchOption</code></td><td class="topAlign tblval"><code translate="no">0x0002</code></td><td class="topAlign">The subject string is not checked for UTF-16 validity before attempting a match. Use this option with extreme caution, as attempting to match an invalid string may crash the program and/or constitute a security issue. This enum value has been introduced in Qt 5.4&#x2e;</td></tr>
+<tr><td class="topAlign"><code translate="no">QRegularExpression::AnchorAtOffsetMatchOption</code></td><td class="topAlign tblval"><code translate="no">0x0001</code></td><td class="topAlign">The match is constrained to start exactly at the offset passed to <a href="qregularexpression.html#match" translate="no">match</a>() in order to be successful, even if the pattern string does not contain any metacharacter that anchors the match at that point. Note that passing this option does not anchor the end of the match to the end of the subject; if you want to fully anchor a regular expression, use <a href="qregularexpression.html#anchoredPattern" translate="no">anchoredPattern</a>(). This enum value has been introduced in Qt 6.0.</td></tr>
+<tr><td class="topAlign"><code translate="no">QRegularExpression::DontCheckSubjectStringMatchOption</code></td><td class="topAlign tblval"><code translate="no">0x0002</code></td><td class="topAlign">The subject string is not checked for UTF-16 validity before attempting a match. Use this option with extreme caution, as attempting to match an invalid string may crash the program and/or constitute a security issue. This enum value has been introduced in Qt 5.4.</td></tr>
 </table></div>
 <p>The MatchOptions type is a typedef for <a href="qflags.html">QFlags</a>&lt;MatchOption&gt;. It stores an OR combination of MatchOption values.</p>
 <!-- @@@MatchOption -->
@@ -410,7 +410,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <tr><td class="topAlign"><code translate="no">QRegularExpression::NormalMatch</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">A normal match is done.</td></tr>
 <tr><td class="topAlign"><code translate="no">QRegularExpression::PartialPreferCompleteMatch</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">The pattern string is matched partially against the subject string. If a partial match is found, then it is recorded, and other matching alternatives are tried as usual. If a complete match is then found, then it's preferred to the partial match; in this case only the complete match is reported. If instead no complete match is found (but only the partial one), then the partial one is reported.</td></tr>
 <tr><td class="topAlign"><code translate="no">QRegularExpression::PartialPreferFirstMatch</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign">The pattern string is matched partially against the subject string. If a partial match is found, then matching stops and the partial match is reported. In this case, other matching alternatives (potentially leading to a complete match) are not tried. Moreover, this match type assumes that the subject string only a substring of a larger text, and that (in this text) there are other characters beyond the end of the subject string. This can lead to surprising results; see the discussion in the <a href="qregularexpression.html#partial-matching" translate="no">partial matching</a> section for more details.</td></tr>
-<tr><td class="topAlign"><code translate="no">QRegularExpression::NoMatch</code></td><td class="topAlign tblval"><code translate="no">3</code></td><td class="topAlign">No matching is done. This value is returned as the match type by a default constructed <a href="qregularexpressionmatch.html" translate="no">QRegularExpressionMatch</a> or <a href="qregularexpressionmatchiterator.html" translate="no">QRegularExpressionMatchIterator</a>. Using this match type is not very useful for the user, as no matching ever happens. This enum value has been introduced in Qt 5.1&#x2e;</td></tr>
+<tr><td class="topAlign"><code translate="no">QRegularExpression::NoMatch</code></td><td class="topAlign tblval"><code translate="no">3</code></td><td class="topAlign">No matching is done. This value is returned as the match type by a default constructed <a href="qregularexpressionmatch.html" translate="no">QRegularExpressionMatch</a> or <a href="qregularexpressionmatchiterator.html" translate="no">QRegularExpressionMatchIterator</a>. Using this match type is not very useful for the user, as no matching ever happens. This enum value has been introduced in Qt 5.1.</td></tr>
 </table></div>
 <!-- @@@MatchType -->
 <!-- $$$PatternOption$$$NoPatternOption$$$CaseInsensitiveOption$$$DotMatchesEverythingOption$$$MultilineOption$$$ExtendedPatternSyntaxOption$$$InvertedGreedinessOption$$$DontCaptureOption$$$UseUnicodePropertiesOption -->
@@ -702,9 +702,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

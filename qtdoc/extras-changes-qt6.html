@@ -28,7 +28,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Changes to Qt Extras Modules</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -53,6 +53,7 @@
 <li class="level1"><a href="#changes-to-qt-android-extras">Changes to Qt Android Extras</a></li>
 <li class="level2"><a href="#qandroidjniobject-and-qandroidjnienvironment">QAndroidJniObject and QAndroidJniEnvironment</a></li>
 <li class="level2"><a href="#qtandroid-namespace">QtAndroid namespace</a></li>
+<li class="level2"><a href="#permissions">Permissions</a></li>
 </ul>
 </div>
 <div class="sidebar-content" id="sidebar-content"></div></div>
@@ -66,7 +67,7 @@
 <h3 id="qtmac-namespace">QtMac namespace</h3>
 <p>Most members of the QtMac namespace have <a href="https://doc.qt.io/qt-5/qtmac-obsolete.html" translate="no">explicit replacements</a>. The <a href="https://doc.qt.io/qt-5/qtmac-obsolete.html#fromCGImageRef" translate="no">QtMac::fromCGImageRef</a> function has been removed due to lack of known clients of the API.</p>
 <h3 id="qmacpasteboardmime">QMacPasteboardMime</h3>
-<p>The <a href="https://doc.qt.io/qt-5/qmacpasteboardmime.html" translate="no">QMacPasteboardMime</a> class has been removed due to warranting a cross-platform solution. See <a href="https://bugreports.qt.io/browse/QTBUG-93632" translate="no">QTBUG-93632</a> for details.</p>
+<p>The <a href="https://doc.qt.io/qt-5/qmacpasteboardmime.html" translate="no">QMacPasteboardMime</a> class has been replaced with <a href="../qtgui/qutimimeconverter.html" translate="no">QUtiMimeConverter</a>. See <a href="../qtgui/gui-changes-qt6.html#native-clipboard-integration" translate="no">Changes to Qt GUI#Native clipboard integration</a> for details.</p>
 <h3 id="qmactoolbar">QMacToolBar</h3>
 <p>The <a href="https://doc.qt.io/qt-5/qmactoolbar.html" translate="no">QMacToolBar</a> and <a href="https://doc.qt.io/qt-5/qmactoolbaritem.html" translate="no">QMacToolBarItem</a> classes have been removed. Use <a href="../qtwidgets/qtoolbar.html" translate="no">QToolBar</a> as a replacement.</p>
 <h2 id="changes-to-qt-windows-extras">Changes to Qt Windows Extras</h2>
@@ -86,8 +87,7 @@
 <h4 id="taskbaractivatetab-and-taskbar-add-delete-tab">taskbarActivateTab and taskbar(Add/Delete)Tab</h4>
 <p>No known clients of the API.</p>
 <h3 id="qwinmime">QWinMime</h3>
-<p>The <a href="https://doc.qt.io/qt-5/qwinmime.html" translate="no">QWinMime</a> class has been removed due to warranting a cross-platform solution. See <a href="https://bugreports.qt.io/browse/QTBUG-93632" translate="no">QTBUG-93632</a> for details.</p>
-<p>Clients that still rely on the functionality can include the private headers <code translate="no">&lt;QtGui/private/qtguiapplication_p.h&gt;</code> and <code translate="no">&lt;QtGui/private/qwindowsmime_p.h&gt;</code> and use the QWindowsApplication native interface to register new MIME types. To enable private headers use <code translate="no">QT += gui-private</code> with <code translate="no">qmake</code>, or add a project dependency to <code translate="no">Qt::GuiPrivate</code> with <code translate="no">CMake</code>.</p>
+<p>The <a href="https://doc.qt.io/qt-5/qwinmime.html" translate="no">QWinMime</a> class has been replaced with <a href="../qtgui/qwindowsmimeconverter.html" translate="no">QWindowsMimeConverter</a>. See <a href="../qtgui/gui-changes-qt6.html#native-clipboard-integration" translate="no">Changes to Qt GUI#Native clipboard integration</a> for details.</p>
 <h3 id="qwinjumplist">QWinJumpList</h3>
 <p>The <a href="https://doc.qt.io/qt-5/qwinjumplist.html" translate="no">QWinJumpList</a>, <a href="https://doc.qt.io/qt-5/qwinjumplistcategory.html" translate="no">QWinJumpListCategory</a>, and <a href="https://doc.qt.io/qt-5/qwinjumplistitem.html" translate="no">QWinJumpListItem</a> classes have been removed due to warranting a cross-platform solution. See <a href="https://bugreports.qt.io/browse/QTBUG-94007" translate="no">QTBUG-94007</a> for details.</p>
 <h3 id="qwintaskbarbutton">QWinTaskbarButton</h3>
@@ -123,6 +123,9 @@
 <p>The <a href="https://doc.qt.io/qt-5/qandroidjniexceptioncleaner.html" translate="no">QAndroidJniExceptionCleaner</a> class is no longer needed. See <a href="../qtcore/qjnienvironment.html#checkAndClearExceptions" translate="no">QJniEnvironment::checkAndClearExceptions</a>() for a replacement.</p>
 <h3 id="qtandroid-namespace">QtAndroid namespace</h3>
 <p>Many members of the QtAndroid namespace have replacements in the <a href="../qtcore/qnativeinterface-qandroidapplication.html" translate="no">QAndroidApplication</a> native interface.</p>
+<h3 id="permissions">Permissions</h3>
+<p>The <a href="../qtcore/permissions.html" translate="no">Application Permissions</a> infrastructure allows requesting a set of permissions in a cross-platform manner.</p>
+<p>The QtAndroidPrivate Namespace can be used to access Android-specific permissions not covered by the cross-platform permissions system.</p>
 </div>
 <!-- @@@extras-changes-qt6.html -->
         </div>
@@ -132,9 +135,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

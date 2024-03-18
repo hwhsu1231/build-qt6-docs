@@ -27,7 +27,7 @@
         <ul>
 <li><a href="index.html" translate="no">Qt 6.6</a></li>
 <li>Threads and QObjects</li>
-<li id="buildversion">Qt 6.6.0 Reference Documentation</li>
+<li id="buildversion">Qt 6.6.2 Reference Documentation</li>
     </ul>
     </div>
 </div>
@@ -65,7 +65,7 @@
 <li><i>You must ensure that all objects created in a thread are deleted before you delete the <a href="../qtcore/qthread.html" translate="no">QThread</a>.</i> This can be done easily by creating the objects on the stack in your <a href="../qtcore/qthread.html#run" translate="no">run</a>() implementation.</li>
 </ul>
 <p>Although <a href="../qtcore/qobject.html" translate="no">QObject</a> is reentrant, the GUI classes, notably <a href="../qtwidgets/qwidget.html" translate="no">QWidget</a> and all its subclasses, are not reentrant. They can only be used from the main thread. As noted earlier, <a href="../qtcore/qcoreapplication.html#exec" translate="no">QCoreApplication::exec</a>() must also be called from that thread.</p>
-<p>In practice, the impossibility of using GUI classes in other threads than the main thread can easily be worked around by putting time-consuming operations in a separate worker thread and displaying the results on screen in the main thread when the worker thread is finished. This is the approach used for implementing the Mandelbrot Example and the <a href="../qtnetwork/qtnetwork-blockingfortuneclient-example.html" translate="no">Blocking Fortune Client example</a>.</p>
+<p>In practice, the impossibility of using GUI classes in other threads than the main thread can easily be worked around by putting time-consuming operations in a separate worker thread and displaying the results on screen in the main thread when the worker thread is finished. This is the approach used for implementing the <a href="../qtcore/qtcore-threads-mandelbrot-example.html" translate="no">Mandelbrot</a> example and the <a href="../qtnetwork/qtnetwork-blockingfortuneclient-example.html" translate="no">Blocking Fortune Client example</a>.</p>
 <p>In general, creating QObjects before the <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> is not supported and can lead to weird crashes on exit, depending on the platform. This means static instances of <a href="../qtcore/qobject.html" translate="no">QObject</a> are also not supported. A properly structured single or multi-threaded application should make the <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> be the first created, and last destroyed <a href="../qtcore/qobject.html" translate="no">QObject</a>.</p>
 <h2 id="per-thread-event-loop">Per-Thread Event Loop</h2>
 <p>Each thread can have its own event loop. The initial thread starts its event loop using <a href="../qtcore/qcoreapplication.html#exec" translate="no">QCoreApplication::exec</a>(), or for single-dialog GUI applications, sometimes <a href="../qtwidgets/qdialog.html#exec" translate="no">QDialog::exec</a>(). Other threads can start an event loop using <a href="../qtcore/qthread.html#exec" translate="no">QThread::exec</a>(). Like <a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a>, <a href="../qtcore/qthread.html" translate="no">QThread</a> provides an <a href="../qtcore/qthread.html#exit" translate="no">exit</a>(int) function and a <a href="../qtcore/qthread.html#quit" translate="no">quit</a>() slot.</p>
@@ -91,11 +91,11 @@
 <p><b>Note: </b>Using this type to connect objects in the same thread will cause deadlock.</p>
 </div>
 </li>
-<li><a href="../qtcore/qt.html#ConnectionType-enum" translate="no">Unique Connection</a> The behavior is the same as the Auto Connection, but the connection is made only if it does not duplicate an existing connection. i.e&#x2e;, if the same signal is already connected to the same slot for the same pair of objects, then the connection is not made and connect() returns <code translate="no">false</code>.</li>
+<li><a href="../qtcore/qt.html#ConnectionType-enum" translate="no">Unique Connection</a> The behavior is the same as the Auto Connection, but the connection is made only if it does not duplicate an existing connection. i.e., if the same signal is already connected to the same slot for the same pair of objects, then the connection is not made and connect() returns <code translate="no">false</code>.</li>
 </ul>
 <p>The connection type can be specified by passing an additional argument to <a href="../qtcore/qobject.html#connect" translate="no">connect</a>(). Be aware that using direct connections when the sender and receiver live in different threads is unsafe if an event loop is running in the receiver's thread, for the same reason that calling any function on an object living in another thread is unsafe.</p>
 <p><a href="../qtcore/qobject.html#connect" translate="no">QObject::connect</a>() itself is thread-safe.</p>
-<p>The Mandelbrot Example uses a queued connection to communicate between a worker thread and the main thread. To avoid freezing the main thread's event loop (and, as a consequence, the application's user interface), all the Mandelbrot fractal computation is done in a separate worker thread. The thread emits a signal when it is done rendering the fractal.</p>
+<p>The <a href="../qtcore/qtcore-threads-mandelbrot-example.html" translate="no">Mandelbrot</a> example uses a queued connection to communicate between a worker thread and the main thread. To avoid freezing the main thread's event loop (and, as a consequence, the application's user interface), all the Mandelbrot fractal computation is done in a separate worker thread. The thread emits a signal when it is done rendering the fractal.</p>
 <p>Similarly, the <a href="../qtnetwork/qtnetwork-blockingfortuneclient-example.html" translate="no">Blocking Fortune Client example</a> uses a separate thread for communicating with a TCP server asynchronously.</p>
 </div>
 <!-- @@@threads-qobject.html -->
@@ -111,9 +111,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

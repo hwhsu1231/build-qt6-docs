@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
 <!-- qcombobox.cpp -->
-  <meta name="description" content="The QComboBox widget is a combined button and popup list.">
-  <title>QComboBox Class | Qt Widgets 6.6.0</title>
+  <meta name="description" content="The QComboBox widget combines a button with a dropdown list.">
+  <title>QComboBox Class | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li><a href="qtwidgets-module.html" translate="no">C++ Classes</a></li>
 <li>QComboBox</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -50,12 +50,16 @@
 <li class="level1"><a href="#protected-functions">Protected Functions</a></li>
 <li class="level1"><a href="#reimplemented-protected-functions">Reimplemented Protected Functions</a></li>
 <li class="level1"><a href="#details">Detailed Description</a></li>
+<li class="level2"><a href="#display-features">Display Features</a></li>
+<li class="level2"><a href="#editing-features">Editing Features</a></li>
+<li class="level2"><a href="#signals">Signals</a></li>
+<li class="level2"><a href="#model-view-framework">Model/View Framework</a></li>
 </ul>
 </div>
 <div class="sidebar-content" id="sidebar-content"></div></div>
 <h1 class="title" translate="no">QComboBox Class</h1>
 <!-- $$$QComboBox-brief -->
-<p>The QComboBox widget is a combined button and popup list. <a href="#details">More...</a></p>
+<p>The QComboBox widget combines a button with a dropdown list. <a href="#details">More...</a></p>
 <!-- @@@QComboBox -->
 <div class="table"><table class="alignedsummary" translate="no">
 <tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign">  <span class="preprocessor">#include &lt;QComboBox&gt;</span></td></tr>
@@ -208,14 +212,26 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- $$$QComboBox-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p class="centerAlign"><img src="images/windows-combobox.png" alt="" /></p><p>A QComboBox provides a means of presenting a list of options to the user in a way that takes up the minimum amount of screen space.</p>
-<p>A combobox is a selection widget that displays the current item, and can pop up a list of selectable items. A combobox may be editable, allowing the user to modify each item in the list.</p>
-<p>Comboboxes can contain pixmaps as well as strings; the <a href="qcombobox.html#insertItem" translate="no">insertItem</a>() and <a href="qcombobox.html#setItemText" translate="no">setItemText</a>() functions are suitably overloaded. For editable comboboxes, the function <a href="qcombobox.html#clearEditText" translate="no">clearEditText</a>() is provided, to clear the displayed string without changing the combobox's contents.</p>
-<p>There are three signals emitted if the current item of a combobox changes, <a href="qcombobox.html#currentIndexChanged" translate="no">currentIndexChanged</a>(), <a href="qcombobox.html#currentTextChanged" translate="no">currentTextChanged</a>() and <a href="qcombobox.html#activated" translate="no">activated</a>(). <a href="qcombobox.html#currentIndexChanged" translate="no">currentIndexChanged</a>() and <a href="qcombobox.html#currentTextChanged" translate="no">currentTextChanged</a>() are always emitted regardless if the change was done programmatically or by user interaction, while <a href="qcombobox.html#activated" translate="no">activated</a>() is only emitted when the change is caused by user interaction. The <a href="qcombobox.html#highlighted" translate="no">highlighted</a>() signal is emitted when the user highlights an item in the combobox popup list. All three signals exist in two versions, one with a <a href="../qtcore/qstring.html" translate="no">QString</a> argument and one with an <code translate="no">int</code> argument. If the user selects or highlights a pixmap, only the <code translate="no">int</code> signals are emitted. Whenever the text of an editable combobox is changed the <a href="qcombobox.html#editTextChanged" translate="no">editTextChanged</a>() signal is emitted.</p>
+<div class="table"><table class="generic">
+ <tr valign="top" class="odd"><td ><img src="images/collapsed_combobox.png" alt="" /><p class="figCaption">Collapsed QCombobox</p>
+</td><td ><img src="images/expanded_combobox.png" alt="" /><p class="figCaption">Expanded QCombobox</p>
+</td></tr>
+</table></div>
+<h3 id="display-features">Display Features</h3>
+<p>A QComboBox is a compact way to present a list of options to the user.</p>
+<p>A combobox is a selection widget that shows the current item, and pops up a list of selectable items when clicked. Comboboxes can contain pixmaps as well as strings if the <a href="qcombobox.html#insertItem" translate="no">insertItem</a>() and <a href="qcombobox.html#setItemText" translate="no">setItemText</a>() functions are suitably overloaded.</p>
+<h3 id="editing-features">Editing Features</h3>
+<p>A combobox may be editable, allowing the user to modify each item in the list. For editable comboboxes, the function <a href="qcombobox.html#clearEditText" translate="no">clearEditText</a>() is provided, to clear the displayed string without changing the combobox's contents.</p>
 <p>When the user enters a new string in an editable combobox, the widget may or may not insert it, and it can insert it in several locations. The default policy is <a href="qcombobox.html#InsertPolicy-enum" translate="no">InsertAtBottom</a> but you can change this using <a href="qcombobox.html#insertPolicy-prop" translate="no">setInsertPolicy</a>().</p>
 <p>It is possible to constrain the input to an editable combobox using <a href="../qtgui/qvalidator.html" translate="no">QValidator</a>; see <a href="qcombobox.html#setValidator" translate="no">setValidator</a>(). By default, any input is accepted.</p>
 <p>A combobox can be populated using the insert functions, <a href="qcombobox.html#insertItem" translate="no">insertItem</a>() and <a href="qcombobox.html#insertItems" translate="no">insertItems</a>() for example. Items can be changed with <a href="qcombobox.html#setItemText" translate="no">setItemText</a>(). An item can be removed with <a href="qcombobox.html#removeItem" translate="no">removeItem</a>() and all items can be removed with <a href="qcombobox.html#clear" translate="no">clear</a>(). The text of the current item is returned by <a href="qcombobox.html#currentText-prop" translate="no">currentText</a>(), and the text of a numbered item is returned with text(). The current item can be set with <a href="qcombobox.html#currentIndex-prop" translate="no">setCurrentIndex</a>(). The number of items in the combobox is returned by <a href="qcombobox.html#count-prop" translate="no">count</a>(); the maximum number of items can be set with <a href="qcombobox.html#maxCount-prop" translate="no">setMaxCount</a>(). You can allow editing using <a href="qcombobox.html#editable-prop" translate="no">setEditable</a>(). For editable comboboxes you can set auto-completion using <a href="qcombobox.html#setCompleter" translate="no">setCompleter</a>() and whether or not the user can add duplicates is set with <a href="qcombobox.html#duplicatesEnabled-prop" translate="no">setDuplicatesEnabled</a>().</p>
-<p>QComboBox uses the <a href="model-view-programming.html" translate="no">model/view framework</a> for its popup list and to store its items. By default a <a href="../qtgui/qstandarditemmodel.html" translate="no">QStandardItemModel</a> stores the items and a <a href="qlistview.html" translate="no">QListView</a> subclass displays the popuplist. You can access the model and view directly (with <a href="qcombobox.html#model" translate="no">model</a>() and <a href="qcombobox.html#view" translate="no">view</a>()), but QComboBox also provides functions to set and get item data (e.g&#x2e;, <a href="qcombobox.html#setItemData" translate="no">setItemData</a>() and <a href="qcombobox.html#itemText" translate="no">itemText</a>()). You can also set a new model and view (with <a href="qcombobox.html#setModel" translate="no">setModel</a>() and <a href="qcombobox.html#setView" translate="no">setView</a>()). For the text and icon in the combobox label, the data in the model that has the <a href="../qtcore/qt.html#ItemDataRole-enum" translate="no">Qt::DisplayRole</a> and <a href="../qtcore/qt.html#ItemDataRole-enum" translate="no">Qt::DecorationRole</a> is used. Note that you cannot alter the <a href="qabstractitemview.html#SelectionMode-enum" translate="no">SelectionMode</a> of the <a href="qcombobox.html#view" translate="no">view</a>(), e.g&#x2e;, by using <a href="qabstractitemview.html#selectionMode-prop" translate="no">setSelectionMode</a>().</p>
+<h3 id="signals">Signals</h3>
+<p>There are three signals emitted if the current item of a combobox changes: <a href="qcombobox.html#currentIndexChanged" translate="no">currentIndexChanged</a>(), <a href="qcombobox.html#currentTextChanged" translate="no">currentTextChanged</a>(), and <a href="qcombobox.html#activated" translate="no">activated</a>(). <a href="qcombobox.html#currentIndexChanged" translate="no">currentIndexChanged</a>() and <a href="qcombobox.html#currentTextChanged" translate="no">currentTextChanged</a>() are always emitted regardless if the change was done programmatically or by user interaction, while <a href="qcombobox.html#activated" translate="no">activated</a>() is only emitted when the change is caused by user interaction. The <a href="qcombobox.html#highlighted" translate="no">highlighted</a>() signal is emitted when the user highlights an item in the combobox popup list. All three signals exist in two versions, one with a <a href="../qtcore/qstring.html" translate="no">QString</a> argument and one with an <code translate="no">int</code> argument. If the user selects or highlights a pixmap, only the <code translate="no">int</code> signals are emitted. Whenever the text of an editable combobox is changed, the <a href="qcombobox.html#editTextChanged" translate="no">editTextChanged</a>() signal is emitted.</p>
+<h3 id="model-view-framework">Model/View Framework</h3>
+<p>QComboBox uses the <a href="model-view-programming.html" translate="no">model/view framework</a> for its popup list and to store its items. By default a <a href="../qtgui/qstandarditemmodel.html" translate="no">QStandardItemModel</a> stores the items and a <a href="qlistview.html" translate="no">QListView</a> subclass displays the popuplist. You can access the model and view directly (with <a href="qcombobox.html#model" translate="no">model</a>() and <a href="qcombobox.html#view" translate="no">view</a>()), but QComboBox also provides functions to set and get item data, for example, <a href="qcombobox.html#setItemData" translate="no">setItemData</a>() and <a href="qcombobox.html#itemText" translate="no">itemText</a>(). You can also set a new model and view (with <a href="qcombobox.html#setModel" translate="no">setModel</a>() and <a href="qcombobox.html#setView" translate="no">setView</a>()). For the text and icon in the combobox label, the data in the model that has the <a href="../qtcore/qt.html#ItemDataRole-enum" translate="no">Qt::DisplayRole</a> and <a href="../qtcore/qt.html#ItemDataRole-enum" translate="no">Qt::DecorationRole</a> is used.</p>
+<div class="admonition note">
+<p><b>Note: </b>You cannot alter the <a href="qabstractitemview.html#SelectionMode-enum" translate="no">SelectionMode</a> of the <a href="qcombobox.html#view" translate="no">view</a>(), for example, by using <a href="qabstractitemview.html#selectionMode-prop" translate="no">setSelectionMode</a>().</p>
+</div>
 </div>
 <p><b>See also </b><a href="qlineedit.html" translate="no">QLineEdit</a>, <a href="qspinbox.html" translate="no">QSpinBox</a>, <a href="qradiobutton.html" translate="no">QRadioButton</a>, and <a href="qbuttongroup.html" translate="no">QButtonGroup</a>.</p>
 <!-- @@@QComboBox -->
@@ -248,7 +264,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <h2>Property Documentation</h2>
 <!-- $$$count-prop$$$count -->
 <h3 class="fn" translate="no" id="count-prop"><code translate="no">[read-only] </code><span class="name">count</span> : const <span class="type">int</span></h3>
-<p>This property holds the number of items in the combobox</p>
+<p>This property holds the number of items in the combobox.</p>
 <p>By default, for an empty combo box, this property has a value of 0.</p>
 <p><b>Access functions:</b></p>
 <div class="table"><table class="alignedsummary" translate="no">
@@ -297,7 +313,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- @@@currentText -->
 <!-- $$$duplicatesEnabled-prop$$$duplicatesEnabled$$$setDuplicatesEnabledbool -->
 <h3 class="fn" translate="no" id="duplicatesEnabled-prop"><span class="name">duplicatesEnabled</span> : <span class="type">bool</span></h3>
-<p>This property holds whether the user can enter duplicate items into the combobox</p>
+<p>This property holds whether the user can enter duplicate items into the combobox.</p>
 <p>Note that it is always possible to programmatically insert duplicate items into the combobox.</p>
 <p>By default, this property is <code translate="no">false</code> (duplicates are not allowed).</p>
 <p><b>Access functions:</b></p>
@@ -308,7 +324,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- @@@duplicatesEnabled -->
 <!-- $$$editable-prop$$$isEditable$$$setEditablebool -->
 <h3 class="fn" translate="no" id="editable-prop"><span class="name">editable</span> : <span class="type">bool</span></h3>
-<p>This property holds whether the combo box can be edited by the user</p>
+<p>This property holds whether the combo box can be edited by the user.</p>
 <p>By default, this property is <code translate="no">false</code>. The effect of editing depends on the insert policy.</p>
 <div class="admonition note">
 <p><b>Note: </b>When disabling the <i translate="no">editable</i> state, the validator and completer are removed.</p>
@@ -322,7 +338,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- @@@editable -->
 <!-- $$$frame-prop$$$hasFrame$$$setFramebool -->
 <h3 class="fn" translate="no" id="frame-prop"><span class="name">frame</span> : <span class="type">bool</span></h3>
-<p>This property holds whether the combo box draws itself with a frame</p>
+<p>This property holds whether the combo box draws itself with a frame.</p>
 <p>If enabled (the default) the combo box draws itself inside a frame, otherwise the combo box draws itself without any frame.</p>
 <p><b>Access functions:</b></p>
 <div class="table"><table class="alignedsummary" translate="no">
@@ -342,7 +358,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- @@@iconSize -->
 <!-- $$$insertPolicy-prop$$$insertPolicy$$$setInsertPolicyInsertPolicy -->
 <h3 class="fn" translate="no" id="insertPolicy-prop"><span class="name">insertPolicy</span> : <span class="type"><a href="qcombobox.html#InsertPolicy-enum" translate="no">InsertPolicy</a></span></h3>
-<p>This property holds the policy used to determine where user-inserted items should appear in the combobox</p>
+<p>This property holds the policy used to determine where user-inserted items should appear in the combobox.</p>
 <p>The default value is <a href="qcombobox.html#InsertPolicy-enum" translate="no">InsertAtBottom</a>, indicating that new items will appear at the bottom of the list of items.</p>
 <p><b>Access functions:</b></p>
 <div class="table"><table class="alignedsummary" translate="no">
@@ -353,7 +369,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- @@@insertPolicy -->
 <!-- $$$maxCount-prop$$$maxCount$$$setMaxCountint -->
 <h3 class="fn" translate="no" id="maxCount-prop"><span class="name">maxCount</span> : <span class="type">int</span></h3>
-<p>This property holds the maximum number of items allowed in the combobox</p>
+<p>This property holds the maximum number of items allowed in the combobox.</p>
 <div class="admonition note">
 <p><b>Note: </b>If you set the maximum number to be less then the current amount of items in the combobox, the extra items will be truncated. This also applies if you have set an external model on the combobox.</p>
 </div>
@@ -405,7 +421,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- @@@modelColumn -->
 <!-- $$$placeholderText-prop$$$placeholderText$$$setPlaceholderTextconstQString& -->
 <h3 class="fn" translate="no" id="placeholderText-prop"><span class="name">placeholderText</span> : <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span></h3>
-<p>Sets a <i translate="no">placeholderText</i> text shown when no valid index is set</p>
+<p>Sets a <i translate="no">placeholderText</i> text shown when no valid index is set.</p>
 <p>The <i translate="no">placeholderText</i> will be shown when an invalid index is set. The text is not accessible in the dropdown list. When this function is called before items are added the placeholder text will be shown, otherwise you have to call <a href="qcombobox.html#currentIndex-prop" translate="no">setCurrentIndex</a>(-1) programmatically if you want to show the placeholder text. Set an empty placeholder text to reset the setting.</p>
 <p>When the <a href="qcombobox.html" translate="no">QComboBox</a> is editable, use <a href="qlineedit.html#placeholderText-prop" translate="no">QLineEdit::setPlaceholderText</a>() instead.</p>
 <p><b>Access functions:</b></p>
@@ -416,7 +432,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- @@@placeholderText -->
 <!-- $$$sizeAdjustPolicy-prop$$$sizeAdjustPolicy$$$setSizeAdjustPolicySizeAdjustPolicy -->
 <h3 class="fn" translate="no" id="sizeAdjustPolicy-prop"><span class="name">sizeAdjustPolicy</span> : <span class="type"><a href="qcombobox.html#SizeAdjustPolicy-enum" translate="no">SizeAdjustPolicy</a></span></h3>
-<p>This property holds the policy describing how the size of the combobox changes when the content changes</p>
+<p>This property holds the policy describing how the size of the combobox changes when the content changes.</p>
 <p>The default value is <a href="qcombobox.html#SizeAdjustPolicy-enum" translate="no">AdjustToContentsOnFirstShow</a>.</p>
 <p><b>Access functions:</b></p>
 <div class="table"><table class="alignedsummary" translate="no">
@@ -750,9 +766,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

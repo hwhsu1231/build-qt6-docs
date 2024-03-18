@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qtshadertools-build.qdoc -->
   <meta name="description" content="Compiles shaders and adds them to a Qt resource">
-  <title>Qt Shader Tools Build System Integration | Shader Tools 6.6.0</title>
+  <title>Qt Shader Tools Build System Integration | Shader Tools 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtshadertools-index.html" translate="no">Shader Tools</a></li>
 <li>Qt Shader Tools Build System Integration</li>
-<li id="buildversion"><a href="qtshadertools-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtshadertools-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -63,15 +63,15 @@
 <h2 id="first-example">First Example</h2>
 <p>Let's look at a simple example. Assume that we have a Qt Quick application that wants to provides its own wobble effect via <a href="../qtquick/qml-qtquick-shadereffect.html" translate="no">ShaderEffect</a>. The fragment shader is implemented in <code translate="no">wobble.frag</code>. The <a href="../qtquick/qml-qtquick-shadereffect.html" translate="no">ShaderEffect</a> item's fragmentShader property refers to <code translate="no">wobble.frag.qsb</code>. How do we ensure this .qsb file gets generated at build time?</p>
 <pre class="cpp plain" translate="no">
- ..&#x2e;
+ ...
  project(exampleapp LANGUAGES CXX)
- ..&#x2e;
+ ...
  find_package(Qt6 COMPONENTS ShaderTools)
- ..&#x2e;
+ ...
  qt6_add_executable(exampleapp
      main.cpp
  )
- ..&#x2e;
+ ...
  qt6_add_resources(exampleapp &quot;exampleapp&quot;
      PREFIX
          &quot;/&quot;
@@ -90,6 +90,9 @@
 <p>The key is the <code translate="no">qt6_add_shaders</code> function, which shares similarity with <code translate="no">qt6_add_resources</code>. Without specifying further parameters, the function will lead to running qsb with a reasonable set of default arguments that are suitable for fragment shaders when targeting Vulkan, Metal, Direct 3D, and OpenGL or OpenGL ES.</p>
 <div class="admonition note">
 <p><b>Note: </b>Watch out for the <code translate="no">find_package</code> line. It is important to include the <code translate="no">find_package</code> for <code translate="no">ShaderTools</code>, otherwise <code translate="no">qt6_add_shaders</code> will not be available.</p>
+</div>
+<div class="admonition note">
+<p><b>Note: </b>The target that is passed as the first argument of the <code translate="no">qt6_add_shaders</code> function must exist before the function is called.</p>
 </div>
 <div class="admonition note">
 <p><b>Note: </b>Multiple <code translate="no">qt6_add_shaders</code> calls are supported. In complex applications it is not unlikely that different sets of shaders need different settings. The name after the project (<code translate="no">&quot;exampleapp_shaders&quot;</code> in the above example) has to be unique for each call.</p>
@@ -118,15 +121,15 @@
 <ul>
 <li><code translate="no">GLSL</code> - Requests generating source code for the given list of GLSL versions. Watch out that the list follows the comma-separated <code translate="no">qsb</code> syntax. For example, a compute shader will want to specify <code translate="no">&quot;310 es,430&quot;</code> here as the defaults are not suitable for it.</li>
 <li><code translate="no">NOGLSL</code> - This argument-less keyword disables generating GLSL source. Suitable for applications that do not wish to function with OpenGL at all.</li>
-<li><code translate="no">HLSL</code> - Requests generating source code for the given list of HLSL (shader model) versions. The <code translate="no">qsb</code> tool follows GLSL-style version numbers and therefore <code translate="no">50</code> corresponds to Shader Model 5.0, <code translate="no">51</code> is 5.1&#x2e;</li>
+<li><code translate="no">HLSL</code> - Requests generating source code for the given list of HLSL (shader model) versions. The <code translate="no">qsb</code> tool follows GLSL-style version numbers and therefore <code translate="no">50</code> corresponds to Shader Model 5.0, <code translate="no">51</code> is 5.1.</li>
 <li><code translate="no">NOHLSL</code> - This argument-less keyword disables generating HLSL source. Suitable for applications that do not wish to function with Direct 3D at all.</li>
-<li><code translate="no">MSL</code> - Requests generating source code for the given version of the Metal Shading Language. <code translate="no">12</code> corresponds to 1.2, <code translate="no">20</code> to 2.0&#x2e;</li>
+<li><code translate="no">MSL</code> - Requests generating source code for the given version of the Metal Shading Language. <code translate="no">12</code> corresponds to 1.2, <code translate="no">20</code> to 2.0.</li>
 <li><code translate="no">NOMSL</code> - This argument-less keyword disables generating MSL source. Suitable for applications that do not wish to function with Metal at all.</li>
-<li><code translate="no">TESSELLATION</code> - This argument-less keyword indicates that the shaders are used in a pipeline that uses tessellation. This is relevant only when there are vertex shaders listed and Metal shader generation is not disabled. See <a href="qtshadertools-build.html#tessellation-example" translate="no">this snippet</a> for an example.<p>This option was introduced in Qt 6.5&#x2e;</p>
+<li><code translate="no">TESSELLATION</code> - This argument-less keyword indicates that the shaders are used in a pipeline that uses tessellation. This is relevant only when there are vertex shaders listed and Metal shader generation is not disabled. See <a href="qtshadertools-build.html#tessellation-example" translate="no">this snippet</a> for an example.<p>This option was introduced in Qt 6.5.</p>
 </li>
-<li><code translate="no">TESSELLATION_VERTEX_COUNT</code> - This option takes a number which indicates the output vertex count from the tessellation control stage. Specifying this is mandatory for tessellation evaluation shaders used with Metal. The default value is 3. If it does not match the tessellation control stage, the generated MSL code will not function as expected.<p>This option was introduced in Qt 6.5&#x2e;</p>
+<li><code translate="no">TESSELLATION_VERTEX_COUNT</code> - This option takes a number which indicates the output vertex count from the tessellation control stage. Specifying this is mandatory for tessellation evaluation shaders used with Metal. The default value is 3. If it does not match the tessellation control stage, the generated MSL code will not function as expected.<p>This option was introduced in Qt 6.5.</p>
 </li>
-<li><code translate="no">TESSELLATION_MODE</code> - This option specifies the tessellation mode. It can take one of two values: <code translate="no">&quot;triangles&quot;</code> or <code translate="no">&quot;quads&quot;</code>. The default value is <code translate="no">triangles</code>. The option must be specified when a tessellation control shader is in the <code translate="no">FILES</code> list. It must match the tessellation evaluation stage.<p>This option was introduced in Qt 6.5&#x2e;</p>
+<li><code translate="no">TESSELLATION_MODE</code> - This option specifies the tessellation mode. It can take one of two values: <code translate="no">&quot;triangles&quot;</code> or <code translate="no">&quot;quads&quot;</code>. The default value is <code translate="no">triangles</code>. The option must be specified when a tessellation control shader is in the <code translate="no">FILES</code> list. It must match the tessellation evaluation stage.<p>This option was introduced in Qt 6.5.</p>
 </li>
 </ul>
 <p>The most commonly overridden setting is <code translate="no">GLSL</code>. For example, if the application's shaders use OpenGL 3.x features, it will likely want to specify something higher than <code translate="no">100 es</code> or <code translate="no">120</code>:</p>
@@ -216,9 +219,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

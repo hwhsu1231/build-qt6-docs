@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qfile.cpp -->
   <meta name="description" content="The QFile class provides an interface for reading from and writing to files.">
-  <title>QFile Class | Qt Core 6.6.0</title>
+  <title>QFile Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QFile</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -129,7 +129,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
 <p>QFile is an I/O device for reading and writing text and binary files and <a href="resources.html" translate="no">resources</a>. A QFile may be used by itself or, more conveniently, with a <a href="qtextstream.html" translate="no">QTextStream</a> or <a href="qdatastream.html" translate="no">QDataStream</a>.</p>
-<p>The file name is usually passed in the constructor, but it can be set at any time using <a href="qfile.html#setFileName" translate="no">setFileName</a>(). QFile expects the file separator to be '/' regardless of operating system. The use of other separators (e.g&#x2e;, '\') is not supported.</p>
+<p>The file name is usually passed in the constructor, but it can be set at any time using <a href="qfile.html#setFileName" translate="no">setFileName</a>(). QFile expects the file separator to be '/' regardless of operating system. The use of other separators (e.g., '\') is not supported.</p>
 <p>You can check for a file's existence using <a href="qfile.html#exists-1" translate="no">exists</a>(), and remove a file using <a href="qfile.html#remove" translate="no">remove</a>(). (More advanced file system related operations are provided by <a href="qfileinfo.html" translate="no">QFileInfo</a> and <a href="qdir.html" translate="no">QDir</a>.)</p>
 <p>The file is opened with <a href="qfile.html#open" translate="no">open</a>(), closed with <a href="qfiledevice.html#close" translate="no">close</a>(), and flushed with <a href="qfiledevice.html#flush" translate="no">flush</a>(). Data is usually read and written using <a href="qdatastream.html" translate="no">QDataStream</a> or <a href="qtextstream.html" translate="no">QTextStream</a>, but you can also call the <a href="qiodevice.html" translate="no">QIODevice</a>-inherited functions <a href="qiodevice.html#read" translate="no">read</a>(), <a href="qiodevice.html#readLine" translate="no">readLine</a>(), <a href="qiodevice.html#readAll" translate="no">readAll</a>(), <a href="qiodevice.html#write" translate="no">write</a>(). QFile also inherits <a href="qiodevice.html#getChar" translate="no">getChar</a>(), <a href="qiodevice.html#putChar" translate="no">putChar</a>(), and <a href="qiodevice.html#ungetChar" translate="no">ungetChar</a>(), which work one character at a time.</p>
 <p>The size of the file is returned by <a href="qfile.html#size" translate="no">size</a>(). You can get the current file position using <a href="qfiledevice.html#pos" translate="no">pos</a>(), or move to a new file position using <a href="qfiledevice.html#seek" translate="no">seek</a>(). If you've reached the end of the file, <a href="qfiledevice.html#atEnd" translate="no">atEnd</a>() returns <code translate="no">true</code>.</p>
@@ -145,7 +145,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
          process_line(line);
      }
 </pre>
-<p>The QIODevice::Text flag passed to <a href="qfile.html#open" translate="no">open</a>() tells Qt to convert Windows-style line terminators (&quot;\r\n&quot;) into C++-style terminators (&quot;\n&quot;). By default, QFile assumes binary, i.e&#x2e; it doesn't perform any conversion on the bytes stored in the file.</p>
+<p>The QIODevice::Text flag passed to <a href="qfile.html#open" translate="no">open</a>() tells Qt to convert Windows-style line terminators (&quot;\r\n&quot;) into C++-style terminators (&quot;\n&quot;). By default, QFile assumes binary, i.e. it doesn't perform any conversion on the bytes stored in the file.</p>
 <h3 id="using-streams-to-read-files">Using Streams to Read Files</h3>
 <p>The next example uses <a href="qtextstream.html" translate="no">QTextStream</a> to read a text file line by line:</p>
 <pre class="cpp" translate="no">
@@ -174,7 +174,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Unlike other <a href="qiodevice.html" translate="no">QIODevice</a> implementations, such as <a href="../qtnetwork/qtcpsocket.html" translate="no">QTcpSocket</a>, QFile does not emit the <a href="qiodevice.html#aboutToClose" translate="no">aboutToClose</a>(), <a href="qiodevice.html#bytesWritten" translate="no">bytesWritten</a>(), or <a href="qiodevice.html#readyRead" translate="no">readyRead</a>() signals. This implementation detail means that QFile is not suitable for reading and writing certain types of files, such as device files on Unix platforms.</p>
 <h3 id="platform-specific-issues">Platform Specific Issues</h3>
 <p><a href="io.html" translate="no">Qt APIs related to I/O</a> use UTF-16 based QStrings to represent file paths. Standard C++ APIs (<code translate="no">&lt;cstdio&gt;</code> or <code translate="no">&lt;iostream&gt;</code>) or platform-specific APIs however often need a 8-bit encoded path. You can use <a href="qfile.html#encodeName" translate="no">encodeName</a>() and <a href="qfile.html#decodeName" translate="no">decodeName</a>() to convert between both representations.</p>
-<p>On Unix, there are some special system files (e.g&#x2e; in <code translate="no">/proc</code>) for which <a href="qfile.html#size" translate="no">size</a>() will always return 0, yet you may still be able to read more data from such a file; the data is generated in direct response to you calling <a href="qiodevice.html#read" translate="no">read</a>(). In this case, however, you cannot use <a href="qfiledevice.html#atEnd" translate="no">atEnd</a>() to determine if there is more data to read (since <a href="qfiledevice.html#atEnd" translate="no">atEnd</a>() will return true for a file that claims to have size 0). Instead, you should either call <a href="qiodevice.html#readAll" translate="no">readAll</a>(), or call <a href="qiodevice.html#read" translate="no">read</a>() or <a href="qiodevice.html#readLine" translate="no">readLine</a>() repeatedly until no more data can be read. The next example uses <a href="qtextstream.html" translate="no">QTextStream</a> to read <code translate="no">/proc/modules</code> line by line:</p>
+<p>On Unix, there are some special system files (e.g. in <code translate="no">/proc</code>) for which <a href="qfile.html#size" translate="no">size</a>() will always return 0, yet you may still be able to read more data from such a file; the data is generated in direct response to you calling <a href="qiodevice.html#read" translate="no">read</a>(). In this case, however, you cannot use <a href="qfiledevice.html#atEnd" translate="no">atEnd</a>() to determine if there is more data to read (since <a href="qfiledevice.html#atEnd" translate="no">atEnd</a>() will return true for a file that claims to have size 0). Instead, you should either call <a href="qiodevice.html#readAll" translate="no">readAll</a>(), or call <a href="qiodevice.html#read" translate="no">read</a>() or <a href="qiodevice.html#readLine" translate="no">readLine</a>() repeatedly until no more data can be read. The next example uses <a href="qtextstream.html" translate="no">QTextStream</a> to read <code translate="no">/proc/modules</code> line by line:</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="qfile.html#QFile" translate="no">QFile</a></span> file(<span class="string">&quot;/proc/modules&quot;</span>);
      <span class="keyword">if</span> (<span class="operator">!</span>file<span class="operator">.</span>open(<span class="type"><a href="qiodevice.html#QIODevice" translate="no">QIODevice</a></span><span class="operator">::</span>ReadOnly <span class="operator">|</span> <span class="type"><a href="qiodevice.html#QIODevice" translate="no">QIODevice</a></span><span class="operator">::</span>Text))
@@ -193,7 +193,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <ul>
 <li>Access permissions might be needed by prompting the user through the <a href="../qtwidgets/qfiledialog.html" translate="no">QFileDialog</a> which implements <a href="https://developer.android.com/training/data-storage/shared/documents-files" translate="no">Android's native file picker</a>.</li>
 <li>Aim to follow the <a href="https://developer.android.com/training/data-storage#scoped-storage" translate="no">Scoped storage</a> guidelines, such as using app specific directories instead of other public external directories. For more information, also see <a href="https://developer.android.com/training/data-storage/use-cases" translate="no">storage best practices</a>.</li>
-<li>Due to the design of Qt APIs (e.g&#x2e; QFile), it's not possible to fully integrate the latter APIs with Android's <a href="https://developer.android.com/reference/android/provider/MediaStore" translate="no">MediaStore</a> APIs.</li>
+<li>Due to the design of Qt APIs (e.g. QFile), it's not possible to fully integrate the latter APIs with Android's <a href="https://developer.android.com/reference/android/provider/MediaStore" translate="no">MediaStore</a> APIs.</li>
 </ul>
 </div>
 <p><b>See also </b><a href="qtextstream.html" translate="no">QTextStream</a>, <a href="qdatastream.html" translate="no">QDataStream</a>, <a href="qfileinfo.html" translate="no">QFileInfo</a>, <a href="qdir.html" translate="no">QDir</a>, and <a href="resources.html" translate="no">The Qt Resource System</a>.</p>
@@ -386,11 +386,11 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </pre>
 <p>When a <a href="qfile.html" translate="no">QFile</a> is opened using this function, behaviour of <a href="qfiledevice.html#close" translate="no">close</a>() is controlled by the AutoCloseHandle flag. If AutoCloseHandle is specified, and this function succeeds, then calling <a href="qfiledevice.html#close" translate="no">close</a>() closes the adopted handle. Otherwise, <a href="qfiledevice.html#close" translate="no">close</a>() does not actually close the file, but only flushes it.</p>
 <p><b>Warning:</b></p>
-<ol class="1" type="1"><li>If <i translate="no">fh</i> does not refer to a regular file, e.g&#x2e;, it is <code translate="no">stdin</code>, <code translate="no">stdout</code>, or <code translate="no">stderr</code>, you may not be able to <a href="qfiledevice.html#seek" translate="no">seek</a>(). <a href="qfile.html#size" translate="no">size</a>() returns <code translate="no">0</code> in those cases. See <a href="qiodevice.html#isSequential" translate="no">QIODevice::isSequential</a>() for more information.</li>
+<ol class="1" type="1"><li>If <i translate="no">fh</i> does not refer to a regular file, e.g., it is <code translate="no">stdin</code>, <code translate="no">stdout</code>, or <code translate="no">stderr</code>, you may not be able to <a href="qfiledevice.html#seek" translate="no">seek</a>(). <a href="qfile.html#size" translate="no">size</a>() returns <code translate="no">0</code> in those cases. See <a href="qiodevice.html#isSequential" translate="no">QIODevice::isSequential</a>() for more information.</li>
 <li>Since this function opens the file without specifying the file name, you cannot use this <a href="qfile.html" translate="no">QFile</a> with a <a href="qfileinfo.html" translate="no">QFileInfo</a>.</li>
 </ol>
 <p><b>Note for the Windows Platform</b></p>
-<p><i translate="no">fh</i> must be opened in binary mode (i.e&#x2e;, the mode string must contain 'b', as in &quot;rb&quot; or &quot;wb&quot;) when accessing files and other random-access devices. Qt will translate the end-of-line characters if you pass QIODevice::Text to <i translate="no">mode</i>. Sequential devices, such as stdin and stdout, are unaffected by this limitation.</p>
+<p><i translate="no">fh</i> must be opened in binary mode (i.e., the mode string must contain 'b', as in &quot;rb&quot; or &quot;wb&quot;) when accessing files and other random-access devices. Qt will translate the end-of-line characters if you pass QIODevice::Text to <i translate="no">mode</i>. Sequential devices, such as stdin and stdout, are unaffected by this limitation.</p>
 <p>You need to enable support for console applications in order to use the stdin, stdout and stderr streams at the console. To do this, add the following declaration to your application's project file:</p>
 <pre class="cpp" translate="no">
  CONFIG <span class="operator">+</span><span class="operator">=</span> console
@@ -441,7 +441,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$rename[overload1]$$$renameconstQString& -->
 <h3 class="fn" translate="no" id="rename"><span class="type">bool</span> QFile::<span class="name">rename</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>newName</i>)</h3>
 <p>Renames the file currently specified by <a href="qfile.html#fileName" translate="no">fileName</a>() to <i translate="no">newName</i>. Returns <code translate="no">true</code> if successful; otherwise returns <code translate="no">false</code>.</p>
-<p>If a file with the name <i translate="no">newName</i> already exists, rename() returns <code translate="no">false</code> (i.e&#x2e;, <a href="qfile.html" translate="no">QFile</a> will not overwrite it).</p>
+<p>If a file with the name <i translate="no">newName</i> already exists, rename() returns <code translate="no">false</code> (i.e., <a href="qfile.html" translate="no">QFile</a> will not overwrite it).</p>
 <p>The file is closed before it is renamed.</p>
 <p>If the rename operation fails, Qt will attempt to copy this file's contents to <i translate="no">newName</i>, and then remove this file, keeping only <i translate="no">newName</i>. If that copy operation fails or this file can't be removed, the destination file <i translate="no">newName</i> is removed to restore the old state.</p>
 <p><b>See also </b><a href="qfile.html#setFileName" translate="no">setFileName</a>().</p>
@@ -450,7 +450,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="rename-1"><code translate="no">[static] </code><span class="type">bool</span> QFile::<span class="name">rename</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>oldName</i>, const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>newName</i>)</h3>
 <p>This is an overloaded function.</p>
 <p>Renames the file <i translate="no">oldName</i> to <i translate="no">newName</i>. Returns <code translate="no">true</code> if successful; otherwise returns <code translate="no">false</code>.</p>
-<p>If a file with the name <i translate="no">newName</i> already exists, rename() returns <code translate="no">false</code> (i.e&#x2e;, <a href="qfile.html" translate="no">QFile</a> will not overwrite it).</p>
+<p>If a file with the name <i translate="no">newName</i> already exists, rename() returns <code translate="no">false</code> (i.e., <a href="qfile.html" translate="no">QFile</a> will not overwrite it).</p>
 <p><b>See also </b><a href="qfile.html#rename" translate="no">rename</a>().</p>
 <!-- @@@rename -->
 <!-- $$$rename$$$renameconststd::filesystem::path& -->
@@ -535,9 +535,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

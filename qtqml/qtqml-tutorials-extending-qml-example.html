@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- extending-tutorial.qdoc -->
   <meta name="description" content="Tutorial about extending QML with Qt C++.">
-  <title>Writing QML Extensions with C++ | Qt QML 6.6.0</title>
+  <title>Writing QML Extensions with C++ | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li>Writing QML Extensions with C++</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -40,8 +40,8 @@
 <div class="toc">
 <h3 id="toc">Contents</h3>
 <ul>
-<li class="level1"><a href="#running-the-tutorial-examples">Running the Tutorial Examples</a></li>
-<li class="level1"><a href="#creating-tutorial-project">Creating Tutorial Project</a></li>
+<li class="level1"><a href="#opening-the-tutorial-sources">Opening the Tutorial Sources</a></li>
+<li class="level1"><a href="#creating-project-from-scratch">Creating Project from Scratch</a></li>
 <li class="level1"><a href="#chapter-1-creating-a-new-type">Chapter 1: Creating a New Type</a></li>
 <li class="level2"><a href="#class-declaration">Class Declaration</a></li>
 <li class="level2"><a href="#qmake-setup">qmake Setup</a></li>
@@ -64,18 +64,18 @@
 <p>The <a href="qtqml-index.html" translate="no">Qt QML</a> module provides a set of APIs for extending QML through C++ extensions. You can write extensions to add your own QML types, extend existing Qt types, or call C/C++ functions that are not accessible from ordinary QML code.</p>
 <p>This tutorial shows how to write a QML extension using C++ that includes core QML features, including properties, signals and bindings. It also shows how extensions can be deployed through plugins.</p>
 <p>Many of the topics covered in this tutorial are documented in further detail in <a href="qtqml-cppintegration-overview.html" translate="no">Overview - QML and C++ Integration</a> and its documentation sub-topics. In particular, you may be interested in the sub-topics <a href="qtqml-cppintegration-exposecppattributes.html" translate="no">Exposing Attributes of C++ Classes to QML</a> and <a href="qtqml-cppintegration-definetypes.html" translate="no">Defining QML Types from C++</a>.</p>
-<h2 id="running-the-tutorial-examples">Running the Tutorial Examples</h2>
-<p>The code in this tutorial is available as an example project with subprojects associated with each tutorial chapter. In <a href="https://doc.qt.io/qtcreator/index.html" translate="no">Qt Creator</a>, open the <b translate="no">Welcome</b> mode and select the tutorial from <b translate="no">Examples</b>. In <b translate="no">Edit</b> mode, expand the <i>extending-qml</i> project, right-click on the subproject (chapter) you want to run and select <b translate="no">Run</b>.</p>
-<h2 id="creating-tutorial-project">Creating Tutorial Project</h2>
-<p>We create a new project using the <i>Qt Quick Application</i> template in Qt Creator, as instructed in <a href="https://doc.qt.io/qtcreator/quick-projects.html" translate="no">Qt Creator: Creating Qt Quick Projects</a>.</p>
+<h2 id="opening-the-tutorial-sources">Opening the Tutorial Sources</h2>
+<p>The code in this tutorial is available as part of the Qt sources. If you installed Qt with the Qt Online Installer, you can find the sources in the Qt installation directory under Examples/Qt-6.6.2/qml/tutorials/extending-qml/.</p>
+<h2 id="creating-project-from-scratch">Creating Project from Scratch</h2>
+<p>Alternatively, you can follow the tutorial by creating the sources from scratch: For each chapter, create a new project using the <i>Qt Quick Application</i> template in Qt Creator, as instructed in <a href="https://doc.qt.io/qtcreator/quick-projects.html" translate="no">Qt Creator: Creating Qt Quick Projects</a>. Then follow along by adapting and extending the generated skeleton code.</p>
 <h2 id="chapter-1-creating-a-new-type">Chapter 1: Creating a New Type</h2>
 <p><code translate="no">extending-qml/chapter1-basics</code></p>
 <p>A common task when extending QML is to provide a new QML type that supports some custom functionality beyond what is provided by the built-in <a href="../qtquick/qtquick-qmlmodule.html" translate="no">Qt Quick types</a>. For example, this could be done to implement particular data models, or provide types with custom painting and drawing capabilities, or access system features like network programming that are not accessible through built-in QML features.</p>
 <p>In this tutorial, we will show how to use the C++ classes in the Qt Quick module to extend QML. The end result will be a simple Pie Chart display implemented by several custom QML types connected together through QML features like bindings and signals, and made available to the QML runtime through a plugin.</p>
-<p>To begin with, let's create a new QML type called &quot;PieChart&quot; that has two properties: a name and a color. We will make it available in an importable type namespace called &quot;Charts&quot;, with a version of 1.0&#x2e;</p>
+<p>To begin with, let's create a new QML type called &quot;PieChart&quot; that has two properties: a name and a color. We will make it available in an importable type namespace called &quot;Charts&quot;, with a version of 1.0.</p>
 <p>We want this <code translate="no">PieChart</code> type to be usable from QML like this:</p>
 <pre class="qml" translate="no">
- import Charts 1.0
+ import Charts
 
  <span class="type">PieChart</span> {
      <span class="name">width</span>: <span class="number">100</span>; <span class="name">height</span>: <span class="number">100</span>
@@ -262,7 +262,7 @@
 </pre>
 <p>Now we can build and run the application:</p>
 <p class="centerAlign"><img src="images/extending-tutorial-chapter1.png" alt="" /></p><div class="admonition note">
-<p><b>Note: </b>You may see a warning <i>Expression ..&#x2e; depends on non-NOTIFYable properties: PieChart::name</i>. This happens because we add a binding to the writable <code translate="no">name</code> property, but haven't yet defined a notify signal for it. The QML engine therefore cannot update the binding if the <code translate="no">name</code> value changes. This is addressed in the following chapters.</p>
+<p><b>Note: </b>You may see a warning <i>Expression ... depends on non-NOTIFYable properties: PieChart::name</i>. This happens because we add a binding to the writable <code translate="no">name</code> property, but haven't yet defined a notify signal for it. The QML engine therefore cannot update the binding if the <code translate="no">name</code> value changes. This is addressed in the following chapters.</p>
 </div>
 <h2 id="chapter-2-connecting-to-c-methods-and-signals">Chapter 2: Connecting to C++ Methods and Signals</h2>
 <p><code translate="no">extending-qml/chapter2-methods</code></p>
@@ -755,9 +755,9 @@
 <p>The <a href="qtqml-cppintegration-overview.html" translate="no">QML and C++ Integration overview</a> documentation shows other useful features that can be added to QML extensions. For example, we could use <a href="qtqml-syntax-objectattributes.html#default-properties" translate="no">default properties</a> to allow slices to be added without using the <code translate="no">slices</code> property:</p>
 <pre class="cpp plain" translate="no">
  PieChart {
-     PieSlice { ..&#x2e; }
-     PieSlice { ..&#x2e; }
-     PieSlice { ..&#x2e; }
+     PieSlice { ... }
+     PieSlice { ... }
+     PieSlice { ... }
  }
 </pre>
 <p>Or randomly add and remove slices from time to time using <a href="qtqml-cppintegration-definetypes.html#property-value-sources" translate="no">property value sources</a>:</p>
@@ -778,9 +778,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qtstatemachine-cpp-guide.qdoc -->
   <meta name="description" content="An overview of the State Machine framework for constructing and executing state graphs with the C++ API.">
-  <title>Qt State Machine C++ Guide | Qt State Machine 6.6.0</title>
+  <title>Qt State Machine C++ Guide | Qt State Machine 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtstatemachine-index.html" translate="no">Qt State Machine</a></li>
 <li>Qt State Machine C++ Guide</li>
-<li id="buildversion"><a href="qtstatemachine-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtstatemachine-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -91,7 +91,7 @@
 <pre class="cpp" translate="no">
      machine<span class="operator">.</span>start();
 </pre>
-<p>The state machine executes asynchronously, i.e&#x2e; it becomes part of your application's event loop.</p>
+<p>The state machine executes asynchronously, i.e. it becomes part of your application's event loop.</p>
 <h2 id="doing-useful-work-on-state-entry-and-exit">Doing Useful Work on State Entry and Exit</h2>
 <p>The above state machine merely transitions from one state to another, it doesn't perform any operations. The <a href="qstate.html#assignProperty" translate="no">QState::assignProperty</a>() function can be used to have a state set a property of a <a href="../qtcore/qobject.html" translate="no">QObject</a> when the state is entered. In the following snippet, the value that should be assigned to a <a href="../qtwidgets/qlabel.html" translate="no">QLabel</a>'s text property is specified for each state:</p>
 <pre class="cpp" translate="no">
@@ -113,7 +113,7 @@
 <p>Assume we wanted the user to be able to quit the application at any time by clicking a Quit button. In order to achieve this, we need to create a final state and make it the target of a transition associated with the Quit button's <a href="../qtwidgets/qabstractbutton.html#clicked" translate="no">clicked</a>() signal. We could add a transition from each of <code translate="no">s1</code>, <code translate="no">s2</code> and <code translate="no">s3</code>; however, this seems redundant, and one would also have to remember to add such a transition from every new state that is added in the future.</p>
 <p>We can achieve the same behavior (namely that clicking the Quit button quits the state machine, regardless of which state the state machine is in) by grouping states <code translate="no">s1</code>, <code translate="no">s2</code> and <code translate="no">s3</code>. This is done by creating a new top-level state and making the three original states children of the new state. The following diagram shows the new state machine.</p>
 <p class="centerAlign"><img src="images/statemachine-button-nested.png" alt="" /></p><p>The three original states have been renamed <code translate="no">s11</code>, <code translate="no">s12</code> and <code translate="no">s13</code> to reflect that they are now children of the new top-level state, <code translate="no">s1</code>. Child states implicitly inherit the transitions of their parent state. This means it is now sufficient to add a single transition from <code translate="no">s1</code> to the final state <code translate="no">s2</code>. New states added to <code translate="no">s1</code> will also automatically inherit this transition.</p>
-<p>All that's needed to group states is to specify the proper parent when the state is created. You also need to specify which of the child states is the initial one (i.e&#x2e; which child state the state machine should enter when the parent state is the target of a transition).</p>
+<p>All that's needed to group states is to specify the proper parent when the state is created. You also need to specify which of the child states is the initial one (i.e. which child state the state machine should enter when the parent state is the target of a transition).</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="qstate.html" translate="no">QState</a></span> <span class="operator">*</span>s1 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qstate.html" translate="no">QState</a></span>();
      <span class="type"><a href="qstate.html" translate="no">QState</a></span> <span class="operator">*</span>s11 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qstate.html" translate="no">QState</a></span>(s1);
@@ -134,9 +134,9 @@
 <pre class="cpp" translate="no">
      s12<span class="operator">-</span><span class="operator">&gt;</span>addTransition(quitButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span> s12);
 </pre>
-<p>A transition can have any state as its target, i.e&#x2e; the target state does not have to be on the same level in the state hierarchy as the source state.</p>
+<p>A transition can have any state as its target, i.e. the target state does not have to be on the same level in the state hierarchy as the source state.</p>
 <h2 id="using-history-states-to-save-and-restore-the-current-state">Using History States to Save and Restore the Current State</h2>
-<p>Imagine that we wanted to add an &quot;interrupt&quot; mechanism to the example discussed in the previous section; the user should be able to click a button to have the state machine perform some non-related task, after which the state machine should resume whatever it was doing before (i.e&#x2e; return to the old state, which is one of <code translate="no">s11</code>, <code translate="no">s12</code> and <code translate="no">s13</code> in this case).</p>
+<p>Imagine that we wanted to add an &quot;interrupt&quot; mechanism to the example discussed in the previous section; the user should be able to click a button to have the state machine perform some non-related task, after which the state machine should resume whatever it was doing before (i.e. return to the old state, which is one of <code translate="no">s11</code>, <code translate="no">s12</code> and <code translate="no">s13</code> in this case).</p>
 <p>Such behavior can easily be modeled using <i>history states</i>. A history state (<a href="qhistorystate.html" translate="no">QHistoryState</a> object) is a pseudo-state that represents the child state that the parent state was in the last time the parent state was exited.</p>
 <p>A history state is created as a child of the state for which we wish to record the current child state; when the state machine detects the presence of such a state at runtime, it automatically records the current (real) child state when the parent state is exited. A transition to the history state is in fact a transition to the child state that the state machine had previously saved; the state machine automatically &quot;forwards&quot; the transition to the real child state.</p>
 <p>The following diagram shows the state machine after the interrupt mechanism has been added.</p>
@@ -175,7 +175,7 @@
 <pre class="cpp" translate="no">
    s1<span class="operator">-</span><span class="operator">&gt;</span>addTransition(s1<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="qstate.html" translate="no">QState</a></span><span class="operator">::</span>finished<span class="operator">,</span> s2);
 </pre>
-<p>Using final states in composite states is useful when you want to hide the internal details of a composite state; i.e&#x2e; the only thing the outside world should be able to do is enter the state, and get a notification when the state has completed its work. This is a very powerful abstraction and encapsulation mechanism when building complex (deeply nested) state machines. (In the above example, you could of course create a transition directly from <code translate="no">s1</code> 's <code translate="no">done</code> state rather than relying on <code translate="no">s1</code> 's <a href="qstate.html#finished" translate="no">finished</a>() signal, but with the consequence that implementation details of <code translate="no">s1</code> are exposed and depended on).</p>
+<p>Using final states in composite states is useful when you want to hide the internal details of a composite state; i.e. the only thing the outside world should be able to do is enter the state, and get a notification when the state has completed its work. This is a very powerful abstraction and encapsulation mechanism when building complex (deeply nested) state machines. (In the above example, you could of course create a transition directly from <code translate="no">s1</code> 's <code translate="no">done</code> state rather than relying on <code translate="no">s1</code> 's <a href="qstate.html#finished" translate="no">finished</a>() signal, but with the consequence that implementation details of <code translate="no">s1</code> are exposed and depended on).</p>
 <p>For parallel state groups, the <a href="qstate.html#finished" translate="no">QState::finished</a>() signal is emitted when <i>all</i> the child states have entered final states.</p>
 <h2 id="targetless-transitions">Targetless Transitions</h2>
 <p>A transition need not have a target state. A transition without a target can be triggered the same way as any other transition; the difference is that when a targetless transition is triggered, it doesn't cause any state changes. This allows you to react to a signal or event when your machine is in a certain state, without having to leave that state. Example:</p>
@@ -193,11 +193,11 @@
 
  machine<span class="operator">.</span>setInitialState(s1);
 </pre>
-<p>The message box will be displayed each time the button is clicked, but the state machine will remain in its current state (s1). If the target state were explicitly set to s1, however, s1 would be exited and re-entered each time (e.g&#x2e; the <a href="qml-qtqml-statemachine-qabstractstate.html#entered-signal" translate="no">QAbstractState::entered</a>() and <a href="qml-qtqml-statemachine-qabstractstate.html#exited-signal" translate="no">QAbstractState::exited</a>() signals would be emitted).</p>
+<p>The message box will be displayed each time the button is clicked, but the state machine will remain in its current state (s1). If the target state were explicitly set to s1, however, s1 would be exited and re-entered each time (e.g. the <a href="qml-qtqml-statemachine-qabstractstate.html#entered-signal" translate="no">QAbstractState::entered</a>() and <a href="qml-qtqml-statemachine-qabstractstate.html#exited-signal" translate="no">QAbstractState::exited</a>() signals would be emitted).</p>
 <h2 id="events-transitions-and-guards">Events, Transitions and Guards</h2>
 <p>A <a href="qstatemachine.html" translate="no">QStateMachine</a> runs its own event loop. For signal transitions (<a href="qml-qtqml-statemachine-qsignaltransition.html" translate="no">QSignalTransition</a> objects), <a href="qstatemachine.html" translate="no">QStateMachine</a> automatically posts a <a href="qstatemachine-signalevent.html" translate="no">QStateMachine::SignalEvent</a> to itself when it intercepts the corresponding signal; similarly, for <a href="../qtcore/qobject.html" translate="no">QObject</a> event transitions (<a href="qeventtransition.html" translate="no">QEventTransition</a> objects) a <a href="qstatemachine-wrappedevent.html" translate="no">QStateMachine::WrappedEvent</a> is posted.</p>
 <p>You can post your own events to the state machine using <a href="qstatemachine.html#postEvent" translate="no">QStateMachine::postEvent</a>().</p>
-<p>When posting a custom event to the state machine, you typically also have one or more custom transitions that can be triggered from events of that type. To create such a transition, you subclass <a href="qml-qtqml-statemachine-qabstracttransition.html" translate="no">QAbstractTransition</a> and reimplement <a href="qabstracttransition.html#eventTest" translate="no">eventTest</a>(), where you check if an event matches your event type (and optionally other criteria, e.g&#x2e; attributes of the event object).</p>
+<p>When posting a custom event to the state machine, you typically also have one or more custom transitions that can be triggered from events of that type. To create such a transition, you subclass <a href="qml-qtqml-statemachine-qabstracttransition.html" translate="no">QAbstractTransition</a> and reimplement <a href="qabstracttransition.html#eventTest" translate="no">eventTest</a>(), where you check if an event matches your event type (and optionally other criteria, e.g. attributes of the event object).</p>
 <p>Here we define our own custom event type, <code translate="no">StringEvent</code>, for posting strings to the state machine:</p>
 <pre class="cpp" translate="no">
  <span class="keyword">struct</span> StringEvent : <span class="keyword">public</span> <span class="type"><a href="../qtcore/qevent.html" translate="no">QEvent</a></span>
@@ -268,7 +268,7 @@
  <span class="type"><a href="qstatemachine.html" translate="no">QStateMachine</a></span> machine;
  machine<span class="operator">.</span>setGlobalRestorePolicy(<span class="type"><a href="qstatemachine.html" translate="no">QStateMachine</a></span><span class="operator">::</span>RestoreProperties);
 </pre>
-<p>When this restore policy is set, the machine will automatically restore all properties. If it enters a state where a given property is not set, it will first search the hierarchy of ancestors to see if the property is defined there. If it is, the property will be restored to the value defined by the closest ancestor. If not, it will be restored to its initial value (i.e&#x2e; the value of the property before any property assignments in states were executed.)</p>
+<p>When this restore policy is set, the machine will automatically restore all properties. If it enters a state where a given property is not set, it will first search the hierarchy of ancestors to see if the property is defined there. If it is, the property will be restored to the value defined by the closest ancestor. If not, it will be restored to its initial value (i.e. the value of the property before any property assignments in states were executed.)</p>
 <p>Take the following code:</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="qstatemachine.html" translate="no">QStateMachine</a></span> machine;
@@ -282,7 +282,7 @@
      <span class="type"><a href="qstate.html" translate="no">QState</a></span> <span class="operator">*</span>s2 <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="qstate.html" translate="no">QState</a></span>();
      machine<span class="operator">.</span>addState(s2);
 </pre>
-<p>Lets say the property <code translate="no">fooBar</code> is 0.0 when the machine starts. When the machine is in state <code translate="no">s1</code>, the property will be 1.0, since the state explicitly assigns this value to it. When the machine is in state <code translate="no">s2</code>, no value is explicitly defined for the property, so it will implicitly be restored to 0.0&#x2e;</p>
+<p>Lets say the property <code translate="no">fooBar</code> is 0.0 when the machine starts. When the machine is in state <code translate="no">s1</code>, the property will be 1.0, since the state explicitly assigns this value to it. When the machine is in state <code translate="no">s2</code>, no value is explicitly defined for the property, so it will implicitly be restored to 0.0.</p>
 <p>If we are using nested states, the parent defines a value for the property which is inherited by all descendants that do not explicitly assign a value to the property.</p>
 <pre class="cpp" translate="no">
      <span class="type"><a href="qstatemachine.html" translate="no">QStateMachine</a></span> machine;
@@ -407,9 +407,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

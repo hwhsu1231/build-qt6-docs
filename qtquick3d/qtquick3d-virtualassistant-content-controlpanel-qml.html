@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<!-- virtualassistant.qdoc -->
+  <meta name="description" content="Qt Quick application that presents a 3D model of a virtual assistant with dynamic animations created using QML and timelines.">
+  <title>Qt Quick 3D - Virtual Assistant Example | Qt Quick 3D 6.6.2</title>
+  <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
+  <script type="text/javascript">
+    document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
+    // loading style sheet breaks anchors that were jumped to before
+    // so force jumping to anchor again
+    setTimeout(function() {
+        var anchor = location.hash;
+        // need to jump to different anchor first (e.g. none)
+        location.hash = "#";
+        setTimeout(function() {
+            location.hash = anchor;
+        }, 0);
+    }, 0);
+  </script>
+</head>
+<body>
+<div class="header" id="qtdocheader">
+    <div class="main">
+    <div class="main-rounded">
+        <div class="navigationbar">
+        <ul>
+<li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
+<li><a href="qtquick3d-index.html" translate="no">Qt Quick 3D</a></li>
+<li><a href="quick3d-examples.html" translate="no">Qt Quick 3D Examples and Tutorials</a></li>
+<li>Qt Quick 3D - Virtual Assistant Example</li>
+<li id="buildversion"><a href="qtquick3d-index.html" translate="no">Qt Quick 3D | Commercial or GPLv3</a></li>
+    </ul>
+    </div>
+</div>
+<div class="content">
+<div class="line">
+<div class="content mainContent">
+<h1 class="title">Qt Quick 3D - Virtual Assistant Example</h1>
+<pre class="qml" translate="no">
+ <span class="comment">// Copyright (C) 2021 The Qt Company Ltd.</span>
+ <span class="comment">// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause</span>
+
+ import QtQuick
+ import QtQuick.Controls
+ import QtQuick.Layouts
+
+ <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-pane.html" translate="no">Pane</a></span> {
+     <span class="name">id</span>: <span class="name">root</span>
+
+     <span class="name">topPadding</span>: <span class="number">10</span>
+     <span class="name">leftPadding</span>: <span class="number">40</span>
+     <span class="name">rightPadding</span>: <span class="number">40</span>
+     <span class="name">bottomPadding</span>: <span class="number">40</span>
+
+     readonly property list&lt;<span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span>&gt; <span class="name">animations</span>: [<span class="name">qsTr</span>(<span class="string">&quot;Entry Animation&quot;</span>), <span class="name">qsTr</span>(<span class="string">&quot;Backflip&quot;</span>),
+         <span class="name">qsTr</span>(<span class="string">&quot;Low Body Bouncing&quot;</span>), <span class="name">qsTr</span>(<span class="string">&quot;Right hand waving&quot;</span>),
+         <span class="name">qsTr</span>(<span class="string">&quot;Left hand waving&quot;</span>), <span class="name">qsTr</span>(<span class="string">&quot;Exploring scene&quot;</span>),
+         <span class="name">qsTr</span>(<span class="string">&quot;Exit Animation&quot;</span>), <span class="name">qsTr</span>(<span class="string">&quot;Face Animation&quot;</span>)]
+
+     signal <span class="type">clicked</span>(index: int)
+
+     <span class="type"><a href="../qtquick/qml-qtquick-layouts-columnlayout.html" translate="no">ColumnLayout</a></span> {
+         <span class="name">anchors</span>.fill: <span class="name">parent</span>
+         <span class="name">spacing</span>: <span class="number">10</span>
+
+         <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-label.html" translate="no">Label</a></span> {
+             <span class="name">text</span>: <span class="name">qsTr</span>(<span class="string">&quot;Select animation:&quot;</span>)
+             <span class="name">font</span>.pixelSize: <span class="number">24</span>
+             <span class="name">Layout</span>.alignment: <span class="name">Qt</span>.<span class="name">AlignHCenter</span>
+         }
+
+         <span class="type"><a href="../qtquick/qml-qtquick-repeater.html" translate="no">Repeater</a></span> {
+             <span class="name">model</span>: <span class="name">root</span>.<span class="name">animations</span>
+             <span class="type"><a href="../qtquickcontrols/qml-qtquick-controls-button.html" translate="no">Button</a></span> {
+                 required property <span class="type"><a href="../qtqml/qml-int.html" translate="no">int</a></span> <span class="name">index</span>
+                 required property <span class="type"><a href="../qtqml/qml-string.html" translate="no">string</a></span> <span class="name">modelData</span>
+
+                 <span class="name">Layout</span>.fillHeight: <span class="number">true</span>
+                 <span class="name">Layout</span>.fillWidth: <span class="number">true</span>
+
+                 <span class="name">text</span>: <span class="name">modelData</span>
+                 <span class="name">onClicked</span>: <span class="name">root</span>.<span class="name">clicked</span>(<span class="name">index</span>)
+             }
+         }
+     }
+ }
+</pre>

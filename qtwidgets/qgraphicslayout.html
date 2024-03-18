@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qgraphicslayout.cpp -->
   <meta name="description" content="The QGraphicsLayout class provides the base class for all layouts in Graphics View.">
-  <title>QGraphicsLayout Class | Qt Widgets 6.6.0</title>
+  <title>QGraphicsLayout Class | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li><a href="qtwidgets-module.html" translate="no">C++ Classes</a></li>
 <li>QGraphicsLayout</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -95,7 +95,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <h2 id="details">Detailed Description</h2>
 <p>QGraphicsLayout is an abstract class that defines a virtual API for arranging <a href="qgraphicswidget.html" translate="no">QGraphicsWidget</a> children and other <a href="qgraphicslayoutitem.html" translate="no">QGraphicsLayoutItem</a> objects for a <a href="qgraphicswidget.html" translate="no">QGraphicsWidget</a>. <a href="qgraphicswidget.html" translate="no">QGraphicsWidget</a> assigns responsibility to a QGraphicsLayout through <a href="qgraphicswidget.html#setLayout" translate="no">QGraphicsWidget::setLayout</a>(). As the widget is resized, the layout will automatically arrange the widget's children. QGraphicsLayout inherits <a href="qgraphicslayoutitem.html" translate="no">QGraphicsLayoutItem</a>, so, it can be managed by any layout, including its own subclasses.</p>
 <h3 id="writing-a-custom-layout">Writing a Custom Layout</h3>
-<p>You can use QGraphicsLayout as a base to write your own custom layout (e.g&#x2e;, a flowlayout), but it is more common to use one of its subclasses instead - <a href="qgraphicslinearlayout.html" translate="no">QGraphicsLinearLayout</a> or <a href="qgraphicsgridlayout.html" translate="no">QGraphicsGridLayout</a>. When creating a custom layout, the following functions must be reimplemented as a bare minimum:</p>
+<p>You can use QGraphicsLayout as a base to write your own custom layout (e.g., a flowlayout), but it is more common to use one of its subclasses instead - <a href="qgraphicslinearlayout.html" translate="no">QGraphicsLinearLayout</a> or <a href="qgraphicsgridlayout.html" translate="no">QGraphicsGridLayout</a>. When creating a custom layout, the following functions must be reimplemented as a bare minimum:</p>
 <div class="table"><table class="generic">
  <thead><tr class="qt-style"><th >Function</th><th >Description</th></tr></thead>
 <tr valign="top" class="odd"><td ><a href="qgraphicslayoutitem.html#setGeometry" translate="no">QGraphicsLayoutItem::setGeometry</a>()</td><td >Notifies you when the geometry of the layout is set. You can store the geometry in your own layout class in a reimplementation of this function.</td></tr>
@@ -136,7 +136,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- $$$activate[overload1]$$$activate -->
 <h3 class="fn" translate="no" id="activate"><span class="type">void</span> QGraphicsLayout::<span class="name">activate</span>()</h3>
 <p>Activates the layout, causing all items in the layout to be immediately rearranged. This function is based on calling <a href="qgraphicslayout.html#count" translate="no">count</a>() and <a href="qgraphicslayout.html#itemAt" translate="no">itemAt</a>(), and then calling <a href="qgraphicslayoutitem.html#setGeometry" translate="no">setGeometry</a>() on all items sequentially. When activated, the layout will adjust its geometry to its parent's <a href="qgraphicslayoutitem.html#contentsRect" translate="no">contentsRect</a>(). The parent will then invalidate any layout of its own.</p>
-<p>If called in sequence or recursively, e.g&#x2e;, by one of the arranged items in response to being resized, this function will do nothing.</p>
+<p>If called in sequence or recursively, e.g., by one of the arranged items in response to being resized, this function will do nothing.</p>
 <p>Note that the layout is free to use geometry caching to optimize this process. To forcefully invalidate any such cache, you can call <a href="qgraphicslayout.html#invalidate" translate="no">invalidate</a>() before calling activate().</p>
 <p><b>See also </b><a href="qgraphicslayout.html#invalidate" translate="no">invalidate</a>().</p>
 <!-- @@@activate -->
@@ -164,18 +164,18 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- @@@invalidate -->
 <!-- $$$isActivated[overload1]$$$isActivated -->
 <h3 class="fn" translate="no" id="isActivated"><span class="type">bool</span> QGraphicsLayout::<span class="name">isActivated</span>() const</h3>
-<p>Returns <code translate="no">true</code> if the layout is currently being activated; otherwise, returns <code translate="no">false</code>. If the layout is being activated, this means that it is currently in the process of rearranging its items (i.e&#x2e;, the <a href="qgraphicslayout.html#activate" translate="no">activate</a>() function has been called, and has not yet returned).</p>
+<p>Returns <code translate="no">true</code> if the layout is currently being activated; otherwise, returns <code translate="no">false</code>. If the layout is being activated, this means that it is currently in the process of rearranging its items (i.e., the <a href="qgraphicslayout.html#activate" translate="no">activate</a>() function has been called, and has not yet returned).</p>
 <p><b>See also </b><a href="qgraphicslayout.html#activate" translate="no">activate</a>() and <a href="qgraphicslayout.html#invalidate" translate="no">invalidate</a>().</p>
 <!-- @@@isActivated -->
 <!-- $$$itemAt[overload1]$$$itemAtint -->
 <h3 class="fn" translate="no" id="itemAt"><code translate="no">[pure virtual] </code><span class="type"><a href="qgraphicslayoutitem.html#QGraphicsLayoutItem" translate="no">QGraphicsLayoutItem</a></span> *QGraphicsLayout::<span class="name">itemAt</span>(<span class="type">int</span> <i>i</i>) const</h3>
-<p>This pure virtual function must be reimplemented in a subclass of <a href="qgraphicslayout.html" translate="no">QGraphicsLayout</a> to return a pointer to the item at index <i translate="no">i</i>. The reimplementation can assume that <i translate="no">i</i> is valid (i.e&#x2e;, it respects the value of <a href="qgraphicslayout.html#count" translate="no">count</a>()). Together with <a href="qgraphicslayout.html#count" translate="no">count</a>(), it is provided as a means of iterating over all items in a layout.</p>
+<p>This pure virtual function must be reimplemented in a subclass of <a href="qgraphicslayout.html" translate="no">QGraphicsLayout</a> to return a pointer to the item at index <i translate="no">i</i>. The reimplementation can assume that <i translate="no">i</i> is valid (i.e., it respects the value of <a href="qgraphicslayout.html#count" translate="no">count</a>()). Together with <a href="qgraphicslayout.html#count" translate="no">count</a>(), it is provided as a means of iterating over all items in a layout.</p>
 <p>The subclass is free to decide how to store the items, and the visual arrangement does not have to be reflected through this function.</p>
 <p><b>See also </b><a href="qgraphicslayout.html#count" translate="no">count</a>() and <a href="qgraphicslayout.html#removeAt" translate="no">removeAt</a>().</p>
 <!-- @@@itemAt -->
 <!-- $$$removeAt[overload1]$$$removeAtint -->
 <h3 class="fn" translate="no" id="removeAt"><code translate="no">[pure virtual] </code><span class="type">void</span> QGraphicsLayout::<span class="name">removeAt</span>(<span class="type">int</span> <i>index</i>)</h3>
-<p>This pure virtual function must be reimplemented in a subclass of <a href="qgraphicslayout.html" translate="no">QGraphicsLayout</a> to remove the item at <i translate="no">index</i>. The reimplementation can assume that <i translate="no">index</i> is valid (i.e&#x2e;, it respects the value of <a href="qgraphicslayout.html#count" translate="no">count</a>()).</p>
+<p>This pure virtual function must be reimplemented in a subclass of <a href="qgraphicslayout.html" translate="no">QGraphicsLayout</a> to remove the item at <i translate="no">index</i>. The reimplementation can assume that <i translate="no">index</i> is valid (i.e., it respects the value of <a href="qgraphicslayout.html#count" translate="no">count</a>()).</p>
 <p>The implementation must ensure that the <a href="qgraphicslayoutitem.html#parentLayoutItem" translate="no">parentLayoutItem</a>() of the removed item does not point to this layout, since the item is considered to be removed from the layout hierarchy.</p>
 <p>If the layout is to be reused between applications, we recommend that the layout deletes the item, but the graphics view framework does not depend on this.</p>
 <p>The subclass is free to decide how to store the items.</p>
@@ -207,9 +207,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

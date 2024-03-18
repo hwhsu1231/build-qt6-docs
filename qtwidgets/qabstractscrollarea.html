@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qabstractscrollarea.cpp -->
   <meta name="description" content="The QAbstractScrollArea widget provides a scrolling area with on-demand scroll bars.">
-  <title>QAbstractScrollArea Class | Qt Widgets 6.6.0</title>
+  <title>QAbstractScrollArea Class | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li><a href="qtwidgets-module.html" translate="no">C++ Classes</a></li>
 <li>QAbstractScrollArea</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -157,7 +157,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
      horizontalScrollBar()<span class="operator">-</span><span class="operator">&gt;</span>setRange(<span class="number">0</span><span class="operator">,</span> widgetSize<span class="operator">.</span>width() <span class="operator">-</span> areaSize<span class="operator">.</span>width());
      updateWidgetPosition();
 </pre>
-<p>When the scroll bars change value, we need to update the widget position, i.e&#x2e;, find the part of the widget that is to be drawn in the viewport:</p>
+<p>When the scroll bars change value, we need to update the widget position, i.e., find the part of the widget that is to be drawn in the viewport:</p>
 <pre class="cpp" translate="no">
      <span class="type">int</span> hvalue <span class="operator">=</span> horizontalScrollBar()<span class="operator">-</span><span class="operator">&gt;</span>value();
      <span class="type">int</span> vvalue <span class="operator">=</span> verticalScrollBar()<span class="operator">-</span><span class="operator">&gt;</span>value();
@@ -167,7 +167,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 </pre>
 <p>In order to track scroll bar movements, reimplement the virtual function <a href="qabstractscrollarea.html#scrollContentsBy" translate="no">scrollContentsBy</a>(). In order to fine-tune scrolling behavior, connect to a scroll bar's <a href="qabstractslider.html#actionTriggered" translate="no">QAbstractSlider::actionTriggered</a>() signal and adjust the <a href="qabstractslider.html#sliderPosition-prop" translate="no">QAbstractSlider::sliderPosition</a> as you wish.</p>
 <p>For convenience, QAbstractScrollArea makes all viewport events available in the virtual <a href="qabstractscrollarea.html#viewportEvent" translate="no">viewportEvent</a>() handler. <a href="qwidget.html" translate="no">QWidget</a>'s specialized handlers are remapped to viewport events in the cases where this makes sense. The remapped specialized handlers are: <a href="qabstractscrollarea.html#paintEvent" translate="no">paintEvent</a>(), <a href="qabstractscrollarea.html#mousePressEvent" translate="no">mousePressEvent</a>(), <a href="qabstractscrollarea.html#mouseReleaseEvent" translate="no">mouseReleaseEvent</a>(), <a href="qabstractscrollarea.html#mouseDoubleClickEvent" translate="no">mouseDoubleClickEvent</a>(), <a href="qabstractscrollarea.html#mouseMoveEvent" translate="no">mouseMoveEvent</a>(), <a href="qabstractscrollarea.html#wheelEvent" translate="no">wheelEvent</a>(), <a href="qabstractscrollarea.html#dragEnterEvent" translate="no">dragEnterEvent</a>(), <a href="qabstractscrollarea.html#dragMoveEvent" translate="no">dragMoveEvent</a>(), <a href="qabstractscrollarea.html#dragLeaveEvent" translate="no">dragLeaveEvent</a>(), <a href="qabstractscrollarea.html#dropEvent" translate="no">dropEvent</a>(), <a href="qabstractscrollarea.html#contextMenuEvent" translate="no">contextMenuEvent</a>(), and <a href="qabstractscrollarea.html#resizeEvent" translate="no">resizeEvent</a>().</p>
-<p><a href="qscrollarea.html" translate="no">QScrollArea</a>, which inherits QAbstractScrollArea, provides smooth scrolling for any <a href="qwidget.html" translate="no">QWidget</a> (i.e&#x2e;, the widget is scrolled pixel by pixel). You only need to subclass QAbstractScrollArea if you need more specialized behavior. This is, for instance, true if the entire contents of the area is not suitable for being drawn on a <a href="qwidget.html" translate="no">QWidget</a> or if you do not want smooth scrolling.</p>
+<p><a href="qscrollarea.html" translate="no">QScrollArea</a>, which inherits QAbstractScrollArea, provides smooth scrolling for any <a href="qwidget.html" translate="no">QWidget</a> (i.e., the widget is scrolled pixel by pixel). You only need to subclass QAbstractScrollArea if you need more specialized behavior. This is, for instance, true if the entire contents of the area is not suitable for being drawn on a <a href="qwidget.html" translate="no">QWidget</a> or if you do not want smooth scrolling.</p>
 </div>
 <p><b>See also </b><a href="qscrollarea.html" translate="no">QScrollArea</a>.</p>
 <!-- @@@QAbstractScrollArea -->
@@ -348,8 +348,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- $$$scrollContentsBy[overload1]$$$scrollContentsByintint -->
 <h3 class="fn" translate="no" id="scrollContentsBy"><code translate="no">[virtual protected] </code><span class="type">void</span> QAbstractScrollArea::<span class="name">scrollContentsBy</span>(<span class="type">int</span> <i>dx</i>, <span class="type">int</span> <i>dy</i>)</h3>
 <p>This virtual handler is called when the scroll bars are moved by <i translate="no">dx</i>, <i translate="no">dy</i>, and consequently the viewport's contents should be scrolled accordingly.</p>
-<p>The default implementation simply calls <a href="qwidget.html#update" translate="no">update</a>() on the entire <a href="qabstractscrollarea.html#viewport" translate="no">viewport</a>(), subclasses can reimplement this handler for optimization purposes, or - like <a href="qscrollarea.html" translate="no">QScrollArea</a> - to move a contents widget. The parameters <i translate="no">dx</i> and <i translate="no">dy</i> are there for convenience, so that the class knows how much should be scrolled (useful e.g&#x2e; when doing pixel-shifts). You may just as well ignore these values and scroll directly to the position the scroll bars indicate.</p>
-<p>Calling this function in order to scroll programmatically is an error, use the scroll bars instead (e.g&#x2e; by calling <a href="qabstractslider.html#value-prop" translate="no">QScrollBar::setValue</a>() directly).</p>
+<p>The default implementation simply calls <a href="qwidget.html#update" translate="no">update</a>() on the entire <a href="qabstractscrollarea.html#viewport" translate="no">viewport</a>(), subclasses can reimplement this handler for optimization purposes, or - like <a href="qscrollarea.html" translate="no">QScrollArea</a> - to move a contents widget. The parameters <i translate="no">dx</i> and <i translate="no">dy</i> are there for convenience, so that the class knows how much should be scrolled (useful e.g. when doing pixel-shifts). You may just as well ignore these values and scroll directly to the position the scroll bars indicate.</p>
+<p>Calling this function in order to scroll programmatically is an error, use the scroll bars instead (e.g. by calling <a href="qabstractslider.html#value-prop" translate="no">QScrollBar::setValue</a>() directly).</p>
 <!-- @@@scrollContentsBy -->
 <!-- $$$setCornerWidget[overload1]$$$setCornerWidgetQWidget* -->
 <h3 class="fn" translate="no" id="setCornerWidget"><span class="type">void</span> QAbstractScrollArea::<span class="name">setCornerWidget</span>(<span class="type"><a href="qwidget.html#QWidget" translate="no">QWidget</a></span> *<i>widget</i>)</h3>
@@ -445,9 +445,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

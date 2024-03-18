@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qopenglcontext.cpp -->
   <meta name="description" content="The QOpenGLContext class represents a native OpenGL context, enabling OpenGL rendering on a QSurface.">
-  <title>QOpenGLContext Class | Qt GUI 6.6.0</title>
+  <title>QOpenGLContext Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QOpenGLContext</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -116,7 +116,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p>QOpenGLContext represents the OpenGL state of an underlying OpenGL context. To set up a context, set its screen and format such that they match those of the surface or surfaces with which the context is meant to be used, if necessary make it share resources with other contexts with <a href="qopenglcontext.html#setShareContext" translate="no">setShareContext</a>(), and finally call <a href="qopenglcontext.html#create" translate="no">create</a>(). Use the return value or <a href="qopenglcontext.html#isValid" translate="no">isValid</a>() to check if the context was successfully initialized.</p>
 <p>A context can be made current against a given surface by calling <a href="qopenglcontext.html#makeCurrent" translate="no">makeCurrent</a>(). When OpenGL rendering is done, call <a href="qopenglcontext.html#swapBuffers" translate="no">swapBuffers</a>() to swap the front and back buffers of the surface, so that the newly rendered content becomes visible. To be able to support certain platforms, QOpenGLContext requires that you call <a href="qopenglcontext.html#makeCurrent" translate="no">makeCurrent</a>() again before starting rendering a new frame, after calling <a href="qopenglcontext.html#swapBuffers" translate="no">swapBuffers</a>().</p>
 <p>If the context is temporarily not needed, such as when the application is not rendering, it can be useful to delete it in order to free resources. You can connect to the <a href="qopenglcontext.html#aboutToBeDestroyed" translate="no">aboutToBeDestroyed</a>() signal to clean up any resources that have been allocated with different ownership from the QOpenGLContext itself.</p>
-<p>Once a QOpenGLContext has been made current, you can render to it in a platform independent way by using Qt's OpenGL enablers such as <a href="qopenglfunctions.html" translate="no">QOpenGLFunctions</a>, <a href="../qtopengl/qopenglbuffer.html" translate="no">QOpenGLBuffer</a>, <a href="../qtopengl/qopenglshaderprogram.html" translate="no">QOpenGLShaderProgram</a>, and <a href="../qtopengl/qopenglframebufferobject.html" translate="no">QOpenGLFramebufferObject</a>. It is also possible to use the platform's OpenGL API directly, without using the Qt enablers, although potentially at the cost of portability. The latter is necessary when wanting to use OpenGL 1.x or OpenGL ES 1.x&#x2e;</p>
+<p>Once a QOpenGLContext has been made current, you can render to it in a platform independent way by using Qt's OpenGL enablers such as <a href="qopenglfunctions.html" translate="no">QOpenGLFunctions</a>, <a href="../qtopengl/qopenglbuffer.html" translate="no">QOpenGLBuffer</a>, <a href="../qtopengl/qopenglshaderprogram.html" translate="no">QOpenGLShaderProgram</a>, and <a href="../qtopengl/qopenglframebufferobject.html" translate="no">QOpenGLFramebufferObject</a>. It is also possible to use the platform's OpenGL API directly, without using the Qt enablers, although potentially at the cost of portability. The latter is necessary when wanting to use OpenGL 1.x or OpenGL ES 1.x.</p>
 <p>For more information about the OpenGL API, refer to the official <a href="http://www.opengl.org" translate="no">OpenGL documentation</a>.</p>
 <p>For an example of how to use QOpenGLContext see the <a href="../qtopengl/qtopengl-openglwindow-example.html" translate="no">OpenGL Window</a> example.</p>
 <h3 id="thread-affinity">Thread Affinity</h3>
@@ -156,6 +156,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 class="fn" translate="no" id="aboutToBeDestroyed"><code translate="no">[signal] </code><span class="type">void</span> QOpenGLContext::<span class="name">aboutToBeDestroyed</span>()</h3>
 <p>This signal is emitted before the underlying native OpenGL context is destroyed, such that users may clean up OpenGL resources that might otherwise be left dangling in the case of shared OpenGL contexts.</p>
 <p>If you wish to make the context current in order to do clean-up, make sure to only connect to the signal using a direct connection.</p>
+<div class="admonition note">
+<p><b>Note: </b>In Qt for Python, this signal will not be received when emitted from the destructor of <a href="../qtopengl/qopenglwidget.html" translate="no">QOpenGLWidget</a> or <a href="../qtopengl/qopenglwindow.html" translate="no">QOpenGLWindow</a> due to the Python instance already being destroyed. We recommend doing cleanups in <a href="../qtwidgets/qwidget.html#hideEvent" translate="no">QWidget::hideEvent</a>() instead.</p>
+</div>
 <!-- @@@aboutToBeDestroyed -->
 <!-- $$$areSharing[overload1]$$$areSharingQOpenGLContext*QOpenGLContext* -->
 <h3 class="fn" translate="no" id="areSharing"><code translate="no">[static] </code><span class="type">bool</span> QOpenGLContext::<span class="name">areSharing</span>(<span class="type"><a href="qopenglcontext.html#QOpenGLContext" translate="no">QOpenGLContext</a></span> *<i>first</i>, <span class="type"><a href="qopenglcontext.html#QOpenGLContext" translate="no">QOpenGLContext</a></span> *<i>second</i>)</h3>
@@ -226,12 +229,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p>The returned <a href="qopenglfunctions.html" translate="no">QOpenGLFunctions</a> instance is ready to be used and it does not need initializeOpenGLFunctions() to be called.</p>
 <!-- @@@functions -->
 <!-- $$$getProcAddress[overload1]$$$getProcAddressconstQByteArray& -->
-<h3 class="fn" translate="no" id="getProcAddress"><span class="type"><a href="../qtcore/qfunctionpointer-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QOpenGLContext::<span class="name">getProcAddress</span>(const <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> &amp;<i>procName</i>) const</h3>
+<h3 class="fn" translate="no" id="getProcAddress"><span class="type"><a href="../qtcore/qfunctionpointer-qtcore-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QOpenGLContext::<span class="name">getProcAddress</span>(const <span class="type"><a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></span> &amp;<i>procName</i>) const</h3>
 <p>Resolves the function pointer to an OpenGL extension function, identified by <i translate="no">procName</i></p>
 <p>Returns <code translate="no">nullptr</code> if no such function can be found.</p>
 <!-- @@@getProcAddress -->
 <!-- $$$getProcAddress$$$getProcAddressconstchar* -->
-<h3 class="fn" translate="no" id="getProcAddress-1"><span class="type"><a href="../qtcore/qfunctionpointer-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QOpenGLContext::<span class="name">getProcAddress</span>(const <span class="type">char</span> *<i>procName</i>) const</h3>
+<h3 class="fn" translate="no" id="getProcAddress-1"><span class="type"><a href="../qtcore/qfunctionpointer-qtcore-proxy.html#QFunctionPointer-typedef" translate="no">QFunctionPointer</a></span> QOpenGLContext::<span class="name">getProcAddress</span>(const <span class="type">char</span> *<i>procName</i>) const</h3>
 <p>This is an overloaded function.</p>
 <!-- @@@getProcAddress -->
 <!-- $$$globalShareContext[overload1]$$$globalShareContext -->
@@ -260,7 +263,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@isOpenGLES -->
 <!-- $$$isValid[overload1]$$$isValid -->
 <h3 class="fn" translate="no" id="isValid"><span class="type">bool</span> QOpenGLContext::<span class="name">isValid</span>() const</h3>
-<p>Returns if this context is valid, i.e&#x2e; has been successfully created.</p>
+<p>Returns if this context is valid, i.e. has been successfully created.</p>
 <p>On some platforms the return value of <code translate="no">false</code> for a context that was successfully created previously indicates that the OpenGL context was lost.</p>
 <p>The typical way to handle context loss scenarios in applications is to check via this function whenever <a href="qopenglcontext.html#makeCurrent" translate="no">makeCurrent</a>() fails and returns <code translate="no">false</code>. If this function then returns <code translate="no">false</code>, recreate the underlying native OpenGL context by calling <a href="qopenglcontext.html#create" translate="no">create</a>(), call <a href="qopenglcontext.html#makeCurrent" translate="no">makeCurrent</a>() again and then reinitialize all OpenGL resources.</p>
 <p>On some platforms context loss situations is not something that can avoided. On others however, they may need to be opted-in to. This can be done by enabling <a href="qsurfaceformat.html#FormatOption-enum" translate="no">ResetNotification</a> in the <a href="qsurfaceformat.html" translate="no">QSurfaceFormat</a>. This will lead to setting <code translate="no">RESET_NOTIFICATION_STRATEGY_EXT</code> to <code translate="no">LOSE_CONTEXT_ON_RESET_EXT</code> in the underlying native OpenGL context. <a href="qopenglcontext.html" translate="no">QOpenGLContext</a> will then monitor the status via <code translate="no">glGetGraphicsResetStatusEXT()</code> in every <a href="qopenglcontext.html#makeCurrent" translate="no">makeCurrent</a>().</p>
@@ -268,7 +271,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@isValid -->
 <!-- $$$makeCurrent[overload1]$$$makeCurrentQSurface* -->
 <h3 class="fn" translate="no" id="makeCurrent"><span class="type">bool</span> QOpenGLContext::<span class="name">makeCurrent</span>(<span class="type"><a href="qsurface.html" translate="no">QSurface</a></span> *<i>surface</i>)</h3>
-<p>Makes the context current in the current thread, against the given <i translate="no">surface</i>. Returns <code translate="no">true</code> if successful; otherwise returns <code translate="no">false</code>. The latter may happen if the surface is not exposed, or the graphics hardware is not available due to e.g&#x2e; the application being suspended.</p>
+<p>Makes the context current in the current thread, against the given <i translate="no">surface</i>. Returns <code translate="no">true</code> if successful; otherwise returns <code translate="no">false</code>. The latter may happen if the surface is not exposed, or the graphics hardware is not available due to e.g. the application being suspended.</p>
 <p>If <i translate="no">surface</i> is <code translate="no">nullptr</code> this is equivalent to calling <a href="qopenglcontext.html#doneCurrent" translate="no">doneCurrent</a>().</p>
 <p>Avoid calling this function from a different thread than the one the <a href="qopenglcontext.html" translate="no">QOpenGLContext</a> instance lives in. If you wish to use <a href="qopenglcontext.html" translate="no">QOpenGLContext</a> from a different thread you should first make sure it's not current in the current thread, by calling <a href="qopenglcontext.html#doneCurrent" translate="no">doneCurrent</a>() if necessary. Then call moveToThread(otherThread) before using it in the other thread.</p>
 <p>By default Qt employs a check that enforces the above condition on the thread affinity. It is still possible to disable this check by setting the <code translate="no">Qt::AA_DontCheckOpenGLContextThreadAffinity</code> application attribute. Be sure to understand the consequences of using QObjects from outside the thread they live in, as explained in the <a href="../qtcore/qobject.html#thread-affinity" translate="no">QObject thread affinity</a> documentation.</p>
@@ -351,9 +354,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

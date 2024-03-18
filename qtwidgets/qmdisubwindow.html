@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qmdisubwindow.cpp -->
   <meta name="description" content="The QMdiSubWindow class provides a subwindow class for QMdiArea.">
-  <title>QMdiSubWindow Class | Qt Widgets 6.6.0</title>
+  <title>QMdiSubWindow Class | Qt Widgets 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtwidgets-index.html" translate="no">Qt Widgets</a></li>
 <li><a href="qtwidgets-module.html" translate="no">C++ Classes</a></li>
 <li>QMdiSubWindow</li>
-<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtwidgets-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -137,11 +137,11 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <h2 id="details">Detailed Description</h2>
 <p>QMdiSubWindow represents a top-level window in a <a href="qmdiarea.html" translate="no">QMdiArea</a>, and consists of a title bar with window decorations, an internal widget, and (depending on the current style) a window frame and a size grip. QMdiSubWindow has its own layout, which consists of the title bar and a center area for the internal widget.</p>
 <p class="centerAlign"><img src="images/qmdisubwindowlayout.png" alt="" /></p><p>The most common way to construct a QMdiSubWindow is to call <a href="qmdiarea.html#addSubWindow" translate="no">QMdiArea::addSubWindow</a>() with the internal widget as the argument. You can also create a subwindow yourself, and set an internal widget by calling <a href="qmdisubwindow.html#setWidget" translate="no">setWidget</a>().</p>
-<p>You use the same API when programming with subwindows as with regular top-level windows (e.g&#x2e;, you can call functions such as <a href="qwidget.html#show" translate="no">show</a>(), <a href="qwidget.html#hide" translate="no">hide</a>(), <a href="qwidget.html#showMaximized" translate="no">showMaximized</a>(), and <a href="qwidget.html#windowTitle-prop" translate="no">setWindowTitle</a>()).</p>
+<p>You use the same API when programming with subwindows as with regular top-level windows (e.g., you can call functions such as <a href="qwidget.html#show" translate="no">show</a>(), <a href="qwidget.html#hide" translate="no">hide</a>(), <a href="qwidget.html#showMaximized" translate="no">showMaximized</a>(), and <a href="qwidget.html#windowTitle-prop" translate="no">setWindowTitle</a>()).</p>
 <h3 id="subwindow-handling">Subwindow Handling</h3>
 <p>QMdiSubWindow also supports behavior specific to subwindows in an MDI area.</p>
 <p>By default, each QMdiSubWindow is visible inside the MDI area viewport when moved around, but it is also possible to specify transparent window movement and resizing behavior, where only the outline of a subwindow is updated during these operations. The <a href="qmdisubwindow.html#setOption" translate="no">setOption</a>() function is used to enable this behavior.</p>
-<p>The <a href="qmdisubwindow.html#isShaded" translate="no">isShaded</a>() function detects whether the subwindow is currently shaded (i.e&#x2e;, the window is collapsed so that only the title bar is visible). To enter shaded mode, call <a href="qmdisubwindow.html#showShaded" translate="no">showShaded</a>(). QMdiSubWindow emits the <a href="qmdisubwindow.html#windowStateChanged" translate="no">windowStateChanged</a>() signal whenever the window state has changed (e.g&#x2e;, when the window becomes minimized, or is restored). It also emits <a href="qmdisubwindow.html#aboutToActivate" translate="no">aboutToActivate</a>() before it is activated.</p>
+<p>The <a href="qmdisubwindow.html#isShaded" translate="no">isShaded</a>() function detects whether the subwindow is currently shaded (i.e., the window is collapsed so that only the title bar is visible). To enter shaded mode, call <a href="qmdisubwindow.html#showShaded" translate="no">showShaded</a>(). QMdiSubWindow emits the <a href="qmdisubwindow.html#windowStateChanged" translate="no">windowStateChanged</a>() signal whenever the window state has changed (e.g., when the window becomes minimized, or is restored). It also emits <a href="qmdisubwindow.html#aboutToActivate" translate="no">aboutToActivate</a>() before it is activated.</p>
 <p>In keyboard-interactive mode, the windows are moved and resized with the keyboard. You can enter this mode through the system menu of the window. The <a href="qmdisubwindow.html#keyboardSingleStep-prop" translate="no">keyboardSingleStep</a> and <a href="qmdisubwindow.html#keyboardPageStep-prop" translate="no">keyboardPageStep</a> properties control the distance the widget is moved or resized for each keypress event. When shift is pressed down page step is used; otherwise single step is used.</p>
 <p>You can also change the active window with the keyboard. By pressing the control and tab keys at the same time, the next (using the current <a href="qmdiarea.html#WindowOrder-enum" translate="no">WindowOrder</a>) subwindow will be activated. By pressing control, shift, and tab, you will activate the previous window. This is equivalent to calling <a href="qmdiarea.html#activateNextSubWindow" translate="no">activateNextSubWindow</a>() and <a href="qmdiarea.html#activatePreviousSubWindow" translate="no">activatePreviousSubWindow</a>(). Note that these shortcuts overrides global shortcuts, but not the <a href="qmdiarea.html" translate="no">QMdiArea</a>s shortcuts.</p>
 </div>
@@ -308,7 +308,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <h3 class="fn" translate="no" id="setSystemMenu"><span class="type">void</span> QMdiSubWindow::<span class="name">setSystemMenu</span>(<span class="type"><a href="qmenu.html" translate="no">QMenu</a></span> *<i>systemMenu</i>)</h3>
 <p>Sets <i translate="no">systemMenu</i> as the current system menu for this subwindow.</p>
 <p>By default, each <a href="qmdisubwindow.html" translate="no">QMdiSubWindow</a> has a standard system menu.</p>
-<p>QActions for the system menu created by <a href="qmdisubwindow.html" translate="no">QMdiSubWindow</a> will automatically be updated depending on the current window state; e.g&#x2e;, the minimize action will be disabled after the window is minimized.</p>
+<p>QActions for the system menu created by <a href="qmdisubwindow.html" translate="no">QMdiSubWindow</a> will automatically be updated depending on the current window state; e.g., the minimize action will be disabled after the window is minimized.</p>
 <p>QActions added by the user are not updated by <a href="qmdisubwindow.html" translate="no">QMdiSubWindow</a>.</p>
 <p><a href="qmdisubwindow.html" translate="no">QMdiSubWindow</a> takes ownership of <i translate="no">systemMenu</i>; you do not have to delete it. Any existing menus will be deleted.</p>
 <p><b>See also </b><a href="qmdisubwindow.html#systemMenu" translate="no">systemMenu</a>() and <a href="qmdisubwindow.html#showSystemMenu" translate="no">showSystemMenu</a>().</p>
@@ -326,7 +326,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 <!-- $$$showShaded[overload1]$$$showShaded -->
 <h3 class="fn" translate="no" id="showShaded"><code translate="no">[slot] </code><span class="type">void</span> QMdiSubWindow::<span class="name">showShaded</span>()</h3>
 <p>Calling this function makes the subwindow enter the shaded mode. When the subwindow is shaded, only the title bar is visible.</p>
-<p>Although shading is not supported by all styles, this function will still show the subwindow as shaded, regardless of whether support for shading is available. However, when used with styles without shading support, the user will be unable to return from shaded mode through the user interface (e.g&#x2e;, through a shade button in the title bar).</p>
+<p>Although shading is not supported by all styles, this function will still show the subwindow as shaded, regardless of whether support for shading is available. However, when used with styles without shading support, the user will be unable to return from shaded mode through the user interface (e.g., through a shade button in the title bar).</p>
 <p><b>See also </b><a href="qmdisubwindow.html#isShaded" translate="no">isShaded</a>().</p>
 <!-- @@@showShaded -->
 <!-- $$$showSystemMenu[overload1]$$$showSystemMenu -->
@@ -369,9 +369,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Widgets)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

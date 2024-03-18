@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qsyntaxhighlighter.cpp -->
   <meta name="description" content="The QSyntaxHighlighter class allows you to define syntax highlighting rules, and in addition you can use the class to query a document's current formatting or user data.">
-  <title>QSyntaxHighlighter Class | Qt GUI 6.6.0</title>
+  <title>QSyntaxHighlighter Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QSyntaxHighlighter</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -101,7 +101,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
  <span class="type"><a href="../qtwidgets/qtextedit.html" translate="no">QTextEdit</a></span> <span class="operator">*</span>editor <span class="operator">=</span> <span class="keyword">new</span> <span class="type"><a href="../qtwidgets/qtextedit.html" translate="no">QTextEdit</a></span>;
  MyHighlighter <span class="operator">*</span>highlighter <span class="operator">=</span> <span class="keyword">new</span> MyHighlighter(editor<span class="operator">-</span><span class="operator">&gt;</span>document());
 </pre>
-<p>After this your <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>() function will be called automatically whenever necessary. Use your <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>() function to apply formatting (e.g&#x2e; setting the font and color) to the text that is passed to it. QSyntaxHighlighter provides the <a href="qsyntaxhighlighter.html#setFormat" translate="no">setFormat</a>() function which applies a given <a href="qtextcharformat.html" translate="no">QTextCharFormat</a> on the current text block. For example:</p>
+<p>After this your <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>() function will be called automatically whenever necessary. Use your <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>() function to apply formatting (e.g. setting the font and color) to the text that is passed to it. QSyntaxHighlighter provides the <a href="qsyntaxhighlighter.html#setFormat" translate="no">setFormat</a>() function which applies a given <a href="qtextcharformat.html" translate="no">QTextCharFormat</a> on the current text block. For example:</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> MyHighlighter<span class="operator">::</span>highlightBlock(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>text)
  {
@@ -117,7 +117,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
      }
  }
 </pre>
-<span id="qsyntaxhighlighter-multiblock"></span><p>Some syntaxes can have constructs that span several text blocks. For example, a C++ syntax highlighter should be able to cope with <code translate="no">/</code><code translate="no">*..&#x2e;*</code><code translate="no">/</code> multiline comments. To deal with these cases it is necessary to know the end state of the previous text block (e.g&#x2e; &quot;in comment&quot;).</p>
+<span id="qsyntaxhighlighter-multiblock"></span><p>Some syntaxes can have constructs that span several text blocks. For example, a C++ syntax highlighter should be able to cope with <code translate="no">/</code><code translate="no">*...*</code><code translate="no">/</code> multiline comments. To deal with these cases it is necessary to know the end state of the previous text block (e.g. &quot;in comment&quot;).</p>
 <p>Inside your <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>() implementation you can query the end state of the previous text block using the <a href="qsyntaxhighlighter.html#previousBlockState" translate="no">previousBlockState</a>() function. After parsing the block you can save the last state using <a href="qsyntaxhighlighter.html#setCurrentBlockState" translate="no">setCurrentBlockState</a>().</p>
 <p>The <a href="qsyntaxhighlighter.html#currentBlockState" translate="no">currentBlockState</a>() and <a href="qsyntaxhighlighter.html#previousBlockState" translate="no">previousBlockState</a>() functions return an int value. If no state is set, the returned value is -1. You can designate any other value to identify any given state using the <a href="qsyntaxhighlighter.html#setCurrentBlockState" translate="no">setCurrentBlockState</a>() function. Once the state is set the <a href="qtextblock.html" translate="no">QTextBlock</a> keeps that value until it is set again or until the corresponding paragraph of text is deleted.</p>
 <p>For example, if you're writing a simple C++ syntax highlighter, you might designate 1 to signify &quot;in comment&quot;:</p>
@@ -196,7 +196,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@format -->
 <!-- $$$highlightBlock[overload1]$$$highlightBlockconstQString& -->
 <h3 class="fn" translate="no" id="highlightBlock"><code translate="no">[pure virtual protected] </code><span class="type">void</span> QSyntaxHighlighter::<span class="name">highlightBlock</span>(const <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> &amp;<i>text</i>)</h3>
-<p>Highlights the given text block. This function is called when necessary by the rich text engine, i.e&#x2e; on text blocks which have changed.</p>
+<p>Highlights the given text block. This function is called when necessary by the rich text engine, i.e. on text blocks which have changed.</p>
 <p>To provide your own syntax highlighting, you must subclass <a href="qsyntaxhighlighter.html" translate="no">QSyntaxHighlighter</a> and reimplement highlightBlock(). In your reimplementation you should parse the block's <i translate="no">text</i> and call <a href="qsyntaxhighlighter.html#setFormat" translate="no">setFormat</a>() as often as necessary to apply any font and color changes that you require. For example:</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> MyHighlighter<span class="operator">::</span>highlightBlock(<span class="keyword">const</span> <span class="type"><a href="../qtcore/qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>text)
@@ -238,7 +238,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@setCurrentBlockState -->
 <!-- $$$setCurrentBlockUserData[overload1]$$$setCurrentBlockUserDataQTextBlockUserData* -->
 <h3 class="fn" translate="no" id="setCurrentBlockUserData"><code translate="no">[protected] </code><span class="type">void</span> QSyntaxHighlighter::<span class="name">setCurrentBlockUserData</span>(<span class="type"><a href="qtextblockuserdata.html" translate="no">QTextBlockUserData</a></span> *<i>data</i>)</h3>
-<p>Attaches the given <i translate="no">data</i> to the current text block. The ownership is passed to the underlying text document, i.e&#x2e; the provided <a href="qtextblockuserdata.html" translate="no">QTextBlockUserData</a> object will be deleted if the corresponding text block gets deleted.</p>
+<p>Attaches the given <i translate="no">data</i> to the current text block. The ownership is passed to the underlying text document, i.e. the provided <a href="qtextblockuserdata.html" translate="no">QTextBlockUserData</a> object will be deleted if the corresponding text block gets deleted.</p>
 <p><a href="qtextblockuserdata.html" translate="no">QTextBlockUserData</a> can be used to store custom settings. In the case of syntax highlighting, it is in particular interesting as cache storage for information that you may figure out while parsing the paragraph's text.</p>
 <p>For example while parsing the text, you can keep track of parenthesis characters that you encounter ('{[(' and the like), and store their relative position and the actual <a href="../qtcore/qchar.html" translate="no">QChar</a> in a simple class derived from <a href="qtextblockuserdata.html" translate="no">QTextBlockUserData</a>:</p>
 <pre class="cpp" translate="no">
@@ -264,7 +264,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@setDocument -->
 <!-- $$$setFormat[overload1]$$$setFormatintintconstQTextCharFormat& -->
 <h3 class="fn" translate="no" id="setFormat"><code translate="no">[protected] </code><span class="type">void</span> QSyntaxHighlighter::<span class="name">setFormat</span>(<span class="type">int</span> <i>start</i>, <span class="type">int</span> <i>count</i>, const <span class="type"><a href="qtextcharformat.html" translate="no">QTextCharFormat</a></span> &amp;<i>format</i>)</h3>
-<p>This function is applied to the syntax highlighter's current text block (i.e&#x2e; the text that is passed to the <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>() function).</p>
+<p>This function is applied to the syntax highlighter's current text block (i.e. the text that is passed to the <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>() function).</p>
 <p>The specified <i translate="no">format</i> is applied to the text from the <i translate="no">start</i> position for a length of <i translate="no">count</i> characters (if <i translate="no">count</i> is 0, nothing is done). The formatting properties set in <i translate="no">format</i> are merged at display time with the formatting information stored directly in the document, for example as previously set with <a href="qtextcursor.html" translate="no">QTextCursor</a>'s functions. Note that the document itself remains unmodified by the format set through this function.</p>
 <p><b>See also </b><a href="qsyntaxhighlighter.html#format" translate="no">format</a>() and <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>().</p>
 <!-- @@@setFormat -->
@@ -272,14 +272,14 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h3 class="fn" translate="no" id="setFormat-1"><code translate="no">[protected] </code><span class="type">void</span> QSyntaxHighlighter::<span class="name">setFormat</span>(<span class="type">int</span> <i>start</i>, <span class="type">int</span> <i>count</i>, const <span class="type"><a href="qcolor.html" translate="no">QColor</a></span> &amp;<i>color</i>)</h3>
 <p>This is an overloaded function.</p>
 <p>The specified <i translate="no">color</i> is applied to the current text block from the <i translate="no">start</i> position for a length of <i translate="no">count</i> characters.</p>
-<p>The other attributes of the current text block, e.g&#x2e; the font and background color, are reset to default values.</p>
+<p>The other attributes of the current text block, e.g. the font and background color, are reset to default values.</p>
 <p><b>See also </b><a href="qsyntaxhighlighter.html#format" translate="no">format</a>() and <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>().</p>
 <!-- @@@setFormat -->
 <!-- $$$setFormat$$$setFormatintintconstQFont& -->
 <h3 class="fn" translate="no" id="setFormat-2"><code translate="no">[protected] </code><span class="type">void</span> QSyntaxHighlighter::<span class="name">setFormat</span>(<span class="type">int</span> <i>start</i>, <span class="type">int</span> <i>count</i>, const <span class="type"><a href="qfont.html" translate="no">QFont</a></span> &amp;<i>font</i>)</h3>
 <p>This is an overloaded function.</p>
 <p>The specified <i translate="no">font</i> is applied to the current text block from the <i translate="no">start</i> position for a length of <i translate="no">count</i> characters.</p>
-<p>The other attributes of the current text block, e.g&#x2e; the font and background color, are reset to default values.</p>
+<p>The other attributes of the current text block, e.g. the font and background color, are reset to default values.</p>
 <p><b>See also </b><a href="qsyntaxhighlighter.html#format" translate="no">format</a>() and <a href="qsyntaxhighlighter.html#highlightBlock" translate="no">highlightBlock</a>().</p>
 <!-- @@@setFormat -->
 </div>
@@ -290,9 +290,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

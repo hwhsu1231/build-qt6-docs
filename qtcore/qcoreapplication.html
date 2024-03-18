@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qcoreapplication.cpp -->
   <meta name="description" content="The QCoreApplication class provides an event loop for Qt applications without UI.">
-  <title>QCoreApplication Class | Qt Core 6.6.0</title>
+  <title>QCoreApplication Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QCoreApplication</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -168,10 +168,10 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
 <p>This class is used by non-GUI applications to provide their event loop. For non-GUI application that uses Qt, there should be exactly one QCoreApplication object. For GUI applications, see <a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a>. For applications that use the Qt Widgets module, see <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a>.</p>
-<p>QCoreApplication contains the main event loop, where all events from the operating system (e.g&#x2e;, timer and network events) and other sources are processed and dispatched. It also handles the application's initialization and finalization, as well as system-wide and application-wide settings.</p>
+<p>QCoreApplication contains the main event loop, where all events from the operating system (e.g., timer and network events) and other sources are processed and dispatched. It also handles the application's initialization and finalization, as well as system-wide and application-wide settings.</p>
 <h3 id="the-event-loop-and-event-handling">The Event Loop and Event Handling</h3>
 <p>The event loop is started with a call to <a href="qcoreapplication.html#exec" translate="no">exec</a>(). Long-running operations can call <a href="qcoreapplication.html#processEvents" translate="no">processEvents</a>() to keep the application responsive.</p>
-<p>In general, we recommend that you create a QCoreApplication, <a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a> or a <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> object in your <code translate="no">main()</code> function as early as possible. <a href="qcoreapplication.html#exec" translate="no">exec</a>() will not return until the event loop exits; e.g&#x2e;, when <a href="qcoreapplication.html#quit" translate="no">quit</a>() is called.</p>
+<p>In general, we recommend that you create a QCoreApplication, <a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a> or a <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a> object in your <code translate="no">main()</code> function as early as possible. <a href="qcoreapplication.html#exec" translate="no">exec</a>() will not return until the event loop exits; e.g., when <a href="qcoreapplication.html#quit" translate="no">quit</a>() is called.</p>
 <p>Several static convenience functions are also provided. The QCoreApplication object is available from <a href="qcoreapplication.html#instance" translate="no">instance</a>(). Events can be sent with <a href="qcoreapplication.html#sendEvent" translate="no">sendEvent</a>() or posted to an event queue with <a href="qcoreapplication.html#postEvent" translate="no">postEvent</a>(). Pending events can be removed with <a href="qcoreapplication.html#removePostedEvents" translate="no">removePostedEvents</a>() or dispatched with <a href="qcoreapplication.html#sendPostedEvents" translate="no">sendPostedEvents</a>().</p>
 <p>The class provides a <a href="qcoreapplication.html#quit" translate="no">quit</a>() slot and an <a href="qcoreapplication.html#aboutToQuit" translate="no">aboutToQuit</a>() signal.</p>
 <h3 id="application-and-library-paths">Application and Library Paths</h3>
@@ -181,13 +181,13 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 id="accessing-command-line-arguments">Accessing Command Line Arguments</h3>
 <p>The command line arguments which are passed to QCoreApplication's constructor should be accessed using the <a href="qcoreapplication.html#arguments" translate="no">arguments</a>() function.</p>
 <div class="admonition note">
-<p><b>Note: </b>QCoreApplication removes option <code translate="no">-qmljsdebugger=&quot;..&#x2e;&quot;</code>. It parses the argument of <code translate="no">qmljsdebugger</code>, and then removes this option plus its argument.</p>
+<p><b>Note: </b>QCoreApplication removes option <code translate="no">-qmljsdebugger=&quot;...&quot;</code>. It parses the argument of <code translate="no">qmljsdebugger</code>, and then removes this option plus its argument.</p>
 </div>
 <p>For more advanced command line option handling, create a <a href="qcommandlineparser.html" translate="no">QCommandLineParser</a>.</p>
 <h3 id="locale-settings">Locale Settings</h3>
 <p>On Unix/Linux Qt is configured to use the system locale settings by default. This can cause a conflict when using POSIX functions, for instance, when converting between data types such as floats and strings, since the notation may differ between locales. To get around this problem, call the POSIX function <code translate="no">setlocale(LC_NUMERIC,&quot;C&quot;)</code> right after initializing <a href="../qtwidgets/qapplication.html" translate="no">QApplication</a>, <a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a> or QCoreApplication to reset the locale that is used for number formatting to &quot;C&quot;-locale.</p>
 </div>
-<p><b>See also </b><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a>, <a href="qabstracteventdispatcher.html" translate="no">QAbstractEventDispatcher</a>, <a href="qeventloop.html" translate="no">QEventLoop</a>, <a href="qtcore-threads-semaphores-example.html" translate="no">Semaphores Example</a>, and <a href="qtcore-threads-waitconditions-example.html" translate="no">Wait Conditions Example</a>.</p>
+<p><b>See also </b><a href="../qtgui/qguiapplication.html" translate="no">QGuiApplication</a>, <a href="qabstracteventdispatcher.html" translate="no">QAbstractEventDispatcher</a>, <a href="qeventloop.html" translate="no">QEventLoop</a>, <a href="qtcore-threads-semaphores-example.html" translate="no">Producer and Consumer using Semaphores</a>, and <a href="qtcore-threads-waitconditions-example.html" translate="no">Producer and Consumer using Wait Conditions</a>.</p>
 <!-- @@@QCoreApplication -->
 <div class="prop">
 <h2>Property Documentation</h2>
@@ -289,7 +289,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@~QCoreApplication -->
 <!-- $$$aboutToQuit[overload1]$$$aboutToQuit -->
 <h3 class="fn" translate="no" id="aboutToQuit"><code translate="no">[private signal] </code><span class="type">void</span> QCoreApplication::<span class="name">aboutToQuit</span>()</h3>
-<p>This signal is emitted when the application is about to quit the main event loop, e.g&#x2e; when the event loop level drops to zero. This may happen either after a call to <a href="qcoreapplication.html#quit" translate="no">quit</a>() from inside the application or when the user shuts down the entire desktop session.</p>
+<p>This signal is emitted when the application is about to quit the main event loop, e.g. when the event loop level drops to zero. This may happen either after a call to <a href="qcoreapplication.html#quit" translate="no">quit</a>() from inside the application or when the user shuts down the entire desktop session.</p>
 <p>The signal is particularly useful if your application has to do some last-second cleanup. Note that no user interaction is possible in this state.</p>
 <div class="admonition note">
 <p><b>Note: </b>At this point the main event loop is still running, but will not process further events on return except <a href="qevent.html#Type-enum" translate="no">QEvent::DeferredDelete</a> events for objects deleted via <a href="qobject.html#deleteLater" translate="no">deleteLater</a>(). If event processing is needed, use a nested event loop or call <a href="qcoreapplication.html#processEvents" translate="no">QCoreApplication::processEvents</a>() manually.</p>
@@ -382,10 +382,10 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="installNativeEventFilter"><span class="type">void</span> QCoreApplication::<span class="name">installNativeEventFilter</span>(<span class="type"><a href="qabstractnativeeventfilter.html" translate="no">QAbstractNativeEventFilter</a></span> *<i>filterObj</i>)</h3>
 <p>Installs an event filter <i translate="no">filterObj</i> for all native events received by the application in the main thread.</p>
 <p>The event filter <i translate="no">filterObj</i> receives events via its <a href="qabstractnativeeventfilter.html#nativeEventFilter" translate="no">nativeEventFilter</a>() function, which is called for all native events received in the main thread.</p>
-<p>The <a href="qabstractnativeeventfilter.html#nativeEventFilter" translate="no">QAbstractNativeEventFilter::nativeEventFilter</a>() function should return true if the event should be filtered, i.e&#x2e; stopped. It should return false to allow normal Qt processing to continue: the native event can then be translated into a <a href="qevent.html" translate="no">QEvent</a> and handled by the standard Qt <a href="qevent.html" translate="no">event</a> filtering, e.g&#x2e; <a href="qobject.html#installEventFilter" translate="no">QObject::installEventFilter</a>().</p>
+<p>The <a href="qabstractnativeeventfilter.html#nativeEventFilter" translate="no">QAbstractNativeEventFilter::nativeEventFilter</a>() function should return true if the event should be filtered, i.e. stopped. It should return false to allow normal Qt processing to continue: the native event can then be translated into a <a href="qevent.html" translate="no">QEvent</a> and handled by the standard Qt <a href="qevent.html" translate="no">event</a> filtering, e.g. <a href="qobject.html#installEventFilter" translate="no">QObject::installEventFilter</a>().</p>
 <p>If multiple event filters are installed, the filter that was installed last is activated first.</p>
 <div class="admonition note">
-<p><b>Note: </b>The filter function set here receives native messages, i.e&#x2e; MSG or XCB event structs.</p>
+<p><b>Note: </b>The filter function set here receives native messages, i.e. MSG or XCB event structs.</p>
 </div>
 <div class="admonition note">
 <p><b>Note: </b>Native event filters will be disabled in the application when the <a href="qt.html#ApplicationAttribute-enum" translate="no">Qt::AA_PluginApplication</a> attribute is set.</p>
@@ -420,17 +420,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>The return value of this function may change when a <a href="qcoreapplication.html" translate="no">QCoreApplication</a> is created. It is not recommended to call it before creating a <a href="qcoreapplication.html" translate="no">QCoreApplication</a>. The directory of the application executable (<b>not</b> the working directory) is part of the list if it is known. In order to make it known a <a href="qcoreapplication.html" translate="no">QCoreApplication</a> has to be constructed as it will use <code translate="no">argv[0]</code> to find it.</p>
 <p>Qt provides default library paths, but they can also be set using a <a href="../qtdoc/qt-conf.html" translate="no">qt.conf</a> file. Paths specified in this file will override default values. Note that if the qt.conf file is in the directory of the application executable, it may not be found until a <a href="qcoreapplication.html" translate="no">QCoreApplication</a> is created. If it is not found when calling this function, the default library paths will be used.</p>
 <p>The list will include the installation directory for plugins if it exists (the default installation directory for plugins is <code translate="no">INSTALL/plugins</code>, where <code translate="no">INSTALL</code> is the directory where Qt was installed). The colon separated entries of the <code translate="no">QT_PLUGIN_PATH</code> environment variable are always added. The plugin installation directory (and its existence) may change when the directory of the application executable becomes known.</p>
-<p>If you want to iterate over the list, you can use the <a href="qforeach-proxy.html#foreach" translate="no">foreach</a> pseudo-keyword:</p>
-<pre class="cpp" translate="no">
- foreach (<span class="keyword">const</span> <span class="type"><a href="qstring.html" translate="no">QString</a></span> <span class="operator">&amp;</span>path<span class="operator">,</span> app<span class="operator">.</span>libraryPaths())
-     do_something(path);
-</pre>
 <p><b>See also </b><a href="qcoreapplication.html#setLibraryPaths" translate="no">setLibraryPaths</a>(), <a href="qcoreapplication.html#addLibraryPath" translate="no">addLibraryPath</a>(), <a href="qcoreapplication.html#removeLibraryPath" translate="no">removeLibraryPath</a>(), <a href="qlibrary.html" translate="no">QLibrary</a>, and <a href="../qtdoc/plugins-howto.html" translate="no">How to Create Qt Plugins</a>.</p>
 <!-- @@@libraryPaths -->
 <!-- $$$notify[overload1]$$$notifyQObject*QEvent* -->
 <h3 class="fn" translate="no" id="notify"><code translate="no">[virtual] </code><span class="type">bool</span> QCoreApplication::<span class="name">notify</span>(<span class="type"><a href="qobject.html#QObject" translate="no">QObject</a></span> *<i>receiver</i>, <span class="type"><a href="qevent.html" translate="no">QEvent</a></span> *<i>event</i>)</h3>
 <p>Sends <i translate="no">event</i> to <i translate="no">receiver</i>: <i translate="no">receiver</i>-&gt;event(<i translate="no">event</i>). Returns the value that is returned from the receiver's event handler. Note that this function is called for all events sent to any object in any thread.</p>
-<p>For certain types of events (e.g&#x2e; mouse and key events), the event will be propagated to the receiver's parent and so on up to the top-level object if the receiver is not interested in the event (i.e&#x2e;, it returns <code translate="no">false</code>).</p>
+<p>For certain types of events (e.g. mouse and key events), the event will be propagated to the receiver's parent and so on up to the top-level object if the receiver is not interested in the event (i.e., it returns <code translate="no">false</code>).</p>
 <p>There are five different ways that events can be processed; reimplementing this virtual function is just one of them. All five approaches are listed below:</p>
 <ol class="1" type="1"><li>Reimplementing <a href="../qtwidgets/qwidget.html#paintEvent" translate="no">paintEvent</a>(), <a href="../qtwidgets/qwidget.html#mousePressEvent" translate="no">mousePressEvent</a>() and so on. This is the most common, easiest, and least powerful way.</li>
 <li>Reimplementing this function. This is very powerful, providing complete control; but only one subclass can be active at a time.</li>
@@ -449,7 +444,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Adds the event <i translate="no">event</i>, with the object <i translate="no">receiver</i> as the receiver of the event, to an event queue and returns immediately.</p>
 <p>The event must be allocated on the heap since the post event queue will take ownership of the event and delete it once it has been posted. It is <i>not safe</i> to access the event after it has been posted.</p>
 <p>When control returns to the main event loop, all events that are stored in the queue will be sent using the <a href="qcoreapplication.html#notify" translate="no">notify</a>() function.</p>
-<p>Events are sorted in descending <i translate="no">priority</i> order, i.e&#x2e; events with a high <i translate="no">priority</i> are queued before events with a lower <i translate="no">priority</i>. The <i translate="no">priority</i> can be any integer value, i.e&#x2e; between INT_MAX and INT_MIN, inclusive; see <a href="qt.html#EventPriority-enum" translate="no">Qt::EventPriority</a> for more details. Events with equal <i translate="no">priority</i> will be processed in the order posted.</p>
+<p>Events are sorted in descending <i translate="no">priority</i> order, i.e. events with a high <i translate="no">priority</i> are queued before events with a lower <i translate="no">priority</i>. The <i translate="no">priority</i> can be any integer value, i.e. between INT_MAX and INT_MIN, inclusive; see <a href="qt.html#EventPriority-enum" translate="no">Qt::EventPriority</a> for more details. Events with equal <i translate="no">priority</i> will be processed in the order posted.</p>
 <p><b>Note:</b> This function is <a href="../qtdoc/threads-reentrancy.html" translate="no">thread-safe</a>.</p>
 <p><b>See also </b><a href="qcoreapplication.html#sendEvent" translate="no">sendEvent</a>(), <a href="qcoreapplication.html#notify" translate="no">notify</a>(), <a href="qcoreapplication.html#sendPostedEvents" translate="no">sendPostedEvents</a>(), and <a href="qt.html#EventPriority-enum" translate="no">Qt::EventPriority</a>.</p>
 <!-- @@@postEvent -->
@@ -457,7 +452,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="processEvents"><code translate="no">[static] </code><span class="type">void</span> QCoreApplication::<span class="name">processEvents</span>(<span class="type"><a href="qeventloop.html#ProcessEventsFlag-enum" translate="no">QEventLoop::ProcessEventsFlags</a></span> <i>flags</i> = QEventLoop::AllEvents)</h3>
 <p>Processes some pending events for the calling thread according to the specified <i translate="no">flags</i>.</p>
 <p>Use of this function is discouraged. Instead, prefer to move long operations out of the GUI thread into an auxiliary one and to completely avoid nested event loop processing. If event processing is really necessary, consider using <a href="qeventloop.html" translate="no">QEventLoop</a> instead.</p>
-<p>In the event that you are running a local loop which calls this function continuously, without an event loop, the <a href="qevent.html#Type-enum" translate="no">DeferredDelete</a> events will not be processed. This can affect the behaviour of widgets, e.g&#x2e; <a href="../qtwidgets/qtooltip.html" translate="no">QToolTip</a>, that rely on <a href="qevent.html#Type-enum" translate="no">DeferredDelete</a> events to function properly. An alternative would be to call <a href="qcoreapplication.html#sendPostedEvents" translate="no">sendPostedEvents</a>() from within that local loop.</p>
+<p>In the event that you are running a local loop which calls this function continuously, without an event loop, the <a href="qevent.html#Type-enum" translate="no">DeferredDelete</a> events will not be processed. This can affect the behaviour of widgets, e.g. <a href="../qtwidgets/qtooltip.html" translate="no">QToolTip</a>, that rely on <a href="qevent.html#Type-enum" translate="no">DeferredDelete</a> events to function properly. An alternative would be to call <a href="qcoreapplication.html#sendPostedEvents" translate="no">sendPostedEvents</a>() from within that local loop.</p>
 <p>Calling this function processes events only for the calling thread, and returns after all available events have been processed. Available events are events queued before the function call. This means that events that are posted while the function runs will be queued until a later round of event processing.</p>
 <p><b>Note:</b> This function is <a href="../qtdoc/threads-reentrancy.html" translate="no">thread-safe</a>.</p>
 <p><b>See also </b><a href="qcoreapplication.html#exec" translate="no">exec</a>(), <a href="qtimer.html" translate="no">QTimer</a>, <a href="qeventloop.html#processEvents" translate="no">QEventLoop::processEvents</a>(), and <a href="qcoreapplication.html#sendPostedEvents" translate="no">sendPostedEvents</a>().</p>
@@ -503,7 +498,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="removeNativeEventFilter"><span class="type">void</span> QCoreApplication::<span class="name">removeNativeEventFilter</span>(<span class="type"><a href="qabstractnativeeventfilter.html" translate="no">QAbstractNativeEventFilter</a></span> *<i>filterObject</i>)</h3>
 <p>Removes an event <i translate="no">filterObject</i> from this object. The request is ignored if such an event filter has not been installed.</p>
 <p>All event filters for this object are automatically removed when this object is destroyed.</p>
-<p>It is always safe to remove an event filter, even during event filter activation (i.e&#x2e; from the nativeEventFilter() function).</p>
+<p>It is always safe to remove an event filter, even during event filter activation (i.e. from the nativeEventFilter() function).</p>
 <p><b>See also </b><a href="qcoreapplication.html#installNativeEventFilter" translate="no">installNativeEventFilter</a>().</p>
 <!-- @@@removeNativeEventFilter -->
 <!-- $$$removePostedEvents[overload1]$$$removePostedEventsQObject*int -->
@@ -632,7 +627,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="translate"><code translate="no">[static] </code><span class="type"><a href="qstring.html" translate="no">QString</a></span> QCoreApplication::<span class="name">translate</span>(const <span class="type">char</span> *<i>context</i>, const <span class="type">char</span> *<i>sourceText</i>, const <span class="type">char</span> *<i>disambiguation</i> = nullptr, <span class="type">int</span> <i>n</i> = -1)</h3>
 <p>Returns the translation text for <i translate="no">sourceText</i>, by querying the installed translation files. The translation files are searched from the most recently installed file back to the first installed file.</p>
 <p><a href="qobject.html#tr" translate="no">QObject::tr</a>() provides this functionality more conveniently.</p>
-<p><i translate="no">context</i> is typically a class name (e.g&#x2e;, &quot;MyDialog&quot;) and <i translate="no">sourceText</i> is either English text or a short identifying text.</p>
+<p><i translate="no">context</i> is typically a class name (e.g., &quot;MyDialog&quot;) and <i translate="no">sourceText</i> is either English text or a short identifying text.</p>
 <p><i translate="no">disambiguation</i> is an identifying string, for when the same <i translate="no">sourceText</i> is used in different roles within the same context. By default, it is <code translate="no">nullptr</code>.</p>
 <p>See the <a href="qtranslator.html" translate="no">QTranslator</a> and <a href="qobject.html#tr" translate="no">QObject::tr</a>() documentation for more information about contexts, disambiguations and comments.</p>
 <p><i translate="no">n</i> is used in conjunction with <code translate="no">%n</code> to support plural forms. See <a href="qobject.html#tr" translate="no">QObject::tr</a>() for details.</p>
@@ -762,9 +757,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

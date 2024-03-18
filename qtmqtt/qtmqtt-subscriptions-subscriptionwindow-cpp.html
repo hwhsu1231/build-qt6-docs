@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- subscriptions.qdoc -->
   <meta name="description" content="Creating a application that communicates with an MQTT broker.">
-  <title>MQTT Subscriptions | Qt MQTT 6.6.0</title>
+  <title>MQTT Subscriptions | Qt MQTT 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtmqtt-index.html" translate="no">Qt MQTT</a></li>
 <li><a href="qtmqtt-examples.html" translate="no">Qt MQTT Examples</a></li>
 <li>MQTT Subscriptions</li>
-<li id="buildversion"><a href="qtmqtt-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtmqtt-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -44,6 +44,8 @@
 
  <span class="preprocessor">#include &quot;subscriptionwindow.h&quot;</span>
  <span class="preprocessor">#include &quot;ui_subscriptionwindow.h&quot;</span>
+
+ <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="type"><a href="../qtcore/qt.html" translate="no">Qt</a></span><span class="operator">::</span>StringLiterals;
 
  SubscriptionWindow<span class="operator">::</span>SubscriptionWindow(<span class="type"><a href="qmqttsubscription.html" translate="no">QMqttSubscription</a></span> <span class="operator">*</span>sub<span class="operator">,</span> <span class="type">QWidget</span> <span class="operator">*</span>parent) :
      <span class="type">QWidget</span>(parent)<span class="operator">,</span>
@@ -78,22 +80,22 @@
  {
      <span class="keyword">switch</span> (state) {
      <span class="keyword">case</span> <span class="type"><a href="qmqttsubscription.html" translate="no">QMqttSubscription</a></span><span class="operator">::</span>Unsubscribed:
-         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(QLatin1String(<span class="string">&quot;Unsubscribed&quot;</span>));
+         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Unsubscribed&quot;</span>_s);
          <span class="keyword">break</span>;
      <span class="keyword">case</span> <span class="type"><a href="qmqttsubscription.html" translate="no">QMqttSubscription</a></span><span class="operator">::</span>SubscriptionPending:
-         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(QLatin1String(<span class="string">&quot;Pending&quot;</span>));
+         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Pending&quot;</span>_s);
          <span class="keyword">break</span>;
      <span class="keyword">case</span> <span class="type"><a href="qmqttsubscription.html" translate="no">QMqttSubscription</a></span><span class="operator">::</span>Subscribed:
-         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(QLatin1String(<span class="string">&quot;Subscribed&quot;</span>));
+         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Subscribed&quot;</span>_s);
          <span class="keyword">break</span>;
      <span class="keyword">case</span> <span class="type"><a href="qmqttsubscription.html" translate="no">QMqttSubscription</a></span><span class="operator">::</span>Error:
-         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(QLatin1String(<span class="string">&quot;Error&quot;</span>));
+         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Error&quot;</span>_s);
          <span class="keyword">break</span>;
      <span class="keyword">case</span> <span class="type"><a href="qmqttsubscription.html" translate="no">QMqttSubscription</a></span><span class="operator">::</span>UnsubscriptionPending:
-         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(QLatin1String(<span class="string">&quot;Pending Unsubscription&quot;</span>));
+         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;Pending Unsubscription&quot;</span>_s);
          <span class="keyword">break</span>;
      <span class="keyword">default</span>:
-         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(QLatin1String(<span class="string">&quot;--Unknown--&quot;</span>));
+         ui<span class="operator">-</span><span class="operator">&gt;</span>labelStatus<span class="operator">-</span><span class="operator">&gt;</span>setText(u<span class="string">&quot;--Unknown--&quot;</span>_s);
          <span class="keyword">break</span>;
      }
  }

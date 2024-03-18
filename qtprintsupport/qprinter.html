@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qprinter.cpp -->
   <meta name="description" content="The QPrinter class is a paint device that paints on a printer.">
-  <title>QPrinter Class | Qt Print Support 6.6.0</title>
+  <title>QPrinter Class | Qt Print Support 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtprintsupport-index.html" translate="no">Qt Print Support</a></li>
 <li><a href="qtprintsupport-module.html" translate="no">C++ Classes</a></li>
 <li>QPrinter</li>
-<li id="buildversion"><a href="qtprintsupport-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtprintsupport-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -154,7 +154,7 @@ target_link_libraries(mytarget PRIVATE Qt6::PrintSupport)</td></tr>
 <li><a href="qprinter.html#setFullPage" translate="no">setFullPage</a>() tells QPrinter whether you want to deal with the full page or just with the part the printer can draw on.</li>
 <li><a href="qprinter.html#setCopyCount" translate="no">setCopyCount</a>() tells QPrinter how many copies of the document it should print.</li>
 </ul>
-<p>Many of these functions can only be called before the actual printing begins (i.e&#x2e;, before <a href="../qtgui/qpainter.html#begin" translate="no">QPainter::begin</a>() is called). This usually makes sense because, for example, it's not possible to change the number of copies when you are halfway through printing. There are also some settings that the user sets (through the printer dialog) and that applications are expected to obey. See <a href="qabstractprintdialog.html" translate="no">QAbstractPrintDialog</a>'s documentation for more details.</p>
+<p>Many of these functions can only be called before the actual printing begins (i.e., before <a href="../qtgui/qpainter.html#begin" translate="no">QPainter::begin</a>() is called). This usually makes sense because, for example, it's not possible to change the number of copies when you are halfway through printing. There are also some settings that the user sets (through the printer dialog) and that applications are expected to obey. See <a href="qabstractprintdialog.html" translate="no">QAbstractPrintDialog</a>'s documentation for more details.</p>
 <p>When <a href="../qtgui/qpainter.html#begin" translate="no">QPainter::begin</a>() is called, the QPrinter it operates on is prepared for a new page, enabling the <a href="../qtgui/qpainter.html" translate="no">QPainter</a> to be used immediately to paint the first page in a document. Once the first page has been painted, <a href="qprinter.html#newPage" translate="no">newPage</a>() can be called to request a new blank page to paint on, or <a href="../qtgui/qpainter.html#end" translate="no">QPainter::end</a>() can be called to finish printing. The second page and all following pages are prepared using a call to <a href="qprinter.html#newPage" translate="no">newPage</a>() before they are painted.</p>
 <p>The first page in a document does not need to be preceded by a call to <a href="qprinter.html#newPage" translate="no">newPage</a>(). You only need to calling <a href="qprinter.html#newPage" translate="no">newPage</a>() after <a href="../qtgui/qpainter.html#begin" translate="no">QPainter::begin</a>() if you need to insert a blank page at the beginning of a printed document. Similarly, calling <a href="qprinter.html#newPage" translate="no">newPage</a>() after the last page in a document is painted will result in a trailing blank page appended to the end of the printed document.</p>
 <p>If you want to abort the print job, <a href="qprinter.html#abort" translate="no">abort</a>() will try its best to stop printing. It may cancel the entire job or just part of it.</p>
@@ -580,7 +580,7 @@ target_link_libraries(mytarget PRIVATE Qt6::PrintSupport)</td></tr>
 <!-- $$$supportedPaperSources[overload1]$$$supportedPaperSources -->
 <h3 class="fn" translate="no" id="supportedPaperSources"><span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span>&lt;<span class="type"><a href="qprinter.html#PaperSource-enum" translate="no">PaperSource</a></span>&gt; QPrinter::<span class="name">supportedPaperSources</span>() const</h3>
 <p>Returns the supported paper sizes for this printer.</p>
-<p>The values will be either a value that matches an entry in the <a href="qprinter.html#PaperSource-enum" translate="no">QPrinter::PaperSource</a> enum or a driver spesific value. The driver spesific values are greater than the constant DMBIN_USER declared in wingdi.h&#x2e;</p>
+<p>The values will be either a value that matches an entry in the <a href="qprinter.html#PaperSource-enum" translate="no">QPrinter::PaperSource</a> enum or a driver spesific value. The driver spesific values are greater than the constant DMBIN_USER declared in wingdi.h.</p>
 <div class="admonition warning">
 <p><b>Warning: </b>This function is only available in windows.</p>
 </div>
@@ -588,7 +588,7 @@ target_link_libraries(mytarget PRIVATE Qt6::PrintSupport)</td></tr>
 <!-- $$$supportedResolutions[overload1]$$$supportedResolutions -->
 <h3 class="fn" translate="no" id="supportedResolutions"><span class="type"><a href="../qtcore/qlist.html" translate="no">QList</a></span>&lt;<span class="type">int</span>&gt; QPrinter::<span class="name">supportedResolutions</span>() const</h3>
 <p>Returns a list of the resolutions (a list of dots-per-inch integers) that the printer says it supports.</p>
-<p>For X11 where all printing is directly to PDF, this function will always return a one item list containing only the PDF resolution, i.e&#x2e;, 72 (72 dpi &ndash; but see <a href="qprinter.html#PrinterMode-enum" translate="no">PrinterMode</a>).</p>
+<p>For X11 where all printing is directly to PDF, this function will always return a one item list containing only the PDF resolution, i.e., 72 (72 dpi &ndash; but see <a href="qprinter.html#PrinterMode-enum" translate="no">PrinterMode</a>).</p>
 <!-- @@@supportedResolutions -->
 <!-- $$$supportsMultipleCopies[overload1]$$$supportsMultipleCopies -->
 <h3 class="fn" translate="no" id="supportsMultipleCopies"><span class="type">bool</span> QPrinter::<span class="name">supportsMultipleCopies</span>() const</h3>
@@ -614,9 +614,9 @@ target_link_libraries(mytarget PRIVATE Qt6::PrintSupport)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

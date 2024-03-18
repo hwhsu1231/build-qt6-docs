@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qutimimeconverter.mm -->
   <meta name="description" content="The QUtiMimeConverter class converts between a MIME type and a Uniform Type Identifier (UTI) format.">
-  <title>QUtiMimeConverter Class | Qt GUI 6.6.0</title>
+  <title>QUtiMimeConverter Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QUtiMimeConverter</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -81,7 +81,15 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h2 id="details">Detailed Description</h2>
 <p>Qt's drag and drop and clipboard facilities use the MIME standard. On X11, this maps trivially to the Xdnd protocol. On Mac, although some applications use MIME to describe clipboard contents, it is more common to use Apple's UTI format.</p>
 <p>QUtiMimeConverter's role is to bridge the gap between MIME and UTI; By subclasses this class, one can extend Qt's drag and drop and clipboard handling to convert to and from unsupported, or proprietary, UTI formats.</p>
-<p>A subclass of QUtiMimeConverter will automatically be registered, and active, upon instantiation.</p>
+<p>Construct an instance of your converter implementation after instantiating <a href="qguiapplication.html" translate="no">QGuiApplication</a>:</p>
+<pre class="cpp" translate="no">
+ <span class="type">int</span> main(<span class="type">int</span> argc<span class="operator">,</span> <span class="type">char</span> <span class="operator">*</span><span class="operator">*</span>argv)
+ {
+     <span class="type"><a href="qguiapplication.html" translate="no">QGuiApplication</a></span> app(argc<span class="operator">,</span> argv);
+     JsonMimeConverter jsonConverter;
+ }
+</pre>
+<p>Destroying the instance will unregister the converter and remove support for the conversion. It is also valid to heap-allocate the converter instance; Qt takes ownership and will delete the converter object during <a href="qguiapplication.html" translate="no">QGuiApplication</a> shut-down.</p>
 <p>Qt has predefined support for the following UTIs:</p>
 <ul>
 <li>public.utf8-plain-text - converts to &quot;text/plain&quot;</li>
@@ -103,6 +111,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- $$$QUtiMimeConverter$$$QUtiMimeConverter -->
 <h3 class="fn" translate="no" id="QUtiMimeConverter-1">QUtiMimeConverter::<span class="name">QUtiMimeConverter</span>()</h3>
 <p>Constructs a new conversion object and adds it to the globally accessed list of available converters.</p>
+<p>Call this constructor after <a href="qguiapplication.html" translate="no">QGuiApplication</a> has been created.</p>
 <!-- @@@QUtiMimeConverter -->
 <!-- $$$~QUtiMimeConverter[overload1]$$$~QUtiMimeConverter -->
 <h3 class="fn" translate="no" id="dtor.QUtiMimeConverter"><code translate="no">[virtual noexcept] </code>QUtiMimeConverter::<span class="name">~QUtiMimeConverter</span>()</h3>
@@ -146,9 +155,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

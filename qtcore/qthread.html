@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qthread.cpp -->
   <meta name="description" content="The QThread class provides a platform-independent way to manage threads.">
-  <title>QThread Class | Qt Core 6.6.0</title>
+  <title>QThread Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QThread</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -199,21 +199,21 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>It is important to remember that a QThread instance <a href="qobject.html#thread-affinity" translate="no">lives in</a> the old thread that instantiated it, not in the new thread that calls <a href="qthread.html#run" translate="no">run</a>(). This means that all of QThread's queued slots and <a href="qmetaobject.html#invokeMethod" translate="no">invoked methods</a> will execute in the old thread. Thus, a developer who wishes to invoke slots in the new thread must use the worker-object approach; new slots should not be implemented directly into a subclassed QThread.</p>
 <p>Unlike queued slots or invoked methods, methods called directly on the QThread object will execute in the thread that calls the method. When subclassing QThread, keep in mind that the constructor executes in the old thread while <a href="qthread.html#run" translate="no">run</a>() executes in the new thread. If a member variable is accessed from both functions, then the variable is accessed from two different threads. Check that it is safe to do so.</p>
 <div class="admonition note">
-<p><b>Note: </b>Care must be taken when interacting with objects across different threads. As a general rule, functions can only be called from the thread that created the QThread object itself (e.g&#x2e; <a href="qthread.html#setPriority" translate="no">setPriority</a>()), unless the documentation says otherwise. See <a href="../qtdoc/threads-synchronizing.html" translate="no">Synchronizing Threads</a> for details.</p>
+<p><b>Note: </b>Care must be taken when interacting with objects across different threads. As a general rule, functions can only be called from the thread that created the QThread object itself (e.g. <a href="qthread.html#setPriority" translate="no">setPriority</a>()), unless the documentation says otherwise. See <a href="../qtdoc/threads-synchronizing.html" translate="no">Synchronizing Threads</a> for details.</p>
 </div>
 <h3 id="managing-threads">Managing Threads</h3>
 <p>QThread will notify you via a signal when the thread is <a href="qthread.html#started" translate="no">started</a>() and <a href="qthread.html#finished" translate="no">finished</a>(), or you can use <a href="qthread.html#isFinished" translate="no">isFinished</a>() and <a href="qthread.html#isRunning" translate="no">isRunning</a>() to query the state of the thread.</p>
 <p>You can stop the thread by calling <a href="qthread.html#exit" translate="no">exit</a>() or <a href="qthread.html#quit" translate="no">quit</a>(). In extreme cases, you may want to forcibly <a href="qthread.html#terminate" translate="no">terminate</a>() an executing thread. However, doing so is dangerous and discouraged. Please read the documentation for <a href="qthread.html#terminate" translate="no">terminate</a>() and <a href="qthread.html#setTerminationEnabled" translate="no">setTerminationEnabled</a>() for detailed information.</p>
-<p>From Qt 4.8 onwards, it is possible to deallocate objects that live in a thread that has just ended, by connecting the <a href="qthread.html#finished" translate="no">finished</a>() signal to <a href="qobject.html#deleteLater" translate="no">QObject::deleteLater</a>().</p>
+<p>You often want to deallocate objects that live in a thread when a thread ends. To do this, connect the <a href="qthread.html#finished" translate="no">finished</a>() signal to <a href="qobject.html#deleteLater" translate="no">QObject::deleteLater</a>().</p>
 <p>Use <a href="qthread.html#wait" translate="no">wait</a>() to block the calling thread, until the other thread has finished execution (or until a specified time has passed).</p>
-<p>QThread also provides static, platform independent sleep functions: <a href="qthread.html#sleep" translate="no">sleep</a>(), <a href="qthread.html#msleep" translate="no">msleep</a>(), and <a href="qthread.html#usleep" translate="no">usleep</a>() allow full second, millisecond, and microsecond resolution respectively. These functions were made public in Qt 5.0&#x2e;</p>
+<p>QThread also provides static, platform independent sleep functions: <a href="qthread.html#sleep" translate="no">sleep</a>(), <a href="qthread.html#msleep" translate="no">msleep</a>(), and <a href="qthread.html#usleep" translate="no">usleep</a>() allow full second, millisecond, and microsecond resolution respectively.</p>
 <div class="admonition note">
 <p><b>Note: </b><a href="qthread.html#wait" translate="no">wait</a>() and the <a href="qthread.html#sleep" translate="no">sleep</a>() functions should be unnecessary in general, since Qt is an event-driven framework. Instead of <a href="qthread.html#wait" translate="no">wait</a>(), consider listening for the <a href="qthread.html#finished" translate="no">finished</a>() signal. Instead of the <a href="qthread.html#sleep" translate="no">sleep</a>() functions, consider using <a href="qtimer.html" translate="no">QTimer</a>.</p>
 </div>
 <p>The static functions <a href="qthread.html#currentThreadId" translate="no">currentThreadId</a>() and <a href="qthread.html#currentThread" translate="no">currentThread</a>() return identifiers for the currently executing thread. The former returns a platform specific ID for the thread; the latter returns a QThread pointer.</p>
 <p>To choose the name that your thread will be given (as identified by the command <code translate="no">ps -L</code> on Linux, for example), you can call <a href="qobject.html#setObjectName" translate="no">setObjectName</a>() before starting the thread. If you don't call <a href="qobject.html#setObjectName" translate="no">setObjectName</a>(), the name given to your thread will be the class name of the runtime type of your thread object (for example, <code translate="no">&quot;RenderThread&quot;</code> in the case of the <a href="qtcore-threads-mandelbrot-example.html" translate="no">Mandelbrot</a> example, as that is the name of the QThread subclass). Note that this is currently not available with release builds on Windows.</p>
 </div>
-<p><b>See also </b><a href="../qtdoc/threads.html" translate="no">Thread Support in Qt</a>, <a href="qthreadstorage.html" translate="no">QThreadStorage</a>, <a href="../qtdoc/threads-synchronizing.html" translate="no">Synchronizing Threads</a>, <a href="qtcore-threads-mandelbrot-example.html" translate="no">Mandelbrot</a>, <a href="qtcore-threads-semaphores-example.html" translate="no">Semaphores Example</a>, and <a href="qtcore-threads-waitconditions-example.html" translate="no">Wait Conditions Example</a>.</p>
+<p><b>See also </b><a href="../qtdoc/threads.html" translate="no">Thread Support in Qt</a>, <a href="qthreadstorage.html" translate="no">QThreadStorage</a>, <a href="../qtdoc/threads-synchronizing.html" translate="no">Synchronizing Threads</a>, <a href="qtcore-threads-mandelbrot-example.html" translate="no">Mandelbrot</a>, <a href="qtcore-threads-semaphores-example.html" translate="no">Producer and Consumer using Semaphores</a>, and <a href="qtcore-threads-waitconditions-example.html" translate="no">Producer and Consumer using Wait Conditions</a>.</p>
 <!-- @@@QThread -->
 <div class="types">
 <h2>Member Type Documentation</h2>
@@ -242,7 +242,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- $$$~QThread[overload1]$$$~QThread -->
 <h3 class="fn" translate="no" id="dtor.QThread"><code translate="no">[virtual noexcept] </code>QThread::<span class="name">~QThread</span>()</h3>
 <p>Destroys the <a href="qthread.html" translate="no">QThread</a>.</p>
-<p>Note that deleting a <a href="qthread.html" translate="no">QThread</a> object will not stop the execution of the thread it manages. Deleting a running <a href="qthread.html" translate="no">QThread</a> (i.e&#x2e; <a href="qthread.html#isFinished" translate="no">isFinished</a>() returns <code translate="no">false</code>) will result in a program crash. Wait for the <a href="qthread.html#finished" translate="no">finished</a>() signal before deleting the <a href="qthread.html" translate="no">QThread</a>.</p>
+<p>Note that deleting a <a href="qthread.html" translate="no">QThread</a> object will not stop the execution of the thread it manages. Deleting a running <a href="qthread.html" translate="no">QThread</a> (i.e. <a href="qthread.html#isFinished" translate="no">isFinished</a>() returns <code translate="no">false</code>) will result in a program crash. Wait for the <a href="qthread.html#finished" translate="no">finished</a>() signal before deleting the <a href="qthread.html" translate="no">QThread</a>.</p>
 <p>Since Qt 6.3, it is allowed to delete a <a href="qthread.html" translate="no">QThread</a> instance created by a call to <a href="qthread.html#create" translate="no">QThread::create</a>() even if the corresponding thread is still running. In such a case, Qt will post an interruption request to that thread (via <a href="qthread.html#requestInterruption" translate="no">requestInterruption</a>()); will ask the thread's event loop (if any) to quit (via <a href="qthread.html#quit" translate="no">quit</a>()); and will block until the thread has finished.</p>
 <p><b>See also </b><a href="qthread.html#create" translate="no">create</a>(), <a href="qthread.html#isInterruptionRequested" translate="no">isInterruptionRequested</a>(), <a href="qthread.html#exec" translate="no">exec</a>(), and <a href="qthread.html#quit" translate="no">quit</a>().</p>
 <!-- @@@~QThread -->
@@ -287,7 +287,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Enters the event loop and waits until <a href="qthread.html#exit" translate="no">exit</a>() is called, returning the value that was passed to <a href="qthread.html#exit" translate="no">exit</a>(). The value returned is 0 if <a href="qthread.html#exit" translate="no">exit</a>() is called via <a href="qthread.html#quit" translate="no">quit</a>().</p>
 <p>This function is meant to be called from within <a href="qthread.html#run" translate="no">run</a>(). It is necessary to call this function to start event handling.</p>
 <div class="admonition note">
-<p><b>Note: </b>This can only be called within the thread itself, i.e&#x2e; when it is the current thread.</p>
+<p><b>Note: </b>This can only be called within the thread itself, i.e. when it is the current thread.</p>
 </div>
 <p><b>See also </b><a href="qthread.html#quit" translate="no">quit</a>() and <a href="qthread.html#exit" translate="no">exit</a>().</p>
 <!-- @@@exec -->
@@ -341,7 +341,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  }
 </pre>
 <div class="admonition note">
-<p><b>Note: </b>This can only be called within the thread itself, i.e&#x2e; when it is the current thread.</p>
+<p><b>Note: </b>This can only be called within the thread itself, i.e. when it is the current thread.</p>
 </div>
 <p><b>See also </b><a href="qthread.html#currentThread" translate="no">currentThread</a>() and <a href="qthread.html#requestInterruption" translate="no">requestInterruption</a>().</p>
 <!-- @@@isInterruptionRequested -->
@@ -355,7 +355,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="loopLevel"><span class="type">int</span> QThread::<span class="name">loopLevel</span>() const</h3>
 <p>Returns the current event loop level for the thread.</p>
 <div class="admonition note">
-<p><b>Note: </b>This can only be called within the thread itself, i.e&#x2e; when it is the current thread.</p>
+<p><b>Note: </b>This can only be called within the thread itself, i.e. when it is the current thread.</p>
 </div>
 <!-- @@@loopLevel -->
 <!-- $$$msleep[overload1]$$$msleepunsignedlong -->
@@ -419,7 +419,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="setTerminationEnabled"><code translate="no">[static protected] </code><span class="type">void</span> QThread::<span class="name">setTerminationEnabled</span>(<span class="type">bool</span> <i>enabled</i> = true)</h3>
 <p>Enables or disables termination of the current thread based on the <i translate="no">enabled</i> parameter. The thread must have been started by <a href="qthread.html" translate="no">QThread</a>.</p>
 <p>When <i translate="no">enabled</i> is false, termination is disabled. Future calls to <a href="qthread.html#terminate" translate="no">QThread::terminate</a>() will return immediately without effect. Instead, the termination is deferred until termination is enabled.</p>
-<p>When <i translate="no">enabled</i> is true, termination is enabled. Future calls to <a href="qthread.html#terminate" translate="no">QThread::terminate</a>() will terminate the thread normally. If termination has been deferred (i.e&#x2e; <a href="qthread.html#terminate" translate="no">QThread::terminate</a>() was called with termination disabled), this function will terminate the calling thread <i>immediately</i>. Note that this function will not return in this case.</p>
+<p>When <i translate="no">enabled</i> is true, termination is enabled. Future calls to <a href="qthread.html#terminate" translate="no">QThread::terminate</a>() will terminate the thread normally. If termination has been deferred (i.e. <a href="qthread.html#terminate" translate="no">QThread::terminate</a>() was called with termination disabled), this function will terminate the calling thread <i>immediately</i>. Note that this function will not return in this case.</p>
 <p><b>See also </b><a href="qthread.html#terminate" translate="no">terminate</a>().</p>
 <!-- @@@setTerminationEnabled -->
 <!-- $$$sleep[overload1]$$$sleepunsignedlong -->
@@ -483,7 +483,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="wait"><span class="type">bool</span> QThread::<span class="name">wait</span>(<span class="type"><a href="qdeadlinetimer.html" translate="no">QDeadlineTimer</a></span> <i>deadline</i> = QDeadlineTimer(QDeadlineTimer::Forever))</h3>
 <p>Blocks the thread until either of these conditions is met:</p>
 <ul>
-<li>The thread associated with this <a href="qthread.html" translate="no">QThread</a> object has finished execution (i.e&#x2e; when it returns from <a href="qthread.html#run" translate="no">run</a>()). This function will return true if the thread has finished. It also returns true if the thread has not been started yet.</li>
+<li>The thread associated with this <a href="qthread.html" translate="no">QThread</a> object has finished execution (i.e. when it returns from <a href="qthread.html#run" translate="no">run</a>()). This function will return true if the thread has finished. It also returns true if the thread has not been started yet.</li>
 <li>The <i translate="no">deadline</i> is reached. This function will return false if the deadline is reached.</li>
 </ul>
 <p>A deadline timer set to <code translate="no">QDeadlineTimer::Forever</code> (the default) will never time out: in this case, the function only returns when the thread returns from <a href="qthread.html#run" translate="no">run</a>() or if the thread has not yet started.</p>
@@ -507,9 +507,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qshader.cpp -->
   <meta name="description" content="Contains multiple versions of a shader translated to multiple shading languages, together with reflection metadata.">
-  <title>QShader Class | Qt GUI 6.6.0</title>
+  <title>QShader Class | Qt GUI 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtgui-index.html" translate="no">Qt GUI</a></li>
 <li><a href="qtgui-module.html" translate="no">C++ Classes</a></li>
 <li>QShader</li>
-<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtgui-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -147,9 +147,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <h2>Member Type Documentation</h2>
 <!-- $$$NativeResourceBindingMap -->
 <h3 class="fn" translate="no" id="NativeResourceBindingMap-typedef"><code translate="no">[alias] </code>QShader::<span class="name">NativeResourceBindingMap</span></h3>
-<p>Synonym for <a href="../qtcore/qmap.html" translate="no">QMap</a>&lt;int, <a href="../qtcore/qpair-proxy.html#QPair-typedef" translate="no">QPair</a>&lt;int, int&gt;&gt;.</p>
+<p>Synonym for <a href="../qtcore/qmap.html" translate="no">QMap</a>&lt;int, <a href="../qtcore/qpair-qtcore-proxy.html#QPair-typedef" translate="no">QPair</a>&lt;int, int&gt;&gt;.</p>
 <p>The resource binding model <a href="qrhi.html" translate="no">QRhi</a> assumes is based on SPIR-V. This means that uniform buffers, storage buffers, combined image samplers, and storage images share a common binding point space. The binding numbers in <a href="qshaderdescription.html" translate="no">QShaderDescription</a> and <a href="qrhishaderresourcebinding.html" translate="no">QRhiShaderResourceBinding</a> are expected to match the <code translate="no">binding</code> layout qualifier in the Vulkan-compatible GLSL shader.</p>
-<p>Graphics APIs other than Vulkan may use a resource binding model that is not fully compatible with this. The generator of the shader code translated from SPIR-V may choose not to take the SPIR-V binding qualifiers into account, for various reasons. This is the case with the Metal backend of SPIRV-Cross, for example. In addition, even when an automatic, implicit translation is mostly possible (e.g&#x2e; by using SPIR-V binding points as HLSL resource register indices), assigning resource bindings without being constrained by the SPIR-V binding points can lead to better results.</p>
+<p>Graphics APIs other than Vulkan may use a resource binding model that is not fully compatible with this. The generator of the shader code translated from SPIR-V may choose not to take the SPIR-V binding qualifiers into account, for various reasons. This is the case with the Metal backend of SPIRV-Cross, for example. In addition, even when an automatic, implicit translation is mostly possible (e.g. by using SPIR-V binding points as HLSL resource register indices), assigning resource bindings without being constrained by the SPIR-V binding points can lead to better results.</p>
 <p>Therefore, a <a href="qshader.html" translate="no">QShader</a> may expose an additional map that describes what the native binding point for a given SPIR-V binding is. The <a href="qrhi.html" translate="no">QRhi</a> backends, for which this is relevant, are expected to use this map automatically, as appropriate. The value is a pair, because combined image samplers may map to two native resources (a texture and a sampler) in some shading languages. In that case the second value refers to the sampler.</p>
 <div class="admonition note">
 <p><b>Note: </b>The native binding may be -1, in case there is no active binding for the resource in the shader. (for example, there is a uniform block declared, but it is not used in the shader code) The map is always complete, meaning there is an entry for all declared uniform blocks, storage blocks, image objects, and combined samplers, but the value will be -1 for those that are not actually referenced in the shader functions.</p>
@@ -204,9 +204,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <div class="table"><table class="valuelist"><tr valign="top" class="odd"><th class="tblConst">Constant</th><th class="tblval">Value</th><th class="tbldscr">Description</th></tr>
 <tr><td class="topAlign"><code translate="no">QShader::StandardShader</code></td><td class="topAlign tblval"><code translate="no">0</code></td><td class="topAlign">The normal, unmodified version of the shader code.</td></tr>
 <tr><td class="topAlign"><code translate="no">QShader::BatchableVertexShader</code></td><td class="topAlign tblval"><code translate="no">1</code></td><td class="topAlign">Vertex shader rewritten to be suitable for Qt Quick scenegraph batching.</td></tr>
-<tr><td class="topAlign"><code translate="no">QShader::UInt16IndexedVertexAsComputeShader</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign">A vertex shader meant to be used in a Metal pipeline with tessellation in combination with indexed draw calls sourcing index data from a uint16 index buffer. To support the Metal tessellation pipeline, the vertex shader is translated to a compute shader that may be dependent on the index buffer usage in the draw calls (e.g&#x2e; if the shader is using gl_VertexIndex), hence the need for three dedicated variants.</td></tr>
-<tr><td class="topAlign"><code translate="no">QShader::UInt32IndexedVertexAsComputeShader</code></td><td class="topAlign tblval"><code translate="no">3</code></td><td class="topAlign">A vertex shader meant to be used in a Metal pipeline with tessellation in combination with indexed draw calls sourcing index data from a uint32 index buffer. To support the Metal tessellation pipeline, the vertex shader is translated to a compute shader that may be dependent on the index buffer usage in the draw calls (e.g&#x2e; if the shader is using gl_VertexIndex), hence the need for three dedicated variants.</td></tr>
-<tr><td class="topAlign"><code translate="no">QShader::NonIndexedVertexAsComputeShader</code></td><td class="topAlign tblval"><code translate="no">4</code></td><td class="topAlign">A vertex shader meant to be used in a Metal pipeline with tessellation in combination with non-indexed draw calls. To support the Metal tessellation pipeline, the vertex shader is translated to a compute shader that may be dependent on the index buffer usage in the draw calls (e.g&#x2e; if the shader is using gl_VertexIndex), hence the need for three dedicated variants.</td></tr>
+<tr><td class="topAlign"><code translate="no">QShader::UInt16IndexedVertexAsComputeShader</code></td><td class="topAlign tblval"><code translate="no">2</code></td><td class="topAlign">A vertex shader meant to be used in a Metal pipeline with tessellation in combination with indexed draw calls sourcing index data from a uint16 index buffer. To support the Metal tessellation pipeline, the vertex shader is translated to a compute shader that may be dependent on the index buffer usage in the draw calls (e.g. if the shader is using gl_VertexIndex), hence the need for three dedicated variants.</td></tr>
+<tr><td class="topAlign"><code translate="no">QShader::UInt32IndexedVertexAsComputeShader</code></td><td class="topAlign tblval"><code translate="no">3</code></td><td class="topAlign">A vertex shader meant to be used in a Metal pipeline with tessellation in combination with indexed draw calls sourcing index data from a uint32 index buffer. To support the Metal tessellation pipeline, the vertex shader is translated to a compute shader that may be dependent on the index buffer usage in the draw calls (e.g. if the shader is using gl_VertexIndex), hence the need for three dedicated variants.</td></tr>
+<tr><td class="topAlign"><code translate="no">QShader::NonIndexedVertexAsComputeShader</code></td><td class="topAlign tblval"><code translate="no">4</code></td><td class="topAlign">A vertex shader meant to be used in a Metal pipeline with tessellation in combination with non-indexed draw calls. To support the Metal tessellation pipeline, the vertex shader is translated to a compute shader that may be dependent on the index buffer usage in the draw calls (e.g. if the shader is using gl_VertexIndex), hence the need for three dedicated variants.</td></tr>
 </table></div>
 <!-- @@@Variant -->
 </div>
@@ -346,9 +346,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

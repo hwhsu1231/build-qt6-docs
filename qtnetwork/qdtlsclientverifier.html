@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qdtls.cpp -->
   <meta name="description" content="This class implements server-side DTLS cookie generation and verification.">
-  <title>QDtlsClientVerifier Class | Qt Network 6.6.0</title>
+  <title>QDtlsClientVerifier Class | Qt Network 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtnetwork-index.html" translate="no">Qt Network</a></li>
 <li><a href="qtnetwork-module.html" translate="no">C++ Classes</a></li>
 <li>QDtlsClientVerifier</li>
-<li id="buildversion"><a href="qtnetwork-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtnetwork-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -80,12 +80,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 <!-- $$$QDtlsClientVerifier-description -->
 <div class="descr">
 <h2 id="details">Detailed Description</h2>
-<p>The QDtlsClientVerifier class implements server-side DTLS cookie generation and verification. Datagram security protocols are highly susceptible to a variety of Denial-of-Service attacks. According to <a href="https://datatracker.ietf.org/doc/html/rfc6347#section-4.2.1" translate="no">RFC 6347, section 4.2&#x2e;1</a>, these are two of the more common types of attack:</p>
+<p>The QDtlsClientVerifier class implements server-side DTLS cookie generation and verification. Datagram security protocols are highly susceptible to a variety of Denial-of-Service attacks. According to <a href="https://datatracker.ietf.org/doc/html/rfc6347#section-4.2.1" translate="no">RFC 6347, section 4.2.1</a>, these are two of the more common types of attack:</p>
 <ul>
 <li>An attacker transmits a series of handshake initiation requests, causing a server to allocate excessive resources and potentially perform expensive cryptographic operations.</li>
 <li>An attacker transmits a series of handshake initiation requests with a forged source of the victim, making the server act as an amplifier. Normally, the server would reply to the victim machine with a Certificate message, which can be quite large, thus flooding the victim machine with datagrams.</li>
 </ul>
-<p>As a countermeasure to these attacks, <a href="https://datatracker.ietf.org/doc/html/rfc6347#section-4.2.1" translate="no">RFC 6347, section 4.2&#x2e;1</a> proposes a stateless cookie technique that a server may deploy:</p>
+<p>As a countermeasure to these attacks, <a href="https://datatracker.ietf.org/doc/html/rfc6347#section-4.2.1" translate="no">RFC 6347, section 4.2.1</a> proposes a stateless cookie technique that a server may deploy:</p>
 <ul>
 <li>In response to the initial ClientHello message, the server sends a HelloVerifyRequest, which contains a cookie. This cookie is a cryptographic hash and is generated using the client's address, port number, and the server's secret (which is a cryptographically strong pseudo-random sequence of bytes).</li>
 <li>A reachable DTLS client is expected to reply with a new ClientHello message containing this cookie.</li>
@@ -152,7 +152,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 </div>
 <p>By default QDtlsClientVerifier obtains its secret from a cryptographically strong pseudorandom number generator.</p>
 <div class="admonition note">
-<p><b>Note: </b>The default secret is shared by all objects of the classes QDtlsClientVerifier and <a href="qdtls.html" translate="no">QDtls</a>. Since this can impose security risks, RFC 6347 recommends to change the server's secret frequently. Please see <a href="https://datatracker.ietf.org/doc/html/rfc6347#section-4.2.1" translate="no">RFC 6347, section 4.2&#x2e;1</a> for hints about possible server implementations. Cookie generator parameters can be set using the class <a href="qdtlsclientverifier-generatorparameters.html" translate="no">QDtlsClientVerifier::GeneratorParameters</a> and <a href="qdtlsclientverifier.html#setCookieGeneratorParameters" translate="no">setCookieGeneratorParameters</a>():</p>
+<p><b>Note: </b>The default secret is shared by all objects of the classes QDtlsClientVerifier and <a href="qdtls.html" translate="no">QDtls</a>. Since this can impose security risks, RFC 6347 recommends to change the server's secret frequently. Please see <a href="https://datatracker.ietf.org/doc/html/rfc6347#section-4.2.1" translate="no">RFC 6347, section 4.2.1</a> for hints about possible server implementations. Cookie generator parameters can be set using the class <a href="qdtlsclientverifier-generatorparameters.html" translate="no">QDtlsClientVerifier::GeneratorParameters</a> and <a href="qdtlsclientverifier.html#setCookieGeneratorParameters" translate="no">setCookieGeneratorParameters</a>():</p>
 </div>
 <pre class="cpp" translate="no">
  <span class="type">void</span> DtlsServer<span class="operator">::</span>updateServerSecret()
@@ -240,9 +240,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Network)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

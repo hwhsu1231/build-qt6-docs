@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qsharedpointer.cpp -->
   <meta name="description" content="The QSharedPointer class holds a strong reference to a shared pointer.">
-  <title>QSharedPointer Class | Qt Core 6.6.0</title>
+  <title>QSharedPointer Class | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li><a href="qtcore-module.html" translate="no">C++ Classes</a></li>
 <li>QSharedPointer</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -143,8 +143,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>It should be noted that, while the pointer value can be accessed in this manner (that is, by multiple threads at the same time, without synchronization), QSharedPointer and <a href="qweakpointer.html" translate="no">QWeakPointer</a> provide no guarantee about the object being pointed to. The specific thread-safety and reentrancy rules for that object still apply.</p>
 <h3 id="other-pointer-classes">Other Pointer Classes</h3>
 <p>Qt also provides two other pointer wrapper classes: <a href="qpointer.html" translate="no">QPointer</a> and <a href="qshareddatapointer.html" translate="no">QSharedDataPointer</a>. They are incompatible with one another, since each has its very different use case.</p>
-<p>QSharedPointer holds a shared pointer by means of an external reference count (i.e&#x2e;, a reference counter placed outside the object). Like its name indicates, the pointer value is shared among all instances of QSharedPointer and <a href="qweakpointer.html" translate="no">QWeakPointer</a>. The contents of the object pointed to by the pointer should not be considered shared, however: there is only one object. For that reason, QSharedPointer does not provide a way to detach or make copies of the pointed object.</p>
-<p><a href="qshareddatapointer.html" translate="no">QSharedDataPointer</a>, on the other hand, holds a pointer to shared data (i.e&#x2e;, a class derived from <a href="qshareddata.html" translate="no">QSharedData</a>). It does so by means of an internal reference count, placed in the <a href="qshareddata.html" translate="no">QSharedData</a> base class. This class can, therefore, detach based on the type of access made to the data being guarded: if it's a non-const access, it creates a copy atomically for the operation to complete.</p>
+<p>QSharedPointer holds a shared pointer by means of an external reference count (i.e., a reference counter placed outside the object). Like its name indicates, the pointer value is shared among all instances of QSharedPointer and <a href="qweakpointer.html" translate="no">QWeakPointer</a>. The contents of the object pointed to by the pointer should not be considered shared, however: there is only one object. For that reason, QSharedPointer does not provide a way to detach or make copies of the pointed object.</p>
+<p><a href="qshareddatapointer.html" translate="no">QSharedDataPointer</a>, on the other hand, holds a pointer to shared data (i.e., a class derived from <a href="qshareddata.html" translate="no">QSharedData</a>). It does so by means of an internal reference count, placed in the <a href="qshareddata.html" translate="no">QSharedData</a> base class. This class can, therefore, detach based on the type of access made to the data being guarded: if it's a non-const access, it creates a copy atomically for the operation to complete.</p>
 <p><a href="qexplicitlyshareddatapointer.html" translate="no">QExplicitlySharedDataPointer</a> is a variant of <a href="qshareddatapointer.html" translate="no">QSharedDataPointer</a>, except that it only detaches if <a href="qexplicitlyshareddatapointer.html#detach" translate="no">QExplicitlySharedDataPointer::detach</a>() is explicitly called (hence the name).</p>
 <p><a href="qscopedpointer.html" translate="no">QScopedPointer</a> simply holds a pointer to a heap allocated object and deletes it in its destructor. This class is useful when an object needs to be heap allocated and deleted, but no more. <a href="qscopedpointer.html" translate="no">QScopedPointer</a> is lightweight, it makes no use of additional structure or reference counting.</p>
 <p>Finally, <a href="qpointer.html" translate="no">QPointer</a> holds a pointer to a <a href="qobject.html" translate="no">QObject</a>-derived object, but it does so weakly. <a href="qweakpointer.html" translate="no">QWeakPointer</a> has the same functionality, but its use for that function is deprecated.</p>
@@ -444,12 +444,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <!-- @@@operator!= -->
 <!-- $$$operator!=$$$operator!=constQSharedPointer<T>&std::nullptr_t -->
 <h3 class="fn" translate="no" id="operator-not-eq-3">template &lt;typename T&gt; <span class="type">bool</span> <span class="name">operator!=</span>(const <span class="type"><a href="qsharedpointer.html#QSharedPointer" translate="no">QSharedPointer</a></span>&lt;<span class="type">T</span>&gt; &amp;<i>lhs</i>, <span class="type">std::nullptr_t</span>)</h3>
-<p>Returns <code translate="no">true</code> if <i translate="no">lhs</i> refers to a valid (i.e&#x2e; non-null) pointer.</p>
+<p>Returns <code translate="no">true</code> if <i translate="no">lhs</i> refers to a valid (i.e. non-null) pointer.</p>
 <p><b>See also </b><a href="qsharedpointer.html#isNull" translate="no">QSharedPointer::isNull</a>().</p>
 <!-- @@@operator!= -->
 <!-- $$$operator!=$$$operator!=std::nullptr_tconstQSharedPointer<T>& -->
 <h3 class="fn" translate="no" id="operator-not-eq-4">template &lt;typename T&gt; <span class="type">bool</span> <span class="name">operator!=</span>(<span class="type">std::nullptr_t</span>, const <span class="type"><a href="qsharedpointer.html#QSharedPointer" translate="no">QSharedPointer</a></span>&lt;<span class="type">T</span>&gt; &amp;<i>rhs</i>)</h3>
-<p>Returns <code translate="no">true</code> if <i translate="no">rhs</i> refers to a valid (i.e&#x2e; non-null) pointer.</p>
+<p>Returns <code translate="no">true</code> if <i translate="no">rhs</i> refers to a valid (i.e. non-null) pointer.</p>
 <p><b>See also </b><a href="qsharedpointer.html#isNull" translate="no">QSharedPointer::isNull</a>().</p>
 <!-- @@@operator!= -->
 <!-- $$$operator<<[overload1]$$$operator<<QDebugconstQSharedPointer<T>& -->
@@ -490,9 +490,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qqmlincubator.cpp -->
   <meta name="description" content="The QQmlIncubator class allows QML objects to be created asynchronously.">
-  <title>QQmlIncubator Class | Qt QML 6.6.0</title>
+  <title>QQmlIncubator Class | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -30,7 +30,7 @@
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li><a href="qtqml-module.html" translate="no">C++ Classes</a></li>
 <li>QQmlIncubator</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -92,16 +92,19 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <p>Creating QML objects - like delegates in a view, or a new page in an application - can take a noticeable amount of time, especially on resource constrained mobile devices. When an application uses <a href="qqmlcomponent.html#create" translate="no">QQmlComponent::create</a>() directly, the QML object instance is created synchronously which, depending on the complexity of the object, can cause noticeable pauses or stutters in the application.</p>
 <p>The use of QQmlIncubator gives more control over the creation of a QML object, including allowing it to be created asynchronously using application idle time. The following example shows a simple use of QQmlIncubator.</p>
 <pre class="cpp" translate="no">
+ <span class="comment">// Initialize the incubator</span>
  <span class="type">QQmlIncubator</span> incubator;
  component<span class="operator">-</span><span class="operator">&gt;</span>create(incubator);
-
- <span class="keyword">while</span> (<span class="operator">!</span>incubator<span class="operator">.</span>isReady()) {
-     <span class="type"><a href="../qtcore/qcoreapplication.html" translate="no">QCoreApplication</a></span><span class="operator">::</span>processEvents(<span class="type"><a href="../qtcore/qeventloop.html" translate="no">QEventLoop</a></span><span class="operator">::</span>AllEvents<span class="operator">,</span> <span class="number">50</span>);
- }
-
- <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>object <span class="operator">=</span> incubator<span class="operator">.</span>object();
 </pre>
-<p>Asynchronous incubators are controlled by a <a href="qqmlincubationcontroller.html" translate="no">QQmlIncubationController</a> that is set on the <a href="qqmlengine.html" translate="no">QQmlEngine</a>, which lets the engine know when the application is idle and incubating objects should be processed. If an incubation controller is not set on the <a href="qqmlengine.html" translate="no">QQmlEngine</a>, QQmlIncubator creates objects synchronously regardless of the specified <a href="qqmlincubator.html#IncubationMode-enum" translate="no">IncubationMode</a>.</p>
+<p>Let the incubator run for a while (normally by returning control to the event loop), then poll it. There are a number of ways to get back to the incubator later. You may want to connect to one of the signals sent by <a href="../qtquick/qquickwindow.html" translate="no">QQuickWindow</a>, or you may want to run a <a href="../qtcore/qtimer.html" translate="no">QTimer</a> especially for that. You may also need the object for some specific purpose and poll the incubator when that purpose arises.</p>
+<pre class="cpp" translate="no">
+ <span class="comment">// Poll the incubator</span>
+ <span class="keyword">if</span> (incubator<span class="operator">.</span>isReady()) {
+     <span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> <span class="operator">*</span>object <span class="operator">=</span> incubator<span class="operator">.</span>object();
+     <span class="comment">// Use created object</span>
+ }
+</pre>
+<p>Asynchronous incubators are controlled by a <a href="qqmlincubationcontroller.html" translate="no">QQmlIncubationController</a> that is set on the <a href="qqmlengine.html" translate="no">QQmlEngine</a>, which lets the engine know when the application is idle and incubating objects should be processed. If an incubation controller is not set on the <a href="qqmlengine.html" translate="no">QQmlEngine</a>, <a href="qqmlincubator.html" translate="no">QQmlIncubator</a> creates objects synchronously regardless of the specified <a href="qqmlincubator.html#IncubationMode-enum" translate="no">IncubationMode</a>. By default, no incubation controller is set. However, <a href="../qtquick/qquickview.html" translate="no">QQuickView</a>, <a href="../qtquick/qquickwindow.html" translate="no">QQuickWindow</a> and <a href="../qtquick/qquickwidget.html" translate="no">QQuickWidget</a> all set incubation controllers on their respective <a href="qqmlengine.html" translate="no">QQmlEngine</a>s. These incubation controllers space out incubations across multiple frames while the view is being rendered.</p>
 <p>QQmlIncubator supports three incubation modes:</p>
 <ul>
 <li>Synchronous The creation occurs synchronously. That is, once the <a href="qqmlcomponent.html#create" translate="no">QQmlComponent::create</a>() call returns, the incubator will already be in either the Error or Ready state. A synchronous incubator has no real advantage compared to using the synchronous creation methods on <a href="qqmlcomponent.html" translate="no">QQmlComponent</a> directly, but it may simplify an application's implementation to use the same API for both synchronous and asynchronous creations.</li>
@@ -188,8 +191,11 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 <!-- @@@setInitialProperties -->
 <!-- $$$setInitialState[overload1]$$$setInitialStateQObject* -->
 <h3 class="fn" translate="no" id="setInitialState"><code translate="no">[virtual protected] </code><span class="type">void</span> QQmlIncubator::<span class="name">setInitialState</span>(<span class="type"><a href="../qtcore/qobject.html" translate="no">QObject</a></span> *<i>object</i>)</h3>
-<p>Called after the <i translate="no">object</i> is first created, but before property bindings are evaluated and, if applicable, <a href="qqmlparserstatus.html#componentComplete" translate="no">QQmlParserStatus::componentComplete</a>() is called. This is equivalent to the point between <a href="qqmlcomponent.html#beginCreate" translate="no">QQmlComponent::beginCreate</a>() and <a href="qqmlcomponent.html#completeCreate" translate="no">QQmlComponent::completeCreate</a>(), and can be used to assign initial values to the object's properties.</p>
+<p>Called after the <i translate="no">object</i> is first created, but before complex property bindings are evaluated and, if applicable, <a href="qqmlparserstatus.html#componentComplete" translate="no">QQmlParserStatus::componentComplete</a>() is called. This is equivalent to the point between <a href="qqmlcomponent.html#beginCreate" translate="no">QQmlComponent::beginCreate</a>() and <a href="qqmlcomponent.html#completeCreate" translate="no">QQmlComponent::completeCreate</a>(), and can be used to assign initial values to the object's properties.</p>
 <p>The default implementation does nothing.</p>
+<div class="admonition note">
+<p><b>Note: </b>Simple bindings such as numeric literals are evaluated before setInitialState() is called. The categorization of bindings into simple and complex ones is intentionally unspecified and may change between versions of Qt and depending on whether and how you are using <a href="qtqml-tool-qmlcachegen.html" translate="no">qmlcachegen</a>. You should not rely on any particular binding to be evaluated either before or after setInitialState() is called. For example, a constant expression like <i>MyType.EnumValue</i> may be recognized as such at compile time or deferred to be executed as binding. The same holds for constant expressions like <i>-(5)</i> or <i>&quot;a&quot; + &quot; constant string&quot;</i>.</p>
+</div>
 <!-- @@@setInitialState -->
 <!-- $$$status[overload1]$$$status -->
 <h3 class="fn" translate="no" id="status"><span class="type"><a href="qqmlincubator.html#Status-enum" translate="no">Status</a></span> QQmlIncubator::<span class="name">status</span>() const</h3>
@@ -208,9 +214,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Qml)</td></tr>
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

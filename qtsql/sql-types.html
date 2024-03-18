@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- qsqldatatype-table.qdoc -->
   <meta name="description" content="Recommended data types for database systems">
-  <title>Data Types for Qt-supported Database Systems | Qt SQL 6.6.0</title>
+  <title>Data Types for Qt-supported Database Systems | Qt SQL 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtsql-index.html" translate="no">Qt SQL</a></li>
 <li>Data Types for Qt-supported Database Systems</li>
-<li id="buildversion"><a href="qtsql-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtsql-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -56,7 +56,7 @@
 <!-- $$$sql-types.html-description -->
 <div class="descr" id="details">
 <h2 id="recommended-data-types-for-qt-supported-database-systems">Recommended Data Types for Qt-Supported Database Systems</h2>
-<p>This table shows the recommended data types for extracting data from the databases supported in Qt. Note that types used in Qt are not necessarily valid as input types to a specific database system. e.g&#x2e;, A double might work perfectly as input for floating point records in a particular database, but not necessarily as a storage format for output from that database, because it would be stored with 64-bit precision in C++.</p>
+<p>This table shows the recommended data types for extracting data from the databases supported in Qt. Note that types used in Qt are not necessarily valid as input types to a specific database system. e.g., A double might work perfectly as input for floating point records in a particular database, but not necessarily as a storage format for output from that database, because it would be stored with 64-bit precision in C++.</p>
 <h3 id="ibm-db2-data-types">IBM DB2 Data Types</h3>
 <div class="table"><table class="generic" width="90%">
  <thead><tr class="qt-style"><th >IBM DB2 data type</th><th >SQL type description</th><th >Recommended input (C++ or Qt data type)</th></tr></thead>
@@ -188,23 +188,40 @@
  <thead><tr class="qt-style"><th >Mimer SQL type</th><th >SQL type description</th><th >Recommended input (C++ or Qt data type)</th></tr></thead>
 <tr valign="top" class="odd"><td >SMALLINT</td><td >16-bit signed integer</td><td >typedef qint16</td></tr>
 <tr valign="top" class="even"><td >INTEGER</td><td >32-bit signed integer</td><td >typedef qint32</td></tr>
-<tr valign="top" class="odd"><td >BIGINT</td><td >64-bit signed integer</td><td >typedef qint64</td></tr>
-<tr valign="top" class="even"><td >REAL</td><td >32-bit Single-precision floating point</td><td >typedef qreal</td></tr>
-<tr valign="top" class="odd"><td >DOUBLE PRECISION</td><td >64-bit Double-precision floating point</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a> for high precision doubles, otherwise qreal</td></tr>
-<tr valign="top" class="even"><td >FLOAT</td><td >64-bit Double-precision floating point</td><td >typedef qreal</td></tr>
-<tr valign="top" class="odd"><td >CHAR</td><td >Fixed-length, null-terminated character string</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
-<tr valign="top" class="even"><td >VARCHAR</td><td >Null-terminated varying length string</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
-<tr valign="top" class="odd"><td >NCHAR</td><td >Fixed-length, null-terminated Unicode character string</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
-<tr valign="top" class="even"><td >NVARCHAR</td><td >Null-terminated varying length Unicode string</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
-<tr valign="top" class="odd"><td >BLOB</td><td >Not null-terminated varying binary string with 4-byte string length indicator</td><td >Mapped to <a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></td></tr>
-<tr valign="top" class="even"><td >CLOB</td><td >Character large string object</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
-<tr valign="top" class="odd"><td >NCLOB</td><td >National Character large string object</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
-<tr valign="top" class="even"><td >DATE</td><td >Null-terminated character string of the following format: yyyy-mm-dd</td><td >Mapped to <a href="../qtcore/qdate.html" translate="no">QDate</a></td></tr>
-<tr valign="top" class="odd"><td >TIME</td><td >Null-terminated character string of the following format: hh.mm.ss</td><td >Mapped to <a href="../qtcore/qtime.html" translate="no">QTime</a></td></tr>
-<tr valign="top" class="even"><td >TIMESTAMP</td><td >Null-terminated character string of the following format: yyyy-mm-dd-hh.mm.ss.nnnnnn</td><td >Mapped to <a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></td></tr>
-<tr valign="top" class="odd"><td >BUILTIN.UUID</td><td >Universally unique identifier</td><td >Mapped to <a href="../qtcore/quuid.html" translate="no">QUuid</a></td></tr>
-<tr valign="top" class="even"><td >BOOLEAN</td><td >Boolean</td><td >bool</td></tr>
-<tr valign="top" class="odd"><td >DECIMAL(p,s)</td><td >By default mapping to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >INTEGER(n)</td><td >Integer with up to 45 digits precision</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >BIGINT</td><td >64-bit signed integer</td><td >typedef qint64</td></tr>
+<tr valign="top" class="odd"><td >REAL</td><td >32-bit Single-precision IEEE floating point</td><td >typedef float</td></tr>
+<tr valign="top" class="even"><td >DOUBLE PRECISION</td><td >64-bit Double-precision IEEE floating point</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a> for high precision doubles, otherwise qreal</td></tr>
+<tr valign="top" class="odd"><td >FLOAT</td><td >64-bit Double-precision IEEE floating point</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a> for high precision doubles, otherwise qreal</td></tr>
+<tr valign="top" class="even"><td >FLOAT(n)</td><td >Floating point with up to 45 digits precision</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >DECIMAL(p,s)</td><td >Decimal with up to 45 digits precision and scale</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >CHAR</td><td >Fixed-length character Latin-1 string (CHAR or character)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >VARCHAR</td><td >Variable length Latin-1 string (VARCHAR or CHARACTER VARYING)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >NCHAR</td><td >Fixed-length Unicode string (NCHAR or NATIONAL CHARACTER)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >NVARCHAR</td><td >Variable length Unicode string (NVARCHAR or NATIONAL CHARACTER VARYING)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >BINARY</td><td >Fixed length binary data</td><td >Mapped to <a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></td></tr>
+<tr valign="top" class="odd"><td >VARBINARY</td><td >Variable length binary data (VARBINARY or BINARY VARYING)</td><td >Mapped to <a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></td></tr>
+<tr valign="top" class="even"><td >BLOB</td><td >Binary large object (BLOB or BINARY LARGE OBJECT)</td><td >Mapped to <a href="../qtcore/qbytearray.html" translate="no">QByteArray</a></td></tr>
+<tr valign="top" class="odd"><td >CLOB</td><td >Latin-1 character large object (CLOB or CHARACTER LARGE OBJECT)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >NCLOB</td><td >Unicode character large object (NCLOB or NATIONAL CHARACTER LARGE OBJECT)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >DATE</td><td >Date consisting of year, month, and day</td><td >Mapped to <a href="../qtcore/qdate.html" translate="no">QDate</a></td></tr>
+<tr valign="top" class="even"><td >TIME</td><td >Time consisting of hours, minute, seconds with optional fractional seconds</td><td >Mapped to <a href="../qtcore/qtime.html" translate="no">QTime</a></td></tr>
+<tr valign="top" class="odd"><td >TIMESTAMP</td><td >Date and time with optional fractional seconds</td><td >Mapped to <a href="../qtcore/qdatetime.html" translate="no">QDateTime</a></td></tr>
+<tr valign="top" class="even"><td >BUILTIN.UUID</td><td >Universally unique identifier</td><td >Mapped to <a href="../qtcore/quuid.html" translate="no">QUuid</a></td></tr>
+<tr valign="top" class="odd"><td >BOOLEAN</td><td >Boolean</td><td >bool</td></tr>
+<tr valign="top" class="even"><td >INTERVAL YEAR(7)</td><td >Year, format '±yyyyyyy' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >INTERVAL YEAR(7) TO MONTH</td><td >Year to month, format '±yyyyyyy-mm' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >INTERVAL MONTH(7)</td><td >Month, format '±mmmmmmm' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >INTERVAL DAY(7)</td><td >Day, format '±ddddddd' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >INTERVAL DAY(7) TO HOUR</td><td >Day to hour, format '±ddddddd hh' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >INTERVAL DAY(7) TO MINUTE</td><td >Day to minute, format '±ddddddd hh:mm' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >INTERVAL DAY(7) TO SECOND(9)</td><td >Day to second, format '±ddddddd hh:mm:ss[.fffffffff]' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >INTERVAL HOUR(8)</td><td >Hour, format '±hhhhhhhh' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >INTERVAL HOUR(8) TO MINUTE</td><td >Hour to minute, format '±hhhhhhhh:mm' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >INTERVAL HOUR(8) TO SECOND(9)</td><td >Hour to second, format '±hhhhhhhh:mm:ss[.fffffffff]' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >INTERVAL MINUTE(10)</td><td >Minute, format '±mmmmmmmmmm' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="odd"><td >INTERVAL MINUTE(10) TO SECOND(9)</td><td >Minute to second, format '±mmmmmmmmmm:ss[.fffffffff]' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
+<tr valign="top" class="even"><td >INTERVAL SECOND(12,9)</td><td >Second, format '±ssssssssssss[.fffffffff]' (max precision)</td><td >Mapped to <a href="../qtcore/qstring.html" translate="no">QString</a></td></tr>
 </table></div>
 </div>
 <!-- @@@sql-types.html -->
@@ -215,9 +232,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

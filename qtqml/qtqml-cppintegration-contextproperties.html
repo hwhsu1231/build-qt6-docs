@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- contextproperties.qdoc -->
   <meta name="description" content="Description of how to embed C++ data into QML using context properties">
-  <title>Embedding C++ Objects into QML with Context Properties | Qt QML 6.6.0</title>
+  <title>Embedding C++ Objects into QML with Context Properties | Qt QML 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtqml-index.html" translate="no">Qt QML</a></li>
 <li>Embedding C++ Objects into QML with Context Properties</li>
-<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtqml-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -48,6 +48,15 @@
 <h1 class="title">Embedding C++ Objects into QML with Context Properties</h1>
 <!-- $$$qtqml-cppintegration-contextproperties.html-description -->
 <div class="descr" id="details">
+<div class="admonition warning">
+<p><b>Warning: </b>By using context properties in your QML code, you create a dependency from your QML code to the specific context you have in mind when writing it. This limits re-usability of your code since the context may be different in other places where it might be used. Furthermore, the dependency is not declared. You never <code translate="no">import</code> the context or otherwise state what you expect. Therefore, anyone trying to re-use your code will have difficulties finding out whether the place of re-use has a context sufficient for your code.</p>
+</div>
+<div class="admonition warning">
+<p><b>Warning: </b>Context properties are invisible to any tooling that processes QML code ahead of time, before you load it into the QML engine. The <a href="qtqml-qtquick-compiler-tech.html" translate="no">Qt Quick Compiler</a>, <a href="../qtquick/qtquick-tool-qmllint.html" translate="no">qmllint</a>, and the <a href="../qtquick/qtquick-tool-qmlls.html" translate="no">QML Language Server</a> do not know anything about your context properties and will consider any access to context properties as an <i>unqualified access</i>.</p>
+</div>
+<div class="admonition note">
+<p><b>Note: </b>Context properties can generally be replaced either by regular properties on the root object of a component, or by singletons defined either in C++ using <a href="qqmlengine.html#QML_SINGLETON" translate="no">QML_SINGLETON</a> or in QML using <a href="qtqml-documents-definetypes.html#singleton" translate="no">pragma Singleton</a>.</p>
+</div>
 <p>When loading a QML object into a C++ application, it can be useful to directly embed some C++ data that can be used from within the QML code. This makes it possible, for example, to invoke a C++ method on the embedded object, or use a C++ object instance as a data model for a QML view.</p>
 <p>The ability to inject C++ data into a QML object is made possible by the <a href="qqmlcontext.html" translate="no">QQmlContext</a> class. This class exposes data to the context of a QML object so that the data can be referred to directly from within the scope of the QML code.</p>
 <h2 id="setting-a-simple-context-property">Setting a Simple Context Property</h2>
@@ -133,9 +142,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

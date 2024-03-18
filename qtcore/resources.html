@@ -4,7 +4,7 @@
   <meta charset="utf-8">
 <!-- resource-system.qdoc -->
   <meta name="description" content="A platform-independent mechanism for shipping resource files in an application.">
-  <title>The Qt Resource System | Qt Core 6.6.0</title>
+  <title>The Qt Resource System | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -29,7 +29,7 @@
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
 <li>The Qt Resource System</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -63,7 +63,7 @@
 <!-- $$$resources.html-description -->
 <div class="descr" id="details">
 <p>The Qt resource system is a platform-independent mechanism for shipping resource files in an application. Use it if your application always needs a certain set of files (like icons, translation files, images), and you don't want to use system-specific means to package and locate these resources.</p>
-<p>Most commonly, the resource files are embedded into your application executable, or in libraries and plugins that are loaded by the application executable. Alternatively, the resource files can also be stored in an <a href="resources.html#external-resource-files" translate="no">exernal resource file</a>.</p>
+<p>Most commonly, the resource files are embedded into your application executable, or in libraries and plugins that are loaded by the application executable. Alternatively, the resource files can also be stored in an <a href="resources.html#external-resource-files" translate="no">external resource file</a>.</p>
 <p>The resource system is based on tight cooperation between Qt's <a href="../qtdoc/rcc.html" translate="no">rcc</a> resource compiler, the build system, and the Qt runtime API.</p>
 <div class="admonition note">
 <p><b>Note: </b>Currently, the Qt resource system does not make use of any system-specific capabilities for handling resources, such as the ones on Windows, macOS, and iOS. This might change in a future Qt release.</p>
@@ -138,7 +138,6 @@
      <span class="type"><a href="../qtqml/qqmlapplicationengine.html" translate="no">QQmlApplicationEngine</a></span> engine;
      engine<span class="operator">.</span>load(<span class="type"><a href="qurl.html" translate="no">QUrl</a></span>(<span class="string">&quot;qrc:/myapp/main.qml&quot;</span>));
 </pre>
-<p>See the Mainwindow example for an actual application that uses Qt's resource system to store its icons.</p>
 <h2 id="advanced-topics">Advanced Topics</h2>
 <h3 id="prefixes">Prefixes</h3>
 <p>A <code translate="no">.qrc</code> file can set a prefix to be added to each local file name, given in a <code translate="no">&lt;file&gt;</code> element, to get the name by which the file shall be known within the resource system.</p>
@@ -172,7 +171,7 @@
      <span class="operator">&lt;</span>file alias<span class="operator">=</span><span class="string">&quot;cut.jpg&quot;</span><span class="operator">&gt;</span>cut_fr<span class="operator">.</span>jpg<span class="operator">&lt;</span><span class="operator">/</span>file<span class="operator">&gt;</span>
  <span class="operator">&lt;</span><span class="operator">/</span>qresource<span class="operator">&gt;</span>
 </pre>
-<p>If the user's locale is French (i.e&#x2e;, <a href="qlocale.html#system" translate="no">QLocale::system</a>().language() is French), <code translate="no">:/cut.jpg</code> or <code translate="no">qrc:/cut.jpg</code> becomes a reference to the <code translate="no">cut_fr.jpg</code> image. For other locales, <code translate="no">cut.jpg</code> is used.</p>
+<p>If the user's locale is French (i.e., <a href="qlocale.html#system" translate="no">QLocale::system</a>().language() is French), <code translate="no">:/cut.jpg</code> or <code translate="no">qrc:/cut.jpg</code> becomes a reference to the <code translate="no">cut_fr.jpg</code> image. For other locales, <code translate="no">cut.jpg</code> is used.</p>
 <p>See the <a href="qlocale.html" translate="no">QLocale</a> documentation for a description of the format to use for locale strings.</p>
 <p>See <a href="qfileselector.html" translate="no">QFileSelector</a> for an additional mechanism to select locale-specific resources.</p>
 <h3 id="embedding-large-files">Embedding Large Files</h3>
@@ -234,7 +233,7 @@
 <p>Support for both Zstandard and zlib are optional. If a given library was not detected at compile time, attempting to pass <code translate="no">-compress-algo</code> for that library will result in an error. The default compression algorithm is <code translate="no">zstd</code> if it is enabled, <code translate="no">zlib</code> if not.</p>
 <h3 id="explicit-loading-and-unloading-of-embedded-resources">Explicit Loading and Unloading of Embedded Resources</h3>
 <p>Resources embedded in C++ executable or library code are automatically registered to the Qt resource system in a constructor of an internal global variable. Since the global variables are initialized before main() runs, the resources are available when the program starts to run.</p>
-<p>When embedding resources in <i>static</i> libraries, the C++ linker might remove the static variables that register the resources. If you embed resources in a static library, you therefore need to explicitly register your resources by calling <a href="qtresource-proxy.html#Q_INIT_RESOURCE" translate="no">Q_INIT_RESOURCE</a>() with the base name of the <code translate="no">.qrc</code> file. For example:</p>
+<p>When embedding resources in <i>static</i> libraries, the C++ linker might remove the static variables that register the resources. If you embed resources in a static library, you therefore need to explicitly register your resources by calling <a href="qtresource-qtcore-proxy.html#Q_INIT_RESOURCE" translate="no">Q_INIT_RESOURCE</a>() with the base name of the <code translate="no">.qrc</code> file. For example:</p>
 <pre class="cpp" translate="no">
  MyClass<span class="operator">::</span>MyClass() : BaseClass()
  {
@@ -244,8 +243,8 @@
      <span class="operator">.</span><span class="operator">.</span><span class="operator">.</span>
  }
 </pre>
-<p>You can also explicitly remove registered resources from the application, for instance when unloading a plugin. Use <a href="qtresource-proxy.html#Q_CLEANUP_RESOURCE" translate="no">Q_CLEANUP_RESOURCE</a>() for this.</p>
-<p>Note: As the resource initializers generated by rcc are declared in the global namespace, your calls to <a href="qtresource-proxy.html#Q_INIT_RESOURCE" translate="no">Q_INIT_RESOURCE</a>() and <a href="qtresource-proxy.html#Q_CLEANUP_RESOURCE" translate="no">Q_CLEANUP_RESOURCE</a>() need to be done outside any namespace.</p>
+<p>You can also explicitly remove registered resources from the application, for instance when unloading a plugin. Use <a href="qtresource-qtcore-proxy.html#Q_CLEANUP_RESOURCE" translate="no">Q_CLEANUP_RESOURCE</a>() for this.</p>
+<p>Note: As the resource initializers generated by rcc are declared in the global namespace, your calls to <a href="qtresource-qtcore-proxy.html#Q_INIT_RESOURCE" translate="no">Q_INIT_RESOURCE</a>() and <a href="qtresource-qtcore-proxy.html#Q_CLEANUP_RESOURCE" translate="no">Q_CLEANUP_RESOURCE</a>() need to be done outside any namespace.</p>
 </div>
 <!-- @@@resources.html -->
         </div>
@@ -255,9 +254,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>

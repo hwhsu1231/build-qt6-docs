@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
 <!-- sharedmemory.qdoc -->
-  <meta name="description" content="Demonstrates doing inter-process communication using shared memory with the QSharedMemory class.">
-  <title>Shared Memory Example | Qt Core 6.6.0</title>
+  <meta name="description" content="Demonstrates how to share image data between different processes using the Shared Memory IPC mechanism.">
+  <title>IPC: Shared Memory | Qt Core 6.6.2</title>
   <link rel="stylesheet" type="text/css" href="style/offline-simple.css" />
   <script type="text/javascript">
     document.getElementsByTagName("link").item(0).setAttribute("href", "style/offline.css");
@@ -28,8 +28,8 @@
         <ul>
 <li><a href="../qtdoc/index.html" translate="no">Qt 6.6</a></li>
 <li><a href="qtcore-index.html" translate="no">Qt Core</a></li>
-<li>Shared Memory Example</li>
-<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6&#x2e;0 Reference Documentation</a></li>
+<li>IPC: Shared Memory</li>
+<li id="buildversion"><a href="qtcore-index.html" translate="no">Qt 6.6.2 Reference Documentation</a></li>
     </ul>
     </div>
 </div>
@@ -37,9 +37,9 @@
 <div class="line">
 <div class="content mainContent">
 <div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
-<h1 class="title">Shared Memory Example</h1>
+<h1 class="title">IPC: Shared Memory</h1>
 <!-- $$$ipc/sharedmemory-brief -->
-<p>Demonstrates doing inter-process communication using shared memory with the <a href="qsharedmemory.html" translate="no">QSharedMemory</a> class.</p>
+<p>Demonstrates how to share image data between different processes using the Shared Memory IPC mechanism.</p>
 <!-- @@@ipc/sharedmemory -->
 <!-- $$$ipc/sharedmemory-description -->
 <div class="descr" id="details">
@@ -60,17 +60,17 @@
  {
      Q_OBJECT
 
-   <span class="keyword">public</span>:
+ <span class="keyword">public</span>:
      Dialog(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent <span class="operator">=</span> nullptr);
 
-   <span class="keyword">public</span> <span class="keyword">slots</span>:
+ <span class="keyword">public</span> <span class="keyword">slots</span>:
      <span class="type">void</span> loadFromFile();
      <span class="type">void</span> loadFromMemory();
 
-  <span class="keyword">private</span>:
+ <span class="keyword">private</span>:
      <span class="type">void</span> detach();
 
-   <span class="keyword">private</span>:
+ <span class="keyword">private</span>:
      Ui<span class="operator">::</span>Dialog ui;
      <span class="type"><a href="qsharedmemory.html" translate="no">QSharedMemory</a></span> sharedMemory;
  };
@@ -78,7 +78,7 @@
 <p>The constructor builds the user interface widgets and connects the clicked() signal of each button to the corresponding slot function.</p>
 <pre class="cpp" translate="no">
  Dialog<span class="operator">::</span>Dialog(<span class="type"><a href="../qtwidgets/qwidget.html" translate="no">QWidget</a></span> <span class="operator">*</span>parent)
-   : <span class="type"><a href="../qtwidgets/qdialog.html" translate="no">QDialog</a></span>(parent)<span class="operator">,</span> sharedMemory(<span class="string">&quot;QSharedMemoryExample&quot;</span>)
+     : <span class="type"><a href="../qtwidgets/qdialog.html" translate="no">QDialog</a></span>(parent)<span class="operator">,</span> sharedMemory(<span class="type"><a href="qnativeipckey.html" translate="no">QNativeIpcKey</a></span>(u<span class="string">&quot;QSharedMemoryExample&quot;</span>_s))
  {
      ui<span class="operator">.</span>setupUi(<span class="keyword">this</span>);
      connect(ui<span class="operator">.</span>loadFromFileButton<span class="operator">,</span> <span class="operator">&amp;</span><span class="type"><a href="../qtwidgets/qpushbutton.html" translate="no">QPushButton</a></span><span class="operator">::</span>clicked<span class="operator">,</span>
@@ -89,7 +89,7 @@
  }
 </pre>
 <p>Note that &quot;QSharedMemoryExample&quot; is passed to the <a href="qsharedmemory.html" translate="no">QSharedMemory()</a> constructor to be used as the key. This will be used by the system as the identifier of the underlying shared memory segment.</p>
-<p>Click the <code translate="no">Load Image From File..&#x2e;</code> button on one of the dialogs. The loadFromFile() slot is invoked. First, it tests whether a shared memory segment is already attached to the process. If so, that segment is detached from the process, so we can be assured of starting off the example correctly.</p>
+<p>Click the <code translate="no">Load Image From File...</code> button on one of the dialogs. The loadFromFile() slot is invoked. First, it tests whether a shared memory segment is already attached to the process. If so, that segment is detached from the process, so we can be assured of starting off the example correctly.</p>
 <pre class="cpp" translate="no">
  <span class="type">void</span> Dialog<span class="operator">::</span>loadFromFile()
  {
@@ -170,9 +170,9 @@
 </div>
 <div class="footer">
    <p>
-   <acronym title="Copyright">&copy;</acronym> 2023 The Qt Company Ltd.
+   <acronym title="Copyright">&copy;</acronym> 2024 <span translate="no">The Qt Company Ltd.</span>
    Documentation contributions included herein are the copyrights of
-   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the Free Software Foundation.<br/>    Qt and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of The Qt Company Ltd. in Finland and/or other countries
+   their respective owners.<br/>    The documentation provided herein is licensed under the terms of the    <a href="http://www.gnu.org/licenses/fdl.html">GNU Free Documentation    License version 1.3</a> as published by the <span translate="no">Free Software Foundation</span>.<br/>    <span translate="no">Qt</span> and respective logos are <a href="https://doc.qt.io/qt/trademarks.html">    trademarks</a> of <span translate="no">The Qt Company Ltd.</span> in Finland and/or other countries
    worldwide. All other trademarks are property of their respective owners. </p>
 </div>
 </body>
