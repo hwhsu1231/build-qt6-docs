@@ -188,9 +188,9 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p><b>Note: </b>It is up to the component creating the external instance to ensure the necessary extensions are enabled on it. These are: <code translate="no">VK_KHR_surface</code>, the WSI-specific <code translate="no">VK_KHR_*_surface</code> that is appropriate for the platform in question, and <code translate="no">VK_EXT_debug_utils</code> in case QVulkanInstance's debug output redirection is desired.</p>
 </div>
 <h3 id="accessing-core-vulkan-commands">Accessing Core Vulkan Commands</h3>
-<p>To access the <code translate="no">VkInstance</code> handle the QVulkanInstance wraps, call <a href="qvulkaninstance.html#vkInstance" translate="no">vkInstance</a>(). To resolve Vulkan functions, call <a href="qvulkaninstance.html#getInstanceProcAddr" translate="no">getInstanceProcAddr</a>(). For core Vulkan commands manual resolving is not necessary as they are provided via the QVulkanFunctions and QVulkanDeviceFunctions objects accessible via <a href="qvulkaninstance.html#functions" translate="no">functions</a>() and <a href="qvulkaninstance.html#deviceFunctions" translate="no">deviceFunctions</a>().</p>
+<p>To access the <code translate="no">VkInstance</code> handle the QVulkanInstance wraps, call <a href="qvulkaninstance.html#vkInstance" translate="no">vkInstance</a>(). To resolve Vulkan functions, call <a href="qvulkaninstance.html#getInstanceProcAddr" translate="no">getInstanceProcAddr</a>(). For core Vulkan commands manual resolving is not necessary as they are provided via the <a href="qvulkanfunctions.html" translate="no">QVulkanFunctions</a> and <a href="qvulkandevicefunctions.html" translate="no">QVulkanDeviceFunctions</a> objects accessible via <a href="qvulkaninstance.html#functions" translate="no">functions</a>() and <a href="qvulkaninstance.html#deviceFunctions" translate="no">deviceFunctions</a>().</p>
 <div class="admonition note">
-<p><b>Note: </b>QVulkanFunctions and QVulkanDeviceFunctions are generated from the Vulkan API XML specifications when building the Qt libraries. Therefore no documentation is provided for them. They contain the Vulkan 1.2 functions with the same signatures as described in the <a href="https://www.khronos.org/registry/vulkan/specs/1.2/html/" translate="no">Vulkan API documentation</a>.</p>
+<p><b>Note: </b><a href="qvulkanfunctions.html" translate="no">QVulkanFunctions</a> and <a href="qvulkandevicefunctions.html" translate="no">QVulkanDeviceFunctions</a> are generated from the Vulkan API XML specifications when building the Qt libraries. Therefore no documentation is provided for them. They contain the Vulkan 1.2 functions with the same signatures as described in the <a href="https://www.khronos.org/registry/vulkan/specs/1.2/html/" translate="no">Vulkan API documentation</a>.</p>
 </div>
 <h3 id="getting-a-native-vulkan-surface-for-a-window">Getting a Native Vulkan Surface for a Window</h3>
 <p>The two common windowing system specific operations are getting a surface (a <code translate="no">VkSurfaceKHR</code> handle) for a window, and querying if a given queue family supports presenting to a given surface. To avoid WSI-specific bits in the applications, these are abstracted by QVulkanInstance and the underlying QPA layers.</p>
@@ -215,7 +215,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
                  m_initialized <span class="operator">=</span> <span class="keyword">true</span>;
                  <span class="comment">// initialize device, swapchain, etc.</span>
                  <span class="type"><a href="qvulkaninstance.html#QVulkanInstance" translate="no">QVulkanInstance</a></span> <span class="operator">*</span>inst <span class="operator">=</span> vulkanInstance();
-                 <span class="type">QVulkanFunctions</span> <span class="operator">*</span>f <span class="operator">=</span> inst<span class="operator">-</span><span class="operator">&gt;</span>functions();
+                 <span class="type"><a href="qvulkanfunctions.html" translate="no">QVulkanFunctions</a></span> <span class="operator">*</span>f <span class="operator">=</span> inst<span class="operator">-</span><span class="operator">&gt;</span>functions();
                  uint32_t devCount <span class="operator">=</span> <span class="number">0</span>;
                  f<span class="operator">-</span><span class="operator">&gt;</span>vkEnumeratePhysicalDevices(inst<span class="operator">-</span><span class="operator">&gt;</span>vkInstance()<span class="operator">,</span> <span class="operator">&amp;</span>devCount<span class="operator">,</span> nullptr);
                  <span class="comment">// ...</span>
@@ -268,7 +268,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <li>The headers for the QVulkan classes may include <code translate="no">vulkan.h</code> with <code translate="no">VK_NO_PROTOTYPES</code> enabled. This can cause issues in C++ wrapper headers that rely on the prototypes. Hence in application code it may be necessary to include <code translate="no">vulkan.hpp</code> or similar before any of the QVulkan headers.</li>
 </ul>
 </div>
-<p><b>See also </b>QVulkanFunctions and <a href="qsurface.html#SurfaceType-enum" translate="no">QSurface::SurfaceType</a>.</p>
+<p><b>See also </b><a href="qvulkanfunctions.html" translate="no">QVulkanFunctions</a> and <a href="qsurface.html#SurfaceType-enum" translate="no">QSurface::SurfaceType</a>.</p>
 <!-- @@@QVulkanInstance -->
 <div class="types">
 <h2>Member Type Documentation</h2>
@@ -370,8 +370,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p>Destroys the underlying platform instance, thus destroying the VkInstance (when owned). The <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a> object is still reusable by calling <a href="qvulkaninstance.html#create" translate="no">create</a>() again.</p>
 <!-- @@@destroy -->
 <!-- $$$deviceFunctions[overload1]$$$deviceFunctionsVkDevice -->
-<h3 class="fn" translate="no" id="deviceFunctions"><span class="type">QVulkanDeviceFunctions</span> *QVulkanInstance::<span class="name">deviceFunctions</span>(<span class="type">VkDevice</span> <i>device</i>)</h3>
-<p>Returns the QVulkanDeviceFunctions object that exposes the device level core Vulkan command set and is guaranteed to be functional cross-platform.</p>
+<h3 class="fn" translate="no" id="deviceFunctions"><span class="type"><a href="qvulkandevicefunctions.html" translate="no">QVulkanDeviceFunctions</a></span> *QVulkanInstance::<span class="name">deviceFunctions</span>(<span class="type">VkDevice</span> <i>device</i>)</h3>
+<p>Returns the <a href="qvulkandevicefunctions.html" translate="no">QVulkanDeviceFunctions</a> object that exposes the device level core Vulkan command set and is guaranteed to be functional cross-platform.</p>
 <div class="admonition note">
 <p><b>Note: </b>The Vulkan functions in the returned object must only be called with <i translate="no">device</i> or a child object (VkQueue, VkCommandBuffer) of <i translate="no">device</i> as their first parameter. This is because these functions are resolved via <a href="https://www.khronos.org/registry/vulkan/specs/1.0/man/html/vkGetDeviceProcAddr.html" translate="no">vkGetDeviceProcAddr</a> in order to avoid the potential overhead of internal dispatching.</p>
 </div>
@@ -381,7 +381,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <div class="admonition note">
 <p><b>Note: </b>The object is cached so calling this function with the same <i translate="no">device</i> again is a cheap operation. However, when the device gets destroyed, it is up to the application to notify the <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a> by calling <a href="qvulkaninstance.html#resetDeviceFunctions" translate="no">resetDeviceFunctions</a>().</p>
 </div>
-<p>The functions from the core Vulkan 1.0 API will be available always. When it comes to higher Vulkan versions, such as, 1.1 and 1.2, the QVulkanDeviceFunctions object will try to resolve the core API functions for those as well, but if the Vulkan physical device at run time has no support for those, calling any such unsupported function will lead to unspecified behavior. To properly enable support for Vulkan versions higher than 1.0, an appropriate instance API version may need to be set by calling <a href="qvulkaninstance.html#setApiVersion" translate="no">setApiVersion</a>() before <a href="qvulkaninstance.html#create" translate="no">create</a>(). In addition, applications are expected to check the physical device's <a href="qvulkaninstance.html#apiVersion" translate="no">apiVersion</a> in VkPhysicalDeviceProperties.</p>
+<p>The functions from the core Vulkan 1.0 API will be available always. When it comes to higher Vulkan versions, such as, 1.1 and 1.2, the <a href="qvulkandevicefunctions.html" translate="no">QVulkanDeviceFunctions</a> object will try to resolve the core API functions for those as well, but if the Vulkan physical device at run time has no support for those, calling any such unsupported function will lead to unspecified behavior. To properly enable support for Vulkan versions higher than 1.0, an appropriate instance API version may need to be set by calling <a href="qvulkaninstance.html#setApiVersion" translate="no">setApiVersion</a>() before <a href="qvulkaninstance.html#create" translate="no">create</a>(). In addition, applications are expected to check the physical device's <a href="qvulkaninstance.html#apiVersion" translate="no">apiVersion</a> in VkPhysicalDeviceProperties.</p>
 <p><b>See also </b><a href="qvulkaninstance.html#functions" translate="no">functions</a>() and <a href="qvulkaninstance.html#resetDeviceFunctions" translate="no">resetDeviceFunctions</a>().</p>
 <!-- @@@deviceFunctions -->
 <!-- $$$errorCode[overload1]$$$errorCode -->
@@ -400,12 +400,12 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <p><b>See also </b><a href="qvulkaninstance.html#setFlags" translate="no">setFlags</a>().</p>
 <!-- @@@flags -->
 <!-- $$$functions[overload1]$$$functions -->
-<h3 class="fn" translate="no" id="functions"><span class="type">QVulkanFunctions</span> *QVulkanInstance::<span class="name">functions</span>() const</h3>
-<p>Returns the corresponding QVulkanFunctions object that exposes the core Vulkan command set, excluding device level functions, and is guaranteed to be functional cross-platform.</p>
+<h3 class="fn" translate="no" id="functions"><span class="type"><a href="qvulkanfunctions.html" translate="no">QVulkanFunctions</a></span> *QVulkanInstance::<span class="name">functions</span>() const</h3>
+<p>Returns the corresponding <a href="qvulkanfunctions.html" translate="no">QVulkanFunctions</a> object that exposes the core Vulkan command set, excluding device level functions, and is guaranteed to be functional cross-platform.</p>
 <div class="admonition note">
 <p><b>Note: </b>The returned object is owned and managed by the <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a>. Do not destroy or alter it.</p>
 </div>
-<p>The functions from the core Vulkan 1.0 API will be available always. When it comes to higher Vulkan versions, such as, 1.1 and 1.2, the QVulkanFunctions object will try to resolve the core API functions for those as well, but if the Vulkan instance implementation at run time has no support for those, calling any such unsupported function will lead to unspecified behavior. In addition, to properly enable support for Vulkan versions higher than 1.0, an appropriate instance API version may need to be set by calling <a href="qvulkaninstance.html#setApiVersion" translate="no">setApiVersion</a>() before <a href="qvulkaninstance.html#create" translate="no">create</a>(). To query the Vulkan implementation's instance-level version, call <a href="qvulkaninstance.html#supportedApiVersion" translate="no">supportedApiVersion</a>().</p>
+<p>The functions from the core Vulkan 1.0 API will be available always. When it comes to higher Vulkan versions, such as, 1.1 and 1.2, the <a href="qvulkanfunctions.html" translate="no">QVulkanFunctions</a> object will try to resolve the core API functions for those as well, but if the Vulkan instance implementation at run time has no support for those, calling any such unsupported function will lead to unspecified behavior. In addition, to properly enable support for Vulkan versions higher than 1.0, an appropriate instance API version may need to be set by calling <a href="qvulkaninstance.html#setApiVersion" translate="no">setApiVersion</a>() before <a href="qvulkaninstance.html#create" translate="no">create</a>(). To query the Vulkan implementation's instance-level version, call <a href="qvulkaninstance.html#supportedApiVersion" translate="no">supportedApiVersion</a>().</p>
 <p><b>See also </b><a href="qvulkaninstance.html#deviceFunctions" translate="no">deviceFunctions</a>() and <a href="qvulkaninstance.html#supportedApiVersion" translate="no">supportedApiVersion</a>().</p>
 <!-- @@@functions -->
 <!-- $$$getInstanceProcAddr[overload1]$$$getInstanceProcAddrconstchar* -->
@@ -467,7 +467,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Gui)</td></tr>
 <!-- @@@removeDebugOutputFilter -->
 <!-- $$$resetDeviceFunctions[overload1]$$$resetDeviceFunctionsVkDevice -->
 <h3 class="fn" translate="no" id="resetDeviceFunctions"><span class="type">void</span> QVulkanInstance::<span class="name">resetDeviceFunctions</span>(<span class="type">VkDevice</span> <i>device</i>)</h3>
-<p>Invalidates and destroys the QVulkanDeviceFunctions object for the given <i translate="no">device</i>.</p>
+<p>Invalidates and destroys the <a href="qvulkandevicefunctions.html" translate="no">QVulkanDeviceFunctions</a> object for the given <i translate="no">device</i>.</p>
 <p>This function must be called when a VkDevice, for which <a href="qvulkaninstance.html#deviceFunctions" translate="no">deviceFunctions</a>() was called, gets destroyed while the application intends to continue running, possibly creating a new logical Vulkan device later on.</p>
 <p>There is no need to call this before destroying the <a href="qvulkaninstance.html" translate="no">QVulkanInstance</a> since clean up is then performed automatically.</p>
 <p><b>See also </b><a href="qvulkaninstance.html#deviceFunctions" translate="no">deviceFunctions</a>().</p>
