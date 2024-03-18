@@ -120,9 +120,9 @@ jobs:
 
       - name: Install the Prerequisites (for QDoc)
         run: |
-          echo "----------------------------------------"
+          echo "------------------------------------------------------------"
           echo "Remove Clang/LLVM 13 installed by apt"
-          echo "----------------------------------------"
+          echo "------------------------------------------------------------"
           sudo apt autoremove       \
             clang-13                \
             clang-format-13         \
@@ -137,9 +137,9 @@ jobs:
             llvm-13-runtime         \
             llvm-13-tools           \
             libllvm13
-          echo "----------------------------------------"
+          echo "------------------------------------------------------------"
           echo "Remove Clang/LLVM 14 installed by apt"
-          echo "----------------------------------------"
+          echo "------------------------------------------------------------"
           sudo apt autoremove       \
             clang-14                \
             clang-format-14         \
@@ -154,9 +154,9 @@ jobs:
             llvm-14-runtime         \
             llvm-14-tools           \
             libllvm14
-          echo "----------------------------------------"
+          echo "------------------------------------------------------------"
           echo "Remove Clang/LLVM 15 installed by apt"
-          echo "----------------------------------------"
+          echo "------------------------------------------------------------"
           sudo apt autoremove       \
             clang-15                \
             clang-format-15         \
@@ -171,9 +171,9 @@ jobs:
             llvm-15-runtime         \
             llvm-15-tools           \
             libllvm15
-          echo "----------------------------------------"
-          echo "Install Clang/LLVM 17 Toolchain"
-          echo "----------------------------------------"
+          echo "------------------------------------------------------------"
+          echo "Install Clang/LLVM 17 Toolchain by llvm.sh"
+          echo "------------------------------------------------------------"
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh 17 all
@@ -187,6 +187,12 @@ jobs:
             gperf             \
             libnss3-dev       \
             libdbus-1-dev
+          sudo apt install libre2-dev
+          sudo apt install libvpx-dev
+          sudo apt install libxml2-dev libxslt1-dev
+          sudo apt install libavformat-dev
+          sudo apt install libpoppler-cpp-dev
+          sudo apt install libasound2
 
       - name: Install the Prerequisites (for Chromnium)
         run: |
@@ -200,27 +206,27 @@ jobs:
         with:
           node-version: 14
 
-      - name: Check the Installation
-        run: |
-          which cmake && cmake --version
-          echo "----------------------------------------"
-          which python3 && python3 --version
-          echo "----------------------------------------"
-          which ninja && ninja --version
-          echo "----------------------------------------"
-          which node && node --version
-          echo "----------------------------------------"
-          which bison && bison --version
-          echo "----------------------------------------"
-          which flex && flex --version
-          echo "----------------------------------------"
-          which perl && perl --version
-          echo "----------------------------------------"
-          which gperf && gperf --version
+      # - name: Check the Installation
+      #   run: |
+      #     which cmake && cmake --version
+      #     echo "----------------------------------------"
+      #     which python3 && python3 --version
+      #     echo "----------------------------------------"
+      #     which ninja && ninja --version
+      #     echo "----------------------------------------"
+      #     which node && node --version
+      #     echo "----------------------------------------"
+      #     which bison && bison --version
+      #     echo "----------------------------------------"
+      #     which flex && flex --version
+      #     echo "----------------------------------------"
+      #     which perl && perl --version
+      #     echo "----------------------------------------"
+      #     which gperf && gperf --version
 
       - name: Prepare the Qt6 Sources
         run: |
-          curl -L https://download.qt.io/archive/qt/${{ env.QT6_VERSION }}/${{ env.QT6_RELEASE }}/single/qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz -o qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz
+          curl -L https://download.qt.io/archive/qt/${QT6_VERSION}/${{ env.QT6_RELEASE }}/single/qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz -o qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz
           tar -xf qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz
           mv qt-everywhere-src-${{ env.QT6_RELEASE }} qt6
 

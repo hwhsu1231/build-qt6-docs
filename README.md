@@ -42,6 +42,37 @@ sudo snap install node --classic --channel=14
 ```
 
 ```bash
+# [QtWebEngine] Performing Test re2 - Failed because PkgConfig::RE2 not found
+sudo apt install libre2-dev
+```
+
+```bash
+# [QtWebEngine] Performing Test vpx - Failed because PkgConfig::VPX not found
+sudo apt install libvpx-dev
+```
+
+```bash
+# [QtWebEngine] Performing Test compatible libxml2 and libxslt - Failed because PkgConfig::LIBXML2 not found
+sudo apt install libxml2-dev libxslt1-dev
+```
+
+```bash
+# [QtWebEngine] Performing Test libavformat - Failed because PkgConfig::FFMPEG not found
+sudo apt install libavformat-dev
+```
+
+```bash
+# [QtWebEngine] Performing Test poppler - Failed because PkgConfig::POPPLER_CPP not found
+sudo apt install libpoppler-cpp-dev
+```
+
+```bash
+# [QtWebEngine] Performing Test alsa - Failed because PkgConfig::ALSA not found
+# Test
+sudo apt install libasound2
+```
+
+```bash
 # WARNING: No backend for low level audio found.
 # https://stackoverflow.com/questions/76191389/qt-configure-warning-no-backend-for-low-level-audio-found
 ```
