@@ -45,182 +45,216 @@ jobs:
               echo "Format does not match"
           fi
 
-      - name: Check something
-        run: |
-          echo "----------------------------------------"
-          apt list *clang* --installed
-          echo "----------------------------------------"
-          apt list *llvm* --installed
-          echo "----------------------------------------"
+      # - name: Check something
+      #   run: |
+      #     echo "----------------------------------------"
+      #     apt list *clang* --installed
+      #     echo "----------------------------------------"
+      #     apt list *llvm* --installed
+      #     echo "----------------------------------------"
 
       - name: Checkout to '${{ github.ref }}'
         uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
 
-      # # https://wiki.qt.io/Building_Qt_6_from_Git
-      # - name: Install the Prerequisites
-      #   run: |
-      #     sudo apt update
-      #     sudo apt install  \
-      #       gcc             \
-      #       build-essential \
-      #       cmake           \
-      #       python3         \
-      #       python3-pip     \
-      #       ninja-build     \
-      #       perl
+      # https://wiki.qt.io/Building_Qt_6_from_Git
+      - name: Install the Prerequisites
+        run: |
+          sudo apt update
+          sudo apt install  \
+            gcc             \
+            build-essential \
+            cmake           \
+            python3         \
+            python3-pip     \
+            ninja-build     \
+            perl
 
-      # # https://wiki.qt.io/Building_Qt_6_from_Git
-      # # https://doc.qt.io/qt-6/linux-requirements.html
-      # - name: Install the Prerequisites (for Linux Requirements)
-      #   run: |
-      #     # sudo apt install      \
-      #     #   libgl-dev           \
-      #     #   libegl-dev          \
-      #     #   libinput-dev        \
-      #     #   libfontconfig1-dev  \
-      #     sudo apt install          \
-      #       libgl-dev               \
-      #       libegl-dev              \
-      #       libinput-dev            \
-      #       libfontconfig1-dev      \
-      #       libfreetype6-dev        \
-      #       libx11-dev              \
-      #       libx11-xcb-dev          \
-      #       libxext-dev             \
-      #       libxfixes-dev           \
-      #       libxi-dev               \
-      #       libxrender-dev          \
-      #       libxcb1-dev             \
-      #       libxcb-cursor-dev       \
-      #       libxcb-glx0-dev         \
-      #       libxcb-keysyms1-dev     \
-      #       libxcb-image0-dev       \
-      #       libxcb-shm0-dev         \
-      #       libxcb-icccm4-dev       \
-      #       libxcb-sync-dev         \
-      #       libxcb-xfixes0-dev      \
-      #       libxcb-shape0-dev       \
-      #       libxcb-randr0-dev       \
-      #       libxcb-render-util0-dev \
-      #       libxcb-util-dev         \
-      #       libxcb-xinerama0-dev    \
-      #       libxcb-xkb-dev          \
-      #       libxkbcommon-dev        \
-      #       libxkbcommon-x11-dev    \
-      #       libxcursor-dev          \
-      #       libxshmfence-dev        \
-      #       libcups2-dev            \
-      #       libprotobuf-dev         \
-      #       libkf5pulseaudioqt-dev  \
-      #       hunspell                \
-      #       libhunspell-dev         \
-      #       libatspi2.0-dev
+      # https://wiki.qt.io/Building_Qt_6_from_Git
+      # https://doc.qt.io/qt-6/linux-requirements.html
+      - name: Install the Prerequisites (for Linux Requirements)
+        run: |
+          # sudo apt install      \
+          #   libgl-dev           \
+          #   libegl-dev          \
+          #   libinput-dev        \
+          #   libfontconfig1-dev  \
+          sudo apt install          \
+            libgl-dev               \
+            libegl-dev              \
+            libinput-dev            \
+            libfontconfig1-dev      \
+            libfreetype6-dev        \
+            libx11-dev              \
+            libx11-xcb-dev          \
+            libxext-dev             \
+            libxfixes-dev           \
+            libxi-dev               \
+            libxrender-dev          \
+            libxcb1-dev             \
+            libxcb-cursor-dev       \
+            libxcb-glx0-dev         \
+            libxcb-keysyms1-dev     \
+            libxcb-image0-dev       \
+            libxcb-shm0-dev         \
+            libxcb-icccm4-dev       \
+            libxcb-sync-dev         \
+            libxcb-xfixes0-dev      \
+            libxcb-shape0-dev       \
+            libxcb-randr0-dev       \
+            libxcb-render-util0-dev \
+            libxcb-util-dev         \
+            libxcb-xinerama0-dev    \
+            libxcb-xkb-dev          \
+            libxkbcommon-dev        \
+            libxkbcommon-x11-dev    \
+            libxcursor-dev          \
+            libxshmfence-dev        \
+            libcups2-dev            \
+            libprotobuf-dev         \
+            libkf5pulseaudioqt-dev  \
+            hunspell                \
+            libhunspell-dev         \
+            libatspi2.0-dev
 
-      # - name: Install the Prerequisites (for QDoc)
-      #   run: |
-      #     echo "----------------------------------------"
-      #     echo "Autoremove Clang/LLVM 14 installed by apt"
-      #     echo "----------------------------------------"
-      #     sudo apt autoremove \
-      #       llvm-14           \
-      #       clang-14          \
-      #       libclang-14-dev
-      #     # #
-      #     # # Install Clang/LLVM 15
-      #     # #
-      #     # sudo apt install    \
-      #     #   llvm-15           \
-      #     #   clang-15          \
-      #     #   libclang-15-dev
-      #     echo "----------------------------------------"
-      #     echo "Install Clang/LLVM 16 Toolchain"
-      #     echo "----------------------------------------"
-      #     # 
-      #     # sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-      #     #
-      #     wget https://apt.llvm.org/llvm.sh
-      #     chmod +x llvm.sh
-      #     sudo ./llvm.sh 17 all
+      - name: Install the Prerequisites (for QDoc)
+        run: |
+          echo "----------------------------------------"
+          echo "Remove Clang/LLVM 13 installed by apt"
+          echo "----------------------------------------"
+          sudo apt autoremove       \
+            clang-13                \
+            clang-format-13         \
+            clang-tidy-13           \
+            clang-tools-13          \
+            libclang-common-13-dev  \
+            libclang1-13            \
+            libclang-13-dev         \
+            llvm-13                 \
+            llvm-13-dev             \
+            llvm-13-linker-tools    \
+            llvm-13-runtime         \
+            llvm-13-tools           \
+            libllvm13
+          echo "----------------------------------------"
+          echo "Remove Clang/LLVM 14 installed by apt"
+          echo "----------------------------------------"
+          sudo apt autoremove       \
+            clang-14                \
+            clang-format-14         \
+            clang-tidy-14           \
+            clang-tools-14          \
+            libclang-common-14-dev  \
+            libclang1-14            \
+            libclang-14-dev         \
+            llvm-14                 \
+            llvm-14-dev             \
+            llvm-14-linker-tools    \
+            llvm-14-runtime         \
+            llvm-14-tools           \
+            libllvm14
+          echo "----------------------------------------"
+          echo "Remove Clang/LLVM 15 installed by apt"
+          echo "----------------------------------------"
+          sudo apt autoremove       \
+            clang-15                \
+            clang-format-15         \
+            clang-tidy-15           \
+            clang-tools-15          \
+            libclang-common-15-dev  \
+            libclang1-15            \
+            libclang-15-dev         \
+            llvm-15                 \
+            llvm-15-dev             \
+            llvm-15-linker-tools    \
+            llvm-15-runtime         \
+            llvm-15-tools           \
+            libllvm15
+          echo "----------------------------------------"
+          echo "Install Clang/LLVM 17 Toolchain"
+          echo "----------------------------------------"
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 17 all
 
-      # - name: Install the Prerequisites (for QWebEngine)
-      #   run: |
-      #     pip install html5lib
-      #     sudo apt install    \
-      #       bison             \
-      #       flex              \
-      #       gperf             \
-      #       libnss3-dev       \
-      #       libdbus-1-dev
+      - name: Install the Prerequisites (for QWebEngine)
+        run: |
+          pip install html5lib
+          sudo apt install    \
+            bison             \
+            flex              \
+            gperf             \
+            libnss3-dev       \
+            libdbus-1-dev
 
-      # - name: Install the Prerequisites (for Chromnium)
-      #   run: |
-      #     sudo apt install      \
-      #       libpango1.0-dev     \
-      #       libcogl-pango-dev   \
-      #       libjpeg-dev
+      - name: Install the Prerequisites (for Chromnium)
+        run: |
+          sudo apt install      \
+            libpango1.0-dev     \
+            libcogl-pango-dev   \
+            libjpeg-dev
 
-      # - name: Install the Prerequisites (NodeJS 14 for QWebEngine)
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 14
+      - name: Install the Prerequisites (NodeJS 14 for QWebEngine)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 14
 
-      # - name: Check the Installation
-      #   run: |
-      #     which cmake && cmake --version
-      #     echo "----------------------------------------"
-      #     which python3 && python3 --version
-      #     echo "----------------------------------------"
-      #     which ninja && ninja --version
-      #     echo "----------------------------------------"
-      #     which node && node --version
-      #     echo "----------------------------------------"
-      #     which bison && bison --version
-      #     echo "----------------------------------------"
-      #     which flex && flex --version
-      #     echo "----------------------------------------"
-      #     which perl && perl --version
-      #     echo "----------------------------------------"
-      #     which gperf && gperf --version
+      - name: Check the Installation
+        run: |
+          which cmake && cmake --version
+          echo "----------------------------------------"
+          which python3 && python3 --version
+          echo "----------------------------------------"
+          which ninja && ninja --version
+          echo "----------------------------------------"
+          which node && node --version
+          echo "----------------------------------------"
+          which bison && bison --version
+          echo "----------------------------------------"
+          which flex && flex --version
+          echo "----------------------------------------"
+          which perl && perl --version
+          echo "----------------------------------------"
+          which gperf && gperf --version
 
-      # - name: Prepare the Qt6 Sources
-      #   run: |
-      #     curl -L https://download.qt.io/archive/qt/${{ env.QT6_VERSION }}/${{ env.QT6_RELEASE }}/single/qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz -o qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz
-      #     tar -xf qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz
-      #     mv qt-everywhere-src-${{ env.QT6_RELEASE }} qt6
+      - name: Prepare the Qt6 Sources
+        run: |
+          curl -L https://download.qt.io/archive/qt/${{ env.QT6_VERSION }}/${{ env.QT6_RELEASE }}/single/qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz -o qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz
+          tar -xf qt-everywhere-src-${{ env.QT6_RELEASE }}.tar.xz
+          mv qt-everywhere-src-${{ env.QT6_RELEASE }} qt6
 
-      # - name: Configure the Qt6 Project
-      #   run: |
-      #     cd qt6
-      #     mkdir build && cd build
-      #     ../configure \
-      #       -developer-build \
-      #       -make examples \
-      #       -make tests
-      #     # ../configure \
-      #     #   -prefix ${{ github.workspace }}/html \
-      #     #   -nomake examples \
-      #     #   -nomake tests
+      - name: Configure the Qt6 Project
+        run: |
+          cd qt6
+          mkdir build && cd build
+          ../configure \
+            -developer-build \
+            -make examples \
+            -make tests
+          # ../configure \
+          #   -prefix ${{ github.workspace }}/html \
+          #   -nomake examples \
+          #   -nomake tests
 
-      # - name: Build the Qt6 Project with the 'html_docs' Target
+      - name: Build the Qt6 Project with the 'html_docs' Target
+        run: |
+          cd qt6
+          cd build
+          cmake --build . --target html_docs
+
+      # - name: Install the Qt6 Project
       #   run: |
       #     cd qt6
       #     cd build
-      #     cmake --build . --target html_docs
+      #     cmake --install .
 
-      # # - name: Install the Qt6 Project
-      # #   run: |
-      # #     cd qt6
-      # #     cd build
-      # #     cmake --install .
-
-      # - name: Deploy to 'gh-pages' branch
-      #   uses: JamesIves/github-pages-deploy-action@v4
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     branch: gh-pages
-      #     folder: ./qt6/build/qtbase/doc
-      #     # folder: ./html
-      #     target-folder: .
-      #     clean: false
+      - name: Deploy to 'gh-pages' branch
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: ./qt6/build/qtbase/doc
+          # folder: ./html
+          target-folder: .
+          clean: false
