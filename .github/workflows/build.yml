@@ -162,8 +162,12 @@ jobs:
         run: |
           cd qt6
           mkdir build && cd build
+          # ../configure \
+          #   -developer-build \
+          #   -nomake examples \
+          #   -nomake tests
           ../configure \
-            -developer-build \
+            -prefix ${{ github.workspace }}/html \
             -nomake examples \
             -nomake tests
 
@@ -173,17 +177,18 @@ jobs:
           cd build
           cmake --build . --target html_docs
 
-      # # - name: Install the Qt6 Project
-      # #   run: |
-      # #     cd qt6
-      # #     cd build
-      # #     cmake --install .
+      - name: Install the Qt6 Project
+        run: |
+          cd qt6
+          cd build
+          cmake --install .
 
       - name: Deploy to 'gh-pages' branch
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          folder: ./qt6/build/qtbase/doc
+          # folder: ./qt6/build/qtbase/doc
+          folder: ./html
           target-folder: .
           clean: false
