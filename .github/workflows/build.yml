@@ -104,91 +104,92 @@ jobs:
             llvm-14           \
             clang-14          \
             libclang-14-dev
-          #
-          # Install Clang/LLVM 15
-          #
-          sudo apt install    \
-            llvm-15           \
-            clang-15          \
-            libclang-15-dev
+          # #
+          # # Install Clang/LLVM 15
+          # #
+          # sudo apt install    \
+          #   llvm-15           \
+          #   clang-15          \
+          #   libclang-15-dev
+          bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
-      - name: Install the Prerequisites (for QWebEngine)
-        run: |
-          pip install html5lib
-          sudo apt install    \
-            bison             \
-            flex              \
-            gperf             \
-            libnss3-dev       \
-            libdbus-1-dev
+      # - name: Install the Prerequisites (for QWebEngine)
+      #   run: |
+      #     pip install html5lib
+      #     sudo apt install    \
+      #       bison             \
+      #       flex              \
+      #       gperf             \
+      #       libnss3-dev       \
+      #       libdbus-1-dev
 
-      - name: Install the Prerequisites (for Chromnium)
-        run: |
-          sudo apt install      \
-            libpango1.0-dev     \
-            libcogl-pango-dev   \
-            libjpeg-dev
+      # - name: Install the Prerequisites (for Chromnium)
+      #   run: |
+      #     sudo apt install      \
+      #       libpango1.0-dev     \
+      #       libcogl-pango-dev   \
+      #       libjpeg-dev
 
-      - name: Install the Prerequisites (NodeJS 14 for QWebEngine)
-        uses: actions/setup-node@v4
-        with:
-          node-version: 14
+      # - name: Install the Prerequisites (NodeJS 14 for QWebEngine)
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 14
 
-      - name: Check the Installation
-        run: |
-          which cmake && cmake --version
-          echo "----------------------------------------"
-          which python3 && python3 --version
-          echo "----------------------------------------"
-          which ninja && ninja --version
-          echo "----------------------------------------"
-          which node && node --version
-          echo "----------------------------------------"
-          which bison && bison --version
-          echo "----------------------------------------"
-          which flex && flex --version
-          echo "----------------------------------------"
-          which perl && perl --version
-          echo "----------------------------------------"
-          which gperf && gperf --version
+      # - name: Check the Installation
+      #   run: |
+      #     which cmake && cmake --version
+      #     echo "----------------------------------------"
+      #     which python3 && python3 --version
+      #     echo "----------------------------------------"
+      #     which ninja && ninja --version
+      #     echo "----------------------------------------"
+      #     which node && node --version
+      #     echo "----------------------------------------"
+      #     which bison && bison --version
+      #     echo "----------------------------------------"
+      #     which flex && flex --version
+      #     echo "----------------------------------------"
+      #     which perl && perl --version
+      #     echo "----------------------------------------"
+      #     which gperf && gperf --version
 
-      - name: Prepare the Qt6 Sources
-        run: |
-          curl -L https://download.qt.io/archive/qt/6.6/${{ env.QT6_VERSION }}/single/qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz -o qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
-          tar -xf qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
-          mv qt-everywhere-src-${{ env.QT6_VERSION }} qt6
+      # - name: Prepare the Qt6 Sources
+      #   run: |
+      #     curl -L https://download.qt.io/archive/qt/6.6/${{ env.QT6_VERSION }}/single/qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz -o qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
+      #     tar -xf qt-everywhere-src-${{ env.QT6_VERSION }}.tar.xz
+      #     mv qt-everywhere-src-${{ env.QT6_VERSION }} qt6
 
-      - name: Configure the Qt6 Project
-        run: |
-          cd qt6
-          mkdir build && cd build
-          ../configure \
-            -developer-build \
-            -make examples \
-            -make tests
-          # ../configure \
-          #   -prefix ${{ github.workspace }}/html \
-          #   -nomake examples \
-          #   -nomake tests
+      # - name: Configure the Qt6 Project
+      #   run: |
+      #     cd qt6
+      #     mkdir build && cd build
+      #     ../configure \
+      #       -developer-build \
+      #       -make examples \
+      #       -make tests
+      #     # ../configure \
+      #     #   -prefix ${{ github.workspace }}/html \
+      #     #   -nomake examples \
+      #     #   -nomake tests
 
-      - name: Build the Qt6 Project with the 'html_docs' Target
-        run: |
-          cd qt6
-          cd build
-          cmake --build . --target html_docs
-
-      # - name: Install the Qt6 Project
+      # - name: Build the Qt6 Project with the 'html_docs' Target
       #   run: |
       #     cd qt6
       #     cd build
-      #     cmake --install .
+      #     cmake --build . --target html_docs
 
-      - name: Deploy to 'gh-pages' branch
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          folder: ./qt6/build/qtbase/doc
-          # folder: ./html
-          target-folder: .
-          clean: false
+      # # - name: Install the Qt6 Project
+      # #   run: |
+      # #     cd qt6
+      # #     cd build
+      # #     cmake --install .
+
+      # - name: Deploy to 'gh-pages' branch
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: gh-pages
+      #     folder: ./qt6/build/qtbase/doc
+      #     # folder: ./html
+      #     target-folder: .
+      #     clean: false
