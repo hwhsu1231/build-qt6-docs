@@ -178,27 +178,69 @@ jobs:
           chmod +x llvm.sh
           sudo ./llvm.sh 17 all
 
+      - name: Install (for QtBase)
+        run: |
+          sudo apt install          \
+            libxcb-xinput-dev       \
+            libgtk-3-dev            \
+            libts-dev
+
       - name: Install the Prerequisites (for QWebEngine)
         run: |
           pip install html5lib
-          sudo apt install    \
-            bison             \
-            flex              \
-            gperf             \
-            libnss3-dev       \
-            libdbus-1-dev
-          sudo apt install libre2-dev
-          sudo apt install libvpx-dev
-          sudo apt install libxml2-dev libxslt1-dev
-          sudo apt install libavformat-dev
-          sudo apt install libpoppler-cpp-dev
-          sudo apt install libasound2
+          sudo apt install            \
+            bison                     \
+            flex                      \
+            gperf                     \
+            libnss3-dev               \
+            libdbus-1-dev             \
+            libre2-dev                \
+            libvpx-dev                \
+            libxml2-dev libxslt1-dev  \
+            libavformat-dev           \
+            libpoppler-cpp-dev        \
+            libasound2                \
+            libsnappy-dev             \
+            libevent-dev              \
+            libminizip-dev            \
+            libwebp-dev               \
+            libwebpmux3               \
+            libwebpdemux2             \
+            libopus-dev               \
+            libpci-dev                \
+            libpulse-dev              \
+            libpulse-mainloop-glib0
+
+      - name: Install the Prerequisites (for QtMultimedia)
+        run: |
+          sudo apt install        \
+            libgstreamer1.0-dev   \
+            libswscale-dev        \
+            libva-dev             \
+            libva-drm2
+
+      - name: Install the Prerequisites (for QtConnectivity)
+        run: |
+          sudo apt install        \
+            bluez                 \
+            libpcsclite-dev
+
+      - name: Install the Prerequisites (for QtTools)
+        run: |
+          sudo apt install        \
+            curl                  \
+            libcurl4-openssl-dev
+
+      - name: Install the Prerequisites (for QtPositioning)
+        run: |
+          sudo apt install        \
+            gconf2
 
       - name: Install the Prerequisites (for Chromnium)
         run: |
-          sudo apt install      \
-            libpango1.0-dev     \
-            libcogl-pango-dev   \
+          sudo apt install        \
+            libpango1.0-dev       \
+            libcogl-pango-dev     \
             libjpeg-dev
 
       - name: Install the Prerequisites (NodeJS 14 for QWebEngine)
