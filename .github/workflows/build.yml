@@ -34,7 +34,7 @@ jobs:
           echo "[Secrets]"
           echo "secrets.GITHUB_TOKEN = ${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Compute QT6_RELEASE
+      - name: Compute QT6_VERSION
         run: |
           # Use regular expression to match and extract the version
           if [[ $QT6_RELEASE =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
@@ -45,6 +45,13 @@ jobs:
               echo "Format does not match"
           fi
 
+      - name: Check something
+        run: |
+          echo "----------------------------------------"
+          apt list *clang* --installed
+          echo "----------------------------------------"
+          apt list *llvm* --installed
+          echo "----------------------------------------"
 
       - name: Checkout to '${{ github.ref }}'
         uses: actions/checkout@v3
