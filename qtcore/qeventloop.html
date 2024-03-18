@@ -72,10 +72,10 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <div class="table"><table class="alignedsummary" translate="no">
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#QEventLoop" translate="no">QEventLoop</a></b>(QObject *<i>parent</i> = nullptr)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> virtual </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#dtor.QEventLoop" translate="no">~QEventLoop</a></b>()</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#exec" translate="no">exec</a></b>(QEventLoop::ProcessEventsFlags <i>flags</i> = AllEvents)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#exec" translate="no">exec</a></b>(ProcessEventsFlags <i>flags</i> = AllEvents)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#isRunning" translate="no">isRunning</a></b>() const</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#processEvents" translate="no">processEvents</a></b>(QEventLoop::ProcessEventsFlags <i>flags</i> = AllEvents)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#processEvents-1" translate="no">processEvents</a></b>(QEventLoop::ProcessEventsFlags <i>flags</i>, int <i>maxTime</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#processEvents" translate="no">processEvents</a></b>(ProcessEventsFlags <i>flags</i> = AllEvents)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#processEvents-1" translate="no">processEvents</a></b>(ProcessEventsFlags <i>flags</i>, int <i>maxTime</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qeventloop.html#wakeUp" translate="no">wakeUp</a></b>()</td></tr>
 </table></div>
 <h2 id="reimplemented-public-functions">Reimplemented Public Functions</h2>
@@ -123,8 +123,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <h3 class="fn" translate="no" id="event"><code translate="no">[override virtual] </code><span class="type">bool</span> QEventLoop::<span class="name">event</span>(<span class="type"><a href="qevent.html" translate="no">QEvent</a></span> *<i>event</i>)</h3>
 <p>Reimplements: <a href="qobject.html#event" translate="no">QObject::event</a>(QEvent *e).</p>
 <!-- @@@event -->
-<!-- $$$exec[overload1]$$$execQEventLoop::ProcessEventsFlags -->
-<h3 class="fn" translate="no" id="exec"><span class="type">int</span> QEventLoop::<span class="name">exec</span>(<span class="type"><a href="qeventloop.html#ProcessEventsFlag-enum" translate="no">QEventLoop::ProcessEventsFlags</a></span> <i>flags</i> = AllEvents)</h3>
+<!-- $$$exec[overload1]$$$execProcessEventsFlags -->
+<h3 class="fn" translate="no" id="exec"><span class="type">int</span> QEventLoop::<span class="name">exec</span>(<span class="type"><a href="qeventloop.html#ProcessEventsFlag-enum" translate="no">ProcessEventsFlags</a></span> <i>flags</i> = AllEvents)</h3>
 <p>Enters the main event loop and waits until <a href="qeventloop.html#exit" translate="no">exit</a>() is called. Returns the value that was passed to <a href="qeventloop.html#exit" translate="no">exit</a>().</p>
 <p>If <i translate="no">flags</i> are specified, only events of the types allowed by the <i translate="no">flags</i> will be processed.</p>
 <p>It is necessary to call this function to start event handling. The main event loop receives events from the window system and dispatches these to the application widgets.</p>
@@ -145,14 +145,14 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>Returns <code translate="no">true</code> if the event loop is running; otherwise returns false. The event loop is considered running from the time when <a href="qeventloop.html#exec" translate="no">exec</a>() is called until <a href="qeventloop.html#exit" translate="no">exit</a>() is called.</p>
 <p><b>See also </b><a href="qeventloop.html#exec" translate="no">exec</a>() and <a href="qeventloop.html#exit" translate="no">exit</a>().</p>
 <!-- @@@isRunning -->
-<!-- $$$processEvents[overload1]$$$processEventsQEventLoop::ProcessEventsFlags -->
-<h3 class="fn" translate="no" id="processEvents"><span class="type">bool</span> QEventLoop::<span class="name">processEvents</span>(<span class="type"><a href="qeventloop.html#ProcessEventsFlag-enum" translate="no">QEventLoop::ProcessEventsFlags</a></span> <i>flags</i> = AllEvents)</h3>
+<!-- $$$processEvents[overload1]$$$processEventsProcessEventsFlags -->
+<h3 class="fn" translate="no" id="processEvents"><span class="type">bool</span> QEventLoop::<span class="name">processEvents</span>(<span class="type"><a href="qeventloop.html#ProcessEventsFlag-enum" translate="no">ProcessEventsFlags</a></span> <i>flags</i> = AllEvents)</h3>
 <p>Processes some pending events that match <i translate="no">flags</i>. Returns <code translate="no">true</code> if pending events were handled; otherwise returns <code translate="no">false</code>.</p>
 <p>This function is especially useful if you have a long running operation and want to show its progress without allowing user input; i.e&#x2e; by using the <a href="qeventloop.html#ProcessEventsFlag-enum" translate="no">ExcludeUserInputEvents</a> flag.</p>
 <p>This function is simply a wrapper for <a href="qabstracteventdispatcher.html#processEvents" translate="no">QAbstractEventDispatcher::processEvents</a>(). See the documentation for that function for details.</p>
 <!-- @@@processEvents -->
-<!-- $$$processEvents$$$processEventsQEventLoop::ProcessEventsFlagsint -->
-<h3 class="fn" translate="no" id="processEvents-1"><span class="type">void</span> QEventLoop::<span class="name">processEvents</span>(<span class="type"><a href="qeventloop.html#ProcessEventsFlag-enum" translate="no">QEventLoop::ProcessEventsFlags</a></span> <i>flags</i>, <span class="type">int</span> <i>maxTime</i>)</h3>
+<!-- $$$processEvents$$$processEventsProcessEventsFlagsint -->
+<h3 class="fn" translate="no" id="processEvents-1"><span class="type">void</span> QEventLoop::<span class="name">processEvents</span>(<span class="type"><a href="qeventloop.html#ProcessEventsFlag-enum" translate="no">ProcessEventsFlags</a></span> <i>flags</i>, <span class="type">int</span> <i>maxTime</i>)</h3>
 <p>Process pending events that match <i translate="no">flags</i> for a maximum of <i translate="no">maxTime</i> milliseconds, or until there are no more events to process, whichever is shorter. This function is especially useful if you have a long running operation and want to show its progress without allowing user input, i.e&#x2e; by using the <a href="qeventloop.html#ProcessEventsFlag-enum" translate="no">ExcludeUserInputEvents</a> flag.</p>
 <p><b>Notes:</b></p>
 <ul>

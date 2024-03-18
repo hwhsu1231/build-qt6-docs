@@ -109,8 +109,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> NSDate *</td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toNSDate" translate="no">toNSDate</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toOffsetFromUtc" translate="no">toOffsetFromUtc</a></b>(int <i>offsetSeconds</i>) const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> qint64 </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toSecsSinceEpoch" translate="no">toSecsSinceEpoch</a></b>() const</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toStdSysMilliseconds" translate="no">toStdSysMilliseconds</a></b>() const</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> int </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toStdSysSeconds" translate="no">toStdSysSeconds</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::chrono::sys_time&lt;std::chrono::milliseconds&gt; </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toStdSysMilliseconds" translate="no">toStdSysMilliseconds</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> std::chrono::sys_seconds </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toStdSysSeconds" translate="no">toStdSysSeconds</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toString" translate="no">toString</a></b>(const QString &amp;<i>format</i>, QCalendar <i>cal</i> = QCalendar()) const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toString-1" translate="no">toString</a></b>(Qt::DateFormat <i>format</i> = Qt::TextDate) const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#toString-2" translate="no">toString</a></b>(QStringView <i>format</i>, QCalendar <i>cal</i> = QCalendar()) const</td></tr>
@@ -133,7 +133,10 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromNSDate" translate="no">fromNSDate</a></b>(const NSDate *<i>date</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromSecsSinceEpoch-1" translate="no">fromSecsSinceEpoch</a></b>(qint64 <i>secs</i>, const QTimeZone &amp;<i>timeZone</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromSecsSinceEpoch-2" translate="no">fromSecsSinceEpoch</a></b>(qint64 <i>secs</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromStdLocalTime" translate="no">fromStdLocalTime</a></b>(const std::chrono::local_time&lt;std::chrono::milliseconds&gt; &amp;<i>time</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromStdTimePoint" translate="no">fromStdTimePoint</a></b>(const std::chrono::time_point&lt;Clock, Duration&gt; &amp;<i>time</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromStdTimePoint-1" translate="no">fromStdTimePoint</a></b>(const std::chrono::local_time&lt;std::chrono::milliseconds&gt; &amp;<i>time</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromStdZonedTime" translate="no">fromStdZonedTime</a></b>(const int &amp;<i>time</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromString" translate="no">fromString</a></b>(const QString &amp;<i>string</i>, Qt::DateFormat <i>format</i> = Qt::TextDate)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromString-1" translate="no">fromString</a></b>(QStringView <i>string</i>, Qt::DateFormat <i>format</i> = Qt::TextDate)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QDateTime </td><td class="memItemRight bottomAlign"><b><a href="qdatetime.html#fromString-2" translate="no">fromString</a></b>(QStringView <i>string</i>, QStringView <i>format</i>, QCalendar <i>cal</i> = QCalendar())</td></tr>
@@ -385,6 +388,15 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>This is an overloaded function.</p>
 <p>This function was introduced in Qt 6.5.</p>
 <!-- @@@fromSecsSinceEpoch -->
+<!-- $$$fromStdLocalTime[overload1]$$$fromStdLocalTimeconststd::chrono::local_time<std::chrono::milliseconds>& -->
+<h3 class="fn" translate="no" id="fromStdLocalTime"><code translate="no">[static, since 6.4] </code><span class="type"><a href="qdatetime.html#QDateTime" translate="no">QDateTime</a></span> QDateTime::<span class="name">fromStdLocalTime</span>(const <span class="type">std::chrono::local_time</span>&lt;<span class="type">std::chrono::milliseconds</span>&gt; &amp;<i>time</i>)</h3>
+<p>Constructs a datetime whose date and time are the number of milliseconds represented by <i translate="no">time</i>, counted since 1970-01-01T00:00:00.000 in local time (<a href="qt.html#TimeSpec-enum" translate="no">Qt::LocalTime</a>).</p>
+<div class="admonition note">
+<p><b>Note: </b>This function requires C++20.</p>
+</div>
+<p>This function was introduced in Qt 6.4.</p>
+<p><b>See also </b><a href="qdatetime.html#toStdSysMilliseconds" translate="no">toStdSysMilliseconds</a>() and <a href="qdatetime-obsolete.html#fromMSecsSinceEpoch" translate="no">fromMSecsSinceEpoch</a>().</p>
+<!-- @@@fromStdLocalTime -->
 <!-- $$$fromStdTimePoint[overload1]$$$fromStdTimePointconststd::chrono::time_point<Clock,Duration>& -->
 <h3 class="fn" translate="no" id="fromStdTimePoint"><code translate="no">[static, since 6.4] </code>template &lt;typename Clock, typename Duration&gt; <span class="type"><a href="qdatetime.html#QDateTime" translate="no">QDateTime</a></span> QDateTime::<span class="name">fromStdTimePoint</span>(const <span class="type">std::chrono::time_point</span>&lt;<span class="type">Clock</span>, <span class="type">Duration</span>&gt; &amp;<i>time</i>)</h3>
 <p>Constructs a datetime representing the same point in time as <i translate="no">time</i>, using <a href="qt.html#TimeSpec-enum" translate="no">Qt::UTC</a> as its specification.</p>
@@ -395,6 +407,24 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>This function was introduced in Qt 6.4.</p>
 <p><b>See also </b><a href="qdatetime.html#toStdSysMilliseconds" translate="no">toStdSysMilliseconds</a>() and <a href="qdatetime-obsolete.html#fromMSecsSinceEpoch" translate="no">fromMSecsSinceEpoch</a>().</p>
 <!-- @@@fromStdTimePoint -->
+<!-- $$$fromStdTimePoint$$$fromStdTimePointconststd::chrono::local_time<std::chrono::milliseconds>& -->
+<h3 class="fn" translate="no" id="fromStdTimePoint-1"><code translate="no">[static, since 6.4] </code><span class="type"><a href="qdatetime.html#QDateTime" translate="no">QDateTime</a></span> QDateTime::<span class="name">fromStdTimePoint</span>(const <span class="type">std::chrono::local_time</span>&lt;<span class="type">std::chrono::milliseconds</span>&gt; &amp;<i>time</i>)</h3>
+<p>Constructs a datetime whose date and time are the number of milliseconds represented by <i translate="no">time</i>, counted since 1970-01-01T00:00:00.000 in local time (<a href="qt.html#TimeSpec-enum" translate="no">Qt::LocalTime</a>).</p>
+<div class="admonition note">
+<p><b>Note: </b>This function requires C++20.</p>
+</div>
+<p>This function was introduced in Qt 6.4.</p>
+<p><b>See also </b><a href="qdatetime.html#toStdSysMilliseconds" translate="no">toStdSysMilliseconds</a>() and <a href="qdatetime-obsolete.html#fromMSecsSinceEpoch" translate="no">fromMSecsSinceEpoch</a>().</p>
+<!-- @@@fromStdTimePoint -->
+<!-- $$$fromStdZonedTime[overload1]$$$fromStdZonedTimeconstint& -->
+<h3 class="fn" translate="no" id="fromStdZonedTime"><code translate="no">[static, since 6.4] </code><span class="type"><a href="qdatetime.html#QDateTime" translate="no">QDateTime</a></span> QDateTime::<span class="name">fromStdZonedTime</span>(const <span class="type">int</span> &amp;<i>time</i>)</h3>
+<p>Constructs a datetime representing the same point in time as <i translate="no">time</i>. The result will be expressed in <i translate="no">time</i>'s time zone.</p>
+<div class="admonition note">
+<p><b>Note: </b>This function requires C++20.</p>
+</div>
+<p>This function was introduced in Qt 6.4.</p>
+<p><b>See also </b><a href="qtimezone.html" translate="no">QTimeZone</a>, <a href="qdatetime.html#toStdSysMilliseconds" translate="no">toStdSysMilliseconds</a>(), and <a href="qdatetime-obsolete.html#fromMSecsSinceEpoch" translate="no">fromMSecsSinceEpoch</a>().</p>
+<!-- @@@fromStdZonedTime -->
 <!-- $$$fromString[overload1]$$$fromStringconstQString&Qt::DateFormat -->
 <h3 class="fn" translate="no" id="fromString"><code translate="no">[static] </code><span class="type"><a href="qdatetime.html#QDateTime" translate="no">QDateTime</a></span> QDateTime::<span class="name">fromString</span>(const <span class="type"><a href="qstring.html" translate="no">QString</a></span> &amp;<i>string</i>, <span class="type"><a href="qt.html#DateFormat-enum" translate="no">Qt::DateFormat</a></span> <i>format</i> = Qt::TextDate)</h3>
 <p>Returns the <a href="qdatetime.html" translate="no">QDateTime</a> represented by the <i translate="no">string</i>, using the <i translate="no">format</i> given, or an invalid datetime if this is not possible.</p>
@@ -649,7 +679,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>See also </b><a href="qdatetime.html#toMSecsSinceEpoch" translate="no">toMSecsSinceEpoch</a>(), <a href="qdatetime-obsolete.html#fromSecsSinceEpoch" translate="no">fromSecsSinceEpoch</a>(), and <a href="qdatetime.html#setSecsSinceEpoch" translate="no">setSecsSinceEpoch</a>().</p>
 <!-- @@@toSecsSinceEpoch -->
 <!-- $$$toStdSysMilliseconds[overload1]$$$toStdSysMilliseconds -->
-<h3 class="fn" translate="no" id="toStdSysMilliseconds"><code translate="no">[since 6.4] </code><span class="type">int</span> QDateTime::<span class="name">toStdSysMilliseconds</span>() const</h3>
+<h3 class="fn" translate="no" id="toStdSysMilliseconds"><code translate="no">[since 6.4] </code><span class="type">std::chrono::sys_time</span>&lt;<span class="type">std::chrono::milliseconds</span>&gt; QDateTime::<span class="name">toStdSysMilliseconds</span>() const</h3>
 <p>Converts this datetime object to the equivalent time point expressed in milliseconds, using <code translate="no">std::chrono::system_clock</code> as a clock.</p>
 <div class="admonition note">
 <p><b>Note: </b>This function requires C++20.</p>
@@ -658,7 +688,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>See also </b><a href="qdatetime.html#fromStdTimePoint" translate="no">fromStdTimePoint</a>() and <a href="qdatetime.html#toMSecsSinceEpoch" translate="no">toMSecsSinceEpoch</a>().</p>
 <!-- @@@toStdSysMilliseconds -->
 <!-- $$$toStdSysSeconds[overload1]$$$toStdSysSeconds -->
-<h3 class="fn" translate="no" id="toStdSysSeconds"><code translate="no">[since 6.4] </code><span class="type">int</span> QDateTime::<span class="name">toStdSysSeconds</span>() const</h3>
+<h3 class="fn" translate="no" id="toStdSysSeconds"><code translate="no">[since 6.4] </code><span class="type">std::chrono::sys_seconds</span> QDateTime::<span class="name">toStdSysSeconds</span>() const</h3>
 <p>Converts this datetime object to the equivalent time point expressed in seconds, using <code translate="no">std::chrono::system_clock</code> as a clock.</p>
 <div class="admonition note">
 <p><b>Note: </b>This function requires C++20.</p>

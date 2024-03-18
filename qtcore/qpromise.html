@@ -71,8 +71,6 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qpromise.html#addResult-1" translate="no">addResult</a></b>(const T &amp;<i>result</i>, int <i>index</i> = -1)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qpromise.html#addResult-2" translate="no">addResult</a></b>(T &amp;&amp;<i>result</i>, int <i>index</i> = -1)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qpromise.html#addResults" translate="no">addResults</a></b>(const QList&lt;T&gt; &amp;<i>results</i>)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qpromise.html#emplaceResult" translate="no">emplaceResult</a></b>(Args &amp;&amp;... <i>args</i>)</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qpromise.html#emplaceResultAt" translate="no">emplaceResultAt</a></b>(int <i>index</i>, Args &amp;&amp;... <i>args</i>)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qpromise.html#finish" translate="no">finish</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QFuture&lt;T&gt; </td><td class="memItemRight bottomAlign"><b><a href="qpromise.html#future" translate="no">future</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qpromise.html#isCanceled" translate="no">isCanceled</a></b>() const</td></tr>
@@ -159,21 +157,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
  emplaceResult(result);            <span class="comment">// first overload</span>
  emplaceResult(std<span class="operator">::</span>move(result)); <span class="comment">// second overload</span>
 </pre>
-<p><b>See also </b><a href="qpromise.html#emplaceResultAt" translate="no">emplaceResultAt</a>(), <a href="qpromise.html#emplaceResult" translate="no">emplaceResult</a>(), and <a href="qpromise.html#addResults" translate="no">addResults</a>().</p>
-<!-- @@@ -->
-<!-- $$$ -->
-<div class="fngroup">
-<h3 class="fn fngroupitem" translate="no" id="emplaceResult"><code translate="no">[since 6.6] </code>template &lt;typename Args, std::enable_if_t&lt;std::is_constructible_v&lt;T, Args..&#x2e;&gt;, bool>> <span class="type">bool</span> QPromise::<span class="name">emplaceResult</span>(<span class="type">Args</span> &amp;&amp;... <i>args</i>)</h3><h3 class="fn fngroupitem" translate="no" id="emplaceResultAt"><code translate="no">[since 6.6] </code>template &lt;typename Args, std::enable_if_t&lt;std::is_constructible_v&lt;T, Args..&#x2e;&gt;, bool>> <span class="type">bool</span> QPromise::<span class="name">emplaceResultAt</span>(<span class="type">int</span> <i>index</i>, <span class="type">Args</span> &amp;&amp;... <i>args</i>)</h3></div>
-<p>Adds a result constructed from <i translate="no">args..&#x2e;</i> to the internal result collection at <i translate="no">index</i> position (<a href="qpromise.html#emplaceResultAt" translate="no">emplaceResultAt</a>()) or the end of of the collection (<a href="qpromise.html#emplaceResult" translate="no">emplaceResult</a>()).</p>
-<p>Returns <code translate="no">true</code> when the result was added to the collection.</p>
-<p>Returns <code translate="no">false</code> when this promise is in canceled or finished state or when the result was rejected. <a href="qpromise.html#addResult-1" translate="no">addResult</a>() rejects to add a result if there's already another result in the collection stored at the same index.</p>
-<p>These functions only participate in overload resolutions if <code translate="no">T</code> is constructible from <i translate="no">args..&#x2e;&#x2e;</i></p>
-<p>You can get a result at a specific index by calling <a href="qfuture.html#resultAt" translate="no">QFuture::resultAt</a>().</p>
-<div class="admonition note">
-<p><b>Note: </b>It is possible to specify an arbitrary index and request result at that index. However, some <a href="qfuture.html" translate="no">QFuture</a> methods operate with continuous results. For instance, iterative approaches that use <a href="qfuture.html#resultCount" translate="no">QFuture::resultCount</a>() or <a href="qfuture-const-iterator.html" translate="no">QFuture::const_iterator</a>. In order to get all available results without thinking if there are index gaps or not, use <a href="qfuture.html#results" translate="no">QFuture::results</a>().</p>
-</div>
-<p>This function was introduced in Qt 6.6.</p>
-<p><b>See also </b><a href="qpromise.html#addResult-1" translate="no">addResult</a>() and <a href="qpromise.html#addResults" translate="no">addResults</a>().</p>
+<p><b>See also </b>emplaceResultAt(), emplaceResult(), and <a href="qpromise.html#addResults" translate="no">addResults</a>().</p>
 <!-- @@@ -->
 <!-- $$$QPromise[overload1]$$$QPromise -->
 <h3 class="fn" translate="no" id="QPromise">QPromise::<span class="name">QPromise</span>()</h3>

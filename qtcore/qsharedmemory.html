@@ -72,13 +72,13 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#QSharedMemory-1" translate="no">QSharedMemory</a></b>(QObject *<i>parent</i> = nullptr)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#QSharedMemory-2" translate="no">QSharedMemory</a></b>(const QNativeIpcKey &amp;<i>key</i>, QObject *<i>parent</i> = nullptr)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> virtual </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#dtor.QSharedMemory" translate="no">~QSharedMemory</a></b>()</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#attach" translate="no">attach</a></b>(QSharedMemory::AccessMode <i>mode</i> = ReadWrite)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#attach" translate="no">attach</a></b>(AccessMode <i>mode</i> = ReadWrite)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> const void *</td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#constData" translate="no">constData</a></b>() const</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#create" translate="no">create</a></b>(qsizetype <i>size</i>, QSharedMemory::AccessMode <i>mode</i> = ReadWrite)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#create" translate="no">create</a></b>(qsizetype <i>size</i>, AccessMode <i>mode</i> = ReadWrite)</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> void *</td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#data" translate="no">data</a></b>()</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> const void *</td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#data-1" translate="no">data</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#detach" translate="no">detach</a></b>()</td></tr>
-<tr><td class="memItemLeft rightAlign topAlign"> QSharedMemory::SharedMemoryError </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#error" translate="no">error</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> SharedMemoryError </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#error" translate="no">error</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#errorString" translate="no">errorString</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#isAttached" translate="no">isAttached</a></b>() const</td></tr>
 <tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qsharedmemory.html#lock" translate="no">lock</a></b>()</td></tr>
@@ -143,8 +143,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>The destructor clears the key, which forces the shared memory object to <a href="qsharedmemory.html#detach" translate="no">detach</a> from its underlying shared memory segment. If this shared memory object is the last one connected to the shared memory segment, the <a href="qsharedmemory.html#detach" translate="no">detach</a>() operation destroys the shared memory segment.</p>
 <p><b>See also </b><a href="qsharedmemory.html#detach" translate="no">detach</a>() and <a href="qsharedmemory.html#isAttached" translate="no">isAttached</a>().</p>
 <!-- @@@~QSharedMemory -->
-<!-- $$$attach[overload1]$$$attachQSharedMemory::AccessMode -->
-<h3 class="fn" translate="no" id="attach"><span class="type">bool</span> QSharedMemory::<span class="name">attach</span>(<span class="type"><a href="qsharedmemory.html#AccessMode-enum" translate="no">QSharedMemory::AccessMode</a></span> <i>mode</i> = ReadWrite)</h3>
+<!-- $$$attach[overload1]$$$attachAccessMode -->
+<h3 class="fn" translate="no" id="attach"><span class="type">bool</span> QSharedMemory::<span class="name">attach</span>(<span class="type"><a href="qsharedmemory.html#AccessMode-enum" translate="no">AccessMode</a></span> <i>mode</i> = ReadWrite)</h3>
 <p>Attempts to attach the process to the shared memory segment identified by the key that was passed to the constructor or to a call to <a href="qsharedmemory.html#setNativeKey" translate="no">setNativeKey</a>(). The access <i translate="no">mode</i> is <a href="qsharedmemory.html#AccessMode-enum" translate="no">ReadWrite</a> by default. It can also be <a href="qsharedmemory.html#AccessMode-enum" translate="no">ReadOnly</a>. Returns <code translate="no">true</code> if the attach operation is successful. If false is returned, call <a href="qsharedmemory.html#error" translate="no">error</a>() to determine which error occurred. After attaching the shared memory segment, a pointer to the shared memory can be obtained by calling <a href="qsharedmemory.html#data" translate="no">data</a>().</p>
 <p><b>See also </b><a href="qsharedmemory.html#isAttached" translate="no">isAttached</a>(), <a href="qsharedmemory.html#detach" translate="no">detach</a>(), and <a href="qsharedmemory.html#create" translate="no">create</a>().</p>
 <!-- @@@attach -->
@@ -154,8 +154,8 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p>If the memory operations are not atomic, you may lock the shared memory with <a href="qsharedmemory.html#lock" translate="no">lock</a>() before reading from or writing, but remember to release the lock with <a href="qsharedmemory.html#unlock" translate="no">unlock</a>() after you are done.</p>
 <p><b>See also </b><a href="qsharedmemory.html#attach" translate="no">attach</a>() and <a href="qsharedmemory.html#create" translate="no">create</a>().</p>
 <!-- @@@constData -->
-<!-- $$$create[overload1]$$$createqsizetypeQSharedMemory::AccessMode -->
-<h3 class="fn" translate="no" id="create"><span class="type">bool</span> QSharedMemory::<span class="name">create</span>(<span class="type">qsizetype</span> <i>size</i>, <span class="type"><a href="qsharedmemory.html#AccessMode-enum" translate="no">QSharedMemory::AccessMode</a></span> <i>mode</i> = ReadWrite)</h3>
+<!-- $$$create[overload1]$$$createqsizetypeAccessMode -->
+<h3 class="fn" translate="no" id="create"><span class="type">bool</span> QSharedMemory::<span class="name">create</span>(<span class="type">qsizetype</span> <i>size</i>, <span class="type"><a href="qsharedmemory.html#AccessMode-enum" translate="no">AccessMode</a></span> <i>mode</i> = ReadWrite)</h3>
 <p>Creates a shared memory segment of <i translate="no">size</i> bytes with the key passed to the constructor or set with <a href="qsharedmemory.html#setNativeKey" translate="no">setNativeKey</a>(), then attaches to the new shared memory segment with the given access <i translate="no">mode</i> and returns <code translate="no">true</code>. If a shared memory segment identified by the key already exists, the attach operation is not performed and <code translate="no">false</code> is returned. When the return value is <code translate="no">false</code>, call <a href="qsharedmemory.html#error" translate="no">error</a>() to determine which error occurred.</p>
 <p><b>See also </b><a href="qsharedmemory.html#error" translate="no">error</a>().</p>
 <!-- @@@create -->
@@ -175,7 +175,7 @@ target_link_libraries(mytarget PRIVATE Qt6::Core)</td></tr>
 <p><b>See also </b><a href="qsharedmemory.html#attach" translate="no">attach</a>() and <a href="qsharedmemory.html#isAttached" translate="no">isAttached</a>().</p>
 <!-- @@@detach -->
 <!-- $$$error[overload1]$$$error -->
-<h3 class="fn" translate="no" id="error"><span class="type"><a href="qsharedmemory.html#SharedMemoryError-enum" translate="no">QSharedMemory::SharedMemoryError</a></span> QSharedMemory::<span class="name">error</span>() const</h3>
+<h3 class="fn" translate="no" id="error"><span class="type"><a href="qsharedmemory.html#SharedMemoryError-enum" translate="no">SharedMemoryError</a></span> QSharedMemory::<span class="name">error</span>() const</h3>
 <p>Returns a value indicating whether an error occurred, and, if so, which error it was.</p>
 <p><b>See also </b><a href="qsharedmemory.html#errorString" translate="no">errorString</a>().</p>
 <!-- @@@error -->
